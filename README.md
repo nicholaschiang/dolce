@@ -4,9 +4,7 @@ A landing page for everything I love.
 
 ## Technology
 
-![The Remix Blues Stack](https://repository-images.githubusercontent.com/461012689/37d5bd8b-fa9c-4ab0-893c-f0a199d5012d)
-
-Learn more about [Remix Stacks](https://remix.run/stacks).
+This site was bootstrapped using the Remix Blues Stack. Learn more about [Remix Stacks](https://remix.run/stacks).
 
 ```
 npx create-remix@latest --template remix-run/blues-stack
