@@ -45,27 +45,27 @@ Click this button to create a [Gitpod](https://gitpod.io) workspace with the pro
 - Start the Postgres Database in [Docker](https://www.docker.com/get-started):
 
   ```sh
-  npm run docker
+  yarn docker
   ```
 
-  > **Note:** The npm script will complete while Docker sets up the container in the background. Ensure that Docker has finished and your container is running before proceeding.
+  > **Note:** The yarn script will complete while Docker sets up the container in the background. Ensure that Docker has finished and your container is running before proceeding.
 
 - Initial setup:
 
   ```sh
-  npm run setup
+  yarn setup
   ```
 
 - Run the first build:
 
   ```sh
-  npm run build
+  yarn build
   ```
 
 - Start dev server:
 
   ```sh
-  npm run dev
+  yarn dev
   ```
 
 This starts your app in development mode, rebuilding assets on file changes.
@@ -104,8 +104,8 @@ Prior to your first deployment, you'll need to do a few things:
 - Create two apps on Fly, one for staging and one for production:
 
   ```sh
-  fly apps create site-3e93
-  fly apps create site-3e93-staging
+  fly apps create nicholas-eng
+  fly apps create nicholas-eng-staging
   ```
 
   > **Note:** Once you've successfully created an app, double-check the `fly.toml` file to ensure that the `app` key is the name of the production app you created. This Stack [automatically appends a unique suffix at init](https://github.com/remix-run/blues-stack/blob/4c2f1af416b539187beb8126dd16f6bc38f47639/remix.init/index.js#L29) which may not match the apps you created on Fly. You will likely see [404 errors in your Github Actions CI logs](https://community.fly.io/t/404-failure-with-deployment-with-remix-blues-stack/4526/3) if you have this mismatch.
@@ -127,14 +127,14 @@ Prior to your first deployment, you'll need to do a few things:
 - Add a `SESSION_SECRET` to your fly app secrets, to do this you can run the following commands:
 
   ```sh
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app site-3e93
-  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app site-3e93-staging
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app nicholas-eng
+  fly secrets set SESSION_SECRET=$(openssl rand -hex 32) --app nicholas-eng-staging
   ```
 
   > **Note:** When creating the staging secret, you may get a warning from the Fly CLI that looks like this:
   >
   > ```
-  > WARN app flag 'site-3e93-staging' does not match app name in config file 'site-3e93'
+  > WARN app flag 'nicholas-eng-staging' does not match app name in config file 'nicholas-eng'
   > ```
   >
   > This simply means that the current directory contains a config that references the production app we created in the first step. Ignore this warning and proceed to create the secret.
@@ -144,11 +144,11 @@ Prior to your first deployment, you'll need to do a few things:
 - Create a database for both your staging and production environments. Run the following:
 
   ```sh
-  fly postgres create --name site-3e93-db
-  fly postgres attach --app site-3e93 site-3e93-db
+  fly postgres create --name nicholas-eng-db
+  fly postgres attach --app nicholas-eng nicholas-eng-db
 
-  fly postgres create --name site-3e93-staging-db
-  fly postgres attach --app site-3e93-staging site-3e93-staging-db
+  fly postgres create --name nicholas-eng-staging-db
+  fly postgres attach --app nicholas-eng-staging nicholas-eng-staging-db
   ```
 
   > **Note:** You'll get the same warning for the same reason when attaching the staging database that you did in the `fly set secret` step above. No worries. Proceed!
@@ -183,7 +183,7 @@ We use Cypress for our End-to-End tests in this project. You'll find those in th
 
 We use [`@testing-library/cypress`](https://testing-library.com/cypress) for selecting elements on the page semantically.
 
-To run these tests in development, run `npm run test:e2e:dev` which will start the dev server for the app as well as the Cypress client. Make sure the database is running in docker as described above.
+To run these tests in development, run `yarn test:e2e:dev` which will start the dev server for the app as well as the Cypress client. Make sure the database is running in docker as described above.
 
 We have a utility for testing authenticated features without having to go through the login flow:
 
@@ -208,7 +208,7 @@ For lower level tests of utilities and individual components, we use `vitest`. W
 
 #### Type Checking
 
-This project uses TypeScript. It's recommended to get TypeScript set up for your editor to get a really great in-editor experience with type checking and auto-complete. To run type checking across the whole project, run `npm run typecheck`.
+This project uses TypeScript. It's recommended to get TypeScript set up for your editor to get a really great in-editor experience with type checking and auto-complete. To run type checking across the whole project, run `yarn typecheck`.
 
 #### Linting
 
@@ -216,4 +216,4 @@ This project uses ESLint for linting. That is configured in `.eslintrc.js`.
 
 #### Formatting
 
-We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `npm run format` script you can run to format all files in the project.
+We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `yarn format` script you can run to format all files in the project.
