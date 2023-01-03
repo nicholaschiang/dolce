@@ -39,6 +39,7 @@ COPY --from=build /site/tsconfig.json /site/tsconfig.json
 COPY --from=build /site/package.json /site/package.json
 COPY --from=build /site/build /site/build
 COPY --from=build /site/public /site/public
+COPY --from=build /site/prisma /site/prisma
 COPY --from=build /site/app /site/app
 
 EXPOSE 8080
