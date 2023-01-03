@@ -1,5 +1,3 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -8,6 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
+import type { LinksFunction, LoaderArgs, MetaFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
 
 import { getUser } from './session.server';
 import tailwindStylesheetUrl from './styles/tailwind.css';

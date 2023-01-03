@@ -1,11 +1,11 @@
-import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
-import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
 import * as React from 'react';
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
+import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
+import { json, redirect } from '@remix-run/node';
 
-import { verifyLogin } from '~/models/user.server';
 import { createUserSession, getUserId } from '~/session.server';
 import { safeRedirect, validateEmail } from '~/utils';
+import { verifyLogin } from '~/models/user.server';
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -53,7 +53,7 @@ export async function action({ request }: ActionArgs) {
   return createUserSession({
     request,
     userId: user.id,
-    remember: remember === 'on' ? true : false,
+    remember: remember === 'on',
     redirectTo,
   });
 }
@@ -95,7 +95,6 @@ export default function LoginPage() {
                 ref={emailRef}
                 id='email'
                 required
-                autoFocus={true}
                 name='email'
                 type='email'
                 autoComplete='email'
@@ -160,7 +159,7 @@ export default function LoginPage() {
               </label>
             </div>
             <div className='text-center text-sm text-gray-500'>
-              Don't have an account?{' '}
+              Don’t have an account?{' '}
               <Link
                 className='text-blue-500 underline'
                 to={{

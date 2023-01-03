@@ -1,11 +1,10 @@
-import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
-import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
 import * as React from 'react';
-
-import { createUserSession, getUserId } from '~/session.server';
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
+import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
+import { json, redirect } from '@remix-run/node';
 
 import { createUser, getUserByEmail } from '~/models/user.server';
+import { createUserSession, getUserId } from '~/session.server';
 import { safeRedirect, validateEmail } from '~/utils';
 
 export async function loader({ request }: LoaderArgs) {
@@ -101,7 +100,6 @@ export default function Join() {
                 ref={emailRef}
                 id='email'
                 required
-                autoFocus={true}
                 name='email'
                 type='email'
                 autoComplete='email'

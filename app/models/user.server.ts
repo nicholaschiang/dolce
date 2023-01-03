@@ -43,19 +43,16 @@ export async function verifyLogin(
     },
   });
 
-  if (!userWithPassword || !userWithPassword.password) {
-    return null;
-  }
+  if (!userWithPassword || !userWithPassword.password) return null;
 
   const isValid = await bcrypt.compare(
     password,
     userWithPassword.password.hash
   );
 
-  if (!isValid) {
-    return null;
-  }
+  if (!isValid) return null;
 
+  /* eslint-disable-next-line @typescript-eslint/naming-convention */
   const { password: _password, ...userWithoutPassword } = userWithPassword;
 
   return userWithoutPassword;

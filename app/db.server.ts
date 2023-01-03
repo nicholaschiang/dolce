@@ -1,25 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import invariant from 'tiny-invariant';
 
-let prisma: PrismaClient;
-
-declare global {
-  var __db__: PrismaClient;
-}
-
-// this is needed because in development we don't want to restart
-// the server with every change, but we want to make sure we don't
-// create a new connection to the DB with every change either.
-// in production we'll have a single connection to the DB.
-if (process.env.NODE_ENV === 'production') {
-  prisma = getClient();
-} else {
-  if (!global.__db__) {
-    global.__db__ = getClient();
-  }
-  prisma = global.__db__;
-}
-
 function getClient() {
   const { DATABASE_URL } = process.env;
   invariant(typeof DATABASE_URL === 'string', 'DATABASE_URL env var not set');
@@ -34,7 +15,7 @@ function getClient() {
   const isReadReplicaRegion = !PRIMARY_REGION || PRIMARY_REGION === FLY_REGION;
 
   if (!isLocalHost) {
-    databaseUrl.host = `${FLY_REGION}.${databaseUrl.host}`;
+    databaseUrl.host = `${FLY_REGION ?? ''}.${databaseUrl.host}`;
     if (!isReadReplicaRegion) {
       // 5433 is the read-replica port
       databaseUrl.port = '5433';
@@ -54,9 +35,28 @@ function getClient() {
     },
   });
   // connect eagerly
-  client.$connect();
+  void client.$connect();
 
   return client;
+}
+
+/* eslint-disable-next-line import/no-mutable-exports */
+let prisma: PrismaClient;
+
+declare global {
+  /* eslint-disable-next-line no-var, vars-on-top */
+  var db: PrismaClient;
+}
+
+// this is needed because in development we don't want to restart
+// the server with every change, but we want to make sure we don't
+// create a new connection to the DB with every change either.
+// in production we'll have a single connection to the DB.
+if (process.env.NODE_ENV === 'production') {
+  prisma = getClient();
+} else {
+  if (!global.db) global.db = getClient();
+  prisma = global.db;
 }
 
 export { prisma };

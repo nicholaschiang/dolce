@@ -1,7 +1,7 @@
-import type { ActionArgs } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
-import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
+import { Form, useActionData } from '@remix-run/react';
+import { json, redirect } from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/node';
 
 import { createNote } from '~/models/note.server';
 import { requireUserId } from '~/session.server';
