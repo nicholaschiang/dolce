@@ -118,8 +118,11 @@ jobs:
         with:
           start: yarn start:mocks
           wait-on: 'http://localhost:8811'
+          record: true
         env:
           PORT: '8811'
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     name: Build
