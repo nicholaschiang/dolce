@@ -2272,7 +2272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/express@npm:^1.9.0":
+"@remix-run/express@npm:1.9.0, @remix-run/express@npm:^1.9.0":
   version: 1.9.0
   resolution: "@remix-run/express@npm:1.9.0"
   dependencies:
@@ -2317,6 +2317,20 @@ __metadata:
   version: 1.1.0
   resolution: "@remix-run/router@npm:1.1.0"
   checksum: 18e28668c3cbb848ed5a82ce598d55304edecd737ee3c573f0d4f391f3ceca5818702c5078b613f5d98ce25aef5273a2aa6c26395b7790800e03d8ab7cf808ea
+  languageName: node
+  linkType: hard
+
+"@remix-run/serve@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "@remix-run/serve@npm:1.9.0"
+  dependencies:
+    "@remix-run/express": 1.9.0
+    compression: ^1.7.4
+    express: ^4.17.1
+    morgan: ^1.10.0
+  bin:
+    remix-serve: dist/cli.js
+  checksum: 00dd976dda18a258831248c71fdf6b0d26893088539cd0554c18cebd20087017de21f13807f8b799fdaf7e702e99d2383025756140aba238ea4499a2583b1c57
   languageName: node
   linkType: hard
 
@@ -9868,6 +9882,7 @@ __metadata:
     "@remix-run/express": ^1.9.0
     "@remix-run/node": ^1.9.0
     "@remix-run/react": ^1.9.0
+    "@remix-run/serve": ^1.9.0
     "@remix-run/server-runtime": ^1.9.0
     "@testing-library/cypress": ^9.0.0
     "@testing-library/dom": ^8.19.1
