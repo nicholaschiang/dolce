@@ -111,6 +111,9 @@ export const links: LinksFunction = () => [
     type: 'font/woff2',
     as: 'font',
   },
+  { rel: 'preload', href: '/fonts/univers.css', as: 'style' },
+  { rel: 'preload', href: '/fonts/hack-subset.css', as: 'style' },
+  { rel: 'preload', href: tailwindStylesheetUrl, as: 'style' },
   { rel: 'stylesheet', href: '/fonts/univers.css' },
   { rel: 'stylesheet', href: '/fonts/hack-subset.css' },
   { rel: 'stylesheet', href: tailwindStylesheetUrl },
@@ -146,12 +149,12 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <Links />
         <ThemeHead ssrTheme={Boolean(data?.theme)} />
       </head>
-      <body className='h-full w-full overflow-hidden bg-white text-gray-900 selection:bg-gray-200 selection:text-black dark:bg-gray-900 dark:text-gray-100 dark:selection:bg-gray-700 dark:selection:text-gray-100'>
+      <body className='bg-white text-gray-900 selection:bg-gray-200 selection:text-black dark:bg-gray-900 dark:text-gray-100 dark:selection:bg-gray-700 dark:selection:text-gray-100'>
         {children}
-        <ThemeBody ssrTheme={Boolean(data?.theme)} />
         <div className='fixed top-8 right-8'>
           <ThemeSwitcher />
         </div>
+        <ThemeBody ssrTheme={Boolean(data?.theme)} />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

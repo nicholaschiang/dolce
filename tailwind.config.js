@@ -33,7 +33,10 @@ module.exports = {
         'monospace',
       ],
     },
-    extend: { colors: { gray: colors.zinc } },
+    extend: {
+      colors: { gray: colors.zinc },
+      spacing: { 6.5: '1.625rem' },
+    },
   },
   plugins: [],
 };

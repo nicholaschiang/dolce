@@ -16,4 +16,27 @@
   .frosted {
     @apply bg-gray-500/10 backdrop-blur-xl backdrop-saturate-150;
   }
+  .underline {
+    @apply decoration-gray-900/40 decoration-[1.5px] underline-offset-[1.5px] dark:decoration-gray-100/40;
+  }
+  a.underline {
+    @apply transition-colors hover:decoration-gray-900 dark:hover:decoration-gray-100;
+  }
+}
+
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.gray.100') theme('colors.white');
+  }
+
+  .light,
+  .light * {
+    scrollbar-color: theme('colors.gray.100') theme('colors.white');
+  }
+
+  .dark,
+  .dark * {
+    scrollbar-color: theme('colors.gray.800') theme('colors.gray.900');
+  }
 }
