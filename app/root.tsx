@@ -29,7 +29,6 @@ import {
   useTheme,
 } from '~/theme';
 import { getSession, getUser, sessionStorage } from '~/session.server';
-import Empty from '~/components/empty';
 import ThemeSwitcher from '~/components/theme-switcher';
 import type { User } from '~/models/user.server';
 import tailwindStylesheetUrl from '~/styles/tailwind.css';
@@ -77,7 +76,43 @@ export const links: LinksFunction = () => [
     type: 'font/woff2',
     as: 'font',
   },
-  { rel: 'stylesheet', href: '/fonts.css' },
+  {
+    rel: 'preload',
+    href: '/fonts/hack-regular-subset.woff2',
+    crossOrigin: 'anonymous',
+    type: 'font/woff2',
+    as: 'font',
+  },
+  {
+    rel: 'preload',
+    href: '/fonts/hack-regular-subset.woff2',
+    crossOrigin: 'anonymous',
+    type: 'font/woff2',
+    as: 'font',
+  },
+  {
+    rel: 'preload',
+    href: '/fonts/hack-bold-subset.woff2',
+    crossOrigin: 'anonymous',
+    type: 'font/woff2',
+    as: 'font',
+  },
+  {
+    rel: 'preload',
+    href: '/fonts/hack-italic-subset.woff2',
+    crossOrigin: 'anonymous',
+    type: 'font/woff2',
+    as: 'font',
+  },
+  {
+    rel: 'preload',
+    href: '/fonts/hack-bolditalic-subset.woff2',
+    crossOrigin: 'anonymous',
+    type: 'font/woff2',
+    as: 'font',
+  },
+  { rel: 'stylesheet', href: '/fonts/univers.css' },
+  { rel: 'stylesheet', href: '/fonts/hack-subset.css' },
   { rel: 'stylesheet', href: tailwindStylesheetUrl },
 ];
 
@@ -130,29 +165,28 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
     <StrictMode>
       <ThemeProvider specifiedTheme={null}>
         <App>
-          <div className='h-screen w-screen p-6'>
-            <Empty className='h-full w-full'>
-              <article className='max-w-md'>
-                {children}
-                <p>
-                  Try{' '}
-                  <Link className='underline' to='/login'>
-                    logging in
-                  </Link>{' '}
-                  again. Or smash your keyboard; that sometimes helps. If you
-                  still have trouble, come and complain in{' '}
-                  <a
-                    className='underline'
-                    href='https://numbersstationgroup.slack.com'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    our Slack workspace
-                  </a>
-                  ; we’re always more than happy to help.
-                </p>
-              </article>
-            </Empty>
+          <div className='flex h-screen w-screen items-center justify-center p-6 text-gray-900/25 dark:text-gray-100/25'>
+            <article>
+              <p>
+                An unexpected runtime error occurred. Try{' '}
+                <Link className='underline' to='/login'>
+                  authenticating
+                </Link>
+                . Or smash your keyboard—that can help. You can also{' '}
+                <a
+                  className='underline'
+                  href='https://github.com/nicholaschiang/site/issues/new'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  file an issue
+                </a>
+                .
+              </p>
+              <div className='my-4 w-0 min-w-full max-w-full overflow-auto bg-gray-100 dark:bg-gray-800'>
+                <pre className='w-fit p-6 text-xs leading-4'>{children}</pre>
+              </div>
+            </article>
           </div>
         </App>
       </ThemeProvider>
@@ -163,14 +197,9 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
     <ErrorDisplay>
-      <p>An unexpected runtime error occurred:</p>
-      <div className='my-4 overflow-auto rounded-md bg-gray-100 dark:bg-gray-800'>
-        <pre className='w-fit p-4 text-left'>
-          <code>{error.message}</code>
-          <br />
-          <code dangerouslySetInnerHTML={{ __html: error.stack ?? '' }} />
-        </pre>
-      </div>
+      <code>{error.message}</code>
+      <br />
+      <code dangerouslySetInnerHTML={{ __html: error.stack ?? '' }} />
     </ErrorDisplay>
   );
 }
@@ -179,27 +208,18 @@ export function CatchBoundary() {
   const caught = useCatch<ThrownResponse<number, string>>();
   return (
     <ErrorDisplay>
-      <p>
-        An unexpected{' '}
+      <code>
         <a
           href={`https://httpstatuses.io/${caught.status}`}
           target='_blank'
           rel='noopener noreferrer'
           className='underline'
         >
-          HTTP {caught.status}
-        </a>{' '}
-        error occurred:
-      </p>
-      <div className='my-4 overflow-auto rounded-md bg-gray-100 dark:bg-gray-800'>
-        <pre className='w-fit p-4 text-left'>
-          <code>
-            {caught.status} {caught.statusText}
-          </code>
-          <br />
-          <code dangerouslySetInnerHTML={{ __html: caught.data }} />
-        </pre>
-      </div>
+          {caught.status} {caught.statusText}
+        </a>
+      </code>
+      <br />
+      <code dangerouslySetInnerHTML={{ __html: caught.data }} />
     </ErrorDisplay>
   );
 }
