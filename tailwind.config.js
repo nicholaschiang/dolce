@@ -1,5 +1,8 @@
+const colors = require('tailwindcss/colors');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: ['./app/**/*.{ts,tsx,jsx,js}'],
   theme: {
     fontFamily: {
@@ -19,6 +22,7 @@ module.exports = {
         'sans-serif',
       ],
     },
+    extend: { colors: { gray: colors.zinc } },
   },
   plugins: [],
 };

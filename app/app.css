@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* FIXME instead of defining this as a reusable TailwindCSS class, this should
+ * be defined in a reusable <IconButton> wrapper. However, dealing with TS types
+ * wasn't worth it for now; this was a lot easier.
+ */
+@layer components {
+  .icon-button {
+    @apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-900/40 transition-colors disabled:cursor-not-allowed dark:text-gray-100/40;
+    &:not(:disabled) {
+      @apply hover:bg-gray-900/5 hover:text-gray-900 dark:hover:bg-gray-100/5 dark:hover:text-gray-100;
+    }
+  }
+  .frosted {
+    @apply bg-gray-500/10 backdrop-blur-xl backdrop-saturate-150;
+  }
+}

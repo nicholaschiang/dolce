@@ -43,7 +43,7 @@ async function seed() {
   console.log(`Database has been seeded. 🌱`);
 }
 
-seed()
+void seed()
   .catch((e) => {
     console.error(e);
     process.exit(1);
