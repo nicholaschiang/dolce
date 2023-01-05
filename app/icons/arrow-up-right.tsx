@@ -1,4 +1,4 @@
-export default function Grid({ className }: { className?: string }) {
+export default function ArrowUpRight({ className }: { className?: string }) {
   return (
     <svg
       fill='none'
@@ -12,10 +12,8 @@ export default function Grid({ className }: { className?: string }) {
       width='24'
       className={className}
     >
-      <path d='M3 3h7v7H3z' />
-      <path d='M14 3h7v7h-7z' />
-      <path d='M14 14h7v7h-7z' />
-      <path d='M3 14h7v7H3z' />
+      <path d='M7 17L17 7' />
+      <path d='M7 7h10v10' />
     </svg>
   );
 }
