@@ -8,7 +8,8 @@ generator client {
 }
 
 model User {
-  id    String @id @default(cuid())
+  id    Int    @id @default(autoincrement())
+  name  String
   email String @unique
 
   password Password?
@@ -18,15 +19,111 @@ model User {
 model Password {
   hash String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int  @unique
 }
 
 model Note {
-  id    String @id @default(cuid())
+  id    Int    @id @default(autoincrement())
   title String
   body  String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int
+}
+
+// A company is a legal corporation. Companies can own many brands.
+// e.g. The LVMH company owns Louis Vuitton, Dior, Givenchy, etc.
+model Company {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  brands Brand[]
+}
+
+// A brand is a recognizable name. Brands with similar names are given tiers.
+// e.g. GUESS is given tier 1 while GBG and GUESS FACTORY are given tier 2.
+
+// Tiers attempt to encapsulate a brand's reputation, business model, and prices:
+
+// 0 - $50k-∞ bespoke. does not sell to the general public. 
+// 1 - $5-50k superpremium.  e.g. Patek Philippe, Bottega, Hermes 
+// 2 - $1500-5k premium core. e.g. Rolex, Berluti, Omega, Cartier
+// 3 - $300-1500 accessible core. e.g. GUCCI, Prada, Tod's, Montblanc
+// 4 - $100-300 affordable luxury. e.g. Coach, Geox
+
+// 5 - $80-$700 diffusion. secondary lines by luxury names. e.g. Marc by Marc Jacobs
+// 6 - $40-500 high-end street. e.g. All Saints, Coast
+// 7 - $20-120 mid-level high street. e.g. Topshop, M&S
+// 8 - $5-30 value market. relies on huge sales. e.g. Primark, Shein, Walmart
+
+// https://createafashionbrand.com/the-many-market-levels-of-fashion-brands/
+// https://www.businessinsider.com/pyramid-of-luxury-brands-2015-3 
+model Brand {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  tier Int
+
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  companyId Int
+  products  Product[]
+  shows     Show[]
+}
+
+// A product is an item that can be bought and sold. Products have brands.
+
+// Levels attempt to encapsulate a product's quality, price, and availability:
+
+// 0 - bespoke. made to measure e.g. by comission.
+// 1 - haute couture. handmade approved by french law.
+// 2 - handmade. e.g. one-of-one etsy items, products made a friend.
+// 3 - ready-to-wear. widely available online or in-store.
+model Product {
+  id    Int    @id @default(autoincrement())
+  name  String
+  level Int
+
+  designedAt DateTime
+  releasedAt DateTime
+
+  show   Show? @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  showId Int?
+
+  designer   Designer @relation(fields: [designerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  designerId Int
+
+  brand   Brand @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brandId Int
+}
+
+// A show is a fashion runway show.
+model Show {
+  id     Int    @id @default(autoincrement())
+  name   String
+  season String
+
+  startedAt DateTime
+  endedAt   DateTime
+
+  location String
+
+  designer   Designer @relation(fields: [designerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  designerId Int
+
+  brand   Brand @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brandId Int
+
+  products Product[]
+}
+
+// A designer is a person.
+model Designer {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  bornAt DateTime
+  diedAt DateTime
+
+  shows    Show[]
+  products Product[]
 }
