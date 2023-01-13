@@ -83,17 +83,6 @@ export default function Index() {
           subtitle='some ml research'
           url='https://dl.acm.org/doi/10.1145/3391906?cid=99659274049'
         />
-        <Milestone
-          start={new Date(2003, 11, 25)}
-          end={new Date(2018, 7, 13)}
-          title='childhood'
-          subtitle='if only it were longer'
-        />
-        <Milestone
-          start={new Date(2003, 11, 25)}
-          title='birth'
-          subtitle='i regret it too broh'
-        />
       </section>
     </main>
   );
