@@ -31,8 +31,59 @@ module.exports = {
     'import/resolver': { typescript: {} },
   },
   rules: {
+    // Allow importing dev dependencies in the scraping project directory.
+    // @see {@link https://github.com/import-js/eslint-plugin-import/blob/HEAD/docs/rules/no-extraneous-dependencies.md}
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: [
+          'scraping/**',
+          'test/**',
+          'tests/**',
+          'spec/**',
+          '**/__tests__/**',
+          '**/__mocks__/**',
+          'test.{js,jsx}',
+          'test.{ts,tsx}',
+          'test-*.{js,jsx}',
+          'test-*.{ts,tsx}',
+          '**/*{.,_}{test,spec}.{js,jsx}',
+          '**/*{.,_}{test,spec}.{ts,tsx}',
+          '**/jest.config.js',
+          '**/jest.config.ts',
+          '**/jest.setup.js',
+          '**/jest.setup.ts',
+          '**/vue.config.js',
+          '**/vue.config.ts',
+          '**/webpack.config.js',
+          '**/webpack.config.ts',
+          '**/webpack.config.*.js',
+          '**/webpack.config.*.ts',
+          '**/rollup.config.js',
+          '**/rollup.config.ts',
+          '**/rollup.config.*.js',
+          '**/rollup.config.*.ts',
+          '**/gulpfile.js',
+          '**/gulpfile.ts',
+          '**/gulpfile.*.js',
+          '**/gulpfile.*.ts',
+          '**/Gruntfile{,.js}',
+          '**/Gruntfile{,.ts}',
+          '**/protractor.conf.js',
+          '**/protractor.conf.ts',
+          '**/protractor.conf.*.js',
+          '**/protractor.conf.*.ts',
+          '**/karma.conf.js',
+          '**/karma.conf.ts',
+          '**/.eslintrc.js',
+          '**/.eslintrc.ts',
+        ],
+        optionalDependencies: false,
+      },
+    ],
+
     // Support Typescript's triple slash directive comments in reference files.
-    // {@link https://github.com/typescript-eslint/typescript-eslint/issues/600}
+    // @see {@link https://github.com/typescript-eslint/typescript-eslint/issues/600}
     'spaced-comment': ['error', 'always', { markers: ['/'] }],
 
     // Use `void` operator to deal with dangling promises.
