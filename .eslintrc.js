@@ -7,7 +7,7 @@ module.exports = {
     project: [
       path.resolve(__dirname, 'tsconfig.json'),
       path.resolve(__dirname, 'cypress/tsconfig.json'),
-      path.resolve(__dirname, 'scraping/tsconfig.json'),
+      path.resolve(__dirname, 'scraper/tsconfig.json'),
     ],
   },
   extends: [
@@ -37,7 +37,7 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          'scraping/**',
+          'scraper/**',
           'test/**',
           'tests/**',
           'spec/**',
