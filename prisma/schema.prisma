@@ -7,123 +7,441 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// A user is a person who has created an account with us.
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
+  id Int @id @default(autoincrement())
+
+  // The user's name, as designated by the user.
+  name String
+
+  // The user's publicly visible username, as designated by the user.
+  username String @unique
+
+  // The user's email address, as designated by the user.
   email String @unique
 
+  // The user's password, stored as an encrypted hash.
   password Password?
-  notes    Note[]
+
+  // The user's designer profiles (if any).
+  designers Designer[]
 }
 
+// A user's password, stored in Postgres as an encrypted hash.
 model Password {
+  // The securely encrypted hash of the user's original password text.
   hash String
 
+  // The user whose password this is.
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId Int  @unique
-}
-
-model Note {
-  id    Int    @id @default(autoincrement())
-  title String
-  body  String
-
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId Int
 }
 
 // A company is a legal corporation. Companies can own many brands.
 // e.g. The LVMH company owns Louis Vuitton, Dior, Givenchy, etc.
 model Company {
-  id   Int    @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  // The corporations legal name.
   name String @unique
 
+  // A short description of the company, typically sourced from Wikipedia.
+  description String
+
+  // The brands owned and operated by the corporation.
   brands Brand[]
+
+  // The country where the corporation is legally headquartered.
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId Int
+}
+
+// A retailer is a recognizable commerce entity that sells products. Note that
+// this is different than a company to allow companies to own many retailers.
+// e.g. Neiman Marcus, Nordstrom, GOAT, StockX, Ebay, etc.
+model Retailer {
+  id Int @id @default(autoincrement())
+
+  // The retailer's most recognizable name, styled in their preferred format.
+  name String @unique
+
+  // A short description of the retailer, typically sourced from Wikipedia.
+  description String
+
+  // The brands sold by the retailer.
+  // @todo perhaps this shouldn't be an explicit relation but rather implied by
+  // the products (and their associated brands) that the retailer sells.
+  brands Brand[]
+
+  // The prices (associated with products) sold by the retailer.
+  prices Price[]
+
+  // The countries in which the retailer operates.
+  countries Country[]
 }
 
 // A brand is a recognizable name. Brands with similar names are given tiers.
 // e.g. GUESS is given tier 1 while GBG and GUESS FACTORY are given tier 2.
-
-// Tiers attempt to encapsulate a brand's reputation, business model, and prices:
-
-// 0 - $50k-∞ bespoke. does not sell to the general public. 
-// 1 - $5-50k superpremium.  e.g. Patek Philippe, Bottega, Hermes 
-// 2 - $1500-5k premium core. e.g. Rolex, Berluti, Omega, Cartier
-// 3 - $300-1500 accessible core. e.g. GUCCI, Prada, Tod's, Montblanc
-// 4 - $100-300 affordable luxury. e.g. Coach, Geox
-
-// 5 - $80-$700 diffusion. secondary lines by luxury names. e.g. Marc by Marc Jacobs
-// 6 - $40-500 high-end street. e.g. All Saints, Coast
-// 7 - $20-120 mid-level high street. e.g. Topshop, M&S
-// 8 - $5-30 value market. relies on huge sales. e.g. Primark, Shein, Walmart
-
-// https://createafashionbrand.com/the-many-market-levels-of-fashion-brands/
-// https://www.businessinsider.com/pyramid-of-luxury-brands-2015-3 
 model Brand {
-  id   Int    @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  // The brand's most recognizable name, styled in the brand's preferred format.
   name String @unique
+
+  // A short description of the brand, typically sourced from Wikipedia.
+  description String
+
+  // Tiers attempt to encapsulate a brand's reputation, business model, and prices:
+  // 
+  // 0 - $50k-∞ bespoke. does not sell to the general public. 
+  // 1 - $5-50k superpremium.  e.g. Patek Philippe, Bottega, Hermes 
+  // 2 - $1500-5k premium core. e.g. Rolex, Berluti, Omega, Cartier
+  // 3 - $300-1500 accessible core. e.g. GUCCI, Prada, Tod's, Montblanc
+  // 4 - $100-300 affordable luxury. e.g. Coach, Geox
+  // 
+  // 5 - $80-$700 diffusion. secondary lines by luxury names. e.g. Marc by Marc Jacobs
+  // 6 - $40-500 high-end street. e.g. All Saints, Coast
+  // 7 - $20-120 mid-level high street. e.g. Topshop, M&S
+  // 8 - $5-30 value market. relies on huge sales. e.g. Primark, Shein, Walmart
+  // 
+  // https://createafashionbrand.com/the-many-market-levels-of-fashion-brands/
+  // https://www.businessinsider.com/pyramid-of-luxury-brands-2015-3
+  //
+  // @todo perhaps this should be a model of its own?
   tier Int
 
-  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  // The company that owns and operates the brand.
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   companyId Int
-  products  Product[]
-  shows     Show[]
+
+  // The products designed or otherwise produced by the brand.
+  products Product[]
+
+  // The runway shows presented by the brand.
+  shows Show[]
+
+  // The sizes used by the brand.
+  sizes Size[]
+
+  // The prices (associated with products) sold by the brand (i.e. MSRPs).
+  prices Price[]
+
+  // The retailers that sell the brand.
+  retailers Retailer[]
+
+  // The collections designed by the brand.
+  collections Collection[]
+
+  // The country the brand purports to be from.
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId Int
 }
 
-// A product is an item that can be bought and sold. Products have brands.
+// A country is a sovereign state. Countries can have many brands and sizes.
+model Country {
+  id Int @id @default(autoincrement())
 
-// Levels attempt to encapsulate a product's quality, price, and availability:
+  // The country's full name, as designated by the United Nations.
+  name String @unique
 
-// 0 - bespoke. made to measure e.g. by comission.
-// 1 - haute couture. handmade approved by french law.
-// 2 - handmade. e.g. one-of-one etsy items, products made a friend.
-// 3 - ready-to-wear. widely available online or in-store.
+  // The country's abbreviated name (e.g. USA).
+  code String @unique
+
+  // The companies that are legally headquartered in the country.
+  companies Company[]
+
+  // The brands that purportedly originate from the country.
+  brands Brand[]
+
+  // The retailers that operate in the country.
+  retailers Retailer[]
+
+  // The country's nationwide standardized sizes.
+  sizes Size[]
+}
+
+// A product category is a high-level grouping of products.
+// e.g. women's raincoats, women's puffer jackets, women's shoes, etc.
+model Category {
+  id Int @id @default(autoincrement())
+
+  // The category's name, styled in the preferred format.
+  name String @unique
+
+  // The products that belong to the category.
+  products Product[]
+
+  // The sizes used by the category.
+  sizes Size[]
+
+  // The collections that exclusively contain products from the category.
+  collections Collection[]
+
+  // The subcategories that belong to the category.
+  // e.g. Womenswear > Tops > Outerwear > Raincoats
+  parentCategoryId Int?
+  parentCategory   Category?  @relation("ParentCategories", fields: [parentCategoryId], references: [id])
+  subcategories    Category[] @relation("ParentCategories")
+}
+
+// A size is a measurement of a product's dimensions. Sizes can either be owned
+// by a brand (for proprietary brand specific sizing systems) or a country (for
+// nationwide standardized sizes). Users can then add multiple sizes to their 
+// profile. Our system will automatically suggest sizes to add based on the 
+// user's previous purchases and existing profile sizes.
+model Size {
+  id Int @id @default(autoincrement())
+
+  // The size's name, as designated by the brand or country.
+  name String
+
+  // The product category the size is used for.
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId Int
+
+  // The size's chest measurement (cm) as designated by the brand.
+  chest Decimal?
+
+  // The size's shoulder measurement (cm) as designated by the brand.
+  shoulder Decimal?
+
+  // The size's waist measurement (cm) as designated by the brand.
+  waist Decimal?
+
+  // The size's sleeve measurement (cm) as designated by the brand.
+  sleeve Decimal?
+
+  // The brand whose size this is.
+  brand   Brand? @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brandId Int?
+
+  // The country whose size this is.
+  country   Country? @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId Int?
+
+  // Equivalent sizes. A size can have zero or more equivalent sizes.
+  equivalents  Size[] @relation("SizeEquivalents")
+  equivalentOf Size[] @relation("SizeEquivalents")
+
+  // The products that are available in this size.
+  products Product[]
+
+  // The prices (associated with products) sold in this size.
+  prices Price[]
+
+  // @todo ensure that a size always has either a country or a brand.
+  // @see https://github.com/prisma/prisma/issues/17319
+
+  // Each brand or country must have unique size names per category. 
+  @@unique([name, categoryId, brandId, countryId])
+}
+
+// A market is either primary (MSRP and retailers) or secondary (resale).
+enum Market {
+  PRIMARY
+  SECONDARY
+}
+
+// A price is an encapsulation of a product's value.
+model Price {
+  id Int @id @default(autoincrement())
+
+  // The price's value in USD.
+  value Decimal
+
+  // The price's market (primary—MSRP and retailers—or secondary—resale value).
+  market Market
+
+  // The URL of the product's listing at this price.
+  url String?
+
+  // The retailer that sells the product at this price.
+  retailer   Retailer? @relation(fields: [retailerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  retailerId Int?
+
+  // The brand that sells the product at this price.
+  brand   Brand? @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brandId Int?
+
+  // The product that is sold at this price.
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId Int
+
+  // The size of the product sold at this price.
+  size   Size @relation(fields: [sizeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sizeId Int
+
+  // @todo ensure that a price always has either a retailer or a brand.
+  // @see https://github.com/prisma/prisma/issues/17319
+
+  // Each retailer or brand can only have one price per product size.
+  @@unique([retailerId, brandId, productId, sizeId])
+}
+
+// A product is an item that can be bought and sold.
 model Product {
-  id    Int    @id @default(autoincrement())
-  name  String
+  id Int @id @default(autoincrement())
+
+  // The product's name as designated by the brand and designer.
+  name String
+
+  // Levels attempt to encapsulate a product's quality, price, and availability:
+  // 
+  // 0 - bespoke. made to measure e.g. by comission.
+  // 1 - haute couture. handmade approved by french law.
+  // 2 - handmade. e.g. one-of-one etsy items, products made a friend.
+  // 3 - ready-to-wear. widely available online or in-store.
   level Int
 
+  // The sizes the product was originally made to fit.
+  sizes Size[]
+
+  // The product's available prices (MSRP, retailer prices, resale) per size.
+  prices Price[]
+
+  // When a product was originally conceived.
   designedAt DateTime
+
+  // When a product was first available to be purchased.
   releasedAt DateTime
 
-  show   Show? @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  showId Int?
+  // The product's category.
+  // @todo can a single product belong to multiple categories?
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId Int
 
-  designer   Designer @relation(fields: [designerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  designerId Int
+  // The product's season.
+  season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  seasonId Int
 
-  brand   Brand @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  brandId Int
+  // The product's collection.
+  // @todo can a single product belong to multiple collections?
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId Int
+
+  // The runway shows that included the product.
+  shows Show[]
+
+  // The product's designers. Typically, this will be a single person.
+  designers Designer[]
+
+  // The product's brands. Collaborations can have multiple brands.
+  brands Brand[]
+
+  // Each product name must be unique to the category and season.
+  @@unique([name, categoryId, seasonId])
+}
+
+// A collection is an arbitrary grouping of products, typically done by a brand
+// or a designer. Often, collections are created entirely by a single designer.
+model Collection {
+  id Int @id @default(autoincrement())
+
+  // The collection's name, as designated by the brand or designer.
+  name String
+
+  // The collection's category (if limited to a single category).
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId Int?
+
+  // The products that belong to the collection.
+  products Product[]
+
+  // The designers that created the collection. Often, this is one person.
+  designers Designer[]
+
+  // The brands that created the collection.
+  brands Brand[]
+}
+
+// A fashion season is a widely accepted grouping of fashion releases.
+model Season {
+  id Int @id @default(autoincrement())
+
+  // The name of the season, as widely accepted and recognized.
+  // @todo perhaps this should be an enum of Fall, Winter, Summer, Spring, etc.
+  name String
+
+  // The year the season takes place in.
+  year Int
+
+  // The runway shows that took place during the season.
+  shows Show[]
+
+  // The products that were released during the season.
+  products Product[]
+
+  // Each season must have a unique name and year.
+  @@unique([name, year])
 }
 
 // A show is a fashion runway show.
 model Show {
-  id     Int    @id @default(autoincrement())
-  name   String
-  season String
+  id Int @id @default(autoincrement())
 
-  startedAt DateTime
-  endedAt   DateTime
-
-  location String
-
-  designer   Designer @relation(fields: [designerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  designerId Int
-
-  brand   Brand @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  brandId Int
-
-  products Product[]
-}
-
-// A designer is a person.
-model Designer {
-  id   Int    @id @default(autoincrement())
+  // The name of the show, as designated by the show's organizer.
   name String
 
-  bornAt DateTime
-  diedAt DateTime
+  // The fashion season in which the show was presented. e.g. Spring 2021
+  season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  seasonId Int
 
-  shows    Show[]
+  // The date when the show started.
+  startedAt DateTime
+
+  // The date when the show ended. Often, this will match the start date.
+  endedAt DateTime
+
+  // The runway show's location.
+  // @todo perhaps this should be a separate model and simply a relation here.
+  venue String
+
+  // The designers who presented at the show. Often, there is only one.
+  designers Designer[]
+
+  // The brands that were showcased by the show. Typically, these will also be 
+  // the brands that produced the show. Generally, a show will only have one 
+  // brand, but—according to ChatGPT—there have been runway fashion shows that 
+  // have been operated by multiple brands and showcased pieces from both of the 
+  // brands. One example is the "Fashion East" show in London, which provides a 
+  // platform for emerging designers to showcase their collections. The show 
+  // often features a combination of individual designers and collaborative 
+  // collections. Another example is the "Designer Collaborations" show at New 
+  // York Fashion Week, which features collaborations between established 
+  // designers and brands.
+  brands Brand[]
+
+  // The products that were showcased on the runway.
   products Product[]
+
+  // Each show must have a unique name and season.
+  @@unique([name, seasonId])
+}
+
+// A designer is a person who contributed to the design of a product.
+model Designer {
+  id Int @id @default(autoincrement())
+
+  // The designer's name, as designated by the designer.
+  // @todo there may be multiple designers with the same name...
+  name String @unique
+
+  // When the designer was born.
+  bornAt DateTime
+
+  // When the designer died. If the designer lives, this will not be set.
+  diedAt DateTime?
+
+  // The shows that the designer presented at.
+  shows Show[]
+
+  // The collections that the designer created or otherwise curated.
+  collections Collection[]
+
+  // The products that the designer designed.
+  products Product[]
+
+  // The designer's user account (if created).
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int?
 }
