@@ -1,4 +1,7 @@
+// The recommended TS build configuration for use with Cypress.
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Cypress",
   "exclude": [
     "../node_modules/@types/jest",
     "../node_modules/@testing-library/jest-dom"
@@ -21,9 +24,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "typeRoots": ["../types", "../node_modules/@types"],
-
-    "paths": {
-      "~/*": ["../app/*"]
-    }
+    "paths": { "~/*": ["../app/*"] }
   }
 }
