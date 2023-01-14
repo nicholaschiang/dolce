@@ -2,15 +2,15 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Node 18",
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.mts"],
   "compilerOptions": {
     "lib": ["es2022"],
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es2022",
     "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "moduleResolution": "nodenext",
+    "outDir": "out"
   }
 }
