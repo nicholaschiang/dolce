@@ -256,6 +256,23 @@ model Size {
   @@unique([name, sex, styleId, brandId, countryId])
 }
 
+// A color is a label assigned to products by their designers.
+// @todo perhaps standardize this by associating each color with an RGBA range?
+model Color {
+  id Int @id @default(autoincrement())
+
+  // The color's name, as designated by the brand (e.g. "Beige", "Black", etc).
+  name String @unique
+
+  // The products that are available in this color.
+  products Product[]
+
+  // The prices that are associated with products of this color.
+  prices Price[]
+
+  // @todo perhaps colors should be associated with brands? e.g. "Gucci Beige"?
+}
+
 // A sex is an arbitrary label designated by a brand or designer to indicate a 
 // product's originally intended consumer.
 enum Sex {
@@ -298,6 +315,9 @@ model Price {
   // The product size(s) sold at this price. Secondary retailers sell different
   // sizes at different prices (e.g. Ebay, GOAT, Grailed, StockX, etc). 
   sizes Size[]
+
+  // The product color(s) sold at this price (behaves the same as "sizes").
+  colors Color[]
 
   // @todo ensure that a price always has either a retailer or a brand.
   // @see https://github.com/prisma/prisma/issues/17319
@@ -363,7 +383,10 @@ model Product {
   // The sizes the product was originally made to fit.
   sizes Size[]
 
-  // The product's available prices (MSRP, retailer prices, resale) per size.
+  // The colors the product was originally made in.
+  colors Color[]
+
+  // The product's available prices (MSRP, retail, resale) per size and color.
   prices Price[]
 
   // Images and videos of the product being modeled.
