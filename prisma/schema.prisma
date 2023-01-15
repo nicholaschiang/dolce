@@ -290,6 +290,39 @@ model Price {
   @@unique([retailerId, brandId, productId, sizeId])
 }
 
+// An image. Typically of a product being modeled.
+// @todo perhaps we should also store the image's original source?
+model Image {
+  id Int @id @default(autoincrement())
+
+  // The image's URL (either fully qualified or a relative path).
+  url String
+
+  // The product the image is of.
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId Int
+
+  // @todo store information on the models in the image (e.g. insta, etc).
+}
+
+// A video. Typically of a product being modeled.
+// @todo perhaps we should also store the image's original source?
+model Video {
+  id Int @id @default(autoincrement())
+
+  // The video's URL (either fully qualified or a relative path).
+  url String
+
+  // The video's mime type.
+  mimeType String
+
+  // The product the video is of.
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId Int
+
+  // @todo store information on the models in the video (e.g. insta, etc).
+}
+
 // A product is an item that can be bought and sold.
 model Product {
   id Int @id @default(autoincrement())
@@ -310,6 +343,10 @@ model Product {
 
   // The product's available prices (MSRP, retailer prices, resale) per size.
   prices Price[]
+
+  // Images and videos of the product being modeled.
+  videos Video[]
+  images Image[]
 
   // When a product was originally conceived.
   designedAt DateTime
