@@ -1,3 +1,3 @@
-import { scrape } from './neiman-marcus.mjs';
+import { scrape } from './isabel-marant.mjs';
 
 void scrape();
