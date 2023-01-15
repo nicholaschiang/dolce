@@ -324,10 +324,8 @@ model Product {
   season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seasonId Int
 
-  // The product's collection.
-  // @todo can a single product belong to multiple collections?
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  collectionId Int
+  // The collections that feature the product.
+  collections Collection[] 
 
   // The runway shows that included the product.
   shows Show[]
