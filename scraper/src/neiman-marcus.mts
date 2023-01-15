@@ -1,16 +1,122 @@
 import * as cheerio from 'cheerio';
+import type { CheerioAPI } from 'cheerio';
+import UserAgent from 'user-agents';
 import fetch from 'node-fetch';
+import { pino } from 'pino';
 
-export async function getBrandsFromNeimanMarcus(
-  neimanMarcusDesignersUrl = 'https://www.neimanmarcus.com/c/designers-cat000730'
-): Promise<{ name: string; url: string | undefined }[]> {
-  const res = await fetch(neimanMarcusDesignersUrl);
-  const html = await res.text();
-  const $ = cheerio.load(html);
-  const brands = $('div.designer-link');
-  return [...brands].map((brand) => {
-    const name = $(brand).find('a').text();
-    const url = $(brand).find('a').attr('href');
-    return { name, url };
+const BASE_URL = 'https://www.neimanmarcus.com';
+const log = pino({ level: 'trace' });
+
+/*
+ *export type ProductCreateWithoutBrandsInput = {
+ *  name: string;
+ *  level: number;
+ *  sizes?: SizeCreateNestedManyWithoutProductsInput;
+ *  prices?: PriceCreateNestedManyWithoutProductInput;
+ *  designedAt: Date | string;
+ *  releasedAt: Date | string;
+ *  styles?: StyleCreateNestedManyWithoutProductsInput;
+ *  season: SeasonCreateNestedOneWithoutProductsInput;
+ *  collections?: CollectionCreateNestedManyWithoutProductsInput;
+ *  shows?: ShowCreateNestedManyWithoutProductsInput;
+ *  designers?: DesignerCreateNestedManyWithoutProductsInput;
+ *};
+ */
+
+/**
+ * Loads the Neiman Marcus page into Cheerio and returns the Cheerio instance.
+ * @param path The path to the Neiman Marcus page to be loaded.
+ * @example
+ * const $ = await load('/c/designers-zegna-cat000495');
+ */
+export async function load(path: string): Promise<CheerioAPI> {
+  log.debug('Fetching... %s', `${BASE_URL}${path}`);
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { 'User-Agent': new UserAgent().toString() },
   });
+  const html = await res.text();
+  log.trace('HTML: %s', html);
+  return cheerio.load(html);
+}
+
+/**
+ * Gets a list of brands from Neiman Marcus' designers page.
+ * @param $ Cheerio instance with the designers page loaded.
+ * @see {@link https://www.neimanmarcus.com/c/designers-cat000730}
+ */
+export function getBrandsFromDesignersPage(
+  $: CheerioAPI
+): { name: string; url?: string }[] {
+  return $('div.designer-link')
+    .map((_, brand) => ({
+      name: $(brand).find('a').text(),
+      url: $(brand).find('a').attr('href'),
+    }))
+    .toArray();
+}
+
+/**
+ * Gets a list of products from Neiman Marcus' brand specific page.
+ * @param $ Cheerio instance with the brand specific page loaded.
+ * @see {@link https://www.neimanmarcus.com/c/designers-zegna-cat000495}
+ */
+export function getProductsFromBrandPage($: CheerioAPI): {
+  id?: string;
+  name: string;
+  price: string;
+  coverPhotoUrl?: string;
+  url?: string;
+}[] {
+  return $('.product-list')
+    .children('.product-thumbnail')
+    .map((_, product) => ({
+      id: $(product).attr('id'),
+      url: $(product).find('a.product-thumbnail__link').attr('href'),
+      name: $(product).find('h2 span.name').text(),
+      price: $(product).find('.product-thumbnail__description__price').text(),
+      coverPhotoUrl: $(product).find('img[name="mainImage"]').attr('src'),
+    }))
+    .toArray();
+}
+
+/**
+ * Gets a list of styles from Neiman Marcus' brand specific page.
+ * @param $ Cheerio instance with the brand specific page loaded.
+ * @see {@link https://www.neimanmarcus.com/c/designers-zegna-cat000495}
+ * @todo this does not work with Cheerio as we have to click the "+" button.
+ */
+export function getStylesFromBrandPage(
+  $: CheerioAPI
+): { name: string; url?: string }[] {
+  return $('.faceted-left-nav__filter__title div:contains("Style")')
+    .closest('.faceted-left-nav__filter')
+    .find('ul')
+    .children('li')
+    .map((_, style) => ({
+      name: $(style).find('a').text(),
+      url: $(style).find('a').attr('href'),
+    }))
+    .toArray();
+}
+
+/**
+ * Scrapes the Neiman Marcus website for products, brands, styles, etc.
+ * @param designersPath The path to the designers page where we start scraping.
+ * @example
+ * await scrape('/c/designers-cat000730');
+ */
+export async function scrape(
+  designersPath = '/c/designers-cat000730'
+): Promise<void> {
+  log.info('Getting brands... %s', designersPath);
+  const brands = getBrandsFromDesignersPage(await load(designersPath));
+  log.info('Brands: %j', brands);
+  const zegna = brands.find((brand) => brand.name === 'ZEGNA');
+  if (!zegna || !zegna.url) {
+    log.error('No ZEGNA brand URL found!');
+  } else {
+    log.info('Getting ZEGNA products... %s', zegna.url);
+    const products = getProductsFromBrandPage(await load(zegna.url));
+    log.info('Products: %j', products);
+  }
 }
