@@ -1,16 +1,43 @@
-// The recommended TS build configuration for use with Node.js 18 LTS.
+// The recommended TS build configuration for use with Puppeteer.
+// @see {@link https://github.com/berstend/puppeteer-extra/wiki/TypeScript-usage}
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 18",
-  "include": ["**/*.mts"],
+  "$schema": "http://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "es2022"],
-    "module": "esnext",
-    "target": "es2022",
-    "strict": true,
-    "skipLibCheck": true,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "lib": [
+      "ES2020",
+      "ES2020.BigInt",
+      "ES2020.Promise",
+      "ES2020.String",
+      "ES2020.Symbol.WellKnown",
+      "dom"
+    ],
+    "types": ["node"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "nodenext",
-    "outDir": "out"
-  }
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "strict": true,
+    "declarationMap": true,
+    "strictNullChecks": true,
+    "target": "ES2019",
+    "outDir": "out",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["lib", "dist", "build", "node_modules", "test/**/*.spec.ts"]
 }

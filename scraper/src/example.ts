@@ -1,7 +1,16 @@
-import puppeteer from 'puppeteer';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { pino } from 'pino';
+import puppeteer from 'puppeteer-extra';
 
-async function scrape() {
-  const browser = await puppeteer.launch();
+puppeteer.use(StealthPlugin());
+
+const log = pino({ level: 'debug' });
+
+export async function scrape() {
+  const browser = await puppeteer.launch({
+    headless: false,
+    executablePath: '/opt/homebrew/bin/chromium',
+  });
   const page = await browser.newPage();
 
   await page.goto('https://developers.google.com/web/');
@@ -20,16 +29,14 @@ async function scrape() {
 
   // Extract the results from the page.
   const links = await page.evaluate((sel) => {
-    return [...document.querySelectorAll(sel)].map((anchor) => {
+    return Array.from(document.querySelectorAll(sel)).map((anchor) => {
       const title = anchor.textContent?.split('|')[0].trim();
-      return `${title} - ${(anchor as HTMLAnchorElement).href}`;
+      return `${title ?? 'N/A'} - ${(anchor as HTMLAnchorElement).href}`;
     });
   }, resultsSelector);
 
   // Print all the files.
-  console.log(links.join('\n'));
+  log.info('Found links: %s', links.join('\n'));
 
   await browser.close();
 }
-
-void scrape();
