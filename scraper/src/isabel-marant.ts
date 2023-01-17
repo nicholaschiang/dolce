@@ -176,7 +176,7 @@ async function getProducts(page: Page): Promise<Product[]> {
   return products;
 }
 
-export async function scrape() {
+export async function scrape(dir = 'data/isabel-marant') {
   type TaskData = { existingFilters: Filter[]; filtersToGet: string[] };
 
   // For every category:
@@ -246,8 +246,11 @@ export async function scrape() {
         );
       }
     });
-    await fs.writeFile('products.json', JSON.stringify(products, null, 2));
-    await fs.writeFile('filters.json', JSON.stringify(filters, null, 2));
+    await fs.writeFile(
+      `${dir}/products.json`,
+      JSON.stringify(products, null, 2)
+    );
+    await fs.writeFile(`${dir}/filters.json`, JSON.stringify(filters, null, 2));
 
     // If debugging is enabled, take a screenshot of the filtered page.
     if (DEBUGGING) {
@@ -361,8 +364,8 @@ export async function scrape() {
   await cluster.idle();
   await cluster.close();
 
-  await fs.writeFile('products.json', JSON.stringify(products, null, 2));
-  await fs.writeFile('filters.json', JSON.stringify(filters, null, 2));
+  await fs.writeFile(`${dir}/products.json`, JSON.stringify(products, null, 2));
+  await fs.writeFile(`${dir}/filters.json`, JSON.stringify(filters, null, 2));
 
   const data = products.map((product) => {
     const productFilters = filters
@@ -371,5 +374,5 @@ export async function scrape() {
     return { ...product, filters: productFilters };
   });
 
-  await fs.writeFile('data.json', JSON.stringify(data, null, 2));
+  await fs.writeFile(`${dir}/data.json`, JSON.stringify(data, null, 2));
 }
