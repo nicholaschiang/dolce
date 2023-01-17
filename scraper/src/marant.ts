@@ -20,7 +20,15 @@ async function loadPage(
   page.on('console', (msg) => log.trace(msg.text()));
   await page.goto(url, { waitUntil: 'networkidle0' });
   log.debug('Loaded page: %s', url);
-  return page;
+}
+
+async function resetFilters(page: Page) {
+  log.debug('Resetting filters...');
+  const filterButtonSel = 'button.resetFilters';
+  await page.waitForSelector(filterButtonSel);
+  await page.click(filterButtonSel);
+  await page.waitForNetworkIdle();
+  log.debug('Reset filters.');
 }
 
 async function openFiltersPanel(page: Page) {
@@ -94,7 +102,7 @@ async function clickFilter(page: Page, filter: Filter) {
   await page.$eval(`${filterIdxSel} > a span`, (el) => el.click());
   // I can't include the :nth-child() as the available filters change once a
   // filter is selected (e.g. other "Seasons" disappear after selecting one).
-  await page.waitForNetworkIdle({ idleTime: 500 });
+  await page.waitForNetworkIdle();
   await page.waitForSelector(`${filterSel}.selected`);
   log.debug('Clicked filter. (%s: %s)', filter.title, filter.name);
 }
@@ -169,40 +177,7 @@ async function getProducts(page: Page): Promise<Product[]> {
 }
 
 export async function scrape() {
-  const cluster = await Cluster.launch({
-    puppeteer,
-    puppeteerOptions: {
-      headless: !DEBUGGING,
-      slowMo: DEBUGGING ? 500 : undefined,
-      defaultViewport: DEBUGGING ? undefined : { width: 1920, height: 1080 },
-      executablePath: '/opt/homebrew/bin/chromium',
-    },
-    maxConcurrency: DEBUGGING ? 1 : 10,
-    concurrency: Cluster.CONCURRENCY_PAGE,
-    retryLimit: 5,
-    retryDelay: 500,
-    timeout: 10000,
-  });
-
   type TaskData = { existingFilters: Filter[]; filtersToGet: string[] };
-
-  cluster.on('taskerror', (err, data: TaskData, willRetry) => {
-    if (willRetry) {
-      log.warn(
-        'Error while crawling; retrying... %s \n %s \n %o',
-        filtersToStr(data.existingFilters),
-        (err as Error).stack,
-        data
-      );
-    } else {
-      log.error(
-        'Failed to crawl. %s \n %s \n %o',
-        filtersToStr(data.existingFilters),
-        (err as Error).stack,
-        data
-      );
-    }
-  });
 
   // For every category:
   // 1. open this page;
@@ -231,11 +206,10 @@ export async function scrape() {
   }: {
     page: Page;
     data: TaskData;
-  }) {
-    // 1. Apply the existing filters (in the correct order).
+  }): Promise<TaskData[]> {
+    // 1. Clear filters and apply the existing filters (in the correct order).
     log.info('Applying existing filters... %s', filtersToStr(existingFilters));
-    await loadPage(page);
-    await openFiltersPanel(page);
+    await resetFilters(page);
     /* eslint-disable-next-line no-restricted-syntax */
     for await (const filter of existingFilters) await clickFilter(page, filter);
 
@@ -304,21 +278,85 @@ export async function scrape() {
         filtersToStr(existingFilters),
         filtersToSearchNext.map((f) => f.name).join(', ')
       );
-      filtersToSearchNext.forEach((filterToSearchNext) => {
-        void cluster.queue({
-          filtersToGet: filtersToGet.slice(1),
-          existingFilters: [...existingFilters, filterToSearchNext],
-        });
-      });
+
+      return filtersToSearchNext.map((filterToSearchNext) => ({
+        filtersToGet: filtersToGet.slice(1),
+        existingFilters: [...existingFilters, filterToSearchNext],
+      }));
     }
-    await page.close();
+    return [];
   }
 
-  await cluster.task(task);
-  await cluster.queue({
-    filtersToGet: ['Category', 'Color', 'Size', 'Season'],
-    existingFilters: [],
+  const cluster = await Cluster.launch({
+    puppeteer,
+    puppeteerOptions: {
+      headless: false,
+      executablePath: '/opt/homebrew/bin/chromium',
+    },
+    maxConcurrency: 100,
+    concurrency: Cluster.CONCURRENCY_CONTEXT,
+    timeout: 10e5,
   });
+
+  cluster.on('taskerror', (err, data: TaskData, willRetry) => {
+    if (willRetry) {
+      log.warn(
+        'Error while crawling; retrying... %s \n %s \n %o',
+        filtersToStr(data.existingFilters),
+        (err as Error).stack,
+        data
+      );
+    } else {
+      log.error(
+        'Failed to crawl. %s \n %s \n %o',
+        filtersToStr(data.existingFilters),
+        (err as Error).stack,
+        data
+      );
+    }
+  });
+
+  async function recursive({
+    page,
+    data,
+  }: {
+    page: Page;
+    data: TaskData;
+  }): Promise<void> {
+    /* eslint-disable-next-line no-restricted-syntax */
+    for await (const taskData of await task({ page, data })) {
+      await recursive({ page, data: taskData });
+    }
+  }
+
+  async function concurrent({
+    page,
+    data,
+  }: {
+    page: Page;
+    data: TaskData;
+  }): Promise<void> {
+    await loadPage(page);
+    await openFiltersPanel(page);
+    (await task({ page, data })).forEach((taskData) => {
+      void cluster.queue(taskData);
+    });
+  }
+
+  // Start concurrent pages for each category, and then reuse those pages with
+  // the recursive task for every other filter to improve performance.
+  await cluster.task(async ({ page, data }: { page: Page; data: TaskData }) => {
+    await loadPage(page);
+    await openFiltersPanel(page);
+    await recursive({ page, data });
+  });
+  await cluster.queue(
+    {
+      filtersToGet: ['Category', 'Color', 'Size', 'Season'],
+      existingFilters: [],
+    },
+    concurrent
+  );
 
   await cluster.idle();
   await cluster.close();
