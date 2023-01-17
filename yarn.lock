@@ -5207,7 +5207,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dequal@npm:^2.0.0":
+"dequal@npm:^2.0.0, dequal@npm:^2.0.3":
   version: 2.0.3
   resolution: "dequal@npm:2.0.3"
   checksum: 8679b850e1a3d0ebbc46ee780d5df7b478c23f335887464023a631d1b9af051ad4a6595a44220f9ff8ff95a8ddccf019b5ad778a976fd7bbf77383d36f412f90
@@ -10289,6 +10289,7 @@ __metadata:
     cookie: ^0.5.0
     cross-env: ^7.0.3
     cypress: ^12.2.0
+    dequal: ^2.0.3
     dotenv: ^16.0.3
     esbuild: ^0.16.12
     eslint: ^8.31.0

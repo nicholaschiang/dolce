@@ -1,18 +1,22 @@
+import fs from 'fs/promises';
+
 import { Cluster } from 'puppeteer-cluster';
 import type { Page } from 'puppeteer';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { dequal } from 'dequal/lite';
 import { pino } from 'pino';
 import puppeteer from 'puppeteer-extra';
 
 puppeteer.use(StealthPlugin());
 
+const DEBUGGING = false;
 const log = pino({ level: 'debug' });
 
 async function loadPage(
   page: Page,
   url = 'https://www.isabelmarant.com/nz/isabel-marant/men/im-all-man'
 ) {
-  log.info('Loading page... %s', url);
+  log.debug('Loading page... %s', url);
   page.on('console', (msg) => log.trace(msg.text()));
   await page.goto(url, { waitUntil: 'networkidle0' });
   log.debug('Loaded page: %s', url);
@@ -20,7 +24,7 @@ async function loadPage(
 }
 
 async function openFiltersPanel(page: Page) {
-  log.info('Opening filters panel...');
+  log.debug('Opening filters panel...');
   const filterButtonSel = 'button.filtersPanelTrigger';
   await page.waitForSelector(filterButtonSel);
   await page.click(filterButtonSel);
@@ -38,10 +42,18 @@ type Filter = {
   idx: number;
 };
 
+function filtersAreEqual(f1: Filter, f2: Filter) {
+  return f1.title === f2.title && f1.name === f2.name;
+}
+
+function filtersToStr(filters: Filter[]) {
+  return filters.map((f) => `(${f.title}: ${f.name})`).join(' ');
+}
+
 const filterGroupsSel = 'ul.filterGroups:nth-of-type(2) > li.filterGroup';
 
 async function getFilters(page: Page, title = 'Category'): Promise<Filter[]> {
-  log.info('Getting filters... (%s)', title);
+  log.debug('Getting filters... (%s)', title);
   const filters = await page.evaluate(
     (sel, desiredFilterGroupTitle) => {
       const filterGroupEls = document.querySelectorAll(sel);
@@ -51,51 +63,145 @@ async function getFilters(page: Page, title = 'Category'): Promise<Filter[]> {
             .querySelector('div.title')
             ?.textContent?.trim();
           if (filterGroupTitle !== desiredFilterGroupTitle) return [];
-          const filterEls = filterGroupEl.querySelectorAll(
-            'ul.refinements > li:not(.disabled)'
-          );
+          const filterEls = filterGroupEl.querySelectorAll('.refinements > li');
           return Array.from(filterEls).map((filterEl, idx) => ({
             name: filterEl.querySelector('a > span.text')?.textContent?.trim(),
             url: filterEl.querySelector('a')?.href,
             title: filterGroupTitle,
+            disabled: filterEl.className.includes('disabled'),
             groupIdx,
             idx,
           }));
         })
         .flat()
-        .filter((filter) => filter.name);
+        .filter((filter) => filter.name && !filter.disabled);
     },
     filterGroupsSel,
     title
   );
+  log.debug('Got %d filters. (%s)', filters.length, title);
   return filters;
 }
 
 async function clickFilter(page: Page, filter: Filter) {
-  log.info('Clicking filter: (%s: %s)', filter.title, filter.name);
+  log.debug('Clicking filter... (%s: %s)', filter.title, filter.name);
   const filterSel =
     `${filterGroupsSel}:nth-child(${filter.groupIdx + 1}) ` +
-    `ul.refinements > li:nth-child(${filter.idx + 1})`;
-  log.debug('Filter (%s) selector: %s', filter.name, filterSel);
-  await page.waitForSelector(filterSel);
-  await page.$eval(`${filterSel} > a span`, (el) => el.click());
+    `ul.refinements > li`;
+  const filterIdxSel = `${filterSel}:nth-child(${filter.idx + 1})`;
+  log.debug('Filter (%s) selector: %s', filter.name, filterIdxSel);
+  await page.waitForSelector(filterIdxSel);
+  await page.$eval(`${filterIdxSel} > a span`, (el) => el.click());
+  // I can't include the :nth-child() as the available filters change once a
+  // filter is selected (e.g. other "Seasons" disappear after selecting one).
+  await page.waitForNetworkIdle({ idleTime: 500 });
   await page.waitForSelector(`${filterSel}.selected`);
-  log.debug('Clicked filter: (%s: %s)', filter.title, filter.name);
+  log.debug('Clicked filter. (%s: %s)', filter.title, filter.name);
+}
+
+type Price = { value?: number; currency?: string };
+type ProductMetadata = {
+  product_position: number;
+  product_cod10: string;
+  product_title: string;
+  product_brand: string;
+  product_category: string;
+  product_macro_category: string;
+  product_micro_category: string;
+  product_macro_category_id: string;
+  product_micro_category_id: string;
+  product_color: string;
+  product_color_id: string;
+  product_price: number;
+  product_discountedPrice: number;
+  product_price_tf: number;
+  product_discountedPrice_tf: number;
+  product_quantity: number;
+  product_coupon: string;
+  product_is_in_stock: boolean;
+  list: string;
+};
+type Product = {
+  name?: string;
+  fullPrice?: Price;
+  salePrice?: Price;
+  url?: string;
+  imageUrl?: string;
+  metadata?: ProductMetadata;
+};
+
+async function getProducts(page: Page): Promise<Product[]> {
+  log.debug('Getting products...');
+  const products = await page.evaluate(() => {
+    function getPrice(el: Element): Price {
+      const value = el.querySelector('.value')?.textContent?.replace(/,/g, '');
+      const currency = el.querySelector('.currency')?.textContent?.trim();
+      return { value: value ? Number(value) : undefined, currency };
+    }
+    const productEls = document.querySelectorAll('ul.products > li');
+    return Array.from(productEls).map((productEl) => {
+      const fullPriceEl = productEl.querySelector('.price:not(.discounted)');
+      const salePriceEl = productEl.querySelector('.price.discounted');
+      const fullPrice = fullPriceEl ? getPrice(fullPriceEl) : undefined;
+      const salePrice = salePriceEl ? getPrice(salePriceEl) : undefined;
+      const metadataEl = productEl.querySelector(
+        'div.product-item[data-ytos-track-product-data]'
+      );
+      const metadata = metadataEl
+        ? (JSON.parse(
+            metadataEl.getAttribute('data-ytos-track-product-data') as string
+          ) as ProductMetadata)
+        : undefined;
+      return {
+        name: productEl
+          .querySelector('[itemprop="title"]')
+          ?.textContent?.trim(),
+        url: productEl.querySelector('a')?.href,
+        imageUrl: productEl.querySelector('img')?.src,
+        metadata,
+        fullPrice,
+        salePrice,
+      };
+    });
+  });
+  log.debug('Got %d products.', products.length);
+  return products;
 }
 
 export async function scrape() {
   const cluster = await Cluster.launch({
     puppeteer,
     puppeteerOptions: {
-      headless: false,
+      headless: !DEBUGGING,
+      slowMo: DEBUGGING ? 500 : undefined,
+      defaultViewport: DEBUGGING ? undefined : { width: 1920, height: 1080 },
       executablePath: '/opt/homebrew/bin/chromium',
     },
-    maxConcurrency: 1,
-    concurrency: Cluster.CONCURRENCY_CONTEXT,
+    maxConcurrency: DEBUGGING ? 1 : 10,
+    concurrency: Cluster.CONCURRENCY_PAGE,
+    retryLimit: 5,
+    retryDelay: 500,
+    timeout: 10000,
   });
 
-  cluster.on('taskerror', (err, data) => {
-    log.error('Error crawling %o \n %s', data, (err as Error).stack);
+  type TaskData = { existingFilters: Filter[]; filtersToGet: string[] };
+
+  cluster.on('taskerror', (err, data: TaskData, willRetry) => {
+    if (willRetry) {
+      log.warn(
+        'Error while crawling; retrying... %s \n %s \n %o',
+        filtersToStr(data.existingFilters),
+        (err as Error).stack,
+        data
+      );
+    } else {
+      log.error(
+        'Failed to crawl. %s \n %s \n %o',
+        filtersToStr(data.existingFilters),
+        (err as Error).stack,
+        data
+      );
+    }
   });
 
   // For every category:
@@ -116,45 +222,96 @@ export async function scrape() {
   //          3. click the season filter;
   //          4. get the products shown (which will have the corresponding category, color, size, and season).
 
+  const products: Product[] = [];
+  const filters: (Filter & { product_cod10: string })[] = [];
+
   async function task({
     page,
     data: { filtersToGet, existingFilters },
   }: {
     page: Page;
-    data: { filtersToGet: string[]; existingFilters: Filter[] };
+    data: TaskData;
   }) {
+    // 1. Apply the existing filters (in the correct order).
+    log.info('Applying existing filters... %s', filtersToStr(existingFilters));
     await loadPage(page);
     await openFiltersPanel(page);
     /* eslint-disable-next-line no-restricted-syntax */
     for await (const filter of existingFilters) await clickFilter(page, filter);
-    if (filtersToGet.length === 0) {
+
+    // 2. Extract the products that have the current filters.
+    // TODO: click the "LOAD MORE" button if necessary.
+    log.info('Extracting products... %s', filtersToStr(existingFilters));
+    const filteredProducts = await getProducts(page);
+    filteredProducts.forEach((product) => {
+      const existingProduct = products.find(
+        (p) => p.metadata?.product_cod10 === product.metadata?.product_cod10
+      );
+      if (!existingProduct) {
+        log.trace('Adding new product: %o', product);
+        products.push(product);
+      } else {
+        log.trace(
+          'Found existing product (%s) for (%s).',
+          existingProduct.name,
+          product.name
+        );
+        // The product position will change depending on the filters applied but
+        // all other product metadata should remain the same. If not, warn.
+        const meta1 = { ...existingProduct.metadata, product_position: 0 };
+        const meta2 = { ...product.metadata, product_position: 0 };
+        if (!dequal(meta1, meta2))
+          log.warn('Metadata does not match: %o \n %o', meta1, meta2);
+        // We can't store filters on the products list due to weird race
+        // conditions with concurrent tasks (that I've yet to be able to debug).
+        filters.push(
+          ...existingFilters.map((existingFilter) => ({
+            ...existingFilter,
+            product_cod10: product.metadata?.product_cod10 as string,
+          }))
+        );
+      }
+    });
+    await fs.writeFile('products.json', JSON.stringify(products, null, 2));
+    await fs.writeFile('filters.json', JSON.stringify(filters, null, 2));
+
+    // If debugging is enabled, take a screenshot of the filtered page.
+    if (DEBUGGING) {
+      const filename =
+        existingFilters
+          .map((s) => `${s.title}-${s.name ?? 'unknown'}`)
+          .join('-')
+          .replace(/\s+/g, '-')
+          .toLowerCase() || 'all';
+      await page.screenshot({ path: `ss/${filename}.png`, fullPage: true });
+      await fs.writeFile(
+        `ss/${filename}-products.json`,
+        JSON.stringify(filteredProducts, null, 2)
+      );
+      await fs.writeFile(
+        `ss/${filename}-filters.json`,
+        JSON.stringify(existingFilters, null, 2)
+      );
+    }
+
+    // 3. If necessary, move on to filtering by the next filter in the list.
+    if (filtersToGet.length > 0) {
+      const filtersToSearchNext = await getFilters(page, filtersToGet[0]);
       log.info(
-        'No more filters to get; extracting product information... %s',
-        existingFilters.map((f) => `(${f.title}: ${f.name})`).join(', ')
-      );
-    } else {
-      const filters = await getFilters(page, filtersToGet[0]);
-      log.debug(
         'Found %d %s filters for %s: %s',
-        filters.length,
+        filtersToSearchNext.length,
         filtersToGet[0],
-        existingFilters.map((f) => `(${f.title}: ${f.name})`).join(', '),
-        filters.map((f) => f.name).join(', ')
+        filtersToStr(existingFilters),
+        filtersToSearchNext.map((f) => f.name).join(', ')
       );
-      filters.forEach((filter, idx) => {
-        if (idx > 1)
-          log.debug(
-            'Temporarily skipping filter: (%s: %s)',
-            filter.title,
-            filter.name
-          );
-        else
-          void cluster.queue({
-            filtersToGet: filtersToGet.slice(1),
-            existingFilters: [...existingFilters, filter],
-          });
+      filtersToSearchNext.forEach((filterToSearchNext) => {
+        void cluster.queue({
+          filtersToGet: filtersToGet.slice(1),
+          existingFilters: [...existingFilters, filterToSearchNext],
+        });
       });
     }
+    await page.close();
   }
 
   await cluster.task(task);
@@ -165,4 +322,16 @@ export async function scrape() {
 
   await cluster.idle();
   await cluster.close();
+
+  await fs.writeFile('products.json', JSON.stringify(products, null, 2));
+  await fs.writeFile('filters.json', JSON.stringify(filters, null, 2));
+
+  const data = products.map((product) => {
+    const productFilters = filters
+      .filter((f) => f.product_cod10 === product.metadata?.product_cod10)
+      .filter((f, i, a) => a.findIndex((f2) => filtersAreEqual(f, f2)) === i);
+    return { ...product, filters: productFilters };
+  });
+
+  await fs.writeFile('data.json', JSON.stringify(data, null, 2));
 }
