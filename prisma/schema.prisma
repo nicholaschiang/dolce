@@ -264,13 +264,31 @@ model Color {
   // The color's name, as designated by the brand (e.g. "Beige", "Black", etc).
   name String @unique
 
-  // The products that are available in this color.
-  products Product[]
-
-  // The prices that are associated with products of this color.
-  prices Price[]
+  // The product variants that are available in this color.
+  variants Variant[]
 
   // @todo perhaps colors should be associated with brands? e.g. "Gucci Beige"?
+}
+
+// A variant is a specific colorway of a product. Variants are product-specific.
+model Variant {
+  id Int @id @default(autoincrement())
+
+  // The variant's name, as designated by the brand (e.g. "Black", "White", etc).
+  name String
+
+  // The product the variant is of.
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId Int
+
+  // The colors the variant consists of.
+  colors Color[]
+
+  // The prices that are associated with the variant.
+  prices Price[]
+
+  // Each product can only have a single variant with a given name.
+  @@unique([name, productId])
 }
 
 // A sex is an arbitrary label designated by a brand or designer to indicate a 
@@ -287,7 +305,9 @@ enum Market {
   SECONDARY
 }
 
-// A price is an encapsulation of a product's value.
+// A price is an encapsulation of a product's value. A price can be for all the
+// sizes and color variants of a product (e.g. when being sold at retail value)
+// or specific to a single size and color variant (e.g. GOAT, Ebay, StockX).
 model Price {
   id Int @id @default(autoincrement())
 
@@ -316,8 +336,8 @@ model Price {
   // sizes at different prices (e.g. Ebay, GOAT, Grailed, StockX, etc). 
   sizes Size[]
 
-  // The product color(s) sold at this price (behaves the same as "sizes").
-  colors Color[]
+  // The product variant(s) sold at this price (behaves the same as "sizes").
+  variants Variant[]
 
   // @todo ensure that a price always has either a retailer or a brand.
   // @see https://github.com/prisma/prisma/issues/17319
@@ -383,8 +403,8 @@ model Product {
   // The sizes the product was originally made to fit.
   sizes Size[]
 
-  // The colors the product was originally made in.
-  colors Color[]
+  // The variants the product was originally made in.
+  variants Variant[]
 
   // The product's available prices (MSRP, retail, resale) per size and color.
   prices Price[]
