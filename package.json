@@ -82,6 +82,7 @@
     "cheerio": "^1.0.0-rc.12",
     "cookie": "^0.5.0",
     "cypress": "^12.2.0",
+    "dequal": "^2.0.3",
     "dotenv": "^16.0.3",
     "esbuild": "^0.16.12",
     "eslint": "^8.31.0",
