@@ -1,3 +1,3 @@
-import { scrape } from './isabel-marant';
+import { save } from './isabel-marant';
 
-void scrape();
+void save();

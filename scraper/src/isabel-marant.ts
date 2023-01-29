@@ -1,7 +1,17 @@
 import fs from 'fs/promises';
 
+import {
+  Level,
+  Market,
+  PrismaClient,
+  SeasonName,
+  Sex,
+  Tier,
+} from '@prisma/client';
 import { Cluster } from 'puppeteer-cluster';
 import type { Page } from 'puppeteer';
+import type { Prisma } from '@prisma/client';
+import ProgressBar from 'progress';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { dequal } from 'dequal/lite';
 import { pino } from 'pino';
@@ -11,6 +21,7 @@ puppeteer.use(StealthPlugin());
 
 const DEBUGGING = false;
 const log = pino({ level: 'debug' });
+const prisma = new PrismaClient();
 
 async function loadPage(
   page: Page,
@@ -49,6 +60,22 @@ type Filter = {
   groupIdx: number;
   idx: number;
 };
+
+function getSeason(f: Required<Filter>): Prisma.SeasonCreateInput | undefined {
+  if (f.title.toLowerCase() !== 'season') {
+    log.error('Not a season filter, skipping... %o', f);
+    return undefined;
+  }
+  switch (f.name.toLowerCase()) {
+    case 'fall-winter 22':
+      return { name: SeasonName.FALL_WINTER, year: 2022 };
+    case 'spring-summer 23':
+      return { name: SeasonName.SPRING_SUMMER, year: 2023 };
+    default:
+      log.error('Unknown season, skipping... %o', f);
+      return undefined;
+  }
+}
 
 function filtersAreEqual(f1: Filter, f2: Filter) {
   return f1.title === f2.title && f1.name === f2.name;
@@ -375,4 +402,174 @@ export async function scrape(dir = 'data/isabel-marant') {
   });
 
   await fs.writeFile(`${dir}/data.json`, JSON.stringify(data, null, 2));
+}
+
+export async function save(
+  dir = 'data/isabel-marant',
+  seasonPrefix = 'marant'
+): Promise<void> {
+  const data = await fs.readFile(`${dir}/data.json`, 'utf8');
+  const products = JSON.parse(data) as (Required<Product> & {
+    filters: Required<Filter>[];
+  })[];
+
+  const bar = new ProgressBar(
+    'saving [:bar] :rate/pps :current/:total :percent :etas',
+    {
+      complete: '=',
+      incomplete: ' ',
+      width: 20,
+      total: products.length,
+    }
+  );
+
+  /* eslint-disable-next-line no-restricted-syntax */
+  for await (const product of products) {
+    const country: Prisma.CountryCreateOrConnectWithoutBrandsInput = {
+      where: { code: 'fr' },
+      create: { code: 'fr', name: 'france' },
+    };
+    const brand: Prisma.BrandCreateOrConnectWithoutSizesInput = {
+      where: { name: 'isabel marant' },
+      create: {
+        name: 'isabel marant',
+        description: '',
+        tier: Tier.AFFORDABLE_LUXURY,
+        company: {
+          connectOrCreate: {
+            where: { name: 'montefiore investment' },
+            create: {
+              name: 'montefiore investment',
+              description: '',
+              country: { connectOrCreate: country },
+            },
+          },
+        },
+        country: { connectOrCreate: country },
+      },
+    };
+    const designer: Prisma.DesignerCreateOrConnectWithoutProductsInput = {
+      where: { name: 'isabel marant' },
+      create: {
+        name: 'isabel marant',
+        bornAt: new Date(2022, 3, 12),
+        diedAt: undefined,
+        country: { connectOrCreate: country },
+      },
+    };
+    const styles: Prisma.StyleCreateOrConnectWithoutSizesInput[] =
+      product.filters
+        .filter((f) => f.title.toLowerCase() === 'category')
+        .map((f) => ({
+          where: { name: f.name.toLowerCase() },
+          create: { name: f.name.toLowerCase() },
+        }));
+    const parentStyle: Prisma.StyleCreateOrConnectWithoutSizesInput = {
+      where: { name: product.metadata.product_macro_category.toLowerCase() },
+      create: { name: product.metadata.product_macro_category.toLowerCase() },
+    };
+    if (!styles.some((s) => s.where.name === parentStyle.where.name))
+      styles.push(parentStyle);
+    const childStyle: Prisma.StyleCreateOrConnectWithoutSizesInput = {
+      where: { name: product.metadata.product_micro_category.toLowerCase() },
+      create: {
+        name: product.metadata.product_micro_category.toLowerCase(),
+        parentStyle: { connectOrCreate: parentStyle },
+      },
+    };
+    if (!styles.some((s) => s.where.name === childStyle.where.name))
+      styles.push(childStyle);
+    const sizes: Prisma.SizeCreateOrConnectWithoutProductsInput[] =
+      product.filters
+        .filter((f) => f.title.toLowerCase() === 'size')
+        .map((f) => ({
+          where: { name: f.name.toLowerCase() },
+          create: {
+            name: f.name.toLowerCase(),
+            style: { connectOrCreate: parentStyle },
+            sex: Sex.MAN,
+            brand: { connectOrCreate: brand },
+            country: undefined,
+          },
+        }));
+    // TODO: Filter for duplicate products (that have the same name) that should
+    // instead be represented as variants instead of separate products in db.
+    const prices: Prisma.PriceCreateOrConnectWithoutProductInput[] = [
+      {
+        where: {
+          value_url: {
+            value: product.fullPrice.value as number,
+            url: product.url,
+          },
+        },
+        create: {
+          value: product.fullPrice.value as number,
+          url: product.url,
+          market: Market.PRIMARY,
+          brand: { connectOrCreate: brand },
+          sizes: { connectOrCreate: sizes },
+        },
+      },
+    ];
+    if (product.salePrice) {
+      prices.push({
+        where: {
+          value_url: {
+            value: product.salePrice.value as number,
+            url: product.url,
+          },
+        },
+        create: {
+          value: product.salePrice.value as number,
+          url: product.url,
+          market: Market.PRIMARY,
+          brand: { connectOrCreate: brand },
+          sizes: { connectOrCreate: sizes },
+        },
+      });
+    }
+    const collections: Prisma.CollectionCreateOrConnectWithoutProductsInput[] =
+      product.filters
+        .filter((f) => f.title.toLowerCase() === 'season' && getSeason(f))
+        .map((f) => ({
+          where: { name: `${seasonPrefix} ${f.name.toLowerCase()}` },
+          create: {
+            name: `${seasonPrefix} ${f.name.toLowerCase()}`,
+            season: {
+              connectOrCreate: {
+                where: { name_year: getSeason(f) as Prisma.SeasonCreateInput },
+                create: getSeason(f) as Prisma.SeasonCreateInput,
+              },
+            },
+            designers: { connectOrCreate: [designer] },
+            brands: { connectOrCreate: [brand] },
+          },
+        }));
+    const image: Prisma.ImageCreateOrConnectWithoutProductInput = {
+      where: { url: product.imageUrl },
+      create: { url: product.imageUrl },
+    };
+    // TODO right now we create separate products for each colorway. instead, we
+    // should create a single product with variants. to do so, we'll want to
+    // filter and aggregate by name before running any prisma operations.
+    await prisma.product.create({
+      data: {
+        name: product.name.toLowerCase(),
+        level: Level.RTW,
+        sizes: { connectOrCreate: sizes },
+        msrp: product.fullPrice.value as number,
+        prices: { connectOrCreate: prices },
+        images: { connectOrCreate: [image] },
+        // TODO is there any way that we can regularly get this information? if
+        // not, perhaps we should make these fields optional or remove them.
+        designedAt: new Date(),
+        releasedAt: new Date(),
+        styles: { connectOrCreate: styles },
+        collections: { connectOrCreate: collections },
+        designers: { connectOrCreate: [designer] },
+        brands: { connectOrCreate: [brand] },
+      },
+    });
+    bar.tick();
+  }
 }
