@@ -15,7 +15,6 @@ import type {
   MetaFunction,
 } from '@remix-run/node';
 import type { ReactNode } from 'react';
-import { StrictMode } from 'react';
 import type { ThrownResponse } from '@remix-run/react';
 import cn from 'classnames';
 import { json } from '@remix-run/node';
@@ -165,35 +164,33 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
 
 function ErrorDisplay({ children }: { children: ReactNode }) {
   return (
-    <StrictMode>
-      <ThemeProvider specifiedTheme={null}>
-        <App>
-          <div className='flex h-screen w-screen items-center justify-center p-6 text-gray-900/25 dark:text-gray-100/25'>
-            <article>
-              <p>
-                An unexpected runtime error occurred. Try{' '}
-                <Link className='underline' to='/login'>
-                  authenticating
-                </Link>
-                . Or smash your keyboard—that can help. You can also{' '}
-                <a
-                  className='underline'
-                  href='https://github.com/nicholaschiang/site/issues/new'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  file an issue
-                </a>
-                .
-              </p>
-              <div className='my-4 w-0 min-w-full max-w-full overflow-auto bg-gray-100 dark:bg-gray-800'>
-                <pre className='w-fit p-6 text-xs leading-4'>{children}</pre>
-              </div>
-            </article>
-          </div>
-        </App>
-      </ThemeProvider>
-    </StrictMode>
+    <ThemeProvider specifiedTheme={null}>
+      <App>
+        <div className='flex h-screen w-screen items-center justify-center p-6 text-gray-900/25 dark:text-gray-100/25'>
+          <article>
+            <p>
+              An unexpected runtime error occurred. Try{' '}
+              <Link className='underline' to='/login'>
+                authenticating
+              </Link>
+              . Or smash your keyboard—that can help. You can also{' '}
+              <a
+                className='underline'
+                href='https://github.com/nicholaschiang/site/issues/new'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                file an issue
+              </a>
+              .
+            </p>
+            <div className='my-4 w-0 min-w-full max-w-full overflow-auto bg-gray-100 dark:bg-gray-800'>
+              <pre className='w-fit p-6 text-xs leading-4'>{children}</pre>
+            </div>
+          </article>
+        </div>
+      </App>
+    </ThemeProvider>
   );
 }
 
@@ -230,12 +227,10 @@ export function CatchBoundary() {
 export default function AppWithProviders() {
   const data = useLoaderData<LoaderData>();
   return (
-    <StrictMode>
-      <ThemeProvider specifiedTheme={data.theme}>
-        <App data={data}>
-          <Outlet />
-        </App>
-      </ThemeProvider>
-    </StrictMode>
+    <ThemeProvider specifiedTheme={data.theme}>
+      <App data={data}>
+        <Outlet />
+      </App>
+    </ThemeProvider>
   );
 }
