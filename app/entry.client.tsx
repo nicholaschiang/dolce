@@ -2,7 +2,10 @@ import { StrictMode, startTransition } from 'react';
 import { RemixBrowser } from '@remix-run/react';
 import { hydrateRoot } from 'react-dom/client';
 
+import { logStayCurious } from '~/curious';
+
 const hydrate = () => {
+  logStayCurious();
   startTransition(() => {
     hydrateRoot(
       document,
