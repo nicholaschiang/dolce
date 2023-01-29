@@ -1,4 +1,5 @@
 import ArrowUpRight from '~/icons/arrow-up-right';
+import ThemeSwitcher from '~/components/theme-switcher';
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
   month: 'numeric',
@@ -27,7 +28,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
             href={url}
             target='_blank'
             rel='noopener noreferrer'
-            className='items-top flex underline'
+            className='items-top flex underline decoration-gray-900/40 transition-colors hover:decoration-gray-900 dark:decoration-gray-100/40 dark:hover:decoration-gray-100'
           >
             {title}
             <ArrowUpRight className='inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
@@ -42,6 +43,9 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
 export default function Index() {
   return (
     <main className='flex min-h-screen w-screen items-end justify-center'>
+      <div className='fixed top-8 right-8'>
+        <ThemeSwitcher />
+      </div>
       <section>
         <Milestone
           start={new Date(2023, 0, 1)}
