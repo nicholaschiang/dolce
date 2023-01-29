@@ -163,6 +163,9 @@ model Country {
   // The country's abbreviated name (e.g. USA).
   code String @unique
 
+  // The designers that purport to be from the country.
+  designers Designer[]
+
   // The companies that are legally headquartered in the country.
   companies Company[]
 
@@ -210,7 +213,7 @@ model Size {
   id Int @id @default(autoincrement())
 
   // The size's name, as designated by the brand or country.
-  name String
+  name String @unique
 
   // The product style the size is used for (e.g. tops, outerwear, puffers).
   style Style @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -339,6 +342,11 @@ model Price {
   // The product variant(s) sold at this price (behaves the same as "sizes").
   variants Variant[]
 
+  // Each price must have a unique value and URL (note that I can't simply put a
+  // unique constraint on the URL due to secondary markets like GOAT that have a
+  // single URL for many different sizes at many different prices).
+  @@unique ([value, url])
+
   // @todo ensure that a price always has either a retailer or a brand.
   // @see https://github.com/prisma/prisma/issues/17319
 }
@@ -406,6 +414,9 @@ model Product {
   // The variants the product was originally made in.
   variants Variant[]
 
+  // The original MSRP value of the product in USD (if applicable).
+  msrp Decimal?
+
   // The product's available prices (MSRP, retail, resale) per size and color.
   prices Price[]
 
@@ -430,6 +441,10 @@ model Product {
 
   // The product's brands. Collaborations can have multiple brands.
   brands Brand[]
+
+  // @todo perhaps we should also store the product's original source?
+
+  // @todo products must have a unique name per brand(s).
 }
 
 // A collection is an arbitrary grouping of products, typically done by a brand
@@ -438,7 +453,7 @@ model Collection {
   id Int @id @default(autoincrement())
 
   // The collection's name, as designated by the brand or designer.
-  name String
+  name String @unique
 
   // The collection's style category (if limited to a single category).
   style Style? @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -553,6 +568,10 @@ model Designer {
 
   // When the designer died. If the designer lives, this will not be set.
   diedAt DateTime?
+
+  // Where the designer purports to be from.
+  country Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId Int
 
   // The shows that the designer presented at.
   shows Show[]
