@@ -35,7 +35,10 @@ module.exports = {
     },
     extend: {
       colors: { gray: colors.zinc },
-      spacing: { 6.5: '1.625rem' },
+      spacing: {
+        '6.5': '1.625rem',
+        '5/4': '125%',
+      },
     },
   },
   plugins: [],
