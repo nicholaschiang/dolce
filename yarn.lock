@@ -2896,6 +2896,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/progress@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "@types/progress@npm:2.0.5"
+  dependencies:
+    "@types/node": "*"
+  checksum: 633427b875f782176456ceaf78bcdf47abf27bcf52385fa1acb545d0e6450f5638aa313ca600f25fb12bf094a003257b19b000d1072981d7be8a375c87e37a92
+  languageName: node
+  linkType: hard
+
 "@types/prop-types@npm:*":
   version: 15.7.5
   resolution: "@types/prop-types@npm:15.7.5"
@@ -10273,6 +10282,7 @@ __metadata:
     "@types/express-prometheus-middleware": ^1.2.1
     "@types/morgan": ^1.9.4
     "@types/node": ^18.11.18
+    "@types/progress": ^2.0.5
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.10
     "@types/user-agents": ^1.0.2
@@ -10320,6 +10330,7 @@ __metadata:
     prettier-plugin-tailwindcss: ^0.2.1
     pretty-quick: ^3.1.3
     prisma: 4.8.0
+    progress: ^2.0.3
     prom-client: ^14.1.1
     puppeteer: ^19.5.2
     puppeteer-cluster: ^0.23.0
@@ -11550,7 +11561,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"progress@npm:2.0.3":
+"progress@npm:2.0.3, progress@npm:^2.0.3":
   version: 2.0.3
   resolution: "progress@npm:2.0.3"
   checksum: f67403fe7b34912148d9252cb7481266a354bd99ce82c835f79070643bb3c6583d10dbcfda4d41e04bbc1d8437e9af0fb1e1f2135727878f5308682a579429b7
