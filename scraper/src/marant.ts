@@ -203,7 +203,7 @@ async function getProducts(page: Page): Promise<Product[]> {
   return products;
 }
 
-export async function scrape(dir = 'data/isabel-marant') {
+export async function scrape(dir = 'data/marant') {
   type TaskData = { existingFilters: Filter[]; filtersToGet: string[] };
 
   // For every category:
@@ -405,7 +405,7 @@ export async function scrape(dir = 'data/isabel-marant') {
 }
 
 export async function save(
-  dir = 'data/isabel-marant',
+  dir = 'data/marant',
   seasonPrefix = 'marant'
 ): Promise<void> {
   const data = await fs.readFile(`${dir}/data.json`, 'utf8');

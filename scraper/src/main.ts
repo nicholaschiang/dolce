@@ -1,3 +1,3 @@
-import { save } from './isabel-marant';
+import { save } from './marant';
 
 void save();
