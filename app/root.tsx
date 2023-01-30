@@ -163,7 +163,7 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
     <ThemeProvider specifiedTheme={null}>
       <App>
         <div className='flex h-screen w-screen items-center justify-center p-6 text-gray-900/25 dark:text-gray-100/25'>
-          <article>
+          <article className='max-h-full'>
             <p>
               An unexpected runtime error occurred. Try{' '}
               <Link className='underline' to='/login'>
@@ -180,7 +180,7 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
               </a>
               .
             </p>
-            <div className='my-4 w-0 min-w-full max-w-full overflow-auto bg-gray-100 dark:bg-gray-800'>
+            <div className='mt-4 w-0 min-w-full max-w-full overflow-auto bg-gray-100 dark:bg-gray-800'>
               <pre className='w-fit p-6 text-xs leading-4'>{children}</pre>
             </div>
           </article>
