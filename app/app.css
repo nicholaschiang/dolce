@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* override the default backdrop filter order that TailwindCSS provides */
+  .backdrop-order {
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-saturate)
+      var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale)
+      var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert)
+      var(--tw-backdrop-opacity) var(--tw-backdrop-brightness)
+      var(--tw-backdrop-sepia);
+  }
+}
+
 /* FIXME instead of defining this as a reusable TailwindCSS class, this should
  * be defined in a reusable <IconButton> wrapper. However, dealing with TS types
  * wasn't worth it for now; this was a lot easier.

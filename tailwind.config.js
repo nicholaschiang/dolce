@@ -34,6 +34,10 @@ module.exports = {
       ],
     },
     extend: {
+      fontSize: {
+        'xs': ['0.75rem', '1rem'],
+        '2xs': ['0.6875rem', '0.75625rem'],
+      },
       colors: { gray: colors.zinc },
       spacing: {
         '6.5': '1.625rem',
