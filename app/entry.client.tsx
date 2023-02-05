@@ -1,25 +1,25 @@
-import { StrictMode, startTransition } from 'react';
-import { RemixBrowser } from '@remix-run/react';
-import { hydrateRoot } from 'react-dom/client';
+import { StrictMode, startTransition } from 'react'
+import { RemixBrowser } from '@remix-run/react'
+import { hydrateRoot } from 'react-dom/client'
 
-import { logStayCurious } from 'curious';
+import { logStayCurious } from 'curious'
 
 const hydrate = () => {
-  logStayCurious();
+  logStayCurious()
   startTransition(() => {
     hydrateRoot(
       document,
       <StrictMode>
         <RemixBrowser />
-      </StrictMode>
-    );
-  });
-};
+      </StrictMode>,
+    )
+  })
+}
 
 if (window.requestIdleCallback) {
-  window.requestIdleCallback(hydrate);
+  window.requestIdleCallback(hydrate)
 } else {
   // Safari doesn't support requestIdleCallback
   // https://caniuse.com/requestidlecallback
-  window.setTimeout(hydrate, 1);
+  window.setTimeout(hydrate, 1)
 }

@@ -4,4 +4,4 @@
 module.exports = {
   logLevel: 'warn',
   experiments: { macArmChromiumEnabled: true },
-};
+}

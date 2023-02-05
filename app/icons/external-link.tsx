@@ -16,5 +16,5 @@ export default function ExternalLink({ className }: { className?: string }) {
       <path d='M15 3h6v6' />
       <path d='M10 14L21 3' />
     </svg>
-  );
+  )
 }

@@ -1,3 +1,3 @@
-import { save } from './marant';
+import { save } from './marant'
 
-void save();
+void save()

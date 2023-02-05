@@ -1,18 +1,18 @@
-import ThemeSwitcher from 'components/theme-switcher';
+import ThemeSwitcher from 'components/theme-switcher'
 
-import ArrowUpRight from 'icons/arrow-up-right';
+import ArrowUpRight from 'icons/arrow-up-right'
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
   month: 'numeric',
   year: 'numeric',
-};
+}
 
 interface MilestoneProps {
-  start: Date;
-  end?: Date;
-  title: string;
-  subtitle: string;
-  url?: string;
+  start: Date
+  end?: Date
+  title: string
+  subtitle: string
+  url?: string
 }
 
 function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
@@ -38,7 +38,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
       </h1>
       <h2>{subtitle}</h2>
     </article>
-  );
+  )
 }
 
 export default function Index() {
@@ -90,5 +90,5 @@ export default function Index() {
         />
       </section>
     </main>
-  );
+  )
 }

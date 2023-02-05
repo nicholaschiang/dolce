@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker'
 
 describe('smoke tests', () => {
   /*
@@ -8,8 +8,8 @@ describe('smoke tests', () => {
    */
 
   it('shows you a timeline of my work', () => {
-    cy.visitAndCheck('/');
-  });
+    cy.visitAndCheck('/')
+  })
 
   /*
    *
@@ -54,4 +54,4 @@ describe('smoke tests', () => {
    *    cy.findByText('No notes yet');
    *  });
    */
-});
+})
