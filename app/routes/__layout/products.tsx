@@ -139,12 +139,7 @@ function Menu({ position, setOpen, items }: MenuProps) {
             onChange={(evt) => setFilter(evt.currentTarget.value)}
           />
         </div>
-        <ul
-          className={cn(
-            'overflow-auto will-change-transform',
-            results.length && 'py-1'
-          )}
-        >
+        <ul className={cn(results.length && 'py-1')}>
           {results.map((result) => (
             <MenuItem {...result} key={result.label} />
           ))}
@@ -173,7 +168,7 @@ function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
           />
         </div>
         <Link to={`/products/${id}`}>
-          <div className='relative mb-2 rounded-md border border-gray-200 pt-5/4 before:block before:w-full dark:border-gray-700' />
+          <div className='relative mb-2 rounded-md pt-5/4' />
           <h2 className='leading-none'>{name}</h2>
           <h3>${msrp}</h3>
         </Link>
