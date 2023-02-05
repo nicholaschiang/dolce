@@ -35,9 +35,15 @@ module.exports = {
     },
     extend: {
       fontSize: {
-        'xs': ['0.75rem', '1rem'],
-        '2xs': ['0.6875rem', '0.75625rem'],
+        'xs': ['0.8125rem', '1.0625rem'],
+        '2xs': ['0.75rem', '1rem'],
+        '3xs': ['0.6875rem', '0.75625rem'],
       },
+      borderRadius: {
+        sm: '0.1875rem',
+        xs: '0.125rem',
+      },
+      maxWidth: { '2xs': '6.25rem' },
       colors: { gray: colors.zinc },
       spacing: {
         '6.5': '1.625rem',
