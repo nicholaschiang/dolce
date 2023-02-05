@@ -9,6 +9,7 @@ import type { Prisma } from '@prisma/client';
 import cn from 'classnames';
 import { dequal } from 'dequal/lite';
 import { json } from '@remix-run/node';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { log } from '~/log.server';
 import { prisma } from '~/db.server';
@@ -98,7 +99,10 @@ type MenuProps = {
 
 function Menu({ position, setOpen, items }: MenuProps) {
   const [filter, setFilter] = useState('');
-  const results = items.filter(({ label }) => label.includes(filter.trim()));
+  const results = useMemo(
+    () => items.filter(({ label }) => label.includes(filter.trim())),
+    [items, filter]
+  );
   return (
     <Portal.Root>
       <div
@@ -109,9 +113,15 @@ function Menu({ position, setOpen, items }: MenuProps) {
         onKeyDown={() => setOpen(false)}
         className='fixed inset-0 z-40 flex cursor-default items-start justify-center'
       />
-      <div
-        className='backdrop-order dark:backdrop-order fixed z-50 mt-0.5 flex min-w-min max-w-xl flex-col overflow-hidden rounded-lg border border-gray-200 bg-white/75 text-sm shadow backdrop-blur-md backdrop-brightness-150 backdrop-contrast-50 backdrop-saturate-200 will-change-transform dark:border-gray-700 dark:bg-gray-900/75 dark:backdrop-brightness-75 dark:backdrop-contrast-75'
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.1 }}
+        className='frosted fixed z-50 mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'
         style={position}
+        layoutDependency={results}
+        layout
       >
         <div
           className={cn(
@@ -120,26 +130,26 @@ function Menu({ position, setOpen, items }: MenuProps) {
           )}
         >
           <input
-            className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 text-xs caret-indigo-500 outline-none'
+            className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 caret-indigo-500 outline-none'
             type='text'
-            placeholder='Filter…'
+            placeholder='filter…'
             spellCheck='false'
             autoComplete='off'
             value={filter}
             onChange={(evt) => setFilter(evt.currentTarget.value)}
           />
-          <span className='mr-3 inline-flex items-center justify-center whitespace-nowrap'>
-            <kbd className='inline-block min-w-[1.0625rem] rounded bg-gray-200/50 p-0.5 text-center align-baseline text-2xs font-thin capitalize text-gray-400 dark:bg-gray-700/50 dark:text-gray-500'>
-              f
-            </kbd>
-          </span>
         </div>
-        <ul className={cn(results.length && 'py-1')}>
+        <ul
+          className={cn(
+            'overflow-auto will-change-transform',
+            results.length && 'py-1'
+          )}
+        >
           {results.map((result) => (
             <MenuItem {...result} key={result.label} />
           ))}
         </ul>
-      </div>
+      </motion.div>
     </Portal.Root>
   );
 }
@@ -156,10 +166,14 @@ function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
     <li className='shrink-0 grow-0 basis-2/12'>
       <div className='relative m-2'>
         <div className='absolute w-full'>
-          <img className='absolute top-0 w-full' src={imageUrl} alt={name} />
+          <img
+            className='absolute top-0 w-full rounded-md'
+            src={imageUrl}
+            alt={name}
+          />
         </div>
         <Link to={`/products/${id}`}>
-          <div className='relative mb-2 border border-gray-200 pt-5/4 before:block before:w-full dark:border-gray-700' />
+          <div className='relative mb-2 rounded-md border border-gray-200 pt-5/4 before:block before:w-full dark:border-gray-700' />
           <h2 className='leading-none'>{name}</h2>
           <h3>${msrp}</h3>
         </Link>
@@ -259,11 +273,13 @@ function FilterItemButton({
       disabled={!onClick}
       onClick={onClick}
       className={cn(
-        'flex cursor-pointer items-center py-1 px-1.5 text-xs transition-colors hover:bg-gray-100 disabled:cursor-default dark:bg-gray-700 dark:hover:bg-gray-600',
+        'flex place-content-center items-center gap-1.5 overflow-hidden px-1.5 transition-colors hover:bg-gray-100 disabled:cursor-default dark:bg-gray-700 dark:hover:bg-gray-600',
         className
       )}
     >
-      {children}
+      <span className='mt-px max-w-2xs overflow-hidden text-ellipsis whitespace-nowrap text-2xs'>
+        {children}
+      </span>
     </button>
   );
 }
@@ -272,7 +288,7 @@ type FilterItemProps = { filter: Filter };
 
 function FilterItem({ filter }: FilterItemProps) {
   return (
-    <li className='mr-1.5 mb-1.5 flex flex-none items-stretch gap-px overflow-hidden rounded border border-gray-200 bg-white last:mr-0 dark:border-none dark:bg-transparent'>
+    <li className='mr-1.5 mb-1.5 flex h-6 flex-none items-stretch gap-px overflow-hidden rounded border border-gray-200 bg-white last:mr-0 dark:border-none dark:bg-transparent'>
       <FilterItemButton>{filter.name}</FilterItemButton>
       <FilterItemButton className='text-gray-400'>
         {filter.condition.toString()}
@@ -294,7 +310,7 @@ function CreateFilterItem({ filters, setFilters }: CreateFilterItemProps) {
     <>
       <button
         type='button'
-        className='flex h-6 w-6 items-center justify-center rounded text-xs text-gray-600 transition-colors hover:bg-gray-200/50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-gray-100'
+        className='flex h-6 w-6 items-center justify-center rounded text-2xs text-gray-600 transition-colors hover:bg-gray-200/50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-gray-100'
         onClick={(evt) => {
           const { top, left, height } =
             evt.currentTarget.getBoundingClientRect();
@@ -304,31 +320,35 @@ function CreateFilterItem({ filters, setFilters }: CreateFilterItemProps) {
       >
         <PlusIcon className='h-3.5 w-3.5' />
       </button>
-      {open && (
-        <Menu
-          setOpen={setOpen}
-          position={position}
-          items={STYLES.map((style) => {
-            const filter: Filter<'styles', 'some'> = {
-              name: 'styles',
-              condition: 'some',
-              value: { name: style },
-            };
-            return {
-              label: style,
-              checked: filters.some((f) => dequal(f, filter)),
-              setChecked(checked: boolean | 'indeterminate') {
-                if (checked) {
-                  setFilters((prev) => [...prev, filter]);
-                } else {
-                  setFilters((prev) => prev.filter((f) => !dequal(f, filter)));
-                }
-                setOpen(false);
-              },
-            };
-          })}
-        />
-      )}
+      <AnimatePresence initial={false}>
+        {open && (
+          <Menu
+            setOpen={setOpen}
+            position={position}
+            items={STYLES.map((style) => {
+              const filter: Filter<'styles', 'some'> = {
+                name: 'styles',
+                condition: 'some',
+                value: { name: style },
+              };
+              return {
+                label: style,
+                checked: filters.some((f) => dequal(f, filter)),
+                setChecked(checked: boolean | 'indeterminate') {
+                  if (checked) {
+                    setFilters((prev) => [...prev, filter]);
+                  } else {
+                    setFilters((prev) =>
+                      prev.filter((f) => !dequal(f, filter))
+                    );
+                  }
+                  setOpen(false);
+                },
+              };
+            })}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
@@ -393,7 +413,7 @@ export default function ProductsPage() {
   );
   return (
     <>
-      <nav className='sticky top-0 z-30 border-b border-gray-200 bg-gray-100/75 px-12 py-3 backdrop-blur-lg dark:border-gray-700 dark:bg-gray-800/75'>
+      <nav className='frosted sticky top-0 z-30 border-b border-gray-200 px-12 py-3 dark:border-gray-700'>
         <ul className='mt-1.5 flex flex-wrap'>
           {filters.map((filter) => (
             <FilterItem filter={filter} key={filterToSearchParam(filter)} />
