@@ -228,39 +228,49 @@ module.exports = {
         ],
         'pathGroups': [
           {
-            pattern: 'pages/**',
+            pattern: 'routes/**',
             group: 'internal',
-            position: 'after',
+            position: 'before',
           },
           {
             pattern: 'components/**',
             group: 'internal',
-            position: 'after',
+            position: 'before',
+          },
+          {
+            pattern: 'icons/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: 'models/**',
+            group: 'internal',
+            position: 'before',
           },
           {
             pattern: 'lib/**',
             group: 'internal',
-            position: 'after',
+            position: 'before',
           },
           {
             pattern: 'styles/**',
             group: 'internal',
-            position: 'after',
+            position: 'before',
           },
           {
             pattern: 'locales/**',
             group: 'internal',
-            position: 'after',
+            position: 'before',
           },
           {
             pattern: 'cypress/**',
             group: 'internal',
-            position: 'after',
+            position: 'before',
           },
           {
             pattern: 'assets/**',
             group: 'internal',
-            position: 'after',
+            position: 'before',
           },
         ],
         'pathGroupsExcludedImportTypes': ['builtin'],

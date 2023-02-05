@@ -1,7 +1,7 @@
 import type { ActionFunction } from '@remix-run/node';
 
-import { getSession, sessionStorage } from '~/session.server';
-import { isTheme } from '~/theme';
+import { getSession, sessionStorage } from 'session.server';
+import { isTheme } from 'theme';
 
 export const action: ActionFunction = async ({ request }) => {
   const session = await getSession(request);
