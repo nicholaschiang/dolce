@@ -1,5 +1,6 @@
-import ArrowUpRight from '~/icons/arrow-up-right';
-import ThemeSwitcher from '~/components/theme-switcher';
+import ThemeSwitcher from 'components/theme-switcher';
+
+import ArrowUpRight from 'icons/arrow-up-right';
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
   month: 'numeric',

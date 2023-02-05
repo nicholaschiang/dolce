@@ -1,6 +1,6 @@
 import { Link, Outlet } from '@remix-run/react';
 
-import ThemeSwitcher from '~/components/theme-switcher';
+import ThemeSwitcher from 'components/theme-switcher';
 
 function Header() {
   return (
