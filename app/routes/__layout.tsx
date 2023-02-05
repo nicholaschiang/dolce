@@ -1,6 +1,6 @@
-import { Link, Outlet } from '@remix-run/react';
+import { Link, Outlet } from '@remix-run/react'
 
-import ThemeSwitcher from 'components/theme-switcher';
+import ThemeSwitcher from 'components/theme-switcher'
 
 function Header() {
   return (
@@ -25,7 +25,7 @@ function Header() {
         <ThemeSwitcher />
       </div>
     </header>
-  );
+  )
 }
 
 export default function LayoutPage() {
@@ -34,5 +34,5 @@ export default function LayoutPage() {
       <Header />
       <Outlet />
     </main>
-  );
+  )
 }

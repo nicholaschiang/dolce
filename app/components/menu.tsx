@@ -1,16 +1,16 @@
-import * as Checkbox from '@radix-ui/react-checkbox';
-import * as Portal from '@radix-ui/react-portal';
-import type { Dispatch, SetStateAction } from 'react';
-import { useMemo, useState } from 'react';
-import { CheckIcon } from '@radix-ui/react-icons';
-import cn from 'classnames';
-import { motion } from 'framer-motion';
+import * as Checkbox from '@radix-ui/react-checkbox'
+import * as Portal from '@radix-ui/react-portal'
+import type { Dispatch, SetStateAction } from 'react'
+import { useMemo, useState } from 'react'
+import { CheckIcon } from '@radix-ui/react-icons'
+import cn from 'classnames'
+import { motion } from 'framer-motion'
 
 type MenuItemProps = {
-  label: string;
-  checked: boolean | 'indeterminate';
-  setChecked(checked: boolean | 'indeterminate'): void;
-};
+  label: string
+  checked: boolean | 'indeterminate'
+  setChecked(checked: boolean | 'indeterminate'): void
+}
 
 function MenuItem({ label, checked, setChecked }: MenuItemProps) {
   return (
@@ -29,14 +29,14 @@ function MenuItem({ label, checked, setChecked }: MenuItemProps) {
             'mr-3 flex h-3.5 w-3.5 appearance-none items-center justify-center rounded-sm border p-0.5 outline-none transition-colors',
             !checked &&
               'border-gray-500/50 bg-transparent dark:border-gray-400/50',
-            checked && 'border-indigo-500 bg-indigo-500 text-white'
+            checked && 'border-indigo-500 bg-indigo-500 text-white',
           )}
         >
           <Checkbox.Indicator
             forceMount
             className={cn(
               'transition-opacity',
-              checked ? 'opacity-100' : 'opacity-0'
+              checked ? 'opacity-100' : 'opacity-0',
             )}
           >
             <CheckIcon />
@@ -45,21 +45,21 @@ function MenuItem({ label, checked, setChecked }: MenuItemProps) {
         {label}
       </div>
     </li>
-  );
+  )
 }
 
 export type MenuProps = {
-  position: { top: number; left: number };
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  items: MenuItemProps[];
-};
+  position: { top: number; left: number }
+  setOpen: Dispatch<SetStateAction<boolean>>
+  items: MenuItemProps[]
+}
 
 export function Menu({ position, setOpen, items }: MenuProps) {
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState('')
   const results = useMemo(
     () => items.filter(({ label }) => label.includes(filter.trim())),
-    [items, filter]
-  );
+    [items, filter],
+  )
   return (
     <Portal.Root>
       <div
@@ -83,7 +83,7 @@ export function Menu({ position, setOpen, items }: MenuProps) {
         <div
           className={cn(
             'flex items-center border-gray-200 dark:border-gray-700',
-            results.length && 'border-b'
+            results.length && 'border-b',
           )}
         >
           <input
@@ -103,5 +103,5 @@ export function Menu({ position, setOpen, items }: MenuProps) {
         </ul>
       </motion.div>
     </Portal.Root>
-  );
+  )
 }

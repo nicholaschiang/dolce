@@ -8,16 +8,16 @@ import {
   ScrollRestoration,
   useCatch,
   useLoaderData,
-} from '@remix-run/react';
+} from '@remix-run/react'
 import type {
   LinksFunction,
   LoaderFunction,
   MetaFunction,
-} from '@remix-run/node';
-import type { ReactNode } from 'react';
-import type { ThrownResponse } from '@remix-run/react';
-import cn from 'classnames';
-import { json } from '@remix-run/node';
+} from '@remix-run/node'
+import type { ReactNode } from 'react'
+import type { ThrownResponse } from '@remix-run/react'
+import cn from 'classnames'
+import { json } from '@remix-run/node'
 
 import {
   Theme,
@@ -26,10 +26,10 @@ import {
   ThemeProvider,
   isTheme,
   useTheme,
-} from '~/theme';
-import { getSession, getUser, sessionStorage } from '~/session.server';
-import type { User } from '~/models/user.server';
-import tailwindStylesheetUrl from '~/styles/tailwind.css';
+} from '~/theme'
+import { getSession, getUser, sessionStorage } from '~/session.server'
+import type { User } from '~/models/user.server'
+import tailwindStylesheetUrl from '~/styles/tailwind.css'
 
 export const links: LinksFunction = () => [
   {
@@ -115,31 +115,31 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: '/fonts/univers.css' },
   { rel: 'stylesheet', href: '/fonts/hack-subset.css' },
   { rel: 'stylesheet', href: tailwindStylesheetUrl },
-];
+]
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
   title: 'nicholas engineering',
   viewport: 'width=device-width,initial-scale=1',
-});
+})
 
-export type LoaderData = { user: User | null; theme: Theme | null };
+export type LoaderData = { user: User | null; theme: Theme | null }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(request);
-  const theme = session.get('theme') as Theme | null;
-  const headers = { 'Set-Cookie': await sessionStorage.commitSession(session) };
+  const session = await getSession(request)
+  const theme = session.get('theme') as Theme | null
+  const headers = { 'Set-Cookie': await sessionStorage.commitSession(session) }
   return json<LoaderData>(
     {
       user: await getUser(request),
       theme: isTheme(theme) ? theme : null,
     },
-    { headers }
-  );
-};
+    { headers },
+  )
+}
 
 function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
-  const [theme] = useTheme();
+  const [theme] = useTheme()
   return (
     <html lang='en' className={cn('h-full', theme)}>
       <head>
@@ -155,7 +155,7 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <LiveReload />
       </body>
     </html>
-  );
+  )
 }
 
 function ErrorDisplay({ children }: { children: ReactNode }) {
@@ -187,7 +187,7 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
         </div>
       </App>
     </ThemeProvider>
-  );
+  )
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
@@ -197,11 +197,11 @@ export function ErrorBoundary({ error }: { error: Error }) {
       <br />
       <code dangerouslySetInnerHTML={{ __html: error.stack ?? '' }} />
     </ErrorDisplay>
-  );
+  )
 }
 
 export function CatchBoundary() {
-  const caught = useCatch<ThrownResponse<number, string>>();
+  const caught = useCatch<ThrownResponse<number, string>>()
   return (
     <ErrorDisplay>
       <code>
@@ -217,16 +217,16 @@ export function CatchBoundary() {
       <br />
       <code dangerouslySetInnerHTML={{ __html: caught.data }} />
     </ErrorDisplay>
-  );
+  )
 }
 
 export default function AppWithProviders() {
-  const data = useLoaderData<LoaderData>();
+  const data = useLoaderData<LoaderData>()
   return (
     <ThemeProvider specifiedTheme={data.theme}>
       <App data={data}>
         <Outlet />
       </App>
     </ThemeProvider>
-  );
+  )
 }

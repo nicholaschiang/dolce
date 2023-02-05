@@ -1,14 +1,14 @@
-import * as fs from 'fs/promises';
+import * as fs from 'fs/promises'
 
-import * as cheerio from 'cheerio';
-import type { CheerioAPI } from 'cheerio';
-import fetch from 'node-fetch';
-import { pino } from 'pino';
+import * as cheerio from 'cheerio'
+import type { CheerioAPI } from 'cheerio'
+import fetch from 'node-fetch'
+import { pino } from 'pino'
 
-import { headers } from './headers.mjs';
+import { headers } from './headers.mjs'
 
-const BASE_URL = 'https://www.neimanmarcus.com';
-const log = pino({ level: 'debug' });
+const BASE_URL = 'https://www.neimanmarcus.com'
+const log = pino({ level: 'debug' })
 
 /*
  *export type ProductCreateWithoutBrandsInput = {
@@ -33,14 +33,14 @@ const log = pino({ level: 'debug' });
  * const $ = await load('/c/designers-zegna-cat000495');
  */
 export async function load(path: string): Promise<CheerioAPI> {
-  log.debug('Fetching... %s', `${BASE_URL}${path}`);
-  const res = await fetch(`${BASE_URL}${path}`, { headers });
-  const html = await res.text();
-  log.trace('HTML: %s', html);
-  return cheerio.load(html);
+  log.debug('Fetching... %s', `${BASE_URL}${path}`)
+  const res = await fetch(`${BASE_URL}${path}`, { headers })
+  const html = await res.text()
+  log.trace('HTML: %s', html)
+  return cheerio.load(html)
 }
 
-type NMBrand = { name: string; url?: string };
+type NMBrand = { name: string; url?: string }
 
 /**
  * Gets a list of brands from Neiman Marcus' designers page.
@@ -53,16 +53,16 @@ export function getBrandsFromDesignersPage($: CheerioAPI): NMBrand[] {
       name: $(brand).find('a').text(),
       url: $(brand).find('a').attr('href'),
     }))
-    .toArray();
+    .toArray()
 }
 
 type NMProduct = {
-  id?: string;
-  name: string;
-  price: string;
-  coverPhotoUrl?: string;
-  url?: string;
-};
+  id?: string
+  name: string
+  price: string
+  coverPhotoUrl?: string
+  url?: string
+}
 
 /**
  * Gets a list of products from Neiman Marcus' brand specific page.
@@ -79,10 +79,10 @@ export function getProductsFromBrandPage($: CheerioAPI): NMProduct[] {
       price: $(product).find('.product-thumbnail__description__price').text(),
       coverPhotoUrl: $(product).find('img[name="mainImage"]').attr('src'),
     }))
-    .toArray();
+    .toArray()
 }
 
-type NMStyle = { name: string; url?: string };
+type NMStyle = { name: string; url?: string }
 
 /**
  * Gets a list of styles from Neiman Marcus' brand specific page.
@@ -99,7 +99,7 @@ export function getStylesFromBrandPage($: CheerioAPI): NMStyle[] {
       name: $(style).find('a').text(),
       url: $(style).find('a').attr('href'),
     }))
-    .toArray();
+    .toArray()
 }
 
 /**
@@ -109,32 +109,32 @@ export function getStylesFromBrandPage($: CheerioAPI): NMStyle[] {
  * await scrape('/c/designers-cat000730');
  */
 export async function scrape(
-  designersPath = '/c/designers-cat000730'
+  designersPath = '/c/designers-cat000730',
 ): Promise<void> {
-  log.info('Getting brands from Neiman Marcus... %s', designersPath);
-  const brands = getBrandsFromDesignersPage(await load(designersPath));
-  await fs.writeFile('brands.json', JSON.stringify(brands, null, 2));
-  log.info('Got %d brands from Neiman Marcus.', brands.length);
-  const products: (NMProduct & { brand: NMBrand })[] = [];
+  log.info('Getting brands from Neiman Marcus... %s', designersPath)
+  const brands = getBrandsFromDesignersPage(await load(designersPath))
+  await fs.writeFile('brands.json', JSON.stringify(brands, null, 2))
+  log.info('Got %d brands from Neiman Marcus.', brands.length)
+  const products: (NMProduct & { brand: NMBrand })[] = []
   /* eslint-disable-next-line no-restricted-syntax */
   for await (const brand of brands) {
-    log.info('Getting %s products... %s', brand.name, brand.url);
+    log.info('Getting %s products... %s', brand.name, brand.url)
     if (!brand.url) {
-      log.warn('Missing URL for %s products.', brand.name);
+      log.warn('Missing URL for %s products.', brand.name)
       /* eslint-disable-next-line no-continue */
-      continue;
+      continue
     }
-    const brandProducts = getProductsFromBrandPage(await load(brand.url));
+    const brandProducts = getProductsFromBrandPage(await load(brand.url))
     brandProducts.forEach((product) => {
       if (products.some((p) => p.id === product.id))
         log.warn(
           'Found duplicate product %s from %s.',
           product.name,
-          brand.name
-        );
-      else products.push({ ...product, brand });
-    });
-    log.info('Got %d %s products.', brandProducts.length, brand.name);
-    await fs.writeFile('products.json', JSON.stringify(products, null, 2));
+          brand.name,
+        )
+      else products.push({ ...product, brand })
+    })
+    log.info('Got %d %s products.', brandProducts.length, brand.name)
+    await fs.writeFile('products.json', JSON.stringify(products, null, 2))
   }
 }

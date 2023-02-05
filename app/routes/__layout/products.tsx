@@ -1,30 +1,30 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { Link, useLoaderData, useSearchParams } from '@remix-run/react';
-import { useCallback, useMemo } from 'react';
-import type { LoaderFunction } from '@remix-run/node';
-import { Prisma } from '@prisma/client';
-import { json } from '@remix-run/node';
+import type { Dispatch, SetStateAction } from 'react'
+import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
+import { useCallback, useMemo } from 'react'
+import type { LoaderFunction } from '@remix-run/node'
+import { Prisma } from '@prisma/client'
+import { json } from '@remix-run/node'
 
-import { Filters } from 'components/filters';
+import { Filters } from 'components/filters'
 
 import {
   filterToPrismaWhere,
   filterToSearchParam,
   searchParamToFilter,
-} from 'filters';
-import type { Filter } from 'filters';
-import { log } from 'log.server';
-import { prisma } from 'db.server';
+} from 'filters'
+import type { Filter } from 'filters'
+import { log } from 'log.server'
+import { prisma } from 'db.server'
 
-const FILTER_PARAM = 'f';
-const JOIN_PARAM = 'j';
+const FILTER_PARAM = 'f'
+const JOIN_PARAM = 'j'
 
 type ProductItemProps = {
-  id: number;
-  name: string;
-  imageUrl?: string;
-  msrp?: number;
-};
+  id: number
+  name: string
+  imageUrl?: string
+  msrp?: number
+}
 
 function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
   return (
@@ -44,24 +44,24 @@ function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
         </Link>
       </div>
     </li>
-  );
+  )
 }
 
 export type LoaderData = {
-  products: ProductItemProps[];
-  models: Prisma.DMMF.Model[];
-  enums: Prisma.DMMF.DatamodelEnum[];
-};
+  products: ProductItemProps[]
+  models: Prisma.DMMF.Model[]
+  enums: Prisma.DMMF.DatamodelEnum[]
+}
 
 // users can control prisma queries via url search parameters.
 // Ex: /products?f=price:gt:100&f=price:lt:200&j=OR
 // ... will return products with a price between 100 and 200.
 export const loader: LoaderFunction = async ({ request }) => {
-  const { searchParams } = new URL(request.url);
-  const filters = searchParams.getAll(FILTER_PARAM).map(searchParamToFilter);
-  let join = searchParams.get(JOIN_PARAM);
-  if (!join || !['AND', 'OR', 'NOT'].includes(join)) join = 'AND';
-  log.debug('getting products... %o', filters);
+  const { searchParams } = new URL(request.url)
+  const filters = searchParams.getAll(FILTER_PARAM).map(searchParamToFilter)
+  let join = searchParams.get(JOIN_PARAM)
+  if (!join || !['AND', 'OR', 'NOT'].includes(join)) join = 'AND'
+  log.debug('getting products... %o', filters)
   const products = (
     await prisma.product.findMany({
       include: { images: true },
@@ -75,8 +75,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     // cents in their prices anyway. prices that do include cents are usually
     // intended to be misleading (e.g. $69.70 instead of $70).
     msrp: product.msrp ? Math.round(Number(product.msrp)) : undefined,
-  }));
-  log.debug('got %d products', products.length);
+  }))
+  log.debug('got %d products', products.length)
 
   // the ui knows what type of filter select ux to show based on the field type:
   //
@@ -112,42 +112,42 @@ export const loader: LoaderFunction = async ({ request }) => {
   //    users can also manually select which condition they would like to use.
   //    the options available change depending on the field type and the number
   //    of values selected.
-  const { models, enums } = Prisma.dmmf.datamodel;
-  log.trace('got %d models %s', models.length, JSON.stringify(models, null, 2));
-  log.trace('got %d enums %s', enums.length, JSON.stringify(enums, null, 2));
+  const { models, enums } = Prisma.dmmf.datamodel
+  log.trace('got %d models %s', models.length, JSON.stringify(models, null, 2))
+  log.trace('got %d enums %s', enums.length, JSON.stringify(enums, null, 2))
 
-  return json<LoaderData>({ products, models, enums });
-};
+  return json<LoaderData>({ products, models, enums })
+}
 
 export default function ProductsPage() {
-  const { products, models, enums } = useLoaderData<LoaderData>();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { products, models, enums } = useLoaderData<LoaderData>()
+  const [searchParams, setSearchParams] = useSearchParams()
   const filters = useMemo<Filter[]>(
     () => searchParams.getAll(FILTER_PARAM).map(searchParamToFilter),
-    [searchParams]
-  );
+    [searchParams],
+  )
   const setFilters = useCallback<Dispatch<SetStateAction<Filter[]>>>(
     (action: SetStateAction<Filter[]>) => {
       setSearchParams((prevSearchParams) => {
-        let nextFilters: Filter[];
+        let nextFilters: Filter[]
         if (typeof action === 'function') {
           const prevFilters = prevSearchParams
             .getAll(FILTER_PARAM)
-            .map(searchParamToFilter);
-          nextFilters = action(prevFilters);
+            .map(searchParamToFilter)
+          nextFilters = action(prevFilters)
         } else {
-          nextFilters = action;
+          nextFilters = action
         }
-        const nextSearchParams = new URLSearchParams(prevSearchParams);
-        nextSearchParams.delete(FILTER_PARAM);
+        const nextSearchParams = new URLSearchParams(prevSearchParams)
+        nextSearchParams.delete(FILTER_PARAM)
         nextFilters.forEach((filter) =>
-          nextSearchParams.append(FILTER_PARAM, filterToSearchParam(filter))
-        );
-        return nextSearchParams;
-      });
+          nextSearchParams.append(FILTER_PARAM, filterToSearchParam(filter)),
+        )
+        return nextSearchParams
+      })
     },
-    [setSearchParams]
-  );
+    [setSearchParams],
+  )
   return (
     <>
       <Filters
@@ -165,5 +165,5 @@ export default function ProductsPage() {
         </ol>
       </div>
     </>
-  );
+  )
 }

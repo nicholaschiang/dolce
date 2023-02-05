@@ -22,5 +22,5 @@ export default function Sun({ className }: { className?: string }) {
       <path d='M4.22 19.78l1.42-1.42' />
       <path d='M18.36 5.64l1.42-1.42' />
     </svg>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client'
 
 // i tried to use a custom (Objectify<T> = T extends object ? T : never) type
 // but it didn't work for filtering decimal fields (where Decimal is an object).
@@ -16,36 +16,36 @@ type PrismaFilter =
   | Prisma.StyleListRelationFilter
   | Prisma.CollectionListRelationFilter
   | Prisma.DesignerListRelationFilter
-  | Prisma.BrandListRelationFilter;
+  | Prisma.BrandListRelationFilter
 
 // keyof union types will return the common keys (thus never), so we have to use
 // conditional types for type params (https://stackoverflow.com/a/52221718)
-type AllUnionMemberKeys<T> = T extends any ? keyof T : never;
+type AllUnionMemberKeys<T> = T extends any ? keyof T : never
 
 export type FilterName = AllUnionMemberKeys<
   Omit<Prisma.ProductWhereInput, 'AND' | 'OR' | 'NOT'>
->;
+>
 
 export type FilterCondition<N extends FilterName = FilterName> =
-  AllUnionMemberKeys<Extract<Prisma.ProductWhereInput[N], PrismaFilter>>;
+  AllUnionMemberKeys<Extract<Prisma.ProductWhereInput[N], PrismaFilter>>
 
 export type FilterValue<
   N extends FilterName = FilterName,
-  C extends FilterCondition<N> = FilterCondition<N>
-> = Extract<Prisma.ProductWhereInput[N], PrismaFilter>[C];
+  C extends FilterCondition<N> = FilterCondition<N>,
+> = Extract<Prisma.ProductWhereInput[N], PrismaFilter>[C]
 
 export type Filter<
   N extends FilterName = FilterName,
-  C extends FilterCondition<N> = FilterCondition<N>
+  C extends FilterCondition<N> = FilterCondition<N>,
 > = {
-  name: N;
-  condition: C;
-  value: FilterValue<N, C>;
-};
+  name: N
+  condition: C
+  value: FilterValue<N, C>
+}
 
 export function filterToSearchParam<
   N extends FilterName,
-  C extends FilterCondition<N>
+  C extends FilterCondition<N>,
 >(filter: Filter<N, C>): string {
   return [
     filter.name,
@@ -53,26 +53,26 @@ export function filterToSearchParam<
     JSON.stringify(filter.value),
   ]
     .map(encodeURIComponent)
-    .join(':');
+    .join(':')
 }
 
 export function searchParamToFilter<
   N extends FilterName,
-  C extends FilterCondition<N>
+  C extends FilterCondition<N>,
 >(searchParam: string): Filter<N, C> {
   const [name, condition, value] = searchParam
     .split(':')
-    .map(decodeURIComponent);
+    .map(decodeURIComponent)
   return {
     name: name as N,
     condition: condition as C,
     value: JSON.parse(value) as FilterValue<N, C>,
-  };
+  }
 }
 
 export function filterToPrismaWhere<
   N extends FilterName,
-  C extends FilterCondition<N>
+  C extends FilterCondition<N>,
 >(filter: Filter<N, C>): Prisma.ProductWhereInput {
-  return { [filter.name]: { [filter.condition]: filter.value } };
+  return { [filter.name]: { [filter.condition]: filter.value } }
 }

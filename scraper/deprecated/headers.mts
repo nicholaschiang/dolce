@@ -17,4 +17,4 @@ export const headers = {
   'Upgrade-Insecure-Requests': '1',
   'User-Agent':
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:108.0) Gecko/20100101 Firefox/108.0',
-};
+}

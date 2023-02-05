@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   root: true,
@@ -279,4 +279,4 @@ module.exports = {
     ],
   },
   reportUnusedDisableDirectives: true,
-};
+}

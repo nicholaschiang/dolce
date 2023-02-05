@@ -1,4 +1,4 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import {
   createContext,
   createElement,
@@ -6,28 +6,28 @@ import {
   useEffect,
   useMemo,
   useState,
-} from 'react';
+} from 'react'
 
 export enum Theme {
   Dark = 'dark',
   Light = 'light',
 }
-const themes: Theme[] = Object.values(Theme);
+const themes: Theme[] = Object.values(Theme)
 
-type ThemeContextType = [Theme | null, Dispatch<SetStateAction<Theme | null>>];
+type ThemeContextType = [Theme | null, Dispatch<SetStateAction<Theme | null>>]
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-const prefersDarkMQ = '(prefers-color-scheme: dark)';
+const prefersDarkMQ = '(prefers-color-scheme: dark)'
 const getPreferredTheme = () =>
-  window.matchMedia(prefersDarkMQ).matches ? Theme.Dark : Theme.Light;
+  window.matchMedia(prefersDarkMQ).matches ? Theme.Dark : Theme.Light
 
 export function useTheme() {
-  const context = useContext(ThemeContext);
+  const context = useContext(ThemeContext)
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useTheme must be used within a ThemeProvider')
   }
-  return context;
+  return context
 }
 
 // @see {@link https://github.com/remix-run/remix/tree/main/examples/dark-mode}
@@ -35,8 +35,8 @@ export function ThemeProvider({
   children,
   specifiedTheme,
 }: {
-  children: ReactNode;
-  specifiedTheme: Theme | null;
+  children: ReactNode
+  specifiedTheme: Theme | null
 }) {
   const [theme, setTheme] = useState<Theme | null>(() => {
     // On the server, if we don't have a specified theme then we should
@@ -44,27 +44,27 @@ export function ThemeProvider({
     // before hydration. Then (during hydration), this code will get the same
     // value that clientThemeCode got so hydration is happy.
     if (specifiedTheme) {
-      if (themes.includes(specifiedTheme)) return specifiedTheme;
-      return null;
+      if (themes.includes(specifiedTheme)) return specifiedTheme
+      return null
     }
 
     // there's no way for us to know what the theme should be in this context
     // the client will have to figure it out before hydration.
     if (typeof window !== 'object') {
-      return null;
+      return null
     }
 
-    return getPreferredTheme();
-  });
+    return getPreferredTheme()
+  })
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(prefersDarkMQ);
+    const mediaQuery = window.matchMedia(prefersDarkMQ)
     const handleChange = () => {
-      setTheme(mediaQuery.matches ? Theme.Dark : Theme.Light);
-    };
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+      setTheme(mediaQuery.matches ? Theme.Dark : Theme.Light)
+    }
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
 
   return (
     <ThemeContext.Provider
@@ -72,7 +72,7 @@ export function ThemeProvider({
     >
       {children}
     </ThemeContext.Provider>
-  );
+  )
 }
 
 const clientThemeCode = `
@@ -103,7 +103,7 @@ const clientThemeCode = `
     console.warn('Hey, could you let me know you see this message? Thanks!');
   }
 })();
-`;
+`
 
 const themeStylesCode = `
   /* default light, but app-preference is 'dark' */
@@ -141,10 +141,10 @@ const themeStylesCode = `
       display: initial;
     }
   }
-`;
+`
 
 export function ThemeHead({ ssrTheme }: { ssrTheme: boolean }) {
-  const [theme] = useTheme();
+  const [theme] = useTheme()
 
   return (
     <>
@@ -173,7 +173,7 @@ export function ThemeHead({ ssrTheme }: { ssrTheme: boolean }) {
         </>
       )}
     </>
-  );
+  )
 }
 
 const clientDarkAndLightModeElsCode = `;(() => {
@@ -198,14 +198,14 @@ const clientDarkAndLightModeElsCode = `;(() => {
     }
     lightEl.remove();
   }
-})();`;
+})();`
 
 export function ThemeBody({ ssrTheme }: { ssrTheme: boolean }) {
   return ssrTheme ? null : (
     <script
       dangerouslySetInnerHTML={{ __html: clientDarkAndLightModeElsCode }}
     />
-  );
+  )
 }
 
 /**
@@ -218,14 +218,14 @@ export function Themed({
   light,
   initialOnly = false,
 }: {
-  dark: ReactNode | string;
-  light: ReactNode | string;
-  initialOnly?: boolean;
+  dark: ReactNode | string
+  light: ReactNode | string
+  initialOnly?: boolean
 }) {
-  const [theme] = useTheme();
-  const [initialTheme] = useState(theme);
-  const themeToReference = initialOnly ? initialTheme : theme;
-  const serverRenderWithUnknownTheme = !theme && typeof window !== 'object';
+  const [theme] = useTheme()
+  const [initialTheme] = useState(theme)
+  const themeToReference = initialOnly ? initialTheme : theme
+  const serverRenderWithUnknownTheme = !theme && typeof window !== 'object'
 
   if (serverRenderWithUnknownTheme) {
     // stick them both in and our little script will update the DOM to match
@@ -235,13 +235,13 @@ export function Themed({
         {createElement('dark-mode', null, dark)}
         {createElement('light-mode', null, light)}
       </>
-    );
+    )
   }
 
   /* eslint-disable-next-line react/jsx-no-useless-fragment */
-  return <>{themeToReference === 'light' ? light : dark}</>;
+  return <>{themeToReference === 'light' ? light : dark}</>
 }
 
 export function isTheme(value: unknown): value is Theme {
-  return typeof value === 'string' && themes.includes(value as Theme);
+  return typeof value === 'string' && themes.includes(value as Theme)
 }

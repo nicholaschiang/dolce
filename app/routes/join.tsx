@@ -1,26 +1,26 @@
-import * as React from 'react';
-import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
-import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
-import { json, redirect } from '@remix-run/node';
+import * as React from 'react'
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node'
+import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
+import { json, redirect } from '@remix-run/node'
 
-import { createUser, getUserByEmail } from 'models/user.server';
+import { createUser, getUserByEmail } from 'models/user.server'
 
-import { createUserSession, getUserId } from 'session.server';
-import { safeRedirect, validateEmail, validateUsername } from 'utils';
+import { createUserSession, getUserId } from 'session.server'
+import { safeRedirect, validateEmail, validateUsername } from 'utils'
 
 export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (userId) return redirect('/');
-  return json({});
+  const userId = await getUserId(request)
+  if (userId) return redirect('/')
+  return json({})
 }
 
 export async function action({ request }: ActionArgs) {
-  const formData = await request.formData();
-  const name = formData.get('name');
-  const username = formData.get('username');
-  const email = formData.get('email');
-  const password = formData.get('password');
-  const redirectTo = safeRedirect(formData.get('redirectTo'), '/');
+  const formData = await request.formData()
+  const name = formData.get('name')
+  const username = formData.get('username')
+  const email = formData.get('email')
+  const password = formData.get('password')
+  const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
 
   if (typeof name !== 'string' || name.length === 0) {
     return json(
@@ -32,8 +32,8 @@ export async function action({ request }: ActionArgs) {
           password: null,
         },
       },
-      { status: 400 }
-    );
+      { status: 400 },
+    )
   }
 
   if (!validateUsername(username)) {
@@ -46,8 +46,8 @@ export async function action({ request }: ActionArgs) {
           password: null,
         },
       },
-      { status: 400 }
-    );
+      { status: 400 },
+    )
   }
 
   if (!validateEmail(email)) {
@@ -60,8 +60,8 @@ export async function action({ request }: ActionArgs) {
           password: null,
         },
       },
-      { status: 400 }
-    );
+      { status: 400 },
+    )
   }
 
   if (typeof password !== 'string' || password.length === 0) {
@@ -74,8 +74,8 @@ export async function action({ request }: ActionArgs) {
           password: 'Password is required',
         },
       },
-      { status: 400 }
-    );
+      { status: 400 },
+    )
   }
 
   if (password.length < 8) {
@@ -88,11 +88,11 @@ export async function action({ request }: ActionArgs) {
           password: 'Password is too short',
         },
       },
-      { status: 400 }
-    );
+      { status: 400 },
+    )
   }
 
-  const existingUser = await getUserByEmail(email);
+  const existingUser = await getUserByEmail(email)
   if (existingUser) {
     return json(
       {
@@ -103,46 +103,46 @@ export async function action({ request }: ActionArgs) {
           password: null,
         },
       },
-      { status: 400 }
-    );
+      { status: 400 },
+    )
   }
 
-  const user = await createUser(name, username, email, password);
+  const user = await createUser(name, username, email, password)
 
   return createUserSession({
     request,
     userId: user.id,
     remember: false,
     redirectTo,
-  });
+  })
 }
 
 export const meta: MetaFunction = () => {
   return {
     title: 'Sign Up',
-  };
-};
+  }
+}
 
 export default function Join() {
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') ?? undefined;
-  const actionData = useActionData<typeof action>();
-  const nameRef = React.useRef<HTMLInputElement>(null);
-  const usernameRef = React.useRef<HTMLInputElement>(null);
-  const emailRef = React.useRef<HTMLInputElement>(null);
-  const passwordRef = React.useRef<HTMLInputElement>(null);
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get('redirectTo') ?? undefined
+  const actionData = useActionData<typeof action>()
+  const nameRef = React.useRef<HTMLInputElement>(null)
+  const usernameRef = React.useRef<HTMLInputElement>(null)
+  const emailRef = React.useRef<HTMLInputElement>(null)
+  const passwordRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
     if (actionData?.errors?.name) {
-      nameRef.current?.focus();
+      nameRef.current?.focus()
     } else if (actionData?.errors?.username) {
-      usernameRef.current?.focus();
+      usernameRef.current?.focus()
     } else if (actionData?.errors?.email) {
-      emailRef.current?.focus();
+      emailRef.current?.focus()
     } else if (actionData?.errors?.password) {
-      passwordRef.current?.focus();
+      passwordRef.current?.focus()
     }
-  }, [actionData]);
+  }, [actionData])
 
   return (
     <div className='flex min-h-full flex-col justify-center'>
@@ -276,5 +276,5 @@ export default function Join() {
         </Form>
       </div>
     </div>
-  );
+  )
 }
