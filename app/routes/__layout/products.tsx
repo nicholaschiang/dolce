@@ -408,19 +408,21 @@ export default function ProductsPage() {
   );
   return (
     <>
-      <nav className='frosted sticky top-0 z-30 border-b border-gray-200 px-12 py-3 dark:border-gray-700'>
-        <ul className='mt-1.5 flex flex-wrap'>
+      <nav className='frosted sticky top-0 z-30 flex-initial border-b border-gray-200 px-12 py-3 dark:border-gray-700'>
+        <ul className='-mb-1.5 flex flex-wrap'>
           {filters.map((filter) => (
             <FilterItem filter={filter} key={filterToSearchParam(filter)} />
           ))}
           <CreateFilterItem filters={filters} setFilters={setFilters} />
         </ul>
       </nav>
-      <ol className='-m-2 flex flex-wrap px-12 py-6'>
-        {products.map((product) => (
-          <ProductItem {...product} key={product.id} />
-        ))}
-      </ol>
+      <div className='h-full flex-1 overflow-y-auto overflow-x-hidden px-12 py-6'>
+        <ol className='-m-2 flex flex-wrap'>
+          {products.map((product) => (
+            <ProductItem {...product} key={product.id} />
+          ))}
+        </ol>
+      </div>
     </>
   );
 }

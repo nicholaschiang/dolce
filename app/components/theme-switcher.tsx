@@ -20,8 +20,8 @@ export default function ThemeSwitcher({ className }: { className?: string }) {
     <fetcher.Form action='/theme' method='post'>
       <IconButton type='submit' className={className}>
         <Themed
-          dark={<MoonIcon className='h-4 w-4' />}
-          light={<SunIcon className='h-4 w-4' />}
+          dark={<MoonIcon className='h-3 w-3' />}
+          light={<SunIcon className='h-3 w-3' />}
         />
       </IconButton>
       <input
