@@ -2,6 +2,59 @@
 
 A landing page for everything I love.
 
+## The Fashion Index
+
+The ultimate goal of this project is to create an interface that I can use to objectively rank and queue up high fashion purchases.
+I want an organized browser of the world of fashion.
+
+#### Ex: Top-down view of EVERYTHING about a product.
+
+It would be super cool IMO to open a product page and, in addition to seeing sizing, images, modeling, prices (from the various retailers that stock said item), one could also see the designer who made it (and easily see what else that designer has made and what other companies that designer has worked for), the company that owns the product's brand (and recent financial news regarding said corporation), etc.
+
+#### Ex: Product comparisons like Apple.
+
+It could also be cool to be able to match up similar products from different brands (as most brands' ready-to-wear collections will typically follow similar trends and thus contain similar pieces) in a side-by-side feature comparison view (similar to how you can compare different Apple products before making a decision on which one to buy): e.g. you could open up a Dior sweater and a GUCCI sweater side-by-side and make your purchase decision not only based on price or material sourcing or factory location or designer but also by the brand's reputation index (a.k.a. if resale value might increase) or a corporations climate change policies (or the lack thereof).
+
+### Implementation
+
+To implement features like that, I'll need a really good database schema (see [#1](https://github.com/nicholaschiang/site/pull/1)). And then all that needs to be done is:
+
+- [ ] figuring out where and how to scrape all of this data (ideally I want all past collections as well);
+- [ ] building a basic page-based application with all of this data (perhaps using ISG from Next.js or similar).
+
+### Pages
+
+The initial MVP will only contain a few pages (see [#4](https://github.com/nicholaschiang/site/pull/4)):
+
+- [ ] a basic `/products` page that lets users see a massive list of all the products in our database (and filter them using Linear style filters... filter sets can be saved as "views");
+- [ ] a `/products/{id}` page that lets users see all the details of a particular product (prices, sizes, collections, variants, brands, companies, countries, runway shows, etc);
+- [ ] a `/views` page that shows a list of the user's views that they've saved from `/products` filters (these are essentially just sets of filters);
+- [ ] a `/views/{id}` page that is the same as the `/products` page but clicking the "Save" button updates the view instead of creating a new view (and trying to navigate away from the page after changing filters and not saving will surface a warning asking the user if they'd like to save their changes).
+
+The initial [Figma mockup](https://www.figma.com/file/ywAIsTAX7LPEKWpd0IpZtg/DRIP?node-id=1%3A3&t=G0xjG4AfLi1dUXMn-1) of the `/products` page (inspired by Linear's issues filtering features):
+
+![image](https://user-images.githubusercontent.com/20798889/215310276-b55f86ef-1860-4910-bd1a-9d9af6dfa937.png)
+
+## Git Workflow
+
+This repository's git workflow is inspired from [traditional gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow):
+
+- `prod` is the production branch that is deployed to production on push;
+- `main` is the default development branch that is deployed to staging on push;
+- `<username>/<issue>` are the feature and bug fix branches that we use for day-to-day development (see below).
+
+To work on something and deploy to staging:
+
+1. make sure there is a [Linear](https://linear.app) ticket for it;
+2. create a new branch `<username>/<issue>` (e.g. `nicholas/ns-1660` or, if you prefer more readable branch names, `nicholas/data-loading`);
+3. commit changes to that branch early and often, following [the conventional commit message format](https://www.conventionalcommits.org/en/v1.0.0/);
+4. create a new PR to merge your branch into `main` and request the desired reviewers (at least one must be a code owner;
+5. once that PR is merged into `main`, your changes will be deployed to staging and Linear will automatically close the corresponding ticket.
+
+To deploy to production:
+
+1. merge `main` into `prod`.
+
 ## Technology
 
 This site was bootstrapped using the Remix Blues Stack. Learn more about [Remix Stacks](https://remix.run/stacks).
