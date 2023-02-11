@@ -94,9 +94,6 @@ type CreateFilterItemProps = {
 function CreateFilterItem({ filters, setFilters }: CreateFilterItemProps) {
   const [open, setOpen] = useState(false)
   const [position, setPosition] = useState({ left: 0, top: 0 })
-  const [name, setName] = useState<FilterName>()
-  const [condition, setCondition] = useState<FilterCondition>()
-  const [value, setValue] = useState<FilterValue>()
   return (
     <>
       <button
