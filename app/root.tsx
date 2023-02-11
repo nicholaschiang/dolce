@@ -19,6 +19,10 @@ import type { ThrownResponse } from '@remix-run/react'
 import cn from 'classnames'
 import { json } from '@remix-run/node'
 
+import type { User } from 'models/user.server'
+
+import tailwindStylesheetUrl from 'styles/tailwind.css'
+
 import {
   Theme,
   ThemeBody,
@@ -26,10 +30,8 @@ import {
   ThemeProvider,
   isTheme,
   useTheme,
-} from '~/theme'
-import { getSession, getUser, sessionStorage } from '~/session.server'
-import type { User } from '~/models/user.server'
-import tailwindStylesheetUrl from '~/styles/tailwind.css'
+} from 'theme'
+import { getSession, getUser, sessionStorage } from 'session.server'
 
 export const links: LinksFunction = () => [
   {
