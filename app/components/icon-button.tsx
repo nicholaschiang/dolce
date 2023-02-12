@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, DetailedHTMLProps } from 'react'
 import cn from 'classnames'
 
-export default function IconButton({
+export function IconButton({
   className,
   ...props
 }: DetailedHTMLProps<

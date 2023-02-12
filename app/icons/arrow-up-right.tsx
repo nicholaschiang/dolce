@@ -1,4 +1,4 @@
-export default function ArrowUpRight({ className }: { className?: string }) {
+export function ArrowUpRightIcon({ className }: { className?: string }) {
   return (
     <svg
       fill='none'

@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import { useFetcher } from '@remix-run/react'
 
-import IconButton from 'components/icon-button'
+import { IconButton } from 'components/icon-button'
 
-import MoonIcon from 'icons/moon'
-import SunIcon from 'icons/sun'
+import { MoonIcon } from 'icons/moon'
+import { SunIcon } from 'icons/sun'
 
 import { Theme, Themed, isTheme, useTheme } from 'theme'
 
-export default function ThemeSwitcher({ className }: { className?: string }) {
+export function ThemeSwitcher({ className }: { className?: string }) {
   const [theme, setTheme] = useTheme()
   const fetcher = useFetcher()
   useEffect(() => {

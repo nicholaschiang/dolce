@@ -1,4 +1,4 @@
-export default function Sun({ className }: { className?: string }) {
+export function SunIcon({ className }: { className?: string }) {
   return (
     <svg
       fill='none'
