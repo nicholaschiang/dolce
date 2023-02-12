@@ -11,6 +11,12 @@
       var(--tw-backdrop-opacity) var(--tw-backdrop-brightness)
       var(--tw-backdrop-sepia);
   }
+
+  /* hide image alt text; see https://stackoverflow.com/a/37192970 */
+  img[alt]:after {
+    @apply absolute inset-0 flex h-full w-full items-center justify-center bg-inherit text-center text-xs;
+    content: attr(alt);
+  }
 }
 
 /* FIXME instead of defining this as a reusable TailwindCSS class, this should
