@@ -15,7 +15,7 @@ type MenuItemProps = {
 
 function MenuItem({ label, checked, setChecked, onClick }: MenuItemProps) {
   return (
-    <li className='relative flex h-8 w-full min-w-min max-w-xl items-center text-ellipsis whitespace-nowrap hover:after:absolute hover:after:inset-y-0 hover:after:inset-x-1 hover:after:-z-10 hover:after:rounded-md hover:after:bg-gray-400/10 hover:after:dark:bg-gray-500/10'>
+    <li className='relative flex h-8 w-full min-w-min max-w-xl cursor-pointer items-center text-ellipsis whitespace-nowrap hover:after:absolute hover:after:inset-y-0 hover:after:inset-x-1 hover:after:-z-10 hover:after:rounded-md hover:after:bg-gray-400/10 hover:after:dark:bg-gray-500/10'>
       <div
         tabIndex={-1}
         role='menuitem'
@@ -101,6 +101,7 @@ export function Menu({ position, setOpen, items }: MenuProps) {
             placeholder='filter…'
             spellCheck='false'
             autoComplete='off'
+            autoFocus
             value={filter}
             onChange={(evt) => setFilter(evt.currentTarget.value)}
           />
