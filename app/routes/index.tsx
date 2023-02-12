@@ -1,6 +1,6 @@
-import ThemeSwitcher from 'components/theme-switcher'
+import { ThemeSwitcher } from 'components/theme-switcher'
 
-import ArrowUpRight from 'icons/arrow-up-right'
+import { ArrowUpRightIcon } from 'icons/arrow-up-right'
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
   month: 'numeric',
@@ -32,7 +32,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
             className='items-top flex underline decoration-gray-900/40 transition-colors hover:decoration-gray-900 dark:decoration-gray-100/40 dark:hover:decoration-gray-100'
           >
             {title}
-            <ArrowUpRight className='inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
+            <ArrowUpRightIcon className='inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
           </a>
         )}
       </h1>

@@ -37,10 +37,12 @@ export type FilterValue<
 export type Filter<
   N extends FilterName = FilterName,
   C extends FilterCondition<N> = FilterCondition<N>,
+  V extends FilterValue<N, C> = FilterValue<N, C>,
 > = {
+  id: string
   name: N
   condition: C
-  value: FilterValue<N, C>
+  value: V
 }
 
 export function filterToSearchParam<
@@ -48,6 +50,7 @@ export function filterToSearchParam<
   C extends FilterCondition<N>,
 >(filter: Filter<N, C>): string {
   return [
+    filter.id,
     filter.name,
     filter.condition.toString(),
     JSON.stringify(filter.value),
@@ -60,10 +63,11 @@ export function searchParamToFilter<
   N extends FilterName,
   C extends FilterCondition<N>,
 >(searchParam: string): Filter<N, C> {
-  const [name, condition, value] = searchParam
+  const [id, name, condition, value] = searchParam
     .split(':')
     .map(decodeURIComponent)
   return {
+    id,
     name: name as N,
     condition: condition as C,
     value: JSON.parse(value) as FilterValue<N, C>,

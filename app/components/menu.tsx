@@ -8,40 +8,49 @@ import { motion } from 'framer-motion'
 
 type MenuItemProps = {
   label: string
-  checked: boolean | 'indeterminate'
-  setChecked(checked: boolean | 'indeterminate'): void
+  checked?: boolean | 'indeterminate'
+  setChecked?(checked: boolean | 'indeterminate'): void
+  onClick?(): void
 }
 
-function MenuItem({ label, checked, setChecked }: MenuItemProps) {
+function MenuItem({ label, checked, setChecked, onClick }: MenuItemProps) {
   return (
     <li className='relative flex h-8 w-full min-w-min max-w-xl items-center text-ellipsis whitespace-nowrap hover:after:absolute hover:after:inset-y-0 hover:after:inset-x-1 hover:after:-z-10 hover:after:rounded-md hover:after:bg-gray-400/10 hover:after:dark:bg-gray-500/10'>
       <div
         tabIndex={-1}
-        role='button'
-        onClick={() => setChecked(!checked)}
-        onKeyDown={() => setChecked(!checked)}
+        role='menuitem'
+        onClick={() => {
+          if (setChecked) setChecked(!checked)
+          if (onClick) onClick()
+        }}
+        onKeyDown={() => {
+          if (setChecked) setChecked(!checked)
+          if (onClick) onClick()
+        }}
         className='flex h-full flex-1 items-center overflow-hidden px-3.5'
       >
-        <Checkbox.Root
-          checked={checked}
-          onCheckedChange={setChecked}
-          className={cn(
-            'mr-3 flex h-3.5 w-3.5 appearance-none items-center justify-center rounded-sm border p-0.5 outline-none transition-colors',
-            !checked &&
-              'border-gray-500/50 bg-transparent dark:border-gray-400/50',
-            checked && 'border-indigo-500 bg-indigo-500 text-white',
-          )}
-        >
-          <Checkbox.Indicator
-            forceMount
+        {setChecked && (
+          <Checkbox.Root
+            checked={checked}
+            onCheckedChange={setChecked}
             className={cn(
-              'transition-opacity',
-              checked ? 'opacity-100' : 'opacity-0',
+              'mr-3 flex h-3.5 w-3.5 appearance-none items-center justify-center rounded-sm border p-0.5 outline-none transition-colors',
+              !checked &&
+                'border-gray-500/50 bg-transparent dark:border-gray-400/50',
+              checked && 'border-indigo-500 bg-indigo-500 text-white',
             )}
           >
-            <CheckIcon />
-          </Checkbox.Indicator>
-        </Checkbox.Root>
+            <Checkbox.Indicator
+              forceMount
+              className={cn(
+                'transition-opacity',
+                checked ? 'opacity-100' : 'opacity-0',
+              )}
+            >
+              <CheckIcon />
+            </Checkbox.Indicator>
+          </Checkbox.Root>
+        )}
         {label}
       </div>
     </li>
@@ -96,7 +105,7 @@ export function Menu({ position, setOpen, items }: MenuProps) {
             onChange={(evt) => setFilter(evt.currentTarget.value)}
           />
         </div>
-        <ul className={cn(results.length && 'py-1')}>
+        <ul role='menu' className={cn(results.length && 'py-1')}>
           {results.map((result) => (
             <MenuItem {...result} key={result.label} />
           ))}

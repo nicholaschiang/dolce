@@ -1,4 +1,4 @@
-export default function Moon({ className }: { className?: string }) {
+export function MoonIcon({ className }: { className?: string }) {
   return (
     <svg
       fill='none'

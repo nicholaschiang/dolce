@@ -1,7 +1,10 @@
+import rfdc from 'rfdc'
 import { useMatches } from '@remix-run/react'
 import { useMemo } from 'react'
 
 import type { User } from 'models/user.server'
+
+export const clone = rfdc()
 
 const DEFAULT_REDIRECT = '/'
 
@@ -33,15 +36,15 @@ export function safeRedirect(
  * @param {string} id The route id
  * @returns {JSON|undefined} The router data or undefined if not found
  */
-export function useMatchesData(
+export function useMatchesData<T extends Record<string, unknown>>(
   id: string,
-): Record<string, unknown> | undefined {
+): T | undefined {
   const matchingRoutes = useMatches()
   const route = useMemo(
     () => matchingRoutes.find((r) => r.id === id),
     [matchingRoutes, id],
   )
-  return route?.data as Record<string, unknown> | undefined
+  return route?.data as T | undefined
 }
 
 function isUser(user: unknown): user is User {
