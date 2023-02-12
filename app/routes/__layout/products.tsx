@@ -103,9 +103,9 @@ function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
   return (
     <li className='shrink-0 grow-0 basis-2/12'>
       <div className='relative m-2'>
-        <div className='absolute w-full'>
+        <div className='absolute w-full pt-5/4'>
           <img
-            className='absolute top-0 w-full rounded-md'
+            className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700'
             src={imageUrl}
             alt={name}
           />
