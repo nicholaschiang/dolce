@@ -52,6 +52,7 @@ module.exports = {
       'error',
       {
         devDependencies: [
+          'cypress/**',
           'scraper/**',
           'test/**',
           'tests/**',
@@ -98,8 +99,18 @@ module.exports = {
     ],
 
     // Support Typescript's triple slash directive comments in reference files.
+    // Also allow comment dividers that consist of just `////////////////////`.
     // @see {@link https://github.com/typescript-eslint/typescript-eslint/issues/600}
-    'spaced-comment': ['error', 'always', { markers: ['/'] }],
+    // @see {@link https://eslint.org/docs/latest/rules/spaced-comment}
+    // @example {@link https://github.com/pacocoursey/cmdk/blob/main/website/pages/index.tsx}
+    'spaced-comment': [
+      'error',
+      'always',
+      {
+        exceptions: ['/'],
+        markers: ['/'],
+      },
+    ],
 
     // Use `void` operator to deal with dangling promises.
     // @see {@link https://eslint.org/docs/rules/no-void}
