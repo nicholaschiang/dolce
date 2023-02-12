@@ -32,7 +32,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
             className='items-top group flex underline decoration-gray-900/40 transition-colors hover:decoration-gray-900 dark:decoration-gray-100/40 dark:hover:decoration-gray-100'
           >
             {title}
-            <ArrowRightIcon className='ml-0.5 inline-block h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-0.5 dark:text-gray-500' />
+            <ArrowRightIcon className='ml-0.5 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
           </Link>
         )}
         {url?.startsWith('http') && (
@@ -43,7 +43,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
             className='items-top group flex underline decoration-gray-900/40 transition-colors hover:decoration-gray-900 dark:decoration-gray-100/40 dark:hover:decoration-gray-100'
           >
             {title}
-            <ArrowTopRightIcon className='inline-block h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 dark:text-gray-500' />
+            <ArrowTopRightIcon className='inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
           </a>
         )}
       </h1>
@@ -54,7 +54,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
 
 export default function Index() {
   return (
-    <main className='flex min-h-screen w-screen items-end justify-center'>
+    <main className='flex min-h-screen w-screen items-center justify-center'>
       <div className='fixed top-8 right-8'>
         <ThemeSwitcher />
       </div>
