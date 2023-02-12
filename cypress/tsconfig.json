@@ -13,7 +13,7 @@
     "../node_modules/@testing-library/cypress"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "../app",
     "noEmit": true,
     "types": ["node", "cypress", "@testing-library/cypress"],
     "esModuleInterop": true,
@@ -23,7 +23,6 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "typeRoots": ["../types", "../node_modules/@types"],
-    "paths": { "~/*": ["../app/*"] }
+    "typeRoots": ["../types", "../node_modules/@types"]
   }
 }
