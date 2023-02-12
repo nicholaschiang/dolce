@@ -24,8 +24,6 @@ import type { MenuProps } from 'components/menu'
 import { clone, useMatchesData } from 'utils'
 import type { Filter } from 'filters'
 
-//////////////////////////////////////////////////////////////////
-
 // we need a way to load menu options when filtering based on a model; this
 // constant aims to map models to the routes that have loaders to get their
 // data. note that this assumes each of these routes' loaders returns an array
@@ -46,6 +44,8 @@ const MODEL_TO_ROUTE: Record<string, string> = {
   Show: '/shows',
   Designer: '/designers',
 }
+
+//////////////////////////////////////////////////////////////////
 
 type FiltersContextT = {
   filters: Filter[]

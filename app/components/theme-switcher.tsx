@@ -1,10 +1,8 @@
+import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useEffect } from 'react'
 import { useFetcher } from '@remix-run/react'
 
 import { IconButton } from 'components/icon-button'
-
-import { MoonIcon } from 'icons/moon'
-import { SunIcon } from 'icons/sun'
 
 import { Theme, Themed, isTheme, useTheme } from 'theme'
 

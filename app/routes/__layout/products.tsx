@@ -18,34 +18,6 @@ import { prisma } from 'db.server'
 const FILTER_PARAM = 'f'
 const JOIN_PARAM = 'j'
 
-type ProductItemProps = {
-  id: number
-  name: string
-  imageUrl?: string
-  msrp?: number
-}
-
-function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
-  return (
-    <li className='shrink-0 grow-0 basis-2/12'>
-      <div className='relative m-2'>
-        <div className='absolute w-full'>
-          <img
-            className='absolute top-0 w-full rounded-md'
-            src={imageUrl}
-            alt={name}
-          />
-        </div>
-        <Link to={`/products/${id}`}>
-          <div className='relative mb-2 rounded-md pt-5/4' />
-          <h2 className='leading-none'>{name}</h2>
-          <h3>${msrp}</h3>
-        </Link>
-      </div>
-    </li>
-  )
-}
-
 export type LoaderData = ProductItemProps[]
 
 // users can control prisma queries via url search parameters.
@@ -75,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>(products)
 }
 
-export default function ProductsPage() {
+export default function Products() {
   const products = useLoaderData<LoaderData>()
   const [searchParams, setSearchParams] = useSearchParams()
   const filters = useMemo<Filter[]>(
@@ -115,5 +87,35 @@ export default function ProductsPage() {
         </ol>
       </div>
     </>
+  )
+}
+
+//////////////////////////////////////////////////////////////////
+
+type ProductItemProps = {
+  id: number
+  name: string
+  imageUrl?: string
+  msrp?: number
+}
+
+function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
+  return (
+    <li className='shrink-0 grow-0 basis-2/12'>
+      <div className='relative m-2'>
+        <div className='absolute w-full'>
+          <img
+            className='absolute top-0 w-full rounded-md'
+            src={imageUrl}
+            alt={name}
+          />
+        </div>
+        <Link to={`/products/${id}`}>
+          <div className='relative mb-2 rounded-md pt-5/4' />
+          <h2 className='leading-none'>{name}</h2>
+          <h3>${msrp}</h3>
+        </Link>
+      </div>
+    </li>
   )
 }
