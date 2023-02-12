@@ -31,6 +31,21 @@ module.exports = {
     'import/resolver': { typescript: {} },
   },
   rules: {
+    // Allow using functions before they are defined. This lets us better
+    // organize component definitions so the main API is at the top and smaller
+    // components are defined in sections below.
+    // @see {@link https://eslint.org/docs/rules/no-use-before-define}
+    // @see {@link https://typescript-eslint.io/rules/no-use-before-define}
+    // @example {@link https://github.com/pacocoursey/cmdk/blob/main/website/pages/index.tsx}
+    '@typescript-eslint/no-use-before-define': [
+      'error',
+      {
+        functions: false,
+        classes: true,
+        variables: true,
+      },
+    ],
+
     // Allow importing dev dependencies in the scraping project directory.
     // @see {@link https://github.com/import-js/eslint-plugin-import/blob/HEAD/docs/rules/no-extraneous-dependencies.md}
     'import/no-extraneous-dependencies': [
