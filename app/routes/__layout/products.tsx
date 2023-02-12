@@ -105,7 +105,7 @@ function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
       <div className='relative m-2'>
         <div className='absolute w-full pt-5/4'>
           <img
-            className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700'
+            className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
             src={imageUrl}
             alt={name}
           />
