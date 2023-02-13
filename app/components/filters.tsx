@@ -373,7 +373,7 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
       <Dialog.Trigger />
       <Dialog.Portal>
         <Dialog.Overlay className='fixed inset-0 bg-white/50 dark:bg-gray-900/50' />
-        <Dialog.Content className='center fixed w-full max-w-sm rounded-xl border border-gray-200 bg-gray-100 shadow-2xl focus:outline-none dark:border-gray-700 dark:bg-gray-800'>
+        <Dialog.Content className='center fixed w-full max-w-sm rounded-xl border border-gray-200 bg-gray-50 shadow-2xl focus:outline-none dark:border-gray-700 dark:bg-gray-800'>
           <form
             className='m-8'
             autoComplete='off'
