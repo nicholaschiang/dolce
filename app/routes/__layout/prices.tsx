@@ -4,6 +4,8 @@ import type { Price } from '@prisma/client'
 import { json } from '@remix-run/node'
 import { nanoid } from 'nanoid'
 
+import { ListLayout } from 'components/list-layout'
+
 import { FILTER_PARAM, filterToSearchParam } from 'filters'
 import type { Filter } from 'filters'
 import { log } from 'log.server'
@@ -21,30 +23,27 @@ export const loader: LoaderFunction = async () => {
 export default function PricesPage() {
   const prices = useLoaderData<LoaderData>()
   return (
-    <main className='flex flex-1 items-center justify-center px-12'>
-      <h1 className='my-4 mr-12 text-6xl'>prices</h1>
-      <ul>
-        {prices.map((price) => {
-          const filter: Filter<'prices', 'some'> = {
-            id: nanoid(5),
-            name: 'prices',
-            condition: 'some',
-            value: { id: price.id, name: price.name },
-          }
-          const param = filterToSearchParam(filter)
-          return (
-            <li key={price.id}>
-              <Link
-                prefetch='intent'
-                className='link underline'
-                to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
-              >
-                {price.name}
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </main>
+    <ListLayout title='prices'>
+      {prices.map((price) => {
+        const filter: Filter<'prices', 'some'> = {
+          id: nanoid(5),
+          name: 'prices',
+          condition: 'some',
+          value: { id: price.id },
+        }
+        const param = filterToSearchParam(filter)
+        return (
+          <li key={price.id}>
+            <Link
+              prefetch='intent'
+              className='link underline'
+              to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
+            >
+              ${Number(price.value).toFixed(2)}
+            </Link>
+          </li>
+        )
+      })}
+    </ListLayout>
   )
 }
