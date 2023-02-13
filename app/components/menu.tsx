@@ -59,10 +59,11 @@ function MenuItem({ label, checked, setChecked, onClick }: MenuItemProps) {
 export type MenuProps = {
   position: { top: number; left: number }
   setOpen: Dispatch<SetStateAction<boolean>>
+  placeholder: string
   items: MenuItemProps[]
 }
 
-export function Menu({ position, setOpen, items }: MenuProps) {
+export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
   const [filter, setFilter] = useState('')
   const results = useMemo(
     () => items.filter(({ label }) => label.includes(filter.trim())),
@@ -91,7 +92,7 @@ export function Menu({ position, setOpen, items }: MenuProps) {
           <input
             className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 caret-indigo-500 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
             type='text'
-            placeholder='filter'
+            placeholder={placeholder}
             spellCheck='false'
             autoComplete='off'
             autoFocus
