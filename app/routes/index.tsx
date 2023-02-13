@@ -1,4 +1,4 @@
-import { ArrowRightIcon, ArrowTopRightIcon } from '@radix-ui/react-icons'
+import { ArrowTopRightIcon, CardStackIcon } from '@radix-ui/react-icons'
 import { Link } from '@remix-run/react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
@@ -32,7 +32,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
             className='items-top link group flex underline'
           >
             {title}
-            <ArrowRightIcon className='ml-0.5 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
+            <CardStackIcon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
           </Link>
         )}
         {url?.startsWith('http') && (
