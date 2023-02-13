@@ -1,6 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
+
+@layer base {
+  /* hide image alt text; see https://stackoverflow.com/a/37192970 */
+  img[alt]:after {
+    @apply absolute inset-0 flex h-full w-full items-center justify-center bg-inherit text-center text-xs;
+    content: attr(alt);
+  }
+
+  /* hide outline on focus */
+  :focus {
+    outline: none;
+  }
+}
 
 @layer utilities {
   /* override the default backdrop filter order that TailwindCSS provides */
@@ -12,10 +26,9 @@
       var(--tw-backdrop-sepia);
   }
 
-  /* hide image alt text; see https://stackoverflow.com/a/37192970 */
-  img[alt]:after {
-    @apply absolute inset-0 flex h-full w-full items-center justify-center bg-inherit text-center text-xs;
-    content: attr(alt);
+  /* center absolutely and fixed positioned elements */
+  .center {
+    @apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   }
 }
 
@@ -26,13 +39,42 @@
 @layer components {
   .icon-button {
     @apply flex h-6 w-6 cursor-pointer items-center justify-center rounded-full text-gray-900/40 transition-colors disabled:cursor-not-allowed dark:text-gray-100/40;
-    &:not(:disabled) {
-      @apply hover:bg-gray-900/5 hover:text-gray-900 dark:hover:bg-gray-100/5 dark:hover:text-gray-100;
+    &:not(:disabled):hover,
+    &:not(:disabled):focus {
+      @apply bg-gray-900/5 text-gray-900 dark:bg-gray-100/5 dark:text-gray-100;
     }
   }
+
+  .button {
+    @apply h-8 rounded border px-2 transition-colors;
+    &:not(.outlined) {
+      @apply border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900;
+      &:not(:disabled):hover,
+      &:not(:disabled):focus {
+        @apply bg-transparent text-gray-900 dark:bg-transparent dark:text-white;
+      }
+    }
+    &.outlined {
+      @apply border-gray-200 bg-gray-100/50 text-gray-900 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100;
+      &:not(:disabled):hover,
+      &:not(:disabled):focus {
+        @apply border-gray-300 bg-gray-200/50 dark:border-gray-600 dark:bg-gray-700/50;
+      }
+    }
+  }
+
+  .input {
+    @apply h-8 w-full appearance-none rounded border border-gray-200 bg-white px-3 outline-none transition-colors dark:border-gray-700 dark:bg-gray-900;
+    &:not(:disabled):hover,
+    &:not(:disabled):focus {
+      @apply border-gray-300 dark:border-gray-600;
+    }
+  }
+
   .frosted {
     @apply backdrop-order dark:backdrop-order bg-white/75 backdrop-blur-md backdrop-brightness-150 backdrop-contrast-50 backdrop-saturate-200 dark:bg-gray-900/75 dark:backdrop-brightness-75 dark:backdrop-contrast-75;
   }
+
   .underline {
     @apply decoration-1 underline-offset-1;
   }

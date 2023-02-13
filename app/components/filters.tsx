@@ -1,5 +1,12 @@
+import * as Dialog from '@radix-ui/react-dialog'
 import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
-import type { Dispatch, FormEvent, ReactNode, SetStateAction } from 'react'
+import type {
+  Dispatch,
+  FormEvent,
+  HTMLInputTypeAttribute,
+  ReactNode,
+  SetStateAction,
+} from 'react'
 import type { Level, Prisma } from '@prisma/client'
 import {
   createContext,
@@ -17,6 +24,8 @@ import { useFetcher } from '@remix-run/react'
 
 import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
 
+import { Button } from 'components/button'
+import { IconButton } from 'components/icon-button'
 import { Menu } from 'components/menu'
 import type { MenuProps } from 'components/menu'
 
@@ -186,18 +195,18 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
   // items that should be rendered in that one <Menu> component.
   return (
     <>
-      <button
+      <IconButton
         type='button'
-        className='mb-1.5 flex h-6 w-6 items-center justify-center rounded text-2xs text-gray-600 transition-colors hover:bg-gray-200/50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-gray-100'
-        onClick={(evt) => {
+        className='mb-1.5 flex rounded'
+        onClick={(event) => {
           const { top, left, height } =
-            evt.currentTarget.getBoundingClientRect()
+            event.currentTarget.getBoundingClientRect()
           setPosition({ top: top + height, left })
           setOpen(true)
         }}
       >
         <PlusIcon className='h-3.5 w-3.5' />
-      </button>
+      </IconButton>
       <MenuContext.Provider
         value={useMemo(() => ({ setOpen, position }), [setOpen, position])}
       >
@@ -236,10 +245,10 @@ type FilterValueMenuProps = { field: Prisma.DMMF.Field }
 
 function FilterValueMenu({ field }: FilterValueMenuProps) {
   switch (field.kind) {
-    case 'scalar':
-      return <ScalarMenu field={field} />
     case 'enum':
       return <EnumMenu field={field} />
+    case 'scalar':
+      return <ScalarMenu field={field} />
     case 'object':
       return <ObjectMenu field={field} />
     case 'unsupported':
@@ -250,18 +259,6 @@ function FilterValueMenu({ field }: FilterValueMenuProps) {
 }
 
 //////////////////////////////////////////////////////////////////
-
-// if the field is scalar, we show an input letting the user type in what value
-// they want (e.g. "price is greater than ___")
-// Ex: <IntInput />, <DecimalInput />, <StringInput />
-//
-// if the field is scalar but the dropdown option was specified, we query the
-// database to get all the available options (e.g. we'll query the products
-// table to get a list of all the possible prices and show those as options)
-// Ex: <IntOption />, <StringOption />, <DecimalOption />
-function ScalarMenu({ field }: FilterValueMenuProps) {
-  return <input type={field.type} />
-}
 
 // if the field is an enum, we show a dropdown of all the possible enum values
 // Ex: <LevelOption />, <TierOption />, <SeasonOption />
@@ -317,6 +314,76 @@ function EnumMenu({ field }: FilterValueMenuProps) {
   )
 }
 
+// if the field is scalar, we show an input letting the user type in what value
+// they want (e.g. "price is greater than ___")
+// Ex: <IntInput />, <DecimalInput />, <StringInput />
+//
+// if the field is scalar but the dropdown option was specified, we query the
+// database to get all the available options (e.g. we'll query the products
+// table to get a list of all the possible prices and show those as options)
+// Ex: <IntOption />, <StringOption />, <DecimalOption />
+function ScalarMenu({ field }: FilterValueMenuProps) {
+  const [open, setOpen] = useState(true)
+  const { addOrUpdateFilter } = useContext(FiltersContext)
+  const { setOpen: setMenuOpen } = useContext(MenuContext)
+
+  useEffect(() => {
+    if (!open) setMenuOpen(false)
+  }, [open, setMenuOpen])
+
+  let inputType: HTMLInputTypeAttribute = 'text'
+  if (['BigInt', 'Decimal', 'Float', 'Int'].includes(field.type)) {
+    inputType = 'number'
+  } else if (field.type === 'DateTime') {
+    inputType = 'date'
+  } else if (field.type === 'Boolean') {
+    inputType = 'checkbox'
+  }
+
+  return (
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger />
+      <Dialog.Portal>
+        <Dialog.Overlay className='fixed inset-0 bg-white/50 dark:bg-gray-900/50' />
+        <Dialog.Content className='center fixed w-full max-w-sm rounded-xl border border-gray-200 bg-gray-100 shadow-2xl focus:outline-none dark:border-gray-700 dark:bg-gray-800'>
+          <form
+            className='m-8'
+            autoComplete='off'
+            onSubmit={(event) => {
+              addOrUpdateFilter({
+                id: nanoid(5),
+                name: field.name,
+                condition: field.type === 'String' ? 'contains' : 'equals',
+                value: new FormData(event.currentTarget).get('value'),
+              })
+              setOpen(false)
+              event.preventDefault()
+            }}
+          >
+            <Dialog.Title>filter by {field.name}</Dialog.Title>
+            <input
+              autoFocus
+              className='input mt-3'
+              aria-label='value'
+              type={inputType}
+              name='value'
+              id='value'
+            />
+            <div className='mt-4 flex items-center justify-end'>
+              <Dialog.Close asChild>
+                <Button type='button' outlined className='mr-3'>
+                  cancel
+                </Button>
+              </Dialog.Close>
+              <Button type='submit'>apply</Button>
+            </div>
+          </form>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
+}
+
 // TODO allow users to select multiple objects and then toggle between "AND" and
 // "OR" using the filter item (e.g. the "is any of" v.s. "is not" in Linear).
 // if the field is an object (i.e. a nested model), we query that model's table
@@ -326,8 +393,6 @@ function EnumMenu({ field }: FilterValueMenuProps) {
 function ObjectMenu({ field }: FilterValueMenuProps) {
   const { position, setOpen } = useContext(MenuContext)
   const { addOrUpdateFilter } = useContext(FiltersContext)
-
-  const filterId = useRef(nanoid(5))
 
   // TODO we need to ensure that each one of our Prisma models has a name field
   // TODO perhaps we should define individual components for each model? that
@@ -349,8 +414,8 @@ function ObjectMenu({ field }: FilterValueMenuProps) {
         label: item.name,
         onClick() {
           addOrUpdateFilter({
-            id: filterId.current,
-            name: 'styles',
+            id: nanoid(5),
+            name: field.name,
             condition: 'some',
             value: { id: item.id, name: item.name },
           })
