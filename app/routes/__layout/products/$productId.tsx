@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 export default function ProductPage() {
   const product = useLoaderData<LoaderData>()
   return (
-    <main className='flex h-full w-full items-center justify-center text-center'>
+    <main className='flex flex-1 items-center justify-center px-12'>
       <h1>{product.name}</h1>
       <span className='mx-2'>·</span>
       <p>{product.level}</p>

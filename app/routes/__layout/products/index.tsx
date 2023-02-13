@@ -7,6 +7,8 @@ import { json } from '@remix-run/node'
 import { Filters } from 'components/filters'
 
 import {
+  FILTER_PARAM,
+  JOIN_PARAM,
   filterToPrismaWhere,
   filterToSearchParam,
   filterToString,
@@ -15,9 +17,6 @@ import {
 import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
-
-const FILTER_PARAM = 'f'
-const JOIN_PARAM = 'j'
 
 export type LoaderData = ProductItemProps[]
 

@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from '@remix-run/react'
 import type { LoaderFunction } from '@remix-run/node'
-import type { Style } from '@prisma/client'
+import type { Variant } from '@prisma/client'
 import { json } from '@remix-run/node'
 import { nanoid } from 'nanoid'
 
@@ -9,37 +9,37 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
 
-export type LoaderData = Style[]
+export type LoaderData = Variant[]
 
 export const loader: LoaderFunction = async () => {
-  log.debug('getting styles...')
-  const styles = await prisma.style.findMany()
-  log.debug('got %d styles', styles.length)
-  return json<LoaderData>(styles)
+  log.debug('getting variants...')
+  const variants = await prisma.variant.findMany()
+  log.debug('got %d variants', variants.length)
+  return json<LoaderData>(variants)
 }
 
-export default function StylesPage() {
-  const styles = useLoaderData<LoaderData>()
+export default function VariantsPage() {
+  const variants = useLoaderData<LoaderData>()
   return (
     <main className='flex flex-1 items-center justify-center px-12'>
-      <h1 className='my-4 mr-12 text-6xl'>styles</h1>
+      <h1 className='my-4 mr-12 text-6xl'>variants</h1>
       <ul>
-        {styles.map((style) => {
-          const filter: Filter<'styles', 'some'> = {
+        {variants.map((variant) => {
+          const filter: Filter<'variants', 'some'> = {
             id: nanoid(5),
-            name: 'styles',
+            name: 'variants',
             condition: 'some',
-            value: { id: style.id, name: style.name },
+            value: { id: variant.id, name: variant.name },
           }
           const param = filterToSearchParam(filter)
           return (
-            <li key={style.id}>
+            <li key={variant.id}>
               <Link
                 prefetch='intent'
                 className='link underline'
                 to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
               >
-                {style.name}
+                {variant.name}
               </Link>
             </li>
           )
