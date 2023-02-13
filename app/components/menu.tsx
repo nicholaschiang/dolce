@@ -96,7 +96,7 @@ export function Menu({ position, setOpen, items }: MenuProps) {
           )}
         >
           <input
-            className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 caret-indigo-500 outline-none'
+            className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 caret-indigo-500 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
             type='text'
             placeholder='filter…'
             spellCheck='false'
