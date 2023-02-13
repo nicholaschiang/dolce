@@ -221,6 +221,7 @@ function FilterNameMenu({ fields, setField }: FilterNameMenuProps) {
   const { setOpen, position } = useContext(MenuContext)
   return (
     <Menu
+      placeholder='field'
       setOpen={setOpen}
       position={position}
       items={fields.map((f: Prisma.DMMF.Field) => ({
@@ -284,6 +285,7 @@ function EnumMenu({ field }: FilterValueMenuProps) {
 
   return (
     <Menu
+      placeholder={field.name}
       items={en.values.map((e) => ({
         label: e.name,
         checked: filter?.value?.includes(e.name as Level),
@@ -342,6 +344,7 @@ function ObjectMenu({ field }: FilterValueMenuProps) {
   // TODO make items optional in <Menu> and show a skeleton state there
   return (
     <Menu
+      placeholder={field.name}
       items={(fetcher.data ?? []).map((item) => ({
         label: item.name,
         onClick() {
