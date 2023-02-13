@@ -69,7 +69,7 @@ export type MenuProps = {
   position: { top: number; left: number }
   setOpen: Dispatch<SetStateAction<boolean>>
   placeholder: string
-  hotkey: string
+  hotkey?: string
   items: MenuItemProps[]
 }
 
