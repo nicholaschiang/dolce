@@ -82,7 +82,10 @@ export function Menu({
 }: MenuProps) {
   const [filter, setFilter] = useState('')
   const results = useMemo(
-    () => items.filter(({ label }) => label.includes(filter.trim())),
+    () =>
+      items.filter(({ label }) =>
+        label.toLowerCase().includes(filter.toLowerCase().trim()),
+      ),
     [items, filter],
   )
   const menuId = useRef(nanoid())
