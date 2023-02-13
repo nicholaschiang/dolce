@@ -203,6 +203,11 @@ async function getProducts(page: Page): Promise<Product[]> {
   return products
 }
 
+/**
+ * Scrape products and the filters that apply to each from the Isabel Marant
+ * e-commerce website. Saves the results to a JSON file.
+ * @param dir - the directory to save the resulting `data.json` files.
+ */
 export async function scrape(dir = 'data/marant') {
   type TaskData = { existingFilters: Filter[]; filtersToGet: string[] }
 
@@ -249,9 +254,11 @@ export async function scrape(dir = 'data/marant') {
         (p) => p.metadata?.product_cod10 === product.metadata?.product_cod10,
       )
       if (!existingProduct) {
+        // Add the product if it doesn't exist yet.
         log.trace('Adding new product: %o', product)
         products.push(product)
       } else {
+        // Otherwise, add the current filters to the existing product.
         log.trace(
           'Found existing product (%s) for (%s).',
           existingProduct.name,
@@ -404,6 +411,13 @@ export async function scrape(dir = 'data/marant') {
   await fs.writeFile(`${dir}/data.json`, JSON.stringify(data, null, 2))
 }
 
+/**
+ * Save the scraped data (from JSON) to our Prisma managed Postgres database.
+ * @param dir - the directory to read the `data.json` file from.
+ * @param seasonPrefix - a string to prefix unto season names (we need unique
+ * season names to make saving data easier so we typically will prefix the name
+ * found on a brand's website with the name of that brand to avoid collisions).
+ */
 export async function save(
   dir = 'data/marant',
   seasonPrefix = 'marant',
