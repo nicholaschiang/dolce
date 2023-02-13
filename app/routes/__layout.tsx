@@ -1,4 +1,5 @@
 import { Link, Outlet } from '@remix-run/react'
+import { ArrowTopRightIcon } from '@radix-ui/react-icons'
 import type { LoaderFunction } from '@remix-run/node'
 import { Prisma } from '@prisma/client'
 import { json } from '@remix-run/node'
@@ -70,6 +71,7 @@ function Header() {
           className='underline'
         >
           nicholas chiang
+          <ArrowTopRightIcon className='inline-block h-2 w-2' />
         </a>
       </p>
       <div className='absolute inset-y-0 right-12 flex items-center'>
