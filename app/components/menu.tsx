@@ -1,10 +1,11 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
 import * as Portal from '@radix-ui/react-portal'
 import type { Dispatch, SetStateAction } from 'react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { CheckIcon } from '@radix-ui/react-icons'
 import { Key } from 'ts-key-enum'
 import cn from 'classnames'
+import { nanoid } from 'nanoid'
 
 type MenuItemProps = {
   label: string
@@ -16,7 +17,8 @@ type MenuItemProps = {
 function MenuItem({ label, checked, setChecked, onClick }: MenuItemProps) {
   return (
     <li
-      role='menuitem'
+      role='option'
+      aria-selected={typeof checked === 'boolean' ? checked : undefined}
       tabIndex={0}
       onClick={() => {
         if (setChecked) setChecked(!checked)
@@ -76,6 +78,7 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
     () => items.filter(({ label }) => label.includes(filter.trim())),
     [items, filter],
   )
+  const menuId = useRef(nanoid())
   return (
     <Portal.Root>
       <div
@@ -103,6 +106,9 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
           )}
         >
           <input
+            role='combobox'
+            aria-expanded
+            aria-controls={menuId.current}
             className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 caret-indigo-500 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
             type='text'
             placeholder={placeholder}
@@ -112,7 +118,11 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
             onChange={(event) => setFilter(event.currentTarget.value)}
           />
         </div>
-        <ul role='menu' className={cn(results.length && 'py-1')}>
+        <ul
+          role='listbox'
+          id={menuId.current}
+          className={cn(results.length && 'py-1')}
+        >
           {results.map((result) => (
             <MenuItem {...result} key={result.label} />
           ))}
