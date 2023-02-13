@@ -21,7 +21,9 @@ puppeteer.use(StealthPlugin())
 
 const DEBUGGING = false
 const log = pino({ level: 'debug' })
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+  datasources: { db: { url: process.env.DATABASE_URL } },
+})
 
 async function loadPage(
   page: Page,
