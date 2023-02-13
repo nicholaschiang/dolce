@@ -21,6 +21,7 @@ import cn from 'classnames'
 import invariant from 'tiny-invariant'
 import { nanoid } from 'nanoid'
 import { useFetcher } from '@remix-run/react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
 
@@ -105,6 +106,16 @@ export function Filters({ modelName, filters, setFilters }: FiltersProps) {
   const model = data.models.find((m) => m.name === modelName)
   invariant(model, `Could not find model "${modelName}"`)
 
+  useHotkeys(
+    'shift+f',
+    (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      setFilters([])
+    },
+    [setFilters],
+  )
+
   return (
     <FiltersContext.Provider
       value={useMemo(
@@ -180,13 +191,35 @@ type AddFilterButtonProps = { model: Prisma.DMMF.Model }
 
 function AddFilterButton({ model }: AddFilterButtonProps) {
   const [open, setOpen] = useState(false)
-  const [position, setPosition] = useState({ left: 0, top: 0 })
   const [field, setField] = useState<Prisma.DMMF.Field>()
+  const [position, setPosition] = useState({ left: 0, top: 0 })
 
-  // Reset the selected field when the user closes the filters menu
+  // TODO spend some time debugging why useReactMeasure() didn't work here.
+  const ref = useRef<HTMLButtonElement>(null)
+  const openMenu = useCallback(() => {
+    if (ref.current) {
+      const { top, left, height } = ref.current.getBoundingClientRect()
+      setPosition({ top: top + height, left })
+    }
+    setOpen(true)
+  }, [])
+
+  // Reset the selected field when the user closes the filters menu.
   useEffect(() => {
     if (!open) setField(undefined)
   }, [open])
+
+  // TODO refactor this so that it is defined alongside the Menu#hotkey prop. it
+  // may be useful to hoist all these hotkey definitions globally, as well.
+  useHotkeys(
+    'f',
+    (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      openMenu()
+    },
+    [openMenu],
+  )
 
   // TODO refactor this to only have a single <Menu> component and get rid of
   // the MenuContext; instead we should just have helper functions return the
@@ -194,14 +227,10 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
   return (
     <>
       <button
+        ref={ref}
         type='button'
         className='icon-button mb-1.5 flex rounded'
-        onClick={(event) => {
-          const { top, left, height } =
-            event.currentTarget.getBoundingClientRect()
-          setPosition({ top: top + height, left })
-          setOpen(true)
-        }}
+        onClick={openMenu}
       >
         <PlusIcon className='h-3.5 w-3.5' />
       </button>
@@ -229,6 +258,7 @@ function FilterNameMenu({ fields, setField }: FilterNameMenuProps) {
   return (
     <Menu
       placeholder='field'
+      hotkey='f'
       setOpen={setOpen}
       position={position}
       items={fields.map((f: Prisma.DMMF.Field) => ({
@@ -359,9 +389,11 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
               event.preventDefault()
             }}
           >
-            <Dialog.Title>filter by {field.name}</Dialog.Title>
+            <Dialog.Title className='mb-6 mt-10 text-center text-2xl'>
+              filter by {field.name}
+            </Dialog.Title>
             <input
-              className='input mt-3'
+              className='input'
               aria-label='value'
               type={inputType}
               name='value'

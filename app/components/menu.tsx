@@ -6,6 +6,7 @@ import { CheckIcon } from '@radix-ui/react-icons'
 import { Key } from 'ts-key-enum'
 import cn from 'classnames'
 import { nanoid } from 'nanoid'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 type MenuItemProps = {
   label: string
@@ -32,7 +33,6 @@ function MenuItem({ label, checked, setChecked, onClick }: MenuItemProps) {
           event.stopPropagation()
         }
       }}
-      onMouseOverCapture={(event) => event.currentTarget.focus()}
       className='relative flex h-8 w-full min-w-min max-w-xl cursor-pointer items-center text-ellipsis whitespace-nowrap focus:after:absolute focus:after:inset-y-0 focus:after:inset-x-1 focus:after:-z-10 focus:after:rounded-md focus:after:bg-gray-400/10 focus:after:dark:bg-gray-500/10'
     >
       <div className='flex h-full flex-1 items-center overflow-hidden px-3.5'>
@@ -69,16 +69,32 @@ export type MenuProps = {
   position: { top: number; left: number }
   setOpen: Dispatch<SetStateAction<boolean>>
   placeholder: string
+  hotkey: string
   items: MenuItemProps[]
 }
 
-export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
+export function Menu({
+  position,
+  setOpen,
+  placeholder,
+  hotkey,
+  items,
+}: MenuProps) {
   const [filter, setFilter] = useState('')
   const results = useMemo(
     () => items.filter(({ label }) => label.includes(filter.trim())),
     [items, filter],
   )
   const menuId = useRef(nanoid())
+  useHotkeys<HTMLInputElement>(
+    'esc',
+    (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      setOpen(false)
+    },
+    [setOpen],
+  )
   return (
     <Portal.Root>
       <div
@@ -106,17 +122,30 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
           )}
         >
           <input
+            ref={(input) => input?.focus()}
             role='combobox'
             aria-expanded
             aria-controls={menuId.current}
-            className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 caret-indigo-500 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
+            className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
             type='text'
             placeholder={placeholder}
             spellCheck='false'
             autoComplete='off'
             value={filter}
             onChange={(event) => setFilter(event.currentTarget.value)}
+            onKeyDownCapture={(event) => {
+              if (event.key === Key.Escape) {
+                event.preventDefault()
+                event.stopPropagation()
+                setOpen(false)
+              }
+            }}
           />
+          {hotkey && (
+            <kbd className='mr-3.5 rounded-sm bg-gray-200/50 py-0.5 px-1 text-3xs text-gray-500/50 dark:bg-gray-700/50 dark:text-gray-400/50'>
+              {hotkey}
+            </kbd>
+          )}
         </div>
         <ul
           role='listbox'
