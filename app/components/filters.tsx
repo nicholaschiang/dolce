@@ -361,7 +361,6 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
           >
             <Dialog.Title>filter by {field.name}</Dialog.Title>
             <input
-              autoFocus
               className='input mt-3'
               aria-label='value'
               type={inputType}
