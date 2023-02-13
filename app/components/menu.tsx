@@ -108,7 +108,6 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
             placeholder={placeholder}
             spellCheck='false'
             autoComplete='off'
-            autoFocus
             value={filter}
             onChange={(event) => setFilter(event.currentTarget.value)}
           />
