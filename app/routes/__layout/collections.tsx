@@ -4,6 +4,8 @@ import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { nanoid } from 'nanoid'
 
+import { ListLayout } from 'components/list-layout'
+
 import { FILTER_PARAM, filterToSearchParam } from 'filters'
 import type { Filter } from 'filters'
 import { log } from 'log.server'
@@ -21,30 +23,27 @@ export const loader: LoaderFunction = async () => {
 export default function CollectionsPage() {
   const collections = useLoaderData<LoaderData>()
   return (
-    <main className='flex flex-1 items-center justify-center px-12'>
-      <h1 className='my-4 mr-12 text-6xl'>collections</h1>
-      <ul>
-        {collections.map((collection) => {
-          const filter: Filter<'collections', 'some'> = {
-            id: nanoid(5),
-            name: 'collections',
-            condition: 'some',
-            value: { id: collection.id, name: collection.name },
-          }
-          const param = filterToSearchParam(filter)
-          return (
-            <li key={collection.id}>
-              <Link
-                prefetch='intent'
-                className='link underline'
-                to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
-              >
-                {collection.name}
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </main>
+    <ListLayout title='collections'>
+      {collections.map((collection) => {
+        const filter: Filter<'collections', 'some'> = {
+          id: nanoid(5),
+          name: 'collections',
+          condition: 'some',
+          value: { id: collection.id, name: collection.name },
+        }
+        const param = filterToSearchParam(filter)
+        return (
+          <li key={collection.id}>
+            <Link
+              prefetch='intent'
+              className='link underline'
+              to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
+            >
+              {collection.name}
+            </Link>
+          </li>
+        )
+      })}
+    </ListLayout>
   )
 }
