@@ -9,6 +9,7 @@ import { Filters } from 'components/filters'
 import {
   filterToPrismaWhere,
   filterToSearchParam,
+  filterToString,
   searchParamToFilter,
 } from 'filters'
 import type { Filter } from 'filters'
@@ -28,7 +29,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   const filters = searchParams.getAll(FILTER_PARAM).map(searchParamToFilter)
   let join = searchParams.get(JOIN_PARAM)
   if (!join || !['AND', 'OR', 'NOT'].includes(join)) join = 'AND'
-  log.debug('getting products... %o', filters)
+  log.debug(
+    'getting products... %s',
+    filters.map(filterToString).join(` ${join} `),
+  )
   const products = (
     await prisma.product.findMany({
       include: { images: true },
