@@ -29,7 +29,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
           <Link
             to={url}
             prefetch='intent'
-            className='items-top group flex underline decoration-gray-900/40 transition-colors hover:decoration-gray-900 dark:decoration-gray-100/40 dark:hover:decoration-gray-100'
+            className='items-top link group flex underline'
           >
             {title}
             <ArrowRightIcon className='ml-0.5 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
@@ -40,7 +40,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
             href={url}
             target='_blank'
             rel='noopener noreferrer'
-            className='items-top group flex underline decoration-gray-900/40 transition-colors hover:decoration-gray-900 dark:decoration-gray-100/40 dark:hover:decoration-gray-100'
+            className='items-top link group flex underline'
           >
             {title}
             <ArrowTopRightIcon className='inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />

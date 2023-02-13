@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from '@remix-run/react'
+import type { Brand } from '@prisma/client'
 import type { LoaderFunction } from '@remix-run/node'
-import type { Style } from '@prisma/client'
 import { json } from '@remix-run/node'
 import { nanoid } from 'nanoid'
 
@@ -9,37 +9,37 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
 
-export type LoaderData = Style[]
+export type LoaderData = Brand[]
 
 export const loader: LoaderFunction = async () => {
-  log.debug('getting styles...')
-  const styles = await prisma.style.findMany()
-  log.debug('got %d styles', styles.length)
-  return json<LoaderData>(styles)
+  log.debug('getting brands...')
+  const brands = await prisma.brand.findMany()
+  log.debug('got %d brands', brands.length)
+  return json<LoaderData>(brands)
 }
 
-export default function StylesPage() {
-  const styles = useLoaderData<LoaderData>()
+export default function BrandsPage() {
+  const brands = useLoaderData<LoaderData>()
   return (
     <main className='flex flex-1 items-center justify-center px-12'>
-      <h1 className='my-4 mr-12 text-6xl'>styles</h1>
+      <h1 className='my-4 mr-12 text-6xl'>brands</h1>
       <ul>
-        {styles.map((style) => {
-          const filter: Filter<'styles', 'some'> = {
+        {brands.map((brand) => {
+          const filter: Filter<'brands', 'some'> = {
             id: nanoid(5),
-            name: 'styles',
+            name: 'brands',
             condition: 'some',
-            value: { id: style.id, name: style.name },
+            value: { id: brand.id, name: brand.name },
           }
           const param = filterToSearchParam(filter)
           return (
-            <li key={style.id}>
+            <li key={brand.id}>
               <Link
                 prefetch='intent'
                 className='link underline'
                 to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
               >
-                {style.name}
+                {brand.name}
               </Link>
             </li>
           )

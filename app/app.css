@@ -77,6 +77,9 @@
 
   .underline {
     @apply decoration-1 underline-offset-1;
+    &.link {
+      @apply decoration-gray-900/40 transition-colors hover:decoration-gray-900 dark:decoration-gray-100/40 dark:hover:decoration-gray-100;
+    }
   }
 }
 

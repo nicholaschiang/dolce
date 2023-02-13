@@ -25,6 +25,8 @@ const PLURAL_CONDITION_TO_STRING: Record<FilterCondition, string> = {
   // TODO is this "exclude if any of" or "exclude if all" or both?
   none: 'exclude if any of',
 }
+export const FILTER_PARAM = 'f'
+export const JOIN_PARAM = 'j'
 
 // i tried to use a custom (Objectify<T> = T extends object ? T : never) type
 // but it didn't work for filtering decimal fields (where Decimal is an object).
