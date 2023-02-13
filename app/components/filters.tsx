@@ -23,6 +23,7 @@ import type { MenuProps } from 'components/menu'
 
 import { clone, useMatchesData } from 'utils'
 import type { Filter } from 'filters'
+import { filterToStrings } from 'filters'
 
 // we need a way to load menu options when filtering based on a model; this
 // constant aims to map models to the routes that have loaders to get their
@@ -140,7 +141,7 @@ function FilterItemButton({
         className,
       )}
     >
-      <span className='mt-px max-w-2xs overflow-hidden text-ellipsis whitespace-nowrap text-2xs'>
+      <span className='mt-px overflow-hidden text-ellipsis whitespace-nowrap text-2xs'>
         {children}
       </span>
     </button>
@@ -151,13 +152,12 @@ type FilterItemProps = { filter: Filter }
 
 function FilterItem({ filter }: FilterItemProps) {
   const { removeFilter } = useContext(FiltersContext)
+  const { name, condition, value } = filterToStrings(filter)
   return (
     <li className='mr-1.5 mb-1.5 flex h-6 flex-none items-stretch gap-px overflow-hidden rounded border border-gray-200 bg-white last:mr-0 dark:border-none dark:bg-transparent'>
-      <FilterItemButton>{filter.name}</FilterItemButton>
-      <FilterItemButton className='text-gray-400'>
-        {filter.condition.toString()}
-      </FilterItemButton>
-      <FilterItemButton>{JSON.stringify(filter.value)}</FilterItemButton>
+      <FilterItemButton>{name}</FilterItemButton>
+      <FilterItemButton className='text-gray-400'>{condition}</FilterItemButton>
+      <FilterItemButton>{value}</FilterItemButton>
       <FilterItemButton
         className='text-gray-400 hover:text-inherit'
         onClick={() => removeFilter(filter)}
