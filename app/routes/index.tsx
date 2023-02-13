@@ -52,7 +52,7 @@ function Milestone({ start, end, title, subtitle, url }: MilestoneProps) {
   )
 }
 
-export default function Index() {
+export default function IndexPage() {
   return (
     <main className='flex min-h-screen w-screen items-center justify-center'>
       <div className='fixed top-8 right-8'>

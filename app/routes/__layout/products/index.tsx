@@ -51,7 +51,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>(products)
 }
 
-export default function Products() {
+export default function ProductsPage() {
   const products = useLoaderData<LoaderData>()
   const [searchParams, setSearchParams] = useSearchParams()
   const filters = useMemo<Filter[]>(
@@ -114,7 +114,7 @@ function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
             alt={name}
           />
         </div>
-        <Link to={`/products/${id}`}>
+        <Link prefetch='intent' to={`/products/${id}`}>
           <div className='relative mb-2 rounded-md pt-5/4' />
           <h2 className='leading-none'>{name}</h2>
           <h3>${msrp}</h3>
