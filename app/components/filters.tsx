@@ -199,16 +199,16 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
       >
         <PlusIcon className='h-3.5 w-3.5' />
       </button>
-      <AnimatePresence initial={false}>
-        <MenuContext.Provider
-          value={useMemo(() => ({ setOpen, position }), [setOpen, position])}
-        >
+      <MenuContext.Provider
+        value={useMemo(() => ({ setOpen, position }), [setOpen, position])}
+      >
+        <AnimatePresence initial={false}>
           {open && !field && (
             <FilterNameMenu fields={model.fields} setField={setField} />
           )}
           {open && field && <FilterValueMenu field={field} />}
-        </MenuContext.Provider>
-      </AnimatePresence>
+        </AnimatePresence>
+      </MenuContext.Provider>
     </>
   )
 }
