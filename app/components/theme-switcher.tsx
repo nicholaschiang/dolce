@@ -1,8 +1,7 @@
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
+import cn from 'classnames'
 import { useEffect } from 'react'
 import { useFetcher } from '@remix-run/react'
-
-import { IconButton } from 'components/icon-button'
 
 import { Theme, Themed, isTheme, useTheme } from 'theme'
 
@@ -18,12 +17,12 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   }, [fetcher.submission, setTheme])
   return (
     <fetcher.Form action='/theme' method='post'>
-      <IconButton type='submit' className={className}>
+      <button type='submit' className={cn('icon-button', className)}>
         <Themed
           dark={<MoonIcon className='h-3 w-3' />}
           light={<SunIcon className='h-3 w-3' />}
         />
-      </IconButton>
+      </button>
       <input
         type='hidden'
         name='theme'

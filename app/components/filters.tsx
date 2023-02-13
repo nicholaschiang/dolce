@@ -24,8 +24,6 @@ import { useFetcher } from '@remix-run/react'
 
 import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
 
-import { Button } from 'components/button'
-import { IconButton } from 'components/icon-button'
 import { Menu } from 'components/menu'
 import type { MenuProps } from 'components/menu'
 
@@ -195,9 +193,9 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
   // items that should be rendered in that one <Menu> component.
   return (
     <>
-      <IconButton
+      <button
         type='button'
-        className='mb-1.5 flex rounded'
+        className='icon-button mb-1.5 flex rounded'
         onClick={(event) => {
           const { top, left, height } =
             event.currentTarget.getBoundingClientRect()
@@ -206,7 +204,7 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
         }}
       >
         <PlusIcon className='h-3.5 w-3.5' />
-      </IconButton>
+      </button>
       <MenuContext.Provider
         value={useMemo(() => ({ setOpen, position }), [setOpen, position])}
       >
@@ -371,11 +369,13 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
             />
             <div className='mt-4 flex items-center justify-end'>
               <Dialog.Close asChild>
-                <Button type='button' outlined className='mr-3'>
+                <button type='button' className='button outlined mr-3'>
                   cancel
-                </Button>
+                </button>
               </Dialog.Close>
-              <Button type='submit'>apply</Button>
+              <button className='button' type='submit'>
+                apply
+              </button>
             </div>
           </form>
         </Dialog.Content>
