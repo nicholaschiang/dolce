@@ -4,7 +4,6 @@ import type { Dispatch, SetStateAction } from 'react'
 import { useMemo, useState } from 'react'
 import { CheckIcon } from '@radix-ui/react-icons'
 import cn from 'classnames'
-import { motion } from 'framer-motion'
 
 type MenuItemProps = {
   label: string
@@ -79,15 +78,9 @@ export function Menu({ position, setOpen, items }: MenuProps) {
         onKeyDown={() => setOpen(false)}
         className='fixed inset-0 z-40 flex cursor-default items-start justify-center'
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.1 }}
+      <div
         className='frosted fixed z-50 mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'
         style={position}
-        layoutDependency={results}
-        layout
       >
         <div
           className={cn(
@@ -98,7 +91,7 @@ export function Menu({ position, setOpen, items }: MenuProps) {
           <input
             className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 caret-indigo-500 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
             type='text'
-            placeholder='filter…'
+            placeholder='filter'
             spellCheck='false'
             autoComplete='off'
             autoFocus
@@ -111,7 +104,7 @@ export function Menu({ position, setOpen, items }: MenuProps) {
             <MenuItem {...result} key={result.label} />
           ))}
         </ul>
-      </motion.div>
+      </div>
     </Portal.Root>
   )
 }
