@@ -10,7 +10,6 @@ import {
   useRef,
   useState,
 } from 'react'
-import { AnimatePresence } from 'framer-motion'
 import cn from 'classnames'
 import invariant from 'tiny-invariant'
 import { nanoid } from 'nanoid'
@@ -202,12 +201,10 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
       <MenuContext.Provider
         value={useMemo(() => ({ setOpen, position }), [setOpen, position])}
       >
-        <AnimatePresence initial={false}>
-          {open && !field && (
-            <FilterNameMenu fields={model.fields} setField={setField} />
-          )}
-          {open && field && <FilterValueMenu field={field} />}
-        </AnimatePresence>
+        {open && !field && (
+          <FilterNameMenu fields={model.fields} setField={setField} />
+        )}
+        {open && field && <FilterValueMenu field={field} />}
       </MenuContext.Provider>
     </>
   )
