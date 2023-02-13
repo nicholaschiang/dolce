@@ -27,8 +27,8 @@ import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
 import { Menu } from 'components/menu'
 import type { MenuProps } from 'components/menu'
 
+import type { Filter, FilterName } from 'filters'
 import { clone, useMatchesData } from 'utils'
-import type { Filter } from 'filters'
 import { filterToStrings } from 'filters'
 
 // we need a way to load menu options when filtering based on a model; this
@@ -350,7 +350,8 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
             onSubmit={(event) => {
               addOrUpdateFilter({
                 id: nanoid(5),
-                name: field.name,
+                // TODO add a runtime check that this is a valid FilterName
+                name: field.name as FilterName,
                 condition: field.type === 'String' ? 'contains' : 'equals',
                 value: new FormData(event.currentTarget).get('value'),
               })
@@ -415,7 +416,8 @@ function ObjectMenu({ field }: FilterValueMenuProps) {
         onClick() {
           addOrUpdateFilter({
             id: nanoid(5),
-            name: field.name,
+            // TODO add a runtime check that this is a valid FilterName
+            name: field.name as FilterName,
             condition: 'some',
             value: { id: item.id, name: item.name },
           })
