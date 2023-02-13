@@ -3,6 +3,7 @@ import * as Portal from '@radix-ui/react-portal'
 import type { Dispatch, SetStateAction } from 'react'
 import { useMemo, useState } from 'react'
 import { CheckIcon } from '@radix-ui/react-icons'
+import { Key } from 'ts-key-enum'
 import cn from 'classnames'
 
 type MenuItemProps = {
@@ -14,22 +15,28 @@ type MenuItemProps = {
 
 function MenuItem({ label, checked, setChecked, onClick }: MenuItemProps) {
   return (
-    <li className='relative flex h-8 w-full min-w-min max-w-xl cursor-pointer items-center text-ellipsis whitespace-nowrap hover:after:absolute hover:after:inset-y-0 hover:after:inset-x-1 hover:after:-z-10 hover:after:rounded-md hover:after:bg-gray-400/10 hover:after:dark:bg-gray-500/10'>
-      <div
-        tabIndex={-1}
-        role='menuitem'
-        onClick={() => {
+    <li
+      role='menuitem'
+      tabIndex={0}
+      onClick={() => {
+        if (setChecked) setChecked(!checked)
+        if (onClick) onClick()
+      }}
+      onKeyDown={(event) => {
+        if (event.key === Key.Enter) {
           if (setChecked) setChecked(!checked)
           if (onClick) onClick()
-        }}
-        onKeyDown={() => {
-          if (setChecked) setChecked(!checked)
-          if (onClick) onClick()
-        }}
-        className='flex h-full flex-1 items-center overflow-hidden px-3.5'
-      >
+          event.preventDefault()
+          event.stopPropagation()
+        }
+      }}
+      onMouseOverCapture={(event) => event.currentTarget.focus()}
+      className='relative flex h-8 w-full min-w-min max-w-xl cursor-pointer items-center text-ellipsis whitespace-nowrap focus:after:absolute focus:after:inset-y-0 focus:after:inset-x-1 focus:after:-z-10 focus:after:rounded-md focus:after:bg-gray-400/10 focus:after:dark:bg-gray-500/10'
+    >
+      <div className='flex h-full flex-1 items-center overflow-hidden px-3.5'>
         {setChecked && (
           <Checkbox.Root
+            tabIndex={-1}
             checked={checked}
             onCheckedChange={setChecked}
             className={cn(
@@ -76,7 +83,13 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
         role='button'
         aria-label='Close Menu'
         onClick={() => setOpen(false)}
-        onKeyDown={() => setOpen(false)}
+        onKeyDown={(event) => {
+          if (event.key === Key.Enter || event.key === Key.Escape) {
+            setOpen(false)
+            event.preventDefault()
+            event.stopPropagation()
+          }
+        }}
         className='fixed inset-0 z-40 flex cursor-default items-start justify-center'
       />
       <div
@@ -97,7 +110,7 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
             autoComplete='off'
             autoFocus
             value={filter}
-            onChange={(evt) => setFilter(evt.currentTarget.value)}
+            onChange={(event) => setFilter(event.currentTarget.value)}
           />
         </div>
         <ul role='menu' className={cn(results.length && 'py-1')}>
