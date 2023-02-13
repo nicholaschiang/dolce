@@ -84,7 +84,7 @@ export function Menu({ position, setOpen, placeholder, items }: MenuProps) {
         aria-label='Close Menu'
         onClick={() => setOpen(false)}
         onKeyDown={(event) => {
-          if (event.key === Key.Enter || event.key === Key.Escape) {
+          if (event.key === Key.Enter) {
             setOpen(false)
             event.preventDefault()
             event.stopPropagation()
