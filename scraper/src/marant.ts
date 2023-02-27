@@ -339,7 +339,10 @@ async function getProducts(page: Page): Promise<Product[]> {
  * e-commerce website. Saves the results to a JSON file.
  * @param dir - the directory to save the resulting `data.json` files.
  */
-export async function scrape(dir = 'public/data/marant') {
+export async function scrape(
+  dir = 'public/data/marant',
+  url = 'https://www.isabelmarant.com/nz/isabel-marant/men/im-all-man',
+) {
   type TaskData = { existingFilters: Filter[]; filtersToGet: string[] }
 
   // For every category:
@@ -504,7 +507,7 @@ export async function scrape(dir = 'public/data/marant') {
     page: Page
     data: TaskData
   }): Promise<void> {
-    await loadPage(page)
+    await loadPage(page, url)
     await acceptCookies(page)
     await openFiltersPanel(page)
     ;(await task({ page, data })).forEach((taskData) => {
@@ -515,7 +518,7 @@ export async function scrape(dir = 'public/data/marant') {
   // Start concurrent pages for each category, and then reuse those pages with
   // the recursive task for every other filter to improve performance.
   await cluster.task(async ({ page, data }: { page: Page; data: TaskData }) => {
-    await loadPage(page)
+    await loadPage(page, url)
     await acceptCookies(page)
     await openFiltersPanel(page)
     await recursive({ page, data })
