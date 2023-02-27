@@ -10,20 +10,6 @@
     content: attr(alt);
   }
 
-  /* hide number input arrows on chrome, safari, edge, and opera */
-  /* see https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* hide number input arrows on firefox */
-  /* see https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp */
-  input[type='number'] {
-    -moz-appearance: textfield;
-  }
-
   /* hide outline on focus */
   :focus {
     outline: none;
@@ -56,6 +42,9 @@
     &:not(:disabled):hover,
     &:not(:disabled):focus {
       @apply bg-gray-900/5 text-gray-900 dark:bg-gray-100/5 dark:text-gray-100;
+    }
+    &:disabled {
+      @apply cursor-not-allowed text-gray-900/20 dark:text-gray-100/20;
     }
   }
 
