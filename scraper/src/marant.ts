@@ -185,6 +185,12 @@ async function loadAllProducts(page: Page) {
   log.debug('No more products to load; all products have been loaded.')
 }
 
+async function scrollToTopOfPage(page: Page): Promise<void> {
+  log.debug('Scrolling to the top of page...')
+  await page.evaluate(() => window.scrollTo(0, 0))
+  log.debug('Scrolled to top of page.')
+}
+
 /**
  * Scrolls to the bottom of the given page until we cannot scroll anymore. This
  * is used to ensure that all images on a given page have been lazy loaded.
@@ -249,17 +255,50 @@ async function getProducts(page: Page): Promise<Product[]> {
   // Ensure all the products have been loaded.
   await loadAllProducts(page)
   // Scroll to the bottom of the page and wait for all images to lazy load.
+  await scrollToTopOfPage(page)
   await scrollToBottomOfPage(page)
   await page.waitForNetworkIdle()
   // Extract the product data from all the products visible on the page.
-  const products = await page.evaluate(() => {
+  const products = await page.evaluate(async () => {
+    /**
+     * Fetches each of the images in the given <img> element's srcset attribute and
+     * then returns the URL to the largest one (determined by the Content-Length
+     * header). We could try parsing the srcset string instead of fetching each
+     * image, but this approach is more robust (e.g. there are many ways to specify
+     * the image size in the srcset string).
+     * @see {@link https://stackoverflow.com/a/36543013}
+     * @param img - the HTMLImageElement to parse the srcset from.
+     * @returns the URL string to the largest image in the srcset.
+     */
+    async function getLargestImageUrl(img: HTMLImageElement): Promise<string> {
+      const urls = img.srcset
+        .replace(/\s+[0-9]+(\.[0-9]+)?[wx]/g, '')
+        .split(/,/)
+      const sizes = await Promise.all(
+        urls.map(async (url) => {
+          const res = await fetch(url, { method: 'HEAD' })
+          const size = parseInt(res.headers.get('Content-Length') ?? '0', 10)
+          return { url, size }
+        }),
+      )
+      const sorted = sizes.sort((a, b) => b.size - a.size)
+      return sorted[0].url
+    }
+
     function getPrice(el: Element): Price {
       const value = el.querySelector('.value')?.textContent?.replace(/,/g, '')
       const currency = el.querySelector('.currency')?.textContent?.trim()
       return { value: value ? Number(value) : undefined, currency }
     }
+
     const productEls = document.querySelectorAll('ul.products > li')
-    return Array.from(productEls).map((productEl) => {
+    // TODO it seems like we cannot have more than 6000 outstanding network
+    // requests in-flight at a single time due to a Chromium bug; thus, I cannot
+    // use Promise.all here and must revert to a simple for loop.
+    // @see {@link https://bugs.chromium.org/p/chromium/issues/detail?id=108055}
+    const productObjs: Product[] = []
+    /* eslint-disable-next-line no-restricted-syntax */
+    for await (const productEl of Array.from(productEls)) {
       const fullPriceEl = productEl.querySelector('.price:not(.discounted)')
       const salePriceEl = productEl.querySelector('.price.discounted')
       const fullPrice = fullPriceEl ? getPrice(fullPriceEl) : undefined
@@ -272,17 +311,19 @@ async function getProducts(page: Page): Promise<Product[]> {
             metadataEl.getAttribute('data-ytos-track-product-data') as string,
           ) as ProductMetadata)
         : undefined
-      return {
+      const imgEl = productEl.querySelector('img')
+      productObjs.push({
         name: productEl
           .querySelector('[itemprop="title"]')
           ?.textContent?.trim(),
         url: productEl.querySelector('a')?.href,
-        imageUrl: productEl.querySelector('img')?.src,
+        imageUrl: imgEl ? await getLargestImageUrl(imgEl) : undefined,
         metadata,
         fullPrice,
         salePrice,
-      }
-    })
+      })
+    }
+    return productObjs
   })
   log.debug('Got %d products.', products.length)
   return products
