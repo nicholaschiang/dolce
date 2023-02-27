@@ -1,3 +1,8 @@
-import { save } from './marant'
+import { save, saveImages } from './marant'
 
-void save('data/marant/02-26-2023')
+async function main(dir = 'public/data/marant/02-26-2023') {
+  await saveImages(dir)
+  await save(dir)
+}
+
+void main()

@@ -1,3 +1,7 @@
+import { Readable } from 'stream'
+import type { ReadableStream } from 'stream/web'
+import { createWriteStream } from 'fs'
+import { finished } from 'stream/promises'
 import fs from 'fs/promises'
 
 import {
@@ -14,6 +18,7 @@ import type { Prisma } from '@prisma/client'
 import ProgressBar from 'progress'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { dequal } from 'dequal/lite'
+import invariant from 'tiny-invariant'
 import { pino } from 'pino'
 import puppeteer from 'puppeteer-extra'
 
@@ -334,7 +339,7 @@ async function getProducts(page: Page): Promise<Product[]> {
  * e-commerce website. Saves the results to a JSON file.
  * @param dir - the directory to save the resulting `data.json` files.
  */
-export async function scrape(dir = 'data/marant') {
+export async function scrape(dir = 'public/data/marant') {
   type TaskData = { existingFilters: Filter[]; filtersToGet: string[] }
 
   // For every category:
@@ -539,16 +544,56 @@ export async function scrape(dir = 'data/marant') {
   await fs.writeFile(`${dir}/data.json`, JSON.stringify(data, null, 2))
 }
 
+function getImageFileName(product: Product): string {
+  return (
+    product.imageUrl?.split('/').pop() ?? `${product.name ?? 'unknown'}.jpg`
+  )
+}
+
+/**
+ * Download all the image files from the given products JSON and store them in
+ * a new images directory within the given directory.
+ * @param dir - the directory to read the `data.json` file from and to save the
+ * downloaded images to.
+ */
+export async function saveImages(dir = 'public/data/marant'): Promise<void> {
+  const data = await fs.readFile(`${dir}/data.json`, 'utf8')
+  const products = JSON.parse(data) as Required<Product>[]
+  const bar = new ProgressBar(
+    'saving images [:bar] :rate/fps :current/:total :percent :etas',
+    {
+      complete: '=',
+      incomplete: ' ',
+      width: 20,
+      total: products.length,
+    },
+  )
+  await Promise.all(
+    products.map(async (product) => {
+      const res = await fetch(product.imageUrl)
+      invariant(res.body, 'res.body is required')
+      const resStream = Readable.fromWeb(res.body as ReadableStream)
+      const file = getImageFileName(product)
+      const fileStream = createWriteStream(`${dir}/images/${file}`)
+      await finished(resStream.pipe(fileStream))
+      bar.tick()
+    }),
+  )
+}
+
 /**
  * Save the scraped data (from JSON) to our Prisma managed Postgres database.
  * @param dir - the directory to read the `data.json` file from.
  * @param seasonPrefix - a string to prefix unto season names (we need unique
  * season names to make saving data easier so we typically will prefix the name
  * found on a brand's website with the name of that brand to avoid collisions).
+ * @param useLocalImages - whether or not we have previously run saveImages and
+ * want to use the local image paths when saving data to the database.
  */
 export async function save(
-  dir = 'data/marant',
+  dir = 'public/data/marant',
   seasonPrefix = 'marant',
+  useLocalImages = true,
 ): Promise<void> {
   const data = await fs.readFile(`${dir}/data.json`, 'utf8')
   const products = JSON.parse(data) as (Required<Product> & {
@@ -556,7 +601,7 @@ export async function save(
   })[]
 
   const bar = new ProgressBar(
-    'saving [:bar] :rate/pps :current/:total :percent :etas',
+    'saving products [:bar] :rate/pps :current/:total :percent :etas',
     {
       complete: '=',
       incomplete: ' ',
@@ -687,9 +732,12 @@ export async function save(
             brands: { connectOrCreate: [brand] },
           },
         }))
+    const imageUrl = useLocalImages
+      ? `/${dir.replace(/^public\//, '')}/images/${getImageFileName(product)}`
+      : product.imageUrl
     const image: Prisma.ImageCreateOrConnectWithoutProductInput = {
-      where: { url: product.imageUrl },
-      create: { url: product.imageUrl },
+      where: { url: imageUrl },
+      create: { url: imageUrl },
     }
     // TODO right now we create separate products for each colorway. instead, we
     // should create a single product with variants. to do so, we'll want to
