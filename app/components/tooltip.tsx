@@ -13,6 +13,7 @@ export function Tooltip({ children, tip, hotkey }: TooltipProps) {
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal>
           <TooltipPrimitive.Content
+            collisionPadding={10}
             side='bottom'
             sideOffset={4}
             className={cn(
