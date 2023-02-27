@@ -1,3 +1,3 @@
-import { scrape } from './marant'
+import { save } from './marant'
 
-void scrape()
+void save('data/marant/02-26-2023')

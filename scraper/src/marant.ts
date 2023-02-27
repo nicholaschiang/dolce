@@ -20,7 +20,7 @@ import puppeteer from 'puppeteer-extra'
 puppeteer.use(StealthPlugin())
 
 const DEBUGGING = false
-const log = pino({ level: 'debug' })
+const log = pino({ level: 'info' })
 const prisma = new PrismaClient({
   datasources: { db: { url: process.env.DATABASE_URL } },
 })
@@ -48,6 +48,13 @@ async function resetFilters(page: Page) {
   log.debug('Resetting filters...')
   const filterButtonSel = 'button.resetFilters'
   await page.waitForSelector(filterButtonSel)
+  // Sometimes it seems that Puppeteer isn't able to click the button.
+  // @see {@link https://stackoverflow.com/a/70894113}
+  await page.evaluate((sel: string) => {
+    const el = document.querySelector(sel)
+    if (el === null) throw new Error(`Could not find "${sel}"!`)
+    el.dispatchEvent(new MouseEvent('click'))
+  }, filterButtonSel)
   await page.click(filterButtonSel)
   await page.waitForNetworkIdle()
   log.debug('Reset filters.')
