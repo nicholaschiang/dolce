@@ -1,3 +1,3 @@
-import { save } from './marant'
+import { scrape } from './marant'
 
-void save()
+void scrape()
