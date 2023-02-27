@@ -122,6 +122,8 @@ export function Filters({
     [setFilters],
   )
 
+  // TODO use the Radix Toolbar component here (or wrap the Filters component
+  // upstream in the products page with a Radix Toolbar for better a11y).
   return (
     <FiltersContext.Provider
       value={useMemo(

@@ -1,5 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
+import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
 import { useCallback, useMemo, useState } from 'react'
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
@@ -80,6 +81,10 @@ export default function ProductsPage() {
     },
     [setSearchParams],
   )
+  // TODO create a useSessionState hook to conveniently persist state in the
+  // user's session cookie (so that, unlike persisting state in localStorage, we
+  // can use it during SSR to prevent a flash of layout shift).
+  // TODO intelligently choose the initial value based on the viewport width.
   const [resultsPerRow, setResultsPerRow] = useState(6)
   return (
     <>
@@ -107,6 +112,12 @@ export default function ProductsPage() {
 
 //////////////////////////////////////////////////////////////////
 
+// There must be at least one product per row.
+const minResultsPerRow = 1
+
+// Only allow users to zoom out to 20 products per row.
+const maxResultsPerRow = 20
+
 type ResultsPerRowSelectProps = {
   resultsPerRow: number
   setResultsPerRow: Dispatch<SetStateAction<number>>
@@ -117,17 +128,30 @@ function ResultsPerRowSelect({
   setResultsPerRow,
 }: ResultsPerRowSelectProps) {
   return (
-    <label className='text-xs lowercase text-gray-500 dark:text-gray-400'>
-      <input
-        type='number'
-        value={resultsPerRow}
-        onChange={(event) =>
-          setResultsPerRow(parseInt(event.currentTarget.value, 10))
+    <div className='flex items-center justify-center'>
+      <button
+        type='button'
+        aria-label='Zoom In'
+        className='icon-button'
+        disabled={resultsPerRow === minResultsPerRow}
+        onClick={() =>
+          setResultsPerRow((prev) => Math.max(prev - 1, minResultsPerRow))
         }
-        className='w-4 appearance-none bg-transparent text-gray-900 dark:text-gray-100'
-      />{' '}
-      results per row
-    </label>
+      >
+        <ZoomInIcon className='h-3.5 w-3.5' />
+      </button>
+      <button
+        type='button'
+        aria-label='Zoom Out'
+        className='icon-button'
+        disabled={resultsPerRow === maxResultsPerRow}
+        onClick={() =>
+          setResultsPerRow((prev) => Math.min(prev + 1, maxResultsPerRow))
+        }
+      >
+        <ZoomOutIcon className='h-3.5 w-3.5' />
+      </button>
+    </div>
   )
 }
 
