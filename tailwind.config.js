@@ -46,10 +46,38 @@ module.exports = {
       maxWidth: { '2xs': '6.25rem' },
       colors: { gray: colors.zinc },
       spacing: {
+        '1.25': '0.3125rem',
         '6.5': '1.625rem',
         '5/4': '125%',
       },
+      keyframes: {
+        // Tooltip
+        'slide-up-fade': {
+          '0%': { opacity: 0, transform: 'translateY(2px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        'slide-right-fade': {
+          '0%': { opacity: 0, transform: 'translateX(-2px)' },
+          '100%': { opacity: 1, transform: 'translateX(0)' },
+        },
+        'slide-down-fade': {
+          '0%': { opacity: 0, transform: 'translateY(-2px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        'slide-left-fade': {
+          '0%': { opacity: 0, transform: 'translateX(2px)' },
+          '100%': { opacity: 1, transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        // Tooltip
+        'slide-up-fade': 'slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-right-fade':
+          'slide-right-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-down-fade': 'slide-down-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-left-fade': 'slide-left-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+      },
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-radix')],
 }

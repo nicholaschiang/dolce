@@ -4,9 +4,11 @@ import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
 import { useCallback, useMemo, useState } from 'react'
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Filters } from 'components/filters'
 import { Image } from 'components/image'
+import { Tooltip } from 'components/tooltip'
 
 import {
   FILTER_PARAM,
@@ -127,30 +129,58 @@ function ResultsPerRowSelect({
   resultsPerRow,
   setResultsPerRow,
 }: ResultsPerRowSelectProps) {
+  const zoomIn = useCallback(() => {
+    setResultsPerRow((prev) => Math.max(prev - 1, minResultsPerRow))
+  }, [setResultsPerRow])
+  const zoomOut = useCallback(() => {
+    setResultsPerRow((prev) => Math.min(prev + 1, maxResultsPerRow))
+  }, [setResultsPerRow])
+
+  // TODO right now, I'm using = as the hotkey because I don't want users to
+  // have to shift+= (to properly type a + character). Should I be doing this?
+  useHotkeys(
+    '=',
+    (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      zoomIn()
+    },
+    [zoomIn],
+  )
+  useHotkeys(
+    '-',
+    (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      zoomOut()
+    },
+    [zoomOut],
+  )
+
   return (
     <div className='flex items-center justify-center'>
-      <button
-        type='button'
-        aria-label='Zoom In'
-        className='icon-button'
-        disabled={resultsPerRow === minResultsPerRow}
-        onClick={() =>
-          setResultsPerRow((prev) => Math.max(prev - 1, minResultsPerRow))
-        }
-      >
-        <ZoomInIcon className='h-3.5 w-3.5' />
-      </button>
-      <button
-        type='button'
-        aria-label='Zoom Out'
-        className='icon-button'
-        disabled={resultsPerRow === maxResultsPerRow}
-        onClick={() =>
-          setResultsPerRow((prev) => Math.min(prev + 1, maxResultsPerRow))
-        }
-      >
-        <ZoomOutIcon className='h-3.5 w-3.5' />
-      </button>
+      <Tooltip tip='Zoom In' hotkey='+'>
+        <button
+          type='button'
+          aria-label='Zoom In'
+          className='icon-button'
+          disabled={resultsPerRow === minResultsPerRow}
+          onClick={zoomIn}
+        >
+          <ZoomInIcon className='h-3.5 w-3.5' />
+        </button>
+      </Tooltip>
+      <Tooltip tip='Zoom Out' hotkey='-'>
+        <button
+          type='button'
+          aria-label='Zoom Out'
+          className='icon-button'
+          disabled={resultsPerRow === maxResultsPerRow}
+          onClick={zoomOut}
+        >
+          <ZoomOutIcon className='h-3.5 w-3.5' />
+        </button>
+      </Tooltip>
     </div>
   )
 }

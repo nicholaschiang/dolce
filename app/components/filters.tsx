@@ -27,6 +27,7 @@ import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
 
 import { Menu } from 'components/menu'
 import type { MenuProps } from 'components/menu'
+import { Tooltip } from 'components/tooltip'
 
 import type { Filter, FilterName } from 'filters'
 import { clone, useMatchesData } from 'utils'
@@ -235,14 +236,16 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
   // items that should be rendered in that one <Menu> component.
   return (
     <>
-      <button
-        ref={ref}
-        type='button'
-        className='icon-button mb-1.5 flex rounded'
-        onClick={openMenu}
-      >
-        <PlusIcon className='h-3.5 w-3.5' />
-      </button>
+      <Tooltip tip='Filter' hotkey='f'>
+        <button
+          ref={ref}
+          type='button'
+          className='icon-button mb-1.5 flex rounded'
+          onClick={openMenu}
+        >
+          <PlusIcon className='h-3.5 w-3.5' />
+        </button>
+      </Tooltip>
       <MenuContext.Provider
         value={useMemo(() => ({ setOpen, position }), [setOpen, position])}
       >
