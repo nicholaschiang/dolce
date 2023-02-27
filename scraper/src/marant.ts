@@ -35,6 +35,15 @@ async function loadPage(
   log.debug('Loaded page: %s', url)
 }
 
+async function acceptCookies(page: Page) {
+  log.debug('Accepting cookies...')
+  const acceptButtonSel = 'button#footer_tc_privacy_button'
+  await page.waitForSelector(acceptButtonSel)
+  await page.click(acceptButtonSel)
+  await page.waitForNetworkIdle()
+  log.debug('Accepted cookies.')
+}
+
 async function resetFilters(page: Page) {
   log.debug('Resetting filters...')
   const filterButtonSel = 'button.resetFilters'
@@ -136,6 +145,67 @@ async function clickFilter(page: Page, filter: Filter) {
   log.debug('Clicked filter. (%s: %s)', filter.title, filter.name)
 }
 
+/**
+ * Clicks the "load more" button (if it exists), waits for network idle, and
+ * then scrolls down to the bottom of the page to trigger the next "load more"
+ * (if it exists) until there are no more "load more" buttons visible.
+ * @param page - the products page to load more products on.
+ */
+async function loadAllProducts(page: Page) {
+  log.debug('Loading more products...')
+  const loadMoreSel = 'button.loadMoreButton:not(.loading)'
+  // TODO figure out why this while loop doesn't work (it seems like loadMoreBtn
+  // is still not null even when it is unable to be clicked).
+  let loadMoreBtn = await page.$(loadMoreSel)
+  while (loadMoreBtn) {
+    try {
+      /* eslint-disable no-await-in-loop */
+      await loadMoreBtn.click()
+      await page.waitForNetworkIdle()
+      log.debug('Loaded more products.')
+      loadMoreBtn = await page.$(loadMoreSel)
+      /* eslint-enable no-await-in-loop */
+    } catch (error) {
+      let message = ''
+      if (error instanceof Error) message = error.message
+      else if (typeof error === 'string') message = error
+      else if (typeof error === 'number') message = error.toString()
+      else if (typeof error === 'object') message = error?.toString() ?? 'null'
+      log.warn('Error while trying to load more products: %s', message)
+      break
+    }
+  }
+  log.debug('No more products to load; all products have been loaded.')
+}
+
+/**
+ * Scrolls to the bottom of the given page until we cannot scroll anymore. This
+ * is used to ensure that all images on a given page have been lazy loaded.
+ * @see {@link https://stackoverflow.com/a/53527984}
+ * @see {@link https://github.com/chenxiaochun/blog/issues/38}
+ * @param page - the page to scroll to the bottom of.
+ */
+async function scrollToBottomOfPage(page: Page): Promise<void> {
+  log.debug('Scrolling to bottom of page...')
+  await page.evaluate(async () => {
+    await new Promise<void>((resolve) => {
+      let totalHeight = 0
+      const distance = 100
+      const timerId = setInterval(() => {
+        const { scrollHeight } = document.body
+        window.scrollBy(0, distance)
+        totalHeight += distance
+
+        if (totalHeight >= scrollHeight - window.innerHeight) {
+          clearInterval(timerId)
+          resolve()
+        }
+      }, 100)
+    })
+  })
+  log.debug('Scrolled to bottom of page.')
+}
+
 type Price = { value?: number; currency?: string }
 type ProductMetadata = {
   product_position: number
@@ -169,6 +239,12 @@ type Product = {
 
 async function getProducts(page: Page): Promise<Product[]> {
   log.debug('Getting products...')
+  // Ensure all the products have been loaded.
+  await loadAllProducts(page)
+  // Scroll to the bottom of the page and wait for all images to lazy load.
+  await scrollToBottomOfPage(page)
+  await page.waitForNetworkIdle()
+  // Extract the product data from all the products visible on the page.
   const products = await page.evaluate(() => {
     function getPrice(el: Element): Price {
       const value = el.querySelector('.value')?.textContent?.replace(/,/g, '')
@@ -376,6 +452,7 @@ export async function scrape(dir = 'data/marant') {
     data: TaskData
   }): Promise<void> {
     await loadPage(page)
+    await acceptCookies(page)
     await openFiltersPanel(page)
     ;(await task({ page, data })).forEach((taskData) => {
       void cluster.queue(taskData)
@@ -386,6 +463,7 @@ export async function scrape(dir = 'data/marant') {
   // the recursive task for every other filter to improve performance.
   await cluster.task(async ({ page, data }: { page: Page; data: TaskData }) => {
     await loadPage(page)
+    await acceptCookies(page)
     await openFiltersPanel(page)
     await recursive({ page, data })
   })
