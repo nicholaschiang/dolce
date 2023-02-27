@@ -38,7 +38,8 @@ export const loader: LoaderFunction = async ({ request }) => {
       include: { images: true },
       where: { [join]: filters.map(filterToPrismaWhere) },
     })
-  ).map((product) => ({
+  ).map((product, index) => ({
+    index,
     id: product.id,
     name: product.name,
     imageUrl: product.images[0]?.url,
@@ -85,8 +86,8 @@ export default function ProductsPage() {
       <Filters modelName='Product' filters={filters} setFilters={setFilters} />
       <div className='h-full flex-1 overflow-y-auto overflow-x-hidden px-12 py-6'>
         <ol className='-m-2 flex flex-wrap'>
-          {products.map((product) => (
-            <ProductItem {...product} key={product.id} />
+          {products.map((product, index) => (
+            <ProductItem {...product} key={product.id} index={index} />
           ))}
         </ol>
       </div>
@@ -96,26 +97,57 @@ export default function ProductsPage() {
 
 //////////////////////////////////////////////////////////////////
 
+// Show six products per row.
+const productsPerRow = 6
+
+// Eagerly load images for the first two rows of products.
+const rowsToEagerLoad = 2
+
+// Images are currently sized w:h = 1:1.25 (e.g. Isabel Marant).
+const widthToHeightImageRatio = 1.25
+
 type ProductItemProps = {
   id: number
   name: string
   imageUrl?: string
   msrp?: number
+  index: number
 }
 
-function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
+function ProductItem({ id, name, imageUrl, msrp, index }: ProductItemProps) {
   return (
-    <li className='shrink-0 grow-0 basis-2/12'>
+    <li
+      className='shrink-0 grow-0'
+      style={{ flexBasis: `${(1 / productsPerRow) * 100}%` }}
+    >
       <div className='relative m-2'>
-        <div className='absolute w-full pt-5/4'>
+        <div
+          className='absolute w-full'
+          style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
+        >
           <Image
             className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
+            loading={
+              index < productsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
+            }
+            decoding={
+              index < productsPerRow * rowsToEagerLoad ? 'sync' : 'async'
+            }
             src={imageUrl}
-            alt={name}
+            data-image={imageUrl}
+            responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
+              (width) => ({
+                size: { width, height: width * widthToHeightImageRatio },
+                maxWidth: width * productsPerRow,
+              }),
+            )}
           />
         </div>
         <Link prefetch='intent' to={`/products/${id}`}>
-          <div className='relative mb-2 rounded-md pt-5/4' />
+          <div
+            className='relative mb-2 rounded-md'
+            style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
+          />
           <h2 className='leading-none'>{name}</h2>
           <h3>${msrp}</h3>
         </Link>
