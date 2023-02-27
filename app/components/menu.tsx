@@ -8,6 +8,8 @@ import cn from 'classnames'
 import { nanoid } from 'nanoid'
 import { useHotkeys } from 'react-hotkeys-hook'
 
+import { Hotkey } from 'components/hotkey'
+
 type MenuItemProps = {
   label: string
   checked?: boolean | 'indeterminate'
@@ -112,10 +114,10 @@ export function Menu({
             event.stopPropagation()
           }
         }}
-        className='fixed inset-0 z-40 flex cursor-default items-start justify-center'
+        className='fixed inset-0 z-30 flex cursor-default items-start justify-center'
       />
       <div
-        className='frosted fixed z-50 mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'
+        className='frosted fixed z-40 mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'
         style={position}
       >
         <div
@@ -144,11 +146,7 @@ export function Menu({
               }
             }}
           />
-          {hotkey && (
-            <kbd className='mr-3.5 rounded-sm bg-gray-200/50 py-0.5 px-1 text-3xs text-gray-500/50 dark:bg-gray-700/50 dark:text-gray-400/50'>
-              {hotkey}
-            </kbd>
-          )}
+          {hotkey && <Hotkey className='mr-3.5'>{hotkey}</Hotkey>}
         </div>
         <ul
           role='listbox'
