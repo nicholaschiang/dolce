@@ -5,6 +5,7 @@ import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 
 import { Filters } from 'components/filters'
+import { Image } from 'components/image'
 
 import {
   FILTER_PARAM,
@@ -107,7 +108,7 @@ function ProductItem({ id, name, imageUrl, msrp }: ProductItemProps) {
     <li className='shrink-0 grow-0 basis-2/12'>
       <div className='relative m-2'>
         <div className='absolute w-full pt-5/4'>
-          <img
+          <Image
             className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
             src={imageUrl}
             alt={name}
