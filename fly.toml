@@ -14,6 +14,10 @@ path = "/metrics"
 [deploy]
 release_command = "npx prisma migrate deploy"
 
+[mounts]
+destination = "/app/.cache"
+source = "cache"
+
 [experimental]
 allowed_public_ports = [ ]
 auto_rollback = true
