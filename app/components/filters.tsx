@@ -76,10 +76,16 @@ export type FiltersProps = {
   modelName: string
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
+  children?: ReactNode
 }
 
 // TODO how do we handle multiple filter items with the same filter name?
-export function Filters({ modelName, filters, setFilters }: FiltersProps) {
+export function Filters({
+  modelName,
+  filters,
+  setFilters,
+  children,
+}: FiltersProps) {
   const addOrUpdateFilter = useCallback(
     (f: Filter) => {
       setFilters((prev) => {
@@ -123,13 +129,14 @@ export function Filters({ modelName, filters, setFilters }: FiltersProps) {
         [filters, addOrUpdateFilter, removeFilter],
       )}
     >
-      <nav className='frosted border-b border-gray-200 px-12 py-3 dark:border-gray-700'>
+      <nav className='frosted flex items-center justify-between border-b border-gray-200 px-12 py-3 dark:border-gray-700'>
         <ul className='-mb-1.5 flex flex-wrap'>
           {filters.map((f) => (
             <FilterItem key={f.id} filter={f} />
           ))}
           <AddFilterButton model={model} />
         </ul>
+        {children}
       </nav>
     </FiltersContext.Provider>
   )

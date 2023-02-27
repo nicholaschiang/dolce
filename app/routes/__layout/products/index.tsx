@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 
@@ -19,7 +19,7 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
 
-export type LoaderData = ProductItemProps[]
+export type LoaderData = Omit<ProductItemProps, 'index' | 'resultsPerRow'>[]
 
 // users can control prisma queries via url search parameters.
 // Ex: /products?f=price:gt:100&f=price:lt:200&j=OR
@@ -38,8 +38,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       include: { images: true },
       where: { [join]: filters.map(filterToPrismaWhere) },
     })
-  ).map((product, index) => ({
-    index,
+  ).map((product) => ({
     id: product.id,
     name: product.name,
     imageUrl: product.images[0]?.url,
@@ -81,13 +80,24 @@ export default function ProductsPage() {
     },
     [setSearchParams],
   )
+  const [resultsPerRow, setResultsPerRow] = useState(6)
   return (
     <>
-      <Filters modelName='Product' filters={filters} setFilters={setFilters} />
+      <Filters modelName='Product' filters={filters} setFilters={setFilters}>
+        <ResultsPerRowSelect
+          resultsPerRow={resultsPerRow}
+          setResultsPerRow={setResultsPerRow}
+        />
+      </Filters>
       <div className='h-full flex-1 overflow-y-auto overflow-x-hidden px-12 py-6'>
         <ol className='-m-2 flex flex-wrap'>
           {products.map((product, index) => (
-            <ProductItem {...product} key={product.id} index={index} />
+            <ProductItem
+              {...product}
+              key={product.id}
+              index={index}
+              resultsPerRow={resultsPerRow}
+            />
           ))}
         </ol>
       </div>
@@ -97,8 +107,31 @@ export default function ProductsPage() {
 
 //////////////////////////////////////////////////////////////////
 
-// Show six products per row.
-const productsPerRow = 6
+type ResultsPerRowSelectProps = {
+  resultsPerRow: number
+  setResultsPerRow: Dispatch<SetStateAction<number>>
+}
+
+function ResultsPerRowSelect({
+  resultsPerRow,
+  setResultsPerRow,
+}: ResultsPerRowSelectProps) {
+  return (
+    <label className='text-xs lowercase text-gray-500 dark:text-gray-400'>
+      <input
+        type='number'
+        value={resultsPerRow}
+        onChange={(event) =>
+          setResultsPerRow(parseInt(event.currentTarget.value, 10))
+        }
+        className='w-4 appearance-none bg-transparent text-gray-900 dark:text-gray-100'
+      />{' '}
+      results per row
+    </label>
+  )
+}
+
+//////////////////////////////////////////////////////////////////
 
 // Eagerly load images for the first two rows of products.
 const rowsToEagerLoad = 2
@@ -112,13 +145,21 @@ type ProductItemProps = {
   imageUrl?: string
   msrp?: number
   index: number
+  resultsPerRow: number
 }
 
-function ProductItem({ id, name, imageUrl, msrp, index }: ProductItemProps) {
+function ProductItem({
+  id,
+  name,
+  imageUrl,
+  msrp,
+  index,
+  resultsPerRow,
+}: ProductItemProps) {
   return (
     <li
       className='shrink-0 grow-0'
-      style={{ flexBasis: `${(1 / productsPerRow) * 100}%` }}
+      style={{ flexBasis: `${(1 / resultsPerRow) * 100}%` }}
     >
       <div className='relative m-2'>
         <div
@@ -127,18 +168,16 @@ function ProductItem({ id, name, imageUrl, msrp, index }: ProductItemProps) {
         >
           <Image
             className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
-            loading={
-              index < productsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
-            }
+            loading={index < resultsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
             decoding={
-              index < productsPerRow * rowsToEagerLoad ? 'sync' : 'async'
+              index < resultsPerRow * rowsToEagerLoad ? 'sync' : 'async'
             }
             src={imageUrl}
             data-image={imageUrl}
             responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
               (width) => ({
                 size: { width, height: width * widthToHeightImageRatio },
-                maxWidth: width * productsPerRow,
+                maxWidth: width * resultsPerRow,
               }),
             )}
           />
