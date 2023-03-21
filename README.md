@@ -177,6 +177,17 @@ Prior to your first deployment, you'll need to do a few things:
 
 - Add a `FLY_API_TOKEN` to your GitHub repo. To do this, go to your user settings on Fly and create a new [token](https://web.fly.io/user/personal_access_tokens/new), then add it to [your repo secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) with the name `FLY_API_TOKEN`.
 
+- Specify the `OPTIMIZE_IMAGES` feature flag, to do this you can run the following commands:
+
+  ```sh
+  fly secrets set OPTIMIZE_IMAGES=true --app nicholas-eng
+  fly secrets set OPTIMIZE_IMAGES=false --app nicholas-eng-staging
+  ```
+
+  > **Note:** Enabling this feature flag will dramatically increase CPU/RAM load; your application may OOM and you may incur unexpectedly high compute costs (~$100 for two `shared-cpu-1x` on Fly.io for the additional RAM, shared CPU seconds, and SSD storage required for image optimization).
+  >
+  > It is recommended to disable this flag in staging and only enable it in production if your deployment target supports it (e.g. you'll probably want to scale up from `shared-cpu-1x` to prevent OOMs) and you are willing to pay the extra compute costs for the slight performance boost to the end-user.
+
 - Add a `SESSION_SECRET` to your fly app secrets, to do this you can run the following commands:
 
   ```sh
