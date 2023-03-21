@@ -402,7 +402,7 @@ model Product {
   id Int @id @default(autoincrement())
 
   // The product's name as designated by the brand and designer.
-  name String
+  name String @unique
 
   // The product's level.
   // @todo perhaps rename this to "ProductLevel" to avoid confusion with "Tier"? 
