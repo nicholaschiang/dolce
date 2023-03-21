@@ -42,6 +42,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!src) return badImageResponse()
   log.debug('optimizing image... %s', src)
 
+  if (process.env.OPTIMIZE_IMAGES === 'false') {
+    const { href } = new URL(src, request.url)
+    log.warn('skipping optimized image due to feature flag... %s', href)
+    return fetch(href, request)
+  }
+
   const width = getIntOrNull(url.searchParams.get('width'))
   const height = getIntOrNull(url.searchParams.get('height'))
   const fit = (url.searchParams.get('fit') as keyof FitEnum) || 'cover'
