@@ -146,7 +146,7 @@
     "vitest": "^0.28.3"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"

@@ -15,7 +15,7 @@ jobs:
     name: ESLint
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
 
       - name: Checkout repo
@@ -24,10 +24,11 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version-file: package.json
+          cache: yarn
 
       - name: Download deps
-        uses: bahmutov/npm-install@v1
+        run: yarn install --immutable
 
       # Linting fails in CI because `~/styles/tailwind.css` does not exist and
       # thus my `import/order` rule errors (because it doesn't mark that as a
@@ -42,7 +43,7 @@ jobs:
     name: TypeScript
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
 
       - name: Checkout repo
@@ -51,10 +52,11 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version-file: package.json
+          cache: yarn
 
       - name: Download deps
-        uses: bahmutov/npm-install@v1
+        run: yarn install --immutable
 
       - name: Type check
         run: yarn typecheck
@@ -63,7 +65,7 @@ jobs:
     name: Vitest
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
 
       - name: Checkout repo
@@ -72,10 +74,11 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version-file: package.json
+          cache: yarn
 
       - name: Download deps
-        uses: bahmutov/npm-install@v1
+        run: yarn install --immutable
 
       - name: Run vitest
         run: yarn test -- --coverage
@@ -84,7 +87,7 @@ jobs:
     name: Cypress
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
 
       - name: Checkout repo
@@ -96,10 +99,11 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version-file: package.json
+          cache: yarn
 
       - name: Download deps
-        uses: bahmutov/npm-install@v1
+        run: yarn install --immutable
 
       - name: Docker compose
         # the sleep is just there to give time for postgres to get started
@@ -107,7 +111,7 @@ jobs:
         env:
           DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/postgres'
 
-      - name: Setup Database
+      - name: Setup database
         run: yarn prisma migrate reset --force
 
       - name: Build
@@ -130,7 +134,7 @@ jobs:
     if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/prod') && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
 
       - name: Checkout repo
@@ -143,11 +147,11 @@ jobs:
           file: 'fly.toml'
           field: 'app'
 
-      - name: Set up Docker Buildx
+      - name: Set up docker buildx
         uses: docker/setup-buildx-action@v2
 
       # Setup cache
-      - name: Cache Docker layers
+      - name: Cache docker layers
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
@@ -155,7 +159,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Fly Registry Auth
+      - name: Fly registry auth
         uses: docker/login-action@v2
         with:
           registry: registry.fly.io
@@ -191,7 +195,7 @@ jobs:
     if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/prod') && github.event_name == 'push' }}
 
     steps:
-      - name: Cancel Previous Runs
+      - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
 
       - name: Checkout repo
@@ -204,7 +208,7 @@ jobs:
           file: 'fly.toml'
           field: 'app'
 
-      - name: Deploy Staging
+      - name: Deploy staging
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: superfly/flyctl-actions@1.3
         with:
@@ -212,7 +216,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Deploy Production
+      - name: Deploy production
         if: ${{ github.ref == 'refs/heads/prod' }}
         uses: superfly/flyctl-actions@1.3
         with:
