@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.0.1](https://github.com/nicholaschiang/site/compare/v1.0.0...v1.0.1) (2023-03-21)
+
+
+### Bug Fixes
+
+* **components/filters:** preserve scalar types ([632fabe](https://github.com/nicholaschiang/site/commit/632fabefa609f0579c328b4c5f1972add6657d85))
+
 ## 1.0.0 (2023-03-21)
 
 
