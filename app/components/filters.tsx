@@ -13,6 +13,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -29,7 +30,7 @@ import { Menu } from 'components/menu'
 import type { MenuProps } from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
-import type { Filter, FilterName } from 'filters'
+import type { Filter, FilterName, FilterValue } from 'filters'
 import { clone, useMatchesData } from 'utils'
 import { filterToStrings } from 'filters'
 
@@ -380,6 +381,8 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
     inputType = 'checkbox'
   }
 
+  const id = useId()
+
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger />
@@ -390,12 +393,25 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
             className='m-8'
             autoComplete='off'
             onSubmit={(event) => {
+              let value: FilterValue = new FormData(event.currentTarget).get(id)
+              switch (inputType) {
+                case 'number':
+                  value = Number(value)
+                  break
+                case 'date':
+                  value = new Date(value as string)
+                  break
+                case 'checkbox':
+                  value = value === 'true'
+                  break
+                default:
+              }
               addOrUpdateFilter({
                 id: nanoid(5),
                 // TODO add a runtime check that this is a valid FilterName
                 name: field.name as FilterName,
                 condition: field.type === 'String' ? 'contains' : 'equals',
-                value: new FormData(event.currentTarget).get('value'),
+                value,
               })
               setOpen(false)
               event.preventDefault()
@@ -408,8 +424,9 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
               className='input'
               aria-label='value'
               type={inputType}
-              name='value'
-              id='value'
+              name={id}
+              id={id}
+              required
             />
             <div className='mt-4 flex items-center justify-end'>
               <Dialog.Close asChild>
