@@ -25,7 +25,7 @@ import puppeteer from 'puppeteer-extra'
 puppeteer.use(StealthPlugin())
 
 const DEBUGGING = false
-const log = pino({ level: 'info' })
+const log = pino({ level: process.env.LOG_LEVEL ?? 'info' })
 const prisma = new PrismaClient({
   datasources: { db: { url: process.env.DATABASE_URL } },
 })
@@ -251,7 +251,7 @@ type Product = {
   fullPrice?: Price
   salePrice?: Price
   url?: string
-  imageUrl?: string
+  imageURL?: string
   metadata?: ProductMetadata
 }
 
@@ -275,7 +275,7 @@ async function getProducts(page: Page): Promise<Product[]> {
      * @param img - the HTMLImageElement to parse the srcset from.
      * @returns the URL string to the largest image in the srcset.
      */
-    async function getLargestImageUrl(img: HTMLImageElement): Promise<string> {
+    async function getLargestImageURL(img: HTMLImageElement): Promise<string> {
       const urls = img.srcset
         .replace(/\s+[0-9]+(\.[0-9]+)?[wx]/g, '')
         .split(/,/)
@@ -322,7 +322,7 @@ async function getProducts(page: Page): Promise<Product[]> {
           .querySelector('[itemprop="title"]')
           ?.textContent?.trim(),
         url: productEl.querySelector('a')?.href,
-        imageUrl: imgEl ? await getLargestImageUrl(imgEl) : undefined,
+        imageURL: imgEl ? await getLargestImageURL(imgEl) : undefined,
         metadata,
         fullPrice,
         salePrice,
@@ -549,7 +549,7 @@ export async function scrape(
 
 function getImageFileName(product: Product): string {
   return (
-    product.imageUrl?.split('/').pop() ?? `${product.name ?? 'unknown'}.jpg`
+    product.imageURL?.split('/').pop() ?? `${product.name ?? 'unknown'}.jpg`
   )
 }
 
@@ -573,7 +573,8 @@ export async function saveImages(dir = 'public/data/marant'): Promise<void> {
   )
   await Promise.all(
     products.map(async (product) => {
-      const res = await fetch(product.imageUrl)
+      log.debug('saving image for product: %s', product.imageURL)
+      const res = await fetch(product.imageURL)
       invariant(res.body, 'res.body is required')
       const resStream = Readable.fromWeb(res.body as ReadableStream)
       const file = getImageFileName(product)
@@ -597,6 +598,7 @@ export async function save(
   dir = 'public/data/marant',
   seasonPrefix = 'marant',
   useLocalImages = true,
+  sex = Sex.MAN,
 ): Promise<void> {
   const data = await fs.readFile(`${dir}/data.json`, 'utf8')
   const products = JSON.parse(data) as (Required<Product> & {
@@ -677,9 +679,9 @@ export async function save(
           create: {
             name: f.name.toLowerCase(),
             style: { connectOrCreate: parentStyle },
-            sex: Sex.MAN,
             brand: { connectOrCreate: brand },
             country: undefined,
+            sex,
           },
         }))
     // TODO: Filter for duplicate products (that have the same name) that should
@@ -735,33 +737,36 @@ export async function save(
             brands: { connectOrCreate: [brand] },
           },
         }))
-    const imageUrl = useLocalImages
+    const imageURL = useLocalImages
       ? `/${dir.replace(/^public\//, '')}/images/${getImageFileName(product)}`
-      : product.imageUrl
+      : product.imageURL
     const image: Prisma.ImageCreateOrConnectWithoutProductInput = {
-      where: { url: imageUrl },
-      create: { url: imageUrl },
+      where: { url: imageURL },
+      create: { url: imageURL },
     }
     // TODO right now we create separate products for each colorway. instead, we
     // should create a single product with variants. to do so, we'll want to
     // filter and aggregate by name before running any prisma operations.
-    await prisma.product.create({
-      data: {
-        name: product.name.toLowerCase(),
-        level: Level.RTW,
-        sizes: { connectOrCreate: sizes },
-        msrp: product.fullPrice.value as number,
-        prices: { connectOrCreate: prices },
-        images: { connectOrCreate: [image] },
-        // TODO is there any way that we can regularly get this information? if
-        // not, perhaps we should make these fields optional or remove them.
-        designedAt: new Date(),
-        releasedAt: new Date(),
-        styles: { connectOrCreate: styles },
-        collections: { connectOrCreate: collections },
-        designers: { connectOrCreate: [designer] },
-        brands: { connectOrCreate: [brand] },
-      },
+    const productInput: Prisma.ProductCreateInput = {
+      name: product.name.toLowerCase(),
+      level: Level.RTW,
+      sizes: { connectOrCreate: sizes },
+      msrp: product.fullPrice.value as number,
+      prices: { connectOrCreate: prices },
+      images: { connectOrCreate: [image] },
+      // TODO is there any way that we can regularly get this information? if
+      // not, perhaps we should make these fields optional or remove them.
+      designedAt: new Date(),
+      releasedAt: new Date(),
+      styles: { connectOrCreate: styles },
+      collections: { connectOrCreate: collections },
+      designers: { connectOrCreate: [designer] },
+      brands: { connectOrCreate: [brand] },
+    }
+    await prisma.product.upsert({
+      create: productInput,
+      update: productInput,
+      where: { name: productInput.name },
     })
     bar.tick()
   }
