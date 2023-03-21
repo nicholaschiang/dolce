@@ -44,7 +44,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   ).map((product) => ({
     id: product.id,
     name: product.name,
-    imageUrl: product.images[0]?.url,
+    images: product.images.map((image) => image.url),
     // real users don't care about cents. most reputable brands won't include
     // cents in their prices anyway. prices that do include cents are usually
     // intended to be misleading (e.g. $69.70 instead of $70).
@@ -196,7 +196,7 @@ const widthToHeightImageRatio = 1.25
 type ProductItemProps = {
   id: number
   name: string
-  imageUrl?: string
+  images: string[]
   msrp?: number
   index: number
   resultsPerRow: number
@@ -205,7 +205,7 @@ type ProductItemProps = {
 function ProductItem({
   id,
   name,
-  imageUrl,
+  images,
   msrp,
   index,
   resultsPerRow,
@@ -226,8 +226,8 @@ function ProductItem({
             decoding={
               index < resultsPerRow * rowsToEagerLoad ? 'sync' : 'async'
             }
-            src={imageUrl}
-            data-image={imageUrl}
+            src={images.slice(-1)[0]}
+            data-image={images.slice(-1)[0]}
             responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
               (width) => ({
                 size: { width, height: width * widthToHeightImageRatio },
