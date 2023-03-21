@@ -109,6 +109,8 @@ export function Filters({
     [setFilters],
   )
 
+  // TODO perhaps refactor this component to simply accept a Prisma data model
+  // instead of relying on our own proprietary Remix API routes.
   const data = useMatchesData<LayoutLoaderData>('routes/__layout')
   invariant(data, 'Could not load schema data')
   const model = data.models.find((m) => m.name === modelName)
