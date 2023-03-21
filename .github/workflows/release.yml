@@ -1,0 +1,73 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+      - '*.x'
+  pull_request:
+    branches:
+      - main
+      - '*.x'
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  dry-release:
+    name: Dry Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Checkout branch
+        run: git checkout $GITHUB_HEAD_REF
+
+      - name: Download deps
+        uses: bahmutov/npm-install@v1
+
+      - name: Release
+        run: |
+          unset GITHUB_ACTIONS && \
+          yarn semantic-release \
+            --no-ci \
+            --preset conventionalcommits \
+            --dry-run \
+            --plugins \
+            --analyze-commits "@semantic-release/commit-analyzer" \
+            --generate-notes "@semantic-release/release-notes-generator" \
+            --branches "$GITHUB_HEAD_REF" \
+            --repository-url "file://$PWD"
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    needs:
+      - dry-release
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Download deps
+        uses: bahmutov/npm-install@v1
+
+      - name: Release
+        run: yarn semantic-release --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
