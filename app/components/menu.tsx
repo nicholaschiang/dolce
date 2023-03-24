@@ -1,68 +1,26 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
-import * as Portal from '@radix-ui/react-portal'
 import { Command, useCommandState } from 'cmdk'
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
-import { createContext, useContext } from 'react'
 import { CheckIcon } from '@radix-ui/react-icons'
-import { Key } from 'ts-key-enum'
+import type { ReactNode } from 'react'
 import cn from 'classnames'
-import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Hotkey } from 'components/hotkey'
 
-const RootContext = createContext<RootProps>({
-  position: { top: 0, left: 0 },
-  setOpen() {},
-})
-const useRoot = () => useContext(RootContext)
-
 export type RootProps = {
-  position: { top: number; left: number }
-  setOpen: Dispatch<SetStateAction<boolean>>
   children?: ReactNode[]
 }
 
-export function Root(props: RootProps) {
-  const { position, setOpen, children } = props
-  useHotkeys<HTMLInputElement>(
-    'esc',
-    (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      setOpen(false)
-    },
-    [setOpen],
-  )
+export function Root({ children }: RootProps) {
   return (
-    <Portal.Root>
-      <div
-        tabIndex={-1}
-        role='button'
-        aria-label='Close Menu'
-        onClick={() => setOpen(false)}
-        onKeyDown={(event) => {
-          if (event.key === Key.Enter) {
-            setOpen(false)
-            event.preventDefault()
-            event.stopPropagation()
-          }
-        }}
-        className='fixed inset-0 z-30 flex cursor-default items-start justify-center'
-      />
-      <Command
-        className='frosted fixed z-40 mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'
-        style={position}
-      >
-        <RootContext.Provider value={props}>{children}</RootContext.Provider>
-      </Command>
-    </Portal.Root>
+    <Command className='frosted fixed z-40 mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'>
+      {children}
+    </Command>
   )
 }
 
 export type InputProps = { hotkey?: string; placeholder?: string }
 
 export function Input({ hotkey, placeholder }: InputProps) {
-  const { setOpen } = useRoot()
   const count = useCommandState((state) => state.filtered.count)
   return (
     <div
@@ -75,13 +33,6 @@ export function Input({ hotkey, placeholder }: InputProps) {
         ref={(input) => input?.focus()}
         className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
         placeholder={placeholder}
-        onKeyDownCapture={(event) => {
-          if (event.key === Key.Escape) {
-            event.preventDefault()
-            event.stopPropagation()
-            setOpen(false)
-          }
-        }}
       />
       {hotkey && <Hotkey className='mr-3.5'>{hotkey}</Hotkey>}
     </div>

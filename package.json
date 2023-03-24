@@ -43,6 +43,7 @@
     "@radix-ui/react-checkbox": "^1.0.1",
     "@radix-ui/react-dialog": "^1.0.2",
     "@radix-ui/react-icons": "^1.1.1",
+    "@radix-ui/react-popover": "^1.0.5",
     "@radix-ui/react-portal": "^1.0.1",
     "@radix-ui/react-tooltip": "^1.0.4",
     "@remix-run/express": "^1.11.1",

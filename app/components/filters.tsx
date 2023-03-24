@@ -1,4 +1,5 @@
 import * as Dialog from '@radix-ui/react-dialog'
+import * as Popover from '@radix-ui/react-popover'
 import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
 import type {
   Dispatch,
@@ -66,10 +67,7 @@ const FiltersContext = createContext<FiltersContextT>({
   addOrUpdateFilter() {},
   removeFilter() {},
 })
-const MenuContext = createContext<Menu.RootProps>({
-  position: { top: 0, left: 0 },
-  setOpen() {},
-})
+const MenuContext = createContext<Dispatch<SetStateAction<boolean>>>(() => {})
 
 //////////////////////////////////////////////////////////////////
 
@@ -200,17 +198,6 @@ type AddFilterButtonProps = { model: Prisma.DMMF.Model }
 function AddFilterButton({ model }: AddFilterButtonProps) {
   const [open, setOpen] = useState(false)
   const [field, setField] = useState<Prisma.DMMF.Field>()
-  const [position, setPosition] = useState({ left: 0, top: 0 })
-
-  // TODO spend some time debugging why useReactMeasure() didn't work here.
-  const ref = useRef<HTMLButtonElement>(null)
-  const openMenu = useCallback(() => {
-    if (ref.current) {
-      const { top, left, height } = ref.current.getBoundingClientRect()
-      setPosition({ top: top + height, left })
-    }
-    setOpen(true)
-  }, [])
 
   // Reset the selected field when the user closes the filters menu.
   useEffect(() => {
@@ -224,35 +211,38 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
     (event) => {
       event.preventDefault()
       event.stopPropagation()
-      openMenu()
+      setOpen(true)
     },
-    [openMenu],
+    [],
   )
 
   // TODO refactor this to only have a single <Menu> component and get rid of
   // the MenuContext; instead we should just have helper functions return the
   // items that should be rendered in that one <Menu> component.
   return (
-    <>
-      <Tooltip tip='Filter' hotkey='f'>
-        <button
-          ref={ref}
-          type='button'
-          className='icon-button mb-1.5 flex rounded'
-          onClick={openMenu}
-        >
-          <PlusIcon className='h-3.5 w-3.5' />
-        </button>
-      </Tooltip>
-      <MenuContext.Provider
-        value={useMemo(() => ({ setOpen, position }), [setOpen, position])}
-      >
-        {open && !field && (
-          <FilterNameMenu fields={model.fields} setField={setField} />
-        )}
-        {open && field && <FilterValueMenu field={field} />}
-      </MenuContext.Provider>
-    </>
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <Popover.Trigger>
+        <Tooltip tip='Filter' hotkey='f'>
+          <button
+            type='button'
+            className='icon-button mb-1.5 flex rounded'
+            onClick={() => setOpen(true)}
+          >
+            <PlusIcon className='h-3.5 w-3.5' />
+          </button>
+        </Tooltip>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content align='start'>
+          <MenuContext.Provider value={setOpen}>
+            {field === undefined && (
+              <FilterNameMenu fields={model.fields} setField={setField} />
+            )}
+            {field !== undefined && <FilterValueMenu field={field} />}
+          </MenuContext.Provider>
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }
 
@@ -264,9 +254,8 @@ type FilterNameMenuProps = {
 }
 
 function FilterNameMenu({ fields, setField }: FilterNameMenuProps) {
-  const { setOpen, position } = useContext(MenuContext)
   return (
-    <Menu.Root setOpen={setOpen} position={position}>
+    <Menu.Root>
       <Menu.Input placeholder='field' hotkey='f' />
       <Menu.List>
         {fields.map((f: Prisma.DMMF.Field) => (
@@ -301,7 +290,6 @@ function FilterValueMenu({ field }: FilterValueMenuProps) {
 // if the field is an enum, we show a dropdown of all the possible enum values
 // Ex: <LevelOption />, <TierOption />, <SeasonOption />
 function EnumMenu({ field }: FilterValueMenuProps) {
-  const { position, setOpen } = useContext(MenuContext)
   const { filters, addOrUpdateFilter } = useContext(FiltersContext)
 
   // TODO while this should work for any enum, we shouldn't hardcode to only the
@@ -319,7 +307,7 @@ function EnumMenu({ field }: FilterValueMenuProps) {
   invariant(en, `Could not find enum "${field.type}"`)
 
   return (
-    <Menu.Root position={position} setOpen={setOpen}>
+    <Menu.Root>
       <Menu.Input placeholder={field.name} />
       <Menu.List>
         {en.values.map((e) => (
@@ -367,7 +355,7 @@ function EnumMenu({ field }: FilterValueMenuProps) {
 function ScalarMenu({ field }: FilterValueMenuProps) {
   const [open, setOpen] = useState(true)
   const { addOrUpdateFilter } = useContext(FiltersContext)
-  const { setOpen: setMenuOpen } = useContext(MenuContext)
+  const setMenuOpen = useContext(MenuContext)
 
   useEffect(() => {
     if (!open) setMenuOpen(false)
@@ -453,9 +441,6 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
 // to show a list of all the possible sizes)
 // Ex: <SizeOption />, <BrandOption />, <CountryOption />, <ShowOption />
 function ObjectMenu({ field }: FilterValueMenuProps) {
-  const { position, setOpen } = useContext(MenuContext)
-  const { addOrUpdateFilter } = useContext(FiltersContext)
-
   // TODO we need to ensure that each one of our Prisma models has a name field
   // TODO perhaps we should define individual components for each model? that
   // would let us do fancy things with the menu item UI (e.g. colors should
@@ -468,9 +453,12 @@ function ObjectMenu({ field }: FilterValueMenuProps) {
     if (fetcher.type === 'init') fetcher.load(route)
   }, [fetcher, field.type])
 
-  // TODO make items optional in <Menu> and show a skeleton state there
+  // TODO show a skeleton state while the options are loading
+  const setOpen = useContext(MenuContext)
+  const { addOrUpdateFilter } = useContext(FiltersContext)
+
   return (
-    <Menu.Root position={position} setOpen={setOpen}>
+    <Menu.Root>
       <Menu.Input placeholder={field.name} />
       <Menu.List>
         {(fetcher.data ?? []).map((item) => (
