@@ -8,8 +8,8 @@ import type {
   ReactNode,
   SetStateAction,
 } from 'react'
-import type { Level, Prisma } from '@prisma/client'
 import {
+  Fragment,
   createContext,
   useCallback,
   useContext,
@@ -19,9 +19,11 @@ import {
   useRef,
   useState,
 } from 'react'
+import type { Level, Prisma } from '@prisma/client'
 import cn from 'classnames'
 import invariant from 'tiny-invariant'
 import { nanoid } from 'nanoid'
+import { useCommandState } from 'cmdk'
 import { useFetcher } from '@remix-run/react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -73,6 +75,7 @@ const MenuContext = createContext<Dispatch<SetStateAction<boolean>>>(() => {})
 
 export type FiltersProps = {
   modelName: string
+  hiddenFields?: string[]
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   children?: ReactNode
@@ -81,6 +84,7 @@ export type FiltersProps = {
 // TODO how do we handle multiple filter items with the same filter name?
 export function Filters({
   modelName,
+  hiddenFields,
   filters,
   setFilters,
   children,
@@ -137,7 +141,7 @@ export function Filters({
           {filters.map((f) => (
             <Item key={f.id} filter={f} />
           ))}
-          <AddFilterButton model={model} />
+          <AddFilterButton model={model} hiddenFields={hiddenFields} />
         </ul>
         {children}
       </nav>
@@ -193,16 +197,21 @@ function ItemButton({ className, children, onClick }: ItemButtonProps) {
 
 //////////////////////////////////////////////////////////////////
 
-type AddFilterButtonProps = { model: Prisma.DMMF.Model }
+type AddFilterButtonProps = {
+  model: Prisma.DMMF.Model
+  hiddenFields?: string[]
+}
 
-function AddFilterButton({ model }: AddFilterButtonProps) {
+function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
+  // TODO refactor field to instead be an array of pages to support filtering by
+  // deeply nested properties (e.g. product -> brand -> country -> name)
   const [open, setOpen] = useState(false)
   const [field, setField] = useState<Prisma.DMMF.Field>()
+  const [search, setSearch] = useState('')
 
   // Reset the selected field when the user closes the filters menu.
-  useEffect(() => {
-    if (!open) setField(undefined)
-  }, [open])
+  useEffect(() => setField(undefined), [open])
+  useEffect(() => setSearch(''), [open, field])
 
   // TODO refactor this so that it is defined alongside the Menu#hotkey prop. it
   // may be useful to hoist all these hotkey definitions globally, as well.
@@ -216,13 +225,12 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
     [],
   )
 
-  // TODO refactor this to only have a single <Menu> component and get rid of
-  // the MenuContext; instead we should just have helper functions return the
-  // items that should be rendered in that one <Menu> component.
+  const fields = model.fields.filter((f) => !hiddenFields?.includes(f.name))
+
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Popover.Trigger>
-        <Tooltip tip='Filter' hotkey='f'>
+      <Tooltip tip='Filter' hotkey='f'>
+        <Popover.Trigger asChild>
           <button
             type='button'
             className='icon-button mb-1.5 flex rounded'
@@ -230,15 +238,48 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
           >
             <PlusIcon className='h-3.5 w-3.5' />
           </button>
-        </Tooltip>
-      </Popover.Trigger>
+        </Popover.Trigger>
+      </Tooltip>
       <Popover.Portal>
-        <Popover.Content align='start'>
+        <Popover.Content
+          align='start'
+          onCloseAutoFocus={(event) => event.preventDefault()}
+        >
           <MenuContext.Provider value={setOpen}>
-            {field === undefined && (
-              <FilterNameMenu fields={model.fields} setField={setField} />
+            {field?.kind === 'scalar' && <ScalarDialog field={field} />}
+            {field?.kind !== 'scalar' && (
+              <Menu.Root>
+                <Menu.Input
+                  value={search}
+                  onValueChange={setSearch}
+                  placeholder={field?.name ?? 'field'}
+                  hotkey='f'
+                />
+                <Menu.List>
+                  {field === undefined &&
+                    fields.map((f: Prisma.DMMF.Field) => (
+                      <Menu.Item
+                        key={f.name}
+                        value={f.name}
+                        onSelect={() => setField(f)}
+                      >
+                        {f.name}
+                      </Menu.Item>
+                    ))}
+                  {field === undefined &&
+                    fields.map((f) => (
+                      <Fragment key={f.name}>
+                        {f.kind === 'enum' && <EnumItems nested field={f} />}
+                        {f.kind === 'object' && (
+                          <ObjectItems nested field={f} />
+                        )}
+                      </Fragment>
+                    ))}
+                  {field?.kind === 'enum' && <EnumItems field={field} />}
+                  {field?.kind === 'object' && <ObjectItems field={field} />}
+                </Menu.List>
+              </Menu.Root>
             )}
-            {field !== undefined && <FilterValueMenu field={field} />}
           </MenuContext.Provider>
         </Popover.Content>
       </Popover.Portal>
@@ -248,48 +289,11 @@ function AddFilterButton({ model }: AddFilterButtonProps) {
 
 //////////////////////////////////////////////////////////////////
 
-type FilterNameMenuProps = {
-  fields: Prisma.DMMF.Field[]
-  setField: Dispatch<SetStateAction<Prisma.DMMF.Field | undefined>>
-}
-
-function FilterNameMenu({ fields, setField }: FilterNameMenuProps) {
-  return (
-    <Menu.Root>
-      <Menu.Input placeholder='field' hotkey='f' />
-      <Menu.List>
-        {fields.map((f: Prisma.DMMF.Field) => (
-          <Menu.Item key={f.name} onSelect={() => setField(f)}>
-            {f.name}
-          </Menu.Item>
-        ))}
-      </Menu.List>
-    </Menu.Root>
-  )
-}
-
-type FilterValueMenuProps = { field: Prisma.DMMF.Field }
-
-function FilterValueMenu({ field }: FilterValueMenuProps) {
-  switch (field.kind) {
-    case 'enum':
-      return <EnumMenu field={field} />
-    case 'scalar':
-      return <ScalarMenu field={field} />
-    case 'object':
-      return <ObjectMenu field={field} />
-    case 'unsupported':
-      throw new Error(`Unsupported field "${field.type}" on "${field.name}"`)
-    default:
-      throw new Error(`Unknown field "${field.type}" on "${field.name}"`)
-  }
-}
-
-//////////////////////////////////////////////////////////////////
+type Props = { field: Prisma.DMMF.Field; nested?: boolean }
 
 // if the field is an enum, we show a dropdown of all the possible enum values
 // Ex: <LevelOption />, <TierOption />, <SeasonOption />
-function EnumMenu({ field }: FilterValueMenuProps) {
+function EnumItems({ field, nested }: Props) {
   const { filters, addOrUpdateFilter } = useContext(FiltersContext)
 
   // TODO while this should work for any enum, we shouldn't hardcode to only the
@@ -306,41 +310,63 @@ function EnumMenu({ field }: FilterValueMenuProps) {
   const en = data.enums.find((e) => e.name === field.type)
   invariant(en, `Could not find enum "${field.type}"`)
 
+  const setOpen = useContext(MenuContext)
+  const search = useCommandState((state) => state.search)
+  if (search.length < 2 && nested) return null
   return (
-    <Menu.Root>
-      <Menu.Input placeholder={field.name} />
-      <Menu.List>
-        {en.values.map((e) => (
-          <Menu.Item
-            key={e.name}
-            checked={filter?.value?.includes(e.name as Level)}
-            setChecked={(checked: boolean | 'indeterminate') => {
-              const updated = clone(filter) ?? {
-                id: filterId.current,
-                name: 'level',
-                condition: 'in',
-                value: [],
-              }
-              if (checked) {
-                updated.value = [...(filter?.value ?? []), e.name as Level]
-                addOrUpdateFilter(updated)
-              } else {
-                const idx = updated.value.indexOf(e.name as Level)
-                if (idx >= 0) {
-                  updated.value = [
-                    ...updated.value.slice(0, idx),
-                    ...updated.value.slice(idx + 1),
-                  ]
-                  addOrUpdateFilter(updated)
+    <>
+      {en.values.map((e) => (
+        <Menu.Item
+          key={e.name}
+          value={`${field.name}-${e.name}`}
+          onSelect={
+            nested
+              ? () => {
+                  addOrUpdateFilter({
+                    id: nanoid(5),
+                    name: 'level',
+                    condition: 'equals',
+                    value: e.name,
+                  })
+                  setOpen(false)
                 }
-              }
-            }}
-          >
+              : undefined
+          }
+          checked={
+            nested ? undefined : filter?.value?.includes(e.name as Level)
+          }
+          setChecked={
+            nested
+              ? undefined
+              : (checked: boolean | 'indeterminate') => {
+                  const updated = clone(filter) ?? {
+                    id: filterId.current,
+                    name: 'level',
+                    condition: 'in',
+                    value: [],
+                  }
+                  if (checked) {
+                    updated.value = [...(filter?.value ?? []), e.name as Level]
+                    addOrUpdateFilter(updated)
+                  } else {
+                    const idx = updated.value.indexOf(e.name as Level)
+                    if (idx >= 0) {
+                      updated.value = [
+                        ...updated.value.slice(0, idx),
+                        ...updated.value.slice(idx + 1),
+                      ]
+                      addOrUpdateFilter(updated)
+                    }
+                  }
+                }
+          }
+        >
+          <Menu.ItemLabel group={nested ? field.name : undefined}>
             {e.name}
-          </Menu.Item>
-        ))}
-      </Menu.List>
-    </Menu.Root>
+          </Menu.ItemLabel>
+        </Menu.Item>
+      ))}
+    </>
   )
 }
 
@@ -352,7 +378,7 @@ function EnumMenu({ field }: FilterValueMenuProps) {
 // database to get all the available options (e.g. we'll query the products
 // table to get a list of all the possible prices and show those as options)
 // Ex: <IntOption />, <StringOption />, <DecimalOption />
-function ScalarMenu({ field }: FilterValueMenuProps) {
+function ScalarDialog({ field, nested }: Props) {
   const [open, setOpen] = useState(true)
   const { addOrUpdateFilter } = useContext(FiltersContext)
   const setMenuOpen = useContext(MenuContext)
@@ -372,6 +398,7 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
 
   const id = useId()
 
+  if (nested) return null
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger />
@@ -440,7 +467,7 @@ function ScalarMenu({ field }: FilterValueMenuProps) {
 // to show a list of all the available options (e.g. we'll query the sizes table
 // to show a list of all the possible sizes)
 // Ex: <SizeOption />, <BrandOption />, <CountryOption />, <ShowOption />
-function ObjectMenu({ field }: FilterValueMenuProps) {
+function ObjectItems({ field, nested }: Props) {
   // TODO we need to ensure that each one of our Prisma models has a name field
   // TODO perhaps we should define individual components for each model? that
   // would let us do fancy things with the menu item UI (e.g. colors should
@@ -457,28 +484,30 @@ function ObjectMenu({ field }: FilterValueMenuProps) {
   const setOpen = useContext(MenuContext)
   const { addOrUpdateFilter } = useContext(FiltersContext)
 
+  const search = useCommandState((state) => state.search)
+  if (search.length < 2 && nested) return null
   return (
-    <Menu.Root>
-      <Menu.Input placeholder={field.name} />
-      <Menu.List>
-        {(fetcher.data ?? []).map((item) => (
-          <Menu.Item
-            key={item.id}
-            onSelect={() => {
-              addOrUpdateFilter({
-                id: nanoid(5),
-                // TODO add a runtime check that this is a valid FilterName
-                name: field.name as FilterName,
-                condition: 'some',
-                value: { id: item.id, name: item.name },
-              })
-              setOpen(false)
-            }}
-          >
+    <>
+      {(fetcher.data ?? []).map((item) => (
+        <Menu.Item
+          key={item.id}
+          value={`${field.name}-${item.name}`}
+          onSelect={() => {
+            addOrUpdateFilter({
+              id: nanoid(5),
+              // TODO add a runtime check that this is a valid FilterName
+              name: field.name as FilterName,
+              condition: 'some',
+              value: { id: item.id, name: item.name },
+            })
+            setOpen(false)
+          }}
+        >
+          <Menu.ItemLabel group={nested ? field.name : undefined}>
             {item.name}
-          </Menu.Item>
-        ))}
-      </Menu.List>
-    </Menu.Root>
+          </Menu.ItemLabel>
+        </Menu.Item>
+      ))}
+    </>
   )
 }
