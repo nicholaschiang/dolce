@@ -4,6 +4,15 @@
 @tailwind variants;
 
 @layer base {
+  /* optimize legibility; see https://rauno.me/interfaces */
+  body,
+  html {
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-text-size-adjust: none;
+  }
+
   /* hide image alt text; see https://stackoverflow.com/a/37192970 */
   img[alt]:after {
     @apply absolute inset-0 flex h-full w-full items-center justify-center bg-inherit text-center text-xs;
