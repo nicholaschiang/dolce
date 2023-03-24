@@ -3,6 +3,7 @@ import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
 import { useCallback, useMemo, useState } from 'react'
 import type { LoaderFunction } from '@remix-run/node'
+import type { Prisma } from '@prisma/client'
 import { json } from '@remix-run/node'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -54,6 +55,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>(products)
 }
 
+// Don't allow users to filter on back-end only fields.
+const hiddenFields: (keyof Prisma.ProductSelect)[] = [
+  'prices',
+  'videos',
+  'images',
+]
+
 export default function ProductsPage() {
   const products = useLoaderData<LoaderData>()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -90,7 +98,12 @@ export default function ProductsPage() {
   const [resultsPerRow, setResultsPerRow] = useState(6)
   return (
     <>
-      <Filters modelName='Product' filters={filters} setFilters={setFilters}>
+      <Filters
+        modelName='Product'
+        filters={filters}
+        setFilters={setFilters}
+        hiddenFields={hiddenFields}
+      >
         <ResultsPerRowSelect
           resultsPerRow={resultsPerRow}
           setResultsPerRow={setResultsPerRow}

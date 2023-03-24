@@ -1,6 +1,6 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
+import { CaretDownIcon, CheckIcon } from '@radix-ui/react-icons'
 import { Command, useCommandState } from 'cmdk'
-import { CheckIcon } from '@radix-ui/react-icons'
 import type { ReactNode } from 'react'
 import cn from 'classnames'
 
@@ -18,9 +18,19 @@ export function Root({ children }: RootProps) {
   )
 }
 
-export type InputProps = { hotkey?: string; placeholder?: string }
+export type InputProps = {
+  hotkey?: string
+  placeholder?: string
+  value?: string
+  onValueChange?: (search: string) => void
+}
 
-export function Input({ hotkey, placeholder }: InputProps) {
+export function Input({
+  hotkey,
+  placeholder,
+  value,
+  onValueChange,
+}: InputProps) {
   const count = useCommandState((state) => state.filtered.count)
   return (
     <div
@@ -33,6 +43,8 @@ export function Input({ hotkey, placeholder }: InputProps) {
         ref={(input) => input?.focus()}
         className='flex-1 appearance-none bg-transparent px-3.5 pt-2.5 pb-2 outline-none placeholder:text-gray-500/50 dark:placeholder:text-gray-400/50'
         placeholder={placeholder}
+        value={value}
+        onValueChange={onValueChange}
       />
       {hotkey && <Hotkey className='mr-3.5'>{hotkey}</Hotkey>}
     </div>
@@ -49,20 +61,28 @@ export function List({ children }: ListProps) {
 }
 
 export type ItemProps = {
+  value: string
   children: ReactNode
   checked?: boolean | 'indeterminate'
   setChecked?(checked: boolean | 'indeterminate'): void
   onSelect?(): void
 }
 
-export function Item({ checked, setChecked, onSelect, children }: ItemProps) {
+export function Item({
+  value,
+  checked,
+  setChecked,
+  onSelect,
+  children,
+}: ItemProps) {
   return (
     <Command.Item
+      value={value}
       onSelect={() => {
         if (setChecked) setChecked(!checked)
         if (onSelect) onSelect()
       }}
-      className='relative flex h-8 w-full min-w-min max-w-xl cursor-pointer items-center text-ellipsis whitespace-nowrap aria-selected:after:absolute aria-selected:after:inset-y-0 aria-selected:after:inset-x-1 aria-selected:after:-z-10 aria-selected:after:rounded-md aria-selected:after:bg-gray-400/10 aria-selected:after:dark:bg-gray-500/10'
+      className='group relative flex h-8 w-full min-w-min max-w-xl cursor-pointer items-center text-ellipsis whitespace-nowrap aria-selected:after:absolute aria-selected:after:inset-y-0 aria-selected:after:inset-x-1 aria-selected:after:-z-10 aria-selected:after:rounded-md aria-selected:after:bg-gray-400/10 aria-selected:after:dark:bg-gray-500/10'
     >
       <div className='flex h-full flex-1 items-center overflow-hidden px-3.5'>
         {setChecked && (
@@ -91,5 +111,22 @@ export function Item({ checked, setChecked, onSelect, children }: ItemProps) {
         {children}
       </div>
     </Command.Item>
+  )
+}
+
+export type ItemLabelProps = { group?: string; children: string }
+
+export function ItemLabel({ group, children }: ItemLabelProps) {
+  return (
+    <span className='inline-flex flex-1 items-center truncate'>
+      {group && <span className='truncate'>{group}</span>}
+      {group && (
+        <span className='mr-8 flex flex-1 items-center truncate text-gray-500'>
+          <CaretDownIcon className='mx-2 h-3 w-3 -rotate-90 text-gray-500 group-aria-selected:text-gray-900 dark:group-aria-selected:text-gray-100' />
+          {children}
+        </span>
+      )}
+      {!group && children}
+    </span>
   )
 }
