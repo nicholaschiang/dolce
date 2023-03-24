@@ -26,8 +26,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
 
-import { Menu } from 'components/menu'
-import type { MenuProps } from 'components/menu'
+import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
@@ -67,7 +66,7 @@ const FiltersContext = createContext<FiltersContextT>({
   addOrUpdateFilter() {},
   removeFilter() {},
 })
-const MenuContext = createContext<Pick<MenuProps, 'position' | 'setOpen'>>({
+const MenuContext = createContext<Menu.RootProps>({
   position: { top: 0, left: 0 },
   setOpen() {},
 })
@@ -138,7 +137,7 @@ export function Filters({
       <nav className='frosted flex items-center justify-between border-b border-gray-200 px-12 py-3 dark:border-gray-700'>
         <ul className='-mb-1.5 flex flex-wrap'>
           {filters.map((f) => (
-            <FilterItem key={f.id} filter={f} />
+            <Item key={f.id} filter={f} />
           ))}
           <AddFilterButton model={model} />
         </ul>
@@ -150,17 +149,33 @@ export function Filters({
 
 //////////////////////////////////////////////////////////////////
 
-type FilterItemButtonProps = {
+type ItemProps = { filter: Filter }
+
+function Item({ filter }: ItemProps) {
+  const { removeFilter } = useContext(FiltersContext)
+  const { name, condition, value } = filterToStrings(filter)
+  return (
+    <li className='mr-1.5 mb-1.5 flex h-6 flex-none items-stretch gap-px overflow-hidden rounded border border-gray-200 bg-white last:mr-0 dark:border-none dark:bg-transparent'>
+      <ItemButton>{name}</ItemButton>
+      <ItemButton className='text-gray-400'>{condition}</ItemButton>
+      <ItemButton>{value}</ItemButton>
+      <ItemButton
+        className='text-gray-400 hover:text-inherit'
+        onClick={() => removeFilter(filter)}
+      >
+        <Cross2Icon />
+      </ItemButton>
+    </li>
+  )
+}
+
+type ItemButtonProps = {
   className?: string
   children: ReactNode
   onClick?: (event: FormEvent<HTMLButtonElement>) => void
 }
 
-function FilterItemButton({
-  className,
-  children,
-  onClick,
-}: FilterItemButtonProps) {
+function ItemButton({ className, children, onClick }: ItemButtonProps) {
   return (
     <button
       type='button'
@@ -175,26 +190,6 @@ function FilterItemButton({
         {children}
       </span>
     </button>
-  )
-}
-
-type FilterItemProps = { filter: Filter }
-
-function FilterItem({ filter }: FilterItemProps) {
-  const { removeFilter } = useContext(FiltersContext)
-  const { name, condition, value } = filterToStrings(filter)
-  return (
-    <li className='mr-1.5 mb-1.5 flex h-6 flex-none items-stretch gap-px overflow-hidden rounded border border-gray-200 bg-white last:mr-0 dark:border-none dark:bg-transparent'>
-      <FilterItemButton>{name}</FilterItemButton>
-      <FilterItemButton className='text-gray-400'>{condition}</FilterItemButton>
-      <FilterItemButton>{value}</FilterItemButton>
-      <FilterItemButton
-        className='text-gray-400 hover:text-inherit'
-        onClick={() => removeFilter(filter)}
-      >
-        <Cross2Icon />
-      </FilterItemButton>
-    </li>
   )
 }
 
@@ -271,16 +266,16 @@ type FilterNameMenuProps = {
 function FilterNameMenu({ fields, setField }: FilterNameMenuProps) {
   const { setOpen, position } = useContext(MenuContext)
   return (
-    <Menu
-      placeholder='field'
-      hotkey='f'
-      setOpen={setOpen}
-      position={position}
-      items={fields.map((f: Prisma.DMMF.Field) => ({
-        label: f.name,
-        onClick: () => setField(f),
-      }))}
-    />
+    <Menu.Root setOpen={setOpen} position={position}>
+      <Menu.Input placeholder='field' hotkey='f' />
+      <Menu.List>
+        {fields.map((f: Prisma.DMMF.Field) => (
+          <Menu.Item key={f.name} onSelect={() => setField(f)}>
+            {f.name}
+          </Menu.Item>
+        ))}
+      </Menu.List>
+    </Menu.Root>
   )
 }
 
@@ -324,36 +319,40 @@ function EnumMenu({ field }: FilterValueMenuProps) {
   invariant(en, `Could not find enum "${field.type}"`)
 
   return (
-    <Menu
-      placeholder={field.name}
-      items={en.values.map((e) => ({
-        label: e.name,
-        checked: filter?.value?.includes(e.name as Level),
-        setChecked(checked: boolean | 'indeterminate') {
-          const updated = clone(filter) ?? {
-            id: filterId.current,
-            name: 'level',
-            condition: 'in',
-            value: [],
-          }
-          if (checked) {
-            updated.value = [...(filter?.value ?? []), e.name as Level]
-            addOrUpdateFilter(updated)
-          } else {
-            const idx = updated.value.indexOf(e.name as Level)
-            if (idx >= 0) {
-              updated.value = [
-                ...updated.value.slice(0, idx),
-                ...updated.value.slice(idx + 1),
-              ]
-              addOrUpdateFilter(updated)
-            }
-          }
-        },
-      }))}
-      position={position}
-      setOpen={setOpen}
-    />
+    <Menu.Root position={position} setOpen={setOpen}>
+      <Menu.Input placeholder={field.name} />
+      <Menu.List>
+        {en.values.map((e) => (
+          <Menu.Item
+            key={e.name}
+            checked={filter?.value?.includes(e.name as Level)}
+            setChecked={(checked: boolean | 'indeterminate') => {
+              const updated = clone(filter) ?? {
+                id: filterId.current,
+                name: 'level',
+                condition: 'in',
+                value: [],
+              }
+              if (checked) {
+                updated.value = [...(filter?.value ?? []), e.name as Level]
+                addOrUpdateFilter(updated)
+              } else {
+                const idx = updated.value.indexOf(e.name as Level)
+                if (idx >= 0) {
+                  updated.value = [
+                    ...updated.value.slice(0, idx),
+                    ...updated.value.slice(idx + 1),
+                  ]
+                  addOrUpdateFilter(updated)
+                }
+              }
+            }}
+          >
+            {e.name}
+          </Menu.Item>
+        ))}
+      </Menu.List>
+    </Menu.Root>
   )
 }
 
@@ -471,23 +470,27 @@ function ObjectMenu({ field }: FilterValueMenuProps) {
 
   // TODO make items optional in <Menu> and show a skeleton state there
   return (
-    <Menu
-      placeholder={field.name}
-      items={(fetcher.data ?? []).map((item) => ({
-        label: item.name,
-        onClick() {
-          addOrUpdateFilter({
-            id: nanoid(5),
-            // TODO add a runtime check that this is a valid FilterName
-            name: field.name as FilterName,
-            condition: 'some',
-            value: { id: item.id, name: item.name },
-          })
-          setOpen(false)
-        },
-      }))}
-      position={position}
-      setOpen={setOpen}
-    />
+    <Menu.Root position={position} setOpen={setOpen}>
+      <Menu.Input placeholder={field.name} />
+      <Menu.List>
+        {(fetcher.data ?? []).map((item) => (
+          <Menu.Item
+            key={item.id}
+            onSelect={() => {
+              addOrUpdateFilter({
+                id: nanoid(5),
+                // TODO add a runtime check that this is a valid FilterName
+                name: field.name as FilterName,
+                condition: 'some',
+                value: { id: item.id, name: item.name },
+              })
+              setOpen(false)
+            }}
+          >
+            {item.name}
+          </Menu.Item>
+        ))}
+      </Menu.List>
+    </Menu.Root>
   )
 }
