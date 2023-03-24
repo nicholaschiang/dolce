@@ -134,7 +134,7 @@ export function Filters({
         [filters, addOrUpdateFilter, removeFilter],
       )}
     >
-      <nav className='frosted flex items-center justify-between border-b border-gray-200 px-12 py-3 dark:border-gray-700'>
+      <nav className='frosted flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-700'>
         <ul className='-mb-1.5 flex flex-wrap'>
           {filters.map((f) => (
             <Item key={f.id} filter={f} />

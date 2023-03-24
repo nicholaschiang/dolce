@@ -96,7 +96,7 @@ export default function ProductsPage() {
           setResultsPerRow={setResultsPerRow}
         />
       </Filters>
-      <div className='h-full flex-1 overflow-y-auto overflow-x-hidden px-12 py-6'>
+      <div className='h-full flex-1 overflow-y-auto overflow-x-hidden p-6'>
         <ol className='-m-2 flex flex-wrap'>
           {products.map((product, index) => (
             <ProductItem

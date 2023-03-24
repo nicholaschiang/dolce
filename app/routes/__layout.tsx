@@ -56,7 +56,7 @@ export const loader: LoaderFunction = () => {
 
 function Header() {
   return (
-    <header className='relative shrink-0 border-b border-gray-200 bg-white/75 px-12 py-6 backdrop-blur-lg dark:border-gray-700 dark:bg-gray-900/75'>
+    <header className='relative shrink-0 border-b border-gray-200 bg-white/75 p-6 backdrop-blur-lg dark:border-gray-700 dark:bg-gray-900/75'>
       <h1 className='text-xl leading-none'>
         <Link to='/' prefetch='intent'>
           nicholas.engineering
