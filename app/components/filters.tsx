@@ -19,21 +19,21 @@ import {
   useState,
 } from 'react'
 import type { Level, Prisma } from '@prisma/client'
-import { useFetcher, useRouteLoaderData } from '@remix-run/react'
 import cn from 'classnames'
 import invariant from 'tiny-invariant'
 import { nanoid } from 'nanoid'
 import { useCommandState } from 'cmdk'
+import { useFetcher } from '@remix-run/react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
+import type { loader as layout } from 'routes/__layout'
 
 import * as Menu from 'components/menu'
 import { Dialog } from 'components/dialog'
 import { Tooltip } from 'components/tooltip'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
-import { clone } from 'utils'
+import { clone, useData } from 'utils'
 import { filterToStrings } from 'filters'
 
 // we need a way to load menu options when filtering based on a model; this
@@ -112,8 +112,8 @@ export function Filters({
 
   // TODO perhaps refactor this component to simply accept a Prisma data model
   // instead of relying on our own proprietary Remix API routes.
-  const data = useRouteLoaderData('routes/__layout') as LayoutLoaderData
-  const model = data.models.find((m) => m.name === modelName)
+  const data = useData<typeof layout>('routes/__layout')
+  const model = data?.models.find((m) => m.name === modelName)
   invariant(model, `Could not find model "${modelName}"`)
 
   useHotkeys(
@@ -288,8 +288,8 @@ function EnumItems({ field, nested }: Props) {
     | Filter<'level', 'in', Level[]>
     | undefined
 
-  const data = useRouteLoaderData('routes/__layout') as LayoutLoaderData
-  const en = data.enums.find((e) => e.name === field.type)
+  const data = useData<typeof layout>('routes/__layout')
+  const en = data?.enums.find((e) => e.name === field.type)
   invariant(en, `Could not find enum "${field.type}"`)
 
   const setOpen = useContext(MenuContext)

@@ -5,25 +5,20 @@ import {
   Cross2Icon,
   InfoCircledIcon,
 } from '@radix-ui/react-icons'
-import {
-  Link,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useRouteLoaderData,
-} from '@remix-run/react'
+import { Link, useLoaderData, useLocation, useNavigate } from '@remix-run/react'
 import type { PropsWithChildren, ReactNode } from 'react'
 import type { LoaderArgs } from '@remix-run/node'
 import invariant from 'tiny-invariant'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import type { loader as productsLoader } from 'routes/__layout/products'
+import type { loader as products } from 'routes/__layout/products'
 
 import { Dialog } from 'components/dialog'
 import { Image } from 'components/image'
 import { Tooltip } from 'components/tooltip'
 
 import { prisma } from 'db.server'
+import { useData } from 'utils'
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.productId, 'productId is required')
@@ -84,10 +79,8 @@ function LinkWithHotkey({
 export default function ProductPage() {
   const nav = useNavigate()
   const location = useLocation()
-  const { products } = useRouteLoaderData(
-    'routes/__layout/products',
-  ) as Awaited<ReturnType<typeof productsLoader>>
-  const productIds = products.map((product) => product.id)
+  const data = useData<typeof products>('routes/__layout/products')
+  const productIds = (data?.products ?? []).map((product) => product.id)
   const product = useLoaderData<typeof loader>()
   const productIndex = productIds.indexOf(product.id)
   useHotkeys(

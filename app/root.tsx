@@ -9,11 +9,7 @@ import {
   useCatch,
   useLoaderData,
 } from '@remix-run/react'
-import type {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-} from '@remix-run/node'
+import type { LinksFunction, LoaderArgs, MetaFunction } from '@remix-run/node'
 import type { ReactNode } from 'react'
 import type { ThrownResponse } from '@remix-run/react'
 import cn from 'classnames'
@@ -127,7 +123,7 @@ export const meta: MetaFunction = () => ({
 
 export type LoaderData = { user: User | null; theme: Theme | null }
 
-export const loader: LoaderFunction = async ({ request }) => {
+export async function loader({ request }: LoaderArgs) {
   const session = await getSession(request)
   const theme = session.get('theme') as Theme | null
   const headers = { 'Set-Cookie': await sessionStorage.commitSession(session) }
