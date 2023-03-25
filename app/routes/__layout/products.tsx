@@ -8,10 +8,9 @@ import {
   useSearchParams,
 } from '@remix-run/react'
 import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
-import { useCallback, useMemo, useState } from 'react'
-import type { LoaderFunction } from '@remix-run/node'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { LoaderArgs } from '@remix-run/node'
 import type { Prisma } from '@prisma/client'
-import { json } from '@remix-run/node'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Filters } from 'components/filters'
@@ -30,16 +29,28 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
 
-export type LoaderData = Omit<ProductItemProps, 'index' | 'resultsPerRow'>[]
+enum Join {
+  And = 'AND',
+  Or = 'OR',
+  Not = 'NOT',
+}
 
-// users can control prisma queries via url search parameters.
-// Ex: /products?f=price:gt:100&f=price:lt:200&j=OR
-// ... will return products with a price between 100 and 200.
-export const loader: LoaderFunction = async ({ request }) => {
+// Filter for products matching all filters by default.
+const defaultJoin = Join.And
+
+function isJoin(join: unknown): join is Join {
+  return typeof join === 'string' && Object.values(Join).includes(join as Join)
+}
+
+function getJoinFromSearchParams(searchParams: URLSearchParams): Join {
+  const join = searchParams.get(JOIN_PARAM)
+  return isJoin(join) ? join : defaultJoin
+}
+
+async function getProducts({ request }: LoaderArgs) {
   const { searchParams } = new URL(request.url)
   const filters = searchParams.getAll(FILTER_PARAM).map(searchParamToFilter)
-  let join = searchParams.get(JOIN_PARAM)
-  if (!join || !['AND', 'OR', 'NOT'].includes(join)) join = 'AND'
+  const join = getJoinFromSearchParams(searchParams)
   log.debug(
     'getting products... %s',
     filters.map(filterToString).join(` ${join} `),
@@ -59,7 +70,22 @@ export const loader: LoaderFunction = async ({ request }) => {
     msrp: product.msrp ? Math.round(Number(product.msrp)) : undefined,
   }))
   log.debug('got %d products', products.length)
-  return json<LoaderData>(products)
+  return products
+}
+
+async function getCount() {
+  log.debug('getting products count...')
+  const count = await prisma.product.count()
+  log.debug('got product count: %d', count)
+  return count
+}
+
+// users can control prisma queries via url search parameters.
+// Ex: /products?f=price:gt:100&f=price:lt:200&j=OR
+// ... will return products with a price between 100 and 200.
+export async function loader(args: LoaderArgs) {
+  const [products, count] = await Promise.all([getProducts(args), getCount()])
+  return { products, count }
 }
 
 // Don't allow users to filter on back-end only fields.
@@ -69,8 +95,14 @@ const hiddenFields: (keyof Prisma.ProductSelect)[] = [
   'images',
 ]
 
+// There must be at least one product per row.
+const minResultsPerRow = 1
+
+// Only allow users to zoom out to 20 products per row.
+const maxResultsPerRow = 20
+
 export default function ProductsPage() {
-  const products = useLoaderData<LoaderData>()
+  const { products, count } = useLoaderData<typeof loader>()
   const [searchParams, setSearchParams] = useSearchParams()
   const filters = useMemo<Filter[]>(
     () => searchParams.getAll(FILTER_PARAM).map(searchParamToFilter),
@@ -114,6 +146,36 @@ export default function ProductsPage() {
   // can use it during SSR to prevent a flash of layout shift).
   // TODO intelligently choose the initial value based on the viewport width.
   const [resultsPerRow, setResultsPerRow] = useState(6)
+  const join = getJoinFromSearchParams(searchParams)
+  const setJoin = useCallback(
+    (action: SetStateAction<Join>) => {
+      setSearchParams((prevSearchParams) => {
+        let nextJoin: Join
+        if (typeof action === 'function') {
+          const prevJoin = getJoinFromSearchParams(prevSearchParams)
+          nextJoin = action(prevJoin)
+        } else {
+          nextJoin = action
+        }
+        const nextSearchParams = new URLSearchParams(prevSearchParams)
+        nextSearchParams.set(JOIN_PARAM, nextJoin)
+        return nextSearchParams
+      })
+    },
+    [setSearchParams],
+  )
+
+  // Reset the filter join when the user clears their filters.
+  useEffect(() => {
+    if (filters.length <= 1) setJoin(defaultJoin)
+  }, [filters.length, setJoin])
+
+  const zoomIn = useCallback(() => {
+    setResultsPerRow((prev) => Math.max(prev - 1, minResultsPerRow))
+  }, [setResultsPerRow])
+  const zoomOut = useCallback(() => {
+    setResultsPerRow((prev) => Math.min(prev + 1, maxResultsPerRow))
+  }, [setResultsPerRow])
   return (
     <>
       <Outlet />
@@ -123,10 +185,63 @@ export default function ProductsPage() {
         setFilters={setFilters}
         hiddenFields={hiddenFields}
       >
-        <ResultsPerRowSelect
-          resultsPerRow={resultsPerRow}
-          setResultsPerRow={setResultsPerRow}
-        />
+        <div className='flex items-center gap-2 text-xs'>
+          {filters.length > 1 && (
+            <div className='whitespace-nowrap'>
+              <span className='mt-1 text-gray-400 dark:text-gray-600'>
+                include products that match
+              </span>
+              <button
+                type='button'
+                className='rounded px-1 pt-1 hover:bg-gray-50 hover:dark:bg-gray-800'
+                onClick={() =>
+                  setJoin((prev) => {
+                    const joins = Object.values(Join)
+                    const index = joins.indexOf(prev)
+                    return joins[(index + 1) % joins.length]
+                  })
+                }
+              >
+                {join === Join.Or && 'any filter'}
+                {join === Join.And && 'all filters'}
+                {join === Join.Not && 'no filters'}
+              </button>
+            </div>
+          )}
+          {filters.length > 0 && (
+            <div className='mt-1 whitespace-nowrap text-gray-600 dark:text-gray-400'>
+              {products.length}
+              <span className='text-gray-400 dark:text-gray-600'>
+                {' / '}
+                {count}
+              </span>
+            </div>
+          )}
+          <div className='flex items-center'>
+            <Tooltip tip='Zoom In' hotkey='=' onHotkey={zoomIn}>
+              <button
+                type='button'
+                aria-label='Zoom In'
+                className='icon-button'
+                disabled={resultsPerRow === minResultsPerRow}
+                onClick={zoomIn}
+              >
+                <ZoomInIcon className='h-3.5 w-3.5' />
+              </button>
+            </Tooltip>
+            <Tooltip tip='Zoom Out' hotkey='-' onHotkey={zoomOut}>
+              <button
+                type='button'
+                aria-label='Zoom Out'
+                className='icon-button'
+                disabled={resultsPerRow === maxResultsPerRow}
+                onClick={zoomOut}
+              >
+                <ZoomOutIcon className='h-3.5 w-3.5' />
+              </button>
+            </Tooltip>
+          </div>
+        </div>
       </Filters>
       <div className='h-full flex-1 overflow-y-auto overflow-x-hidden p-6'>
         <ol className='-m-2 flex flex-wrap'>
@@ -141,60 +256,6 @@ export default function ProductsPage() {
         </ol>
       </div>
     </>
-  )
-}
-
-//////////////////////////////////////////////////////////////////
-
-// There must be at least one product per row.
-const minResultsPerRow = 1
-
-// Only allow users to zoom out to 20 products per row.
-const maxResultsPerRow = 20
-
-type ResultsPerRowSelectProps = {
-  resultsPerRow: number
-  setResultsPerRow: Dispatch<SetStateAction<number>>
-}
-
-function ResultsPerRowSelect({
-  resultsPerRow,
-  setResultsPerRow,
-}: ResultsPerRowSelectProps) {
-  const zoomIn = useCallback(() => {
-    setResultsPerRow((prev) => Math.max(prev - 1, minResultsPerRow))
-  }, [setResultsPerRow])
-  const zoomOut = useCallback(() => {
-    setResultsPerRow((prev) => Math.min(prev + 1, maxResultsPerRow))
-  }, [setResultsPerRow])
-
-  // TODO right now, I'm using = as the hotkey because I don't want users to
-  // have to shift+= (to properly type a + character). Should I be doing this?
-  return (
-    <div className='flex items-center justify-center'>
-      <Tooltip tip='Zoom In' hotkey='+' onHotkey={zoomIn}>
-        <button
-          type='button'
-          aria-label='Zoom In'
-          className='icon-button'
-          disabled={resultsPerRow === minResultsPerRow}
-          onClick={zoomIn}
-        >
-          <ZoomInIcon className='h-3.5 w-3.5' />
-        </button>
-      </Tooltip>
-      <Tooltip tip='Zoom Out' hotkey='-' onHotkey={zoomOut}>
-        <button
-          type='button'
-          aria-label='Zoom Out'
-          className='icon-button'
-          disabled={resultsPerRow === maxResultsPerRow}
-          onClick={zoomOut}
-        >
-          <ZoomOutIcon className='h-3.5 w-3.5' />
-        </button>
-      </Tooltip>
-    </div>
   )
 }
 
