@@ -19,11 +19,11 @@ import {
   useState,
 } from 'react'
 import type { Level, Prisma } from '@prisma/client'
+import { useFetcher, useRouteLoaderData } from '@remix-run/react'
 import cn from 'classnames'
 import invariant from 'tiny-invariant'
 import { nanoid } from 'nanoid'
 import { useCommandState } from 'cmdk'
-import { useFetcher } from '@remix-run/react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
@@ -33,7 +33,7 @@ import { Dialog } from 'components/dialog'
 import { Tooltip } from 'components/tooltip'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
-import { clone, useMatchesData } from 'utils'
+import { clone } from 'utils'
 import { filterToStrings } from 'filters'
 
 // we need a way to load menu options when filtering based on a model; this
@@ -112,8 +112,7 @@ export function Filters({
 
   // TODO perhaps refactor this component to simply accept a Prisma data model
   // instead of relying on our own proprietary Remix API routes.
-  const data = useMatchesData<LayoutLoaderData>('routes/__layout')
-  invariant(data, 'Could not load schema data')
+  const data = useRouteLoaderData('routes/__layout') as LayoutLoaderData
   const model = data.models.find((m) => m.name === modelName)
   invariant(model, `Could not find model "${modelName}"`)
 
@@ -219,11 +218,7 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Tooltip tip='Filter' hotkey='f' onHotkey={() => setOpen(true)}>
         <Popover.Trigger asChild>
-          <button
-            type='button'
-            className='icon-button square mb-1.5 flex'
-            onClick={() => setOpen(true)}
-          >
+          <button type='button' className='icon-button square mb-1.5 flex'>
             <PlusIcon className='h-3.5 w-3.5' />
           </button>
         </Popover.Trigger>
@@ -293,8 +288,7 @@ function EnumItems({ field, nested }: Props) {
     | Filter<'level', 'in', Level[]>
     | undefined
 
-  const data = useMatchesData<LayoutLoaderData>('routes/__layout')
-  invariant(data, 'Could not load schema data')
+  const data = useRouteLoaderData('routes/__layout') as LayoutLoaderData
   const en = data.enums.find((e) => e.name === field.type)
   invariant(en, `Could not find enum "${field.type}"`)
 
@@ -307,19 +301,16 @@ function EnumItems({ field, nested }: Props) {
         <Menu.Item
           key={e.name}
           value={`${field.name}-${e.name}`}
-          onSelect={
-            nested
-              ? () => {
-                  addOrUpdateFilter({
-                    id: nanoid(5),
-                    name: 'level',
-                    condition: 'equals',
-                    value: e.name,
-                  })
-                  setOpen(false)
-                }
-              : undefined
-          }
+          onSelect={() => {
+            if (nested)
+              addOrUpdateFilter({
+                id: filterId.current,
+                name: 'level',
+                condition: 'equals',
+                value: e.name,
+              })
+            setOpen(false)
+          }}
           checked={
             nested ? undefined : filter?.value?.includes(e.name as Level)
           }

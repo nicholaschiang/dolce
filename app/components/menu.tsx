@@ -90,6 +90,7 @@ export function Item({
             tabIndex={-1}
             checked={checked}
             onCheckedChange={setChecked}
+            onClick={(event) => event.stopPropagation()}
             className={cn(
               'mr-3 flex h-3.5 w-3.5 appearance-none items-center justify-center rounded-sm border p-0.5 outline-none transition-colors',
               !checked &&
