@@ -1,5 +1,12 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
+import {
+  Link,
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react'
 import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
 import { useCallback, useMemo, useState } from 'react'
 import type { LoaderFunction } from '@remix-run/node'
@@ -91,6 +98,17 @@ export default function ProductsPage() {
     },
     [setSearchParams],
   )
+  const nav = useNavigate()
+  const location = useLocation()
+  useHotkeys(
+    ' ',
+    (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      nav(`${products[0].id}${location.search}`)
+    },
+    [nav, products, location.search],
+  )
   // TODO create a useSessionState hook to conveniently persist state in the
   // user's session cookie (so that, unlike persisting state in localStorage, we
   // can use it during SSR to prevent a flash of layout shift).
@@ -98,6 +116,7 @@ export default function ProductsPage() {
   const [resultsPerRow, setResultsPerRow] = useState(6)
   return (
     <>
+      <Outlet />
       <Filters
         modelName='Product'
         filters={filters}
@@ -151,28 +170,9 @@ function ResultsPerRowSelect({
 
   // TODO right now, I'm using = as the hotkey because I don't want users to
   // have to shift+= (to properly type a + character). Should I be doing this?
-  useHotkeys(
-    '=',
-    (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      zoomIn()
-    },
-    [zoomIn],
-  )
-  useHotkeys(
-    '-',
-    (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      zoomOut()
-    },
-    [zoomOut],
-  )
-
   return (
     <div className='flex items-center justify-center'>
-      <Tooltip tip='Zoom In' hotkey='+'>
+      <Tooltip tip='Zoom In' hotkey='+' onHotkey={zoomIn}>
         <button
           type='button'
           aria-label='Zoom In'
@@ -183,7 +183,7 @@ function ResultsPerRowSelect({
           <ZoomInIcon className='h-3.5 w-3.5' />
         </button>
       </Tooltip>
-      <Tooltip tip='Zoom Out' hotkey='-'>
+      <Tooltip tip='Zoom Out' hotkey='-' onHotkey={zoomOut}>
         <button
           type='button'
           aria-label='Zoom Out'
@@ -223,6 +223,7 @@ function ProductItem({
   index,
   resultsPerRow,
 }: ProductItemProps) {
+  const location = useLocation()
   return (
     <li
       className='shrink-0 grow-0'
@@ -249,7 +250,7 @@ function ProductItem({
             )}
           />
         </div>
-        <Link prefetch='intent' to={`/products/${id}`}>
+        <Link prefetch='intent' to={`${id}${location.search}`}>
           <div
             className='relative mb-2 rounded-md'
             style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}

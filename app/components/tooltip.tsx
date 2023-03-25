@@ -1,12 +1,29 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import type { ReactNode } from 'react'
 import cn from 'classnames'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Hotkey } from 'components/hotkey'
 
-export type TooltipProps = { children: ReactNode; tip: string; hotkey?: string }
+export type TooltipProps = {
+  children: ReactNode
+  tip: string
+  hotkey?: string
+  onHotkey?: () => void
+}
 
-export function Tooltip({ children, tip, hotkey }: TooltipProps) {
+export function Tooltip({ children, tip, hotkey, onHotkey }: TooltipProps) {
+  useHotkeys(
+    hotkey ?? '',
+    (event) => {
+      if (onHotkey) {
+        event.preventDefault()
+        event.stopPropagation()
+        onHotkey()
+      }
+    },
+    [hotkey, onHotkey],
+  )
   return (
     <TooltipPrimitive.Provider>
       <TooltipPrimitive.Root>
