@@ -349,6 +349,57 @@ function EnumItems({ field, nested }: Props) {
   )
 }
 
+// TODO allow users to select multiple objects and then toggle between "AND" and
+// "OR" using the filter item (e.g. the "is any of" v.s. "is not" in Linear).
+// if the field is an object (i.e. a nested model), we query that model's table
+// to show a list of all the available options (e.g. we'll query the sizes table
+// to show a list of all the possible sizes)
+// Ex: <SizeOption />, <BrandOption />, <CountryOption />, <ShowOption />
+function ObjectItems({ field, nested }: Props) {
+  // TODO we need to ensure that each one of our Prisma models has a name field
+  // TODO perhaps we should define individual components for each model? that
+  // would let us do fancy things with the menu item UI (e.g. colors should
+  // show a little dot of their color in the menu options)
+  const fetcher = useFetcher<{ id: number; name: string }[]>()
+  useEffect(() => {
+    const route = MODEL_TO_ROUTE[field.type]
+    if (route === undefined)
+      throw new Error(`No route defined to load data for field "${field.type}"`)
+    if (fetcher.type === 'init') fetcher.load(route)
+  }, [fetcher, field.type])
+
+  // TODO show a skeleton state while the options are loading
+  const setOpen = useContext(MenuContext)
+  const { addOrUpdateFilter } = useContext(FiltersContext)
+
+  const search = useCommandState((state) => state.search)
+  if (search.length < 2 && nested) return null
+  return (
+    <>
+      {(fetcher.data ?? []).map((item) => (
+        <Menu.Item
+          key={item.id}
+          value={`${field.name}-${item.name}`}
+          onSelect={() => {
+            addOrUpdateFilter({
+              id: nanoid(5),
+              // TODO add a runtime check that this is a valid FilterName
+              name: field.name as FilterName,
+              condition: 'some',
+              value: { id: item.id, name: item.name },
+            })
+            setOpen(false)
+          }}
+        >
+          <Menu.ItemLabel group={nested ? field.name : undefined}>
+            {item.name}
+          </Menu.ItemLabel>
+        </Menu.Item>
+      ))}
+    </>
+  )
+}
+
 // if the field is scalar, we show an input letting the user type in what value
 // they want (e.g. "price is greater than ___")
 // Ex: <IntInput />, <DecimalInput />, <StringInput />
@@ -431,56 +482,5 @@ function ScalarDialog({ field, nested }: Props) {
         </div>
       </form>
     </Dialog>
-  )
-}
-
-// TODO allow users to select multiple objects and then toggle between "AND" and
-// "OR" using the filter item (e.g. the "is any of" v.s. "is not" in Linear).
-// if the field is an object (i.e. a nested model), we query that model's table
-// to show a list of all the available options (e.g. we'll query the sizes table
-// to show a list of all the possible sizes)
-// Ex: <SizeOption />, <BrandOption />, <CountryOption />, <ShowOption />
-function ObjectItems({ field, nested }: Props) {
-  // TODO we need to ensure that each one of our Prisma models has a name field
-  // TODO perhaps we should define individual components for each model? that
-  // would let us do fancy things with the menu item UI (e.g. colors should
-  // show a little dot of their color in the menu options)
-  const fetcher = useFetcher<{ id: number; name: string }[]>()
-  useEffect(() => {
-    const route = MODEL_TO_ROUTE[field.type]
-    if (route === undefined)
-      throw new Error(`No route defined to load data for field "${field.type}"`)
-    if (fetcher.type === 'init') fetcher.load(route)
-  }, [fetcher, field.type])
-
-  // TODO show a skeleton state while the options are loading
-  const setOpen = useContext(MenuContext)
-  const { addOrUpdateFilter } = useContext(FiltersContext)
-
-  const search = useCommandState((state) => state.search)
-  if (search.length < 2 && nested) return null
-  return (
-    <>
-      {(fetcher.data ?? []).map((item) => (
-        <Menu.Item
-          key={item.id}
-          value={`${field.name}-${item.name}`}
-          onSelect={() => {
-            addOrUpdateFilter({
-              id: nanoid(5),
-              // TODO add a runtime check that this is a valid FilterName
-              name: field.name as FilterName,
-              condition: 'some',
-              value: { id: item.id, name: item.name },
-            })
-            setOpen(false)
-          }}
-        >
-          <Menu.ItemLabel group={nested ? field.name : undefined}>
-            {item.name}
-          </Menu.ItemLabel>
-        </Menu.Item>
-      ))}
-    </>
   )
 }
