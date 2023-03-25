@@ -17,7 +17,7 @@ import type { LoaderArgs } from '@remix-run/node'
 import invariant from 'tiny-invariant'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import type { LoaderData } from 'routes/__layout/products'
+import type { loader as productsLoader } from 'routes/__layout/products'
 
 import { Dialog } from 'components/dialog'
 import { Image } from 'components/image'
@@ -84,7 +84,9 @@ function LinkWithHotkey({
 export default function ProductPage() {
   const nav = useNavigate()
   const location = useLocation()
-  const products = useRouteLoaderData('routes/__layout/products') as LoaderData
+  const { products } = useRouteLoaderData(
+    'routes/__layout/products',
+  ) as Awaited<ReturnType<typeof productsLoader>>
   const productIds = products.map((product) => product.id)
   const product = useLoaderData<typeof loader>()
   const productIndex = productIds.indexOf(product.id)
