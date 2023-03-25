@@ -1,7 +1,4 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import type { LoaderFunction } from '@remix-run/node'
-import type { Variant } from '@prisma/client'
-import { json } from '@remix-run/node'
 import { nanoid } from 'nanoid'
 
 import { ListLayout } from 'components/list-layout'
@@ -11,17 +8,15 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
 
-export type LoaderData = Variant[]
-
-export const loader: LoaderFunction = async () => {
+export async function loader() {
   log.debug('getting variants...')
   const variants = await prisma.variant.findMany()
   log.debug('got %d variants', variants.length)
-  return json<LoaderData>(variants)
+  return variants
 }
 
 export default function VariantsPage() {
-  const variants = useLoaderData<LoaderData>()
+  const variants = useLoaderData<typeof loader>()
   return (
     <ListLayout title='variants'>
       {variants.map((variant) => {

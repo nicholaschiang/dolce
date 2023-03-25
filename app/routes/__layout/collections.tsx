@@ -1,7 +1,4 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import type { Collection } from '@prisma/client'
-import type { LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
 import { nanoid } from 'nanoid'
 
 import { ListLayout } from 'components/list-layout'
@@ -11,17 +8,15 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
 
-export type LoaderData = Collection[]
-
-export const loader: LoaderFunction = async () => {
+export async function loader() {
   log.debug('getting collections...')
   const collections = await prisma.collection.findMany()
   log.debug('got %d collections', collections.length)
-  return json<LoaderData>(collections)
+  return collections
 }
 
 export default function CollectionsPage() {
-  const collections = useLoaderData<LoaderData>()
+  const collections = useLoaderData<typeof loader>()
   return (
     <ListLayout title='collections'>
       {collections.map((collection) => {

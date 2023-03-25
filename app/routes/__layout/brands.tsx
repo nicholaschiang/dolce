@@ -1,7 +1,4 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import type { Brand } from '@prisma/client'
-import type { LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
 import { nanoid } from 'nanoid'
 
 import { ListLayout } from 'components/list-layout'
@@ -11,17 +8,15 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 import { prisma } from 'db.server'
 
-export type LoaderData = Brand[]
-
-export const loader: LoaderFunction = async () => {
+export async function loader() {
   log.debug('getting brands...')
   const brands = await prisma.brand.findMany()
   log.debug('got %d brands', brands.length)
-  return json<LoaderData>(brands)
+  return brands
 }
 
 export default function BrandsPage() {
-  const brands = useLoaderData<LoaderData>()
+  const brands = useLoaderData<typeof loader>()
   return (
     <ListLayout title='brands'>
       {brands.map((brand) => {

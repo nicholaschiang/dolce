@@ -1,18 +1,11 @@
-import type { LoaderFunction } from '@remix-run/node'
 import { Outlet } from '@remix-run/react'
 import { Prisma } from '@prisma/client'
-import { json } from '@remix-run/node'
 
 import * as Header from 'components/header'
 
 import { log } from 'log.server'
 
-export type LoaderData = {
-  models: Prisma.DMMF.Model[]
-  enums: Prisma.DMMF.DatamodelEnum[]
-}
-
-export const loader: LoaderFunction = () => {
+export function loader() {
   // the ui knows what type of filter select ux to show based on the field type:
   //
   // 1. given a data model (e.g. "Product"), each of the fields becomes an
@@ -50,7 +43,7 @@ export const loader: LoaderFunction = () => {
   const { models, enums } = Prisma.dmmf.datamodel
   log.trace('got %d models %s', models.length, JSON.stringify(models, null, 2))
   log.trace('got %d enums %s', enums.length, JSON.stringify(enums, null, 2))
-  return json<LoaderData>({ models, enums })
+  return { models, enums }
 }
 
 export default function LayoutPage() {

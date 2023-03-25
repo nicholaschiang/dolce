@@ -1,8 +1,10 @@
+import type { AppData, SerializeFrom } from '@remix-run/server-runtime'
 import rfdc from 'rfdc'
-import { useMatches } from '@remix-run/react'
-import { useMemo } from 'react'
+import { useRouteLoaderData } from '@remix-run/react'
 
 import type { User } from 'models/user.server'
+
+import type { loader } from 'root'
 
 export const clone = rfdc()
 
@@ -36,15 +38,8 @@ export function safeRedirect(
  * @param {string} id The route id
  * @returns {JSON|undefined} The router data or undefined if not found
  */
-export function useMatchesData<T extends Record<string, unknown>>(
-  id: string,
-): T | undefined {
-  const matchingRoutes = useMatches()
-  const route = useMemo(
-    () => matchingRoutes.find((r) => r.id === id),
-    [matchingRoutes, id],
-  )
-  return route?.data as T | undefined
+export function useData<T = AppData>(id: string): SerializeFrom<T> | undefined {
+  return useRouteLoaderData(id) as SerializeFrom<T> | undefined
 }
 
 function isUser(user: unknown): user is User {
@@ -56,7 +51,7 @@ function isUser(user: unknown): user is User {
 }
 
 export function useOptionalUser(): User | undefined {
-  const data = useMatchesData('root')
+  const data = useData<typeof loader>('root')
   if (!data || !isUser(data.user)) return undefined
   return data.user
 }
