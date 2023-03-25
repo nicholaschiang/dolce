@@ -250,18 +250,19 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
                         {f.name}
                       </Menu.Item>
                     ))}
-                  {field === undefined &&
-                    fields.map((f) => (
+                  {fields
+                    .filter((f) => field === undefined || f.name === field.name)
+                    .map((f) => (
                       <Fragment key={f.name}>
-                        {f.kind === 'enum' && <EnumItems nested field={f} />}
-                        {f.kind === 'object' && f.name !== 'sizes' && (
-                          <ObjectItems nested field={f} />
+                        {f.kind === 'enum' && (
+                          <EnumItems nested={!field} field={f} />
                         )}
-                        {f.name === 'sizes' && <SizeItems nested />}
+                        {f.kind === 'object' && f.name !== 'sizes' && (
+                          <ObjectItems nested={!field} field={f} />
+                        )}
+                        {f.name === 'sizes' && <SizeItems nested={!field} />}
                       </Fragment>
                     ))}
-                  {field?.kind === 'enum' && <EnumItems field={field} />}
-                  {field?.kind === 'object' && <ObjectItems field={field} />}
                 </Menu.List>
               </Menu.Root>
             )}
