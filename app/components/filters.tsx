@@ -1,4 +1,3 @@
-import * as Dialog from '@radix-ui/react-dialog'
 import * as Popover from '@radix-ui/react-popover'
 import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
 import type {
@@ -30,6 +29,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import type { LoaderData as LayoutLoaderData } from 'routes/__layout'
 
 import * as Menu from 'components/menu'
+import { Dialog } from 'components/dialog'
 import { Tooltip } from 'components/tooltip'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
@@ -213,27 +213,15 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
   useEffect(() => setField(undefined), [open])
   useEffect(() => setSearch(''), [open, field])
 
-  // TODO refactor this so that it is defined alongside the Menu#hotkey prop. it
-  // may be useful to hoist all these hotkey definitions globally, as well.
-  useHotkeys(
-    'f',
-    (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      setOpen(true)
-    },
-    [],
-  )
-
   const fields = model.fields.filter((f) => !hiddenFields?.includes(f.name))
 
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
-      <Tooltip tip='Filter' hotkey='f'>
+      <Tooltip tip='Filter' hotkey='f' onHotkey={() => setOpen(true)}>
         <Popover.Trigger asChild>
           <button
             type='button'
-            className='icon-button mb-1.5 flex rounded'
+            className='icon-button square mb-1.5 flex'
             onClick={() => setOpen(true)}
           >
             <PlusIcon className='h-3.5 w-3.5' />
@@ -400,64 +388,58 @@ function ScalarDialog({ field, nested }: Props) {
 
   if (nested) return null
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger />
-      <Dialog.Portal>
-        <Dialog.Overlay className='fixed inset-0 bg-white/50 dark:bg-gray-900/50' />
-        <Dialog.Content className='center fixed w-full max-w-sm rounded-xl border border-gray-200 bg-gray-50 shadow-2xl focus:outline-none dark:border-gray-700 dark:bg-gray-800'>
-          <form
-            className='m-8'
-            autoComplete='off'
-            onSubmit={(event) => {
-              let value: FilterValue = new FormData(event.currentTarget).get(id)
-              switch (inputType) {
-                case 'number':
-                  value = Number(value)
-                  break
-                case 'date':
-                  value = new Date(value as string)
-                  break
-                case 'checkbox':
-                  value = value === 'true'
-                  break
-                default:
-              }
-              addOrUpdateFilter({
-                id: nanoid(5),
-                // TODO add a runtime check that this is a valid FilterName
-                name: field.name as FilterName,
-                condition: field.type === 'String' ? 'contains' : 'equals',
-                value,
-              })
-              setOpen(false)
-              event.preventDefault()
-            }}
-          >
-            <Dialog.Title className='mb-6 mt-10 text-center text-2xl'>
-              filter by {field.name}
-            </Dialog.Title>
-            <input
-              className='input'
-              aria-label='value'
-              type={inputType}
-              name={id}
-              id={id}
-              required
-            />
-            <div className='mt-4 flex items-center justify-end'>
-              <Dialog.Close asChild>
-                <button type='button' className='button outlined mr-3'>
-                  cancel
-                </button>
-              </Dialog.Close>
-              <button className='button' type='submit'>
-                apply
-              </button>
-            </div>
-          </form>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+    <Dialog open={open} onOpenChange={setOpen} className='w-full max-w-sm'>
+      <form
+        className='m-8'
+        autoComplete='off'
+        onSubmit={(event) => {
+          let value: FilterValue = new FormData(event.currentTarget).get(id)
+          switch (inputType) {
+            case 'number':
+              value = Number(value)
+              break
+            case 'date':
+              value = new Date(value as string)
+              break
+            case 'checkbox':
+              value = value === 'true'
+              break
+            default:
+          }
+          addOrUpdateFilter({
+            id: nanoid(5),
+            // TODO add a runtime check that this is a valid FilterName
+            name: field.name as FilterName,
+            condition: field.type === 'String' ? 'contains' : 'equals',
+            value,
+          })
+          setOpen(false)
+          event.preventDefault()
+        }}
+      >
+        <Dialog.Title className='mb-6 mt-10 text-center text-2xl'>
+          filter by {field.name}
+        </Dialog.Title>
+        <input
+          className='input'
+          aria-label='value'
+          type={inputType}
+          name={id}
+          id={id}
+          required
+        />
+        <div className='mt-4 flex items-center justify-end'>
+          <Dialog.Close asChild>
+            <button type='button' className='button outlined mr-3'>
+              cancel
+            </button>
+          </Dialog.Close>
+          <button className='button' type='submit'>
+            apply
+          </button>
+        </div>
+      </form>
+    </Dialog>
   )
 }
 
