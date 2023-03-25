@@ -1,10 +1,9 @@
-import { Link, Outlet } from '@remix-run/react'
-import { ArrowTopRightIcon } from '@radix-ui/react-icons'
 import type { LoaderFunction } from '@remix-run/node'
+import { Outlet } from '@remix-run/react'
 import { Prisma } from '@prisma/client'
 import { json } from '@remix-run/node'
 
-import { ThemeSwitcher } from 'components/theme-switcher'
+import * as Header from 'components/header'
 
 import { log } from 'log.server'
 
@@ -54,37 +53,12 @@ export const loader: LoaderFunction = () => {
   return json<LoaderData>({ models, enums })
 }
 
-function Header() {
-  return (
-    <header className='relative shrink-0 border-b border-gray-200 bg-white/75 p-6 backdrop-blur-lg dark:border-gray-700 dark:bg-gray-900/75'>
-      <h1 className='text-xl leading-none'>
-        <Link to='/' prefetch='intent'>
-          nicholas.engineering
-        </Link>
-      </h1>
-      <p className='mt-px text-sm leading-none text-gray-400 dark:text-gray-500'>
-        a project by{' '}
-        <a
-          href='https://nicholaschiang.com'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='underline'
-        >
-          nicholas chiang
-          <ArrowTopRightIcon className='inline-block h-2 w-2' />
-        </a>
-      </p>
-      <div className='absolute inset-y-0 right-12 flex items-center'>
-        <ThemeSwitcher />
-      </div>
-    </header>
-  )
-}
-
 export default function LayoutPage() {
   return (
     <main className='flex h-screen w-screen flex-col overflow-hidden'>
-      <Header />
+      <Header.Root>
+        <Header.Content />
+      </Header.Root>
       <Outlet />
     </main>
   )
