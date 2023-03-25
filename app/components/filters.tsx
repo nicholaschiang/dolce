@@ -1,5 +1,5 @@
 import * as Popover from '@radix-ui/react-popover'
-import { Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
+import { CaretDownIcon, Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
 import type {
   Dispatch,
   FormEvent,
@@ -27,6 +27,7 @@ import { useFetcher } from '@remix-run/react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import type { loader as layout } from 'routes/__layout'
+import type { loader as sizes } from 'routes/__layout/sizes'
 
 import * as Menu from 'components/menu'
 import { Dialog } from 'components/dialog'
@@ -253,9 +254,10 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
                     fields.map((f) => (
                       <Fragment key={f.name}>
                         {f.kind === 'enum' && <EnumItems nested field={f} />}
-                        {f.kind === 'object' && (
+                        {f.kind === 'object' && f.name !== 'sizes' && (
                           <ObjectItems nested field={f} />
                         )}
+                        {f.name === 'sizes' && <SizeItems nested />}
                       </Fragment>
                     ))}
                   {field?.kind === 'enum' && <EnumItems field={field} />}
@@ -393,6 +395,44 @@ function ObjectItems({ field, nested }: Props) {
         >
           <Menu.ItemLabel group={nested ? field.name : undefined}>
             {item.name}
+          </Menu.ItemLabel>
+        </Menu.Item>
+      ))}
+    </>
+  )
+}
+
+function SizeItems({ nested }: Pick<Props, 'nested'>) {
+  const fetcher = useFetcher<typeof sizes>()
+  useEffect(() => {
+    if (fetcher.type === 'init') fetcher.load(MODEL_TO_ROUTE.Size)
+  }, [fetcher])
+  const { addOrUpdateFilter } = useContext(FiltersContext)
+  const setOpen = useContext(MenuContext)
+  const search = useCommandState((state) => state.search)
+  if (search.length < 2 && nested) return null
+  return (
+    <>
+      {(fetcher.data ?? []).map((size) => (
+        <Menu.Item
+          key={size.id}
+          value={`size-${size.name}`}
+          onSelect={() => {
+            addOrUpdateFilter({
+              id: nanoid(5),
+              name: 'sizes',
+              condition: 'some',
+              value: { id: size.id, name: size.name },
+            })
+            setOpen(false)
+          }}
+        >
+          <Menu.ItemLabel group={nested ? 'sizes' : undefined}>
+            <span className='flex items-center truncate text-gray-500'>
+              {size.sex}
+              <CaretDownIcon className='mx-2 h-3 w-3 -rotate-90' />
+            </span>
+            {size.name}
           </Menu.ItemLabel>
         </Menu.Item>
       ))}

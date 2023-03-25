@@ -115,7 +115,7 @@ export function Item({
   )
 }
 
-export type ItemLabelProps = { group?: string; children: string }
+export type ItemLabelProps = { group?: string; children: ReactNode }
 
 export function ItemLabel({ group, children }: ItemLabelProps) {
   return (
@@ -123,7 +123,7 @@ export function ItemLabel({ group, children }: ItemLabelProps) {
       {group && <span className='truncate'>{group}</span>}
       {group && (
         <span className='mr-8 flex flex-1 items-center truncate text-gray-500'>
-          <CaretDownIcon className='mx-2 h-3 w-3 -rotate-90 text-gray-500 group-aria-selected:text-gray-900 dark:group-aria-selected:text-gray-100' />
+          <CaretDownIcon className='mx-2 h-3 w-3 -rotate-90 group-aria-selected:text-gray-900 dark:group-aria-selected:text-gray-100' />
           {children}
         </span>
       )}
