@@ -1,3 +1,6 @@
+// TODO I removed the @unique constraint on the product name field and instead
+// added a @unique description field that should be scraped and used to dedupe.
+
 import { Readable } from 'stream'
 import type { ReadableStream } from 'stream/web'
 import { createWriteStream } from 'fs'
