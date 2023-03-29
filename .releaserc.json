@@ -27,6 +27,20 @@
               }
             ],
             "countMatches": true
+          },
+          {
+            "files": ["pyproject.toml"],
+            "from": "^version = \".*\"",
+            "to": "version = \"${nextRelease.version}\"",
+            "results": [
+              {
+                "file": "pyproject.toml",
+                "hasChanged": true,
+                "numMatches": 1,
+                "numReplacements": 1
+              }
+            ],
+            "countMatches": true
           }
         ]
       }
@@ -35,7 +49,7 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["package.json", "CHANGELOG.md"],
+        "assets": ["package.json", "pyproject.toml", "CHANGELOG.md"],
         "message": "chore(release): ${nextRelease.version}"
       }
     ]
