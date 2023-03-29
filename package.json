@@ -29,8 +29,8 @@
     "typecheck:cypress": "tsc -b cypress",
     "validate": "run-p \"test --run\" lint typecheck test:e2e:run",
     "scrape": "run-s 'scrape:*'",
-    "scrape:build": "tsc -p ./scraper",
-    "scrape:run": "node ./scraper/out/main.js | pino-pretty"
+    "scrape:build": "tsc -p scraper/node",
+    "scrape:run": "node scraper/node/out/main.js | pino-pretty"
   },
   "eslintIgnore": [
     "/node_modules",
