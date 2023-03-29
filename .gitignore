@@ -1,5 +1,7 @@
+# macos
 .DS_Store
 
+# dependencies
 node_modules
 .pnp.*
 .yarn/*
@@ -9,13 +11,20 @@ node_modules
 !.yarn/sdks
 !.yarn/versions
 
+# build artifacts
 /build
 /public/build
 .env
 .cache
+/app/styles/tailwind.css
 
+# test artifacts
 /cypress/screenshots
 /cypress/videos
 /postgres-data
 
-/app/styles/tailwind.css
+# byte-compiled / optimized / dll files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
