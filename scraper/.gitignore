@@ -1,2 +1,3 @@
 node/out
 html/**/*.html
+json/**/*.json
