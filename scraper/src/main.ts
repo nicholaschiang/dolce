@@ -1,6 +1,7 @@
 import { save, saveImages } from './marant'
+import { scrape } from './aritzia'
 
-async function main(
+export async function marant(
   dirs = [
     'public/data/marant/02-26-2023',
     'public/data/marant/02-27-2023/all',
@@ -15,4 +16,4 @@ async function main(
   )
 }
 
-void main()
+void scrape()

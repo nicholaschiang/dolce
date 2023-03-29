@@ -7,14 +7,7 @@ import { createWriteStream } from 'fs'
 import { finished } from 'stream/promises'
 import fs from 'fs/promises'
 
-import {
-  Level,
-  Market,
-  PrismaClient,
-  SeasonName,
-  Sex,
-  Tier,
-} from '@prisma/client'
+import { Level, PrismaClient, SeasonName, Sex, Tier } from '@prisma/client'
 import { Cluster } from 'puppeteer-cluster'
 import type { Page } from 'puppeteer'
 import type { Prisma } from '@prisma/client'
@@ -600,7 +593,9 @@ export async function saveImages(dir = 'public/data/marant'): Promise<void> {
 export async function save(
   dir = 'public/data/marant',
   seasonPrefix = 'marant',
-  useLocalImages = true,
+  /*
+   *useLocalImages = true,
+   */
   sex = Sex.MAN,
 ): Promise<void> {
   const data = await fs.readFile(`${dir}/data.json`, 'utf8')
@@ -669,7 +664,7 @@ export async function save(
       where: { name: product.metadata.product_micro_category.toLowerCase() },
       create: {
         name: product.metadata.product_micro_category.toLowerCase(),
-        parentStyle: { connectOrCreate: parentStyle },
+        parent: { connectOrCreate: parentStyle },
       },
     }
     if (!styles.some((s) => s.where.name === childStyle.where.name))
@@ -689,40 +684,42 @@ export async function save(
         }))
     // TODO: Filter for duplicate products (that have the same name) that should
     // instead be represented as variants instead of separate products in db.
-    const prices: Prisma.PriceCreateOrConnectWithoutProductInput[] = [
-      {
-        where: {
-          value_url: {
-            value: product.fullPrice.value as number,
-            url: product.url,
-          },
-        },
-        create: {
-          value: product.fullPrice.value as number,
-          url: product.url,
-          market: Market.PRIMARY,
-          brand: { connectOrCreate: brand },
-          sizes: { connectOrCreate: sizes },
-        },
-      },
-    ]
-    if (product.salePrice) {
-      prices.push({
-        where: {
-          value_url: {
-            value: product.salePrice.value as number,
-            url: product.url,
-          },
-        },
-        create: {
-          value: product.salePrice.value as number,
-          url: product.url,
-          market: Market.PRIMARY,
-          brand: { connectOrCreate: brand },
-          sizes: { connectOrCreate: sizes },
-        },
-      })
-    }
+    /*
+     *const prices: Prisma.PriceCreateOrConnectWithoutProductInput[] = [
+     *  {
+     *    where: {
+     *      value_url: {
+     *        value: product.fullPrice.value as number,
+     *        url: product.url,
+     *      },
+     *    },
+     *    create: {
+     *      value: product.fullPrice.value as number,
+     *      url: product.url,
+     *      market: Market.PRIMARY,
+     *      brand: { connectOrCreate: brand },
+     *      sizes: { connectOrCreate: sizes },
+     *    },
+     *  },
+     *]
+     *if (product.salePrice) {
+     *  prices.push({
+     *    where: {
+     *      value_url: {
+     *        value: product.salePrice.value as number,
+     *        url: product.url,
+     *      },
+     *    },
+     *    create: {
+     *      value: product.salePrice.value as number,
+     *      url: product.url,
+     *      market: Market.PRIMARY,
+     *      brand: { connectOrCreate: brand },
+     *      sizes: { connectOrCreate: sizes },
+     *    },
+     *  })
+     *}
+     */
     const collections: Prisma.CollectionCreateOrConnectWithoutProductsInput[] =
       product.filters
         .filter((f) => f.title.toLowerCase() === 'season' && getSeason(f))
@@ -740,23 +737,28 @@ export async function save(
             brands: { connectOrCreate: [brand] },
           },
         }))
-    const imageURL = useLocalImages
-      ? `/${dir.replace(/^public\//, '')}/images/${getImageFileName(product)}`
-      : product.imageURL
-    const image: Prisma.ImageCreateOrConnectWithoutProductInput = {
-      where: { url: imageURL },
-      create: { url: imageURL },
-    }
+    /*
+     *const imageURL = useLocalImages
+     *  ? `/${dir.replace(/^public\//, '')}/images/${getImageFileName(product)}`
+     *  : product.imageURL
+     *const image: Prisma.ImageCreateOrConnectWithoutProductInput = {
+     *  where: { url: imageURL },
+     *  create: { url: imageURL },
+     *}
+     */
     // TODO right now we create separate products for each colorway. instead, we
     // should create a single product with variants. to do so, we'll want to
     // filter and aggregate by name before running any prisma operations.
     const productInput: Prisma.ProductCreateInput = {
       name: product.name.toLowerCase(),
+      description: product.name.toLowerCase(),
       level: Level.RTW,
       sizes: { connectOrCreate: sizes },
       msrp: product.fullPrice.value as number,
-      prices: { connectOrCreate: prices },
-      images: { connectOrCreate: [image] },
+      /*
+       *prices: { connectOrCreate: prices },
+       *images: { connectOrCreate: [image] },
+       */
       // TODO is there any way that we can regularly get this information? if
       // not, perhaps we should make these fields optional or remove them.
       designedAt: new Date(),
@@ -769,7 +771,7 @@ export async function save(
     await prisma.product.upsert({
       create: productInput,
       update: productInput,
-      where: { name: productInput.name },
+      where: { description: productInput.description },
     })
     bar.tick()
   }
