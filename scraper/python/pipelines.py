@@ -8,6 +8,6 @@
 from itemadapter import ItemAdapter
 
 
-class ScriptPipeline:
+class PythonPipeline:
     def process_item(self, item, spider):
         return item

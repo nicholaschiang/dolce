@@ -6,7 +6,7 @@
 import scrapy
 
 
-class ScriptItem(scrapy.Item):
+class PythonItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass

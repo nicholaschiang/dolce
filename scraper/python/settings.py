@@ -1,4 +1,4 @@
-# Scrapy settings for script project
+# Scrapy settings for python project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "script"
+BOT_NAME = "python"
 
-SPIDER_MODULES = ["script.spiders"]
-NEWSPIDER_MODULE = "script.spiders"
+SPIDER_MODULES = ["python.spiders"]
+NEWSPIDER_MODULE = "python.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "script (+http://www.yourdomain.com)"
+#USER_AGENT = "python (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "script.middlewares.ScriptSpiderMiddleware": 543,
+#    "python.middlewares.PythonSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "script.middlewares.ScriptDownloaderMiddleware": 543,
+#    "python.middlewares.PythonDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    "script.pipelines.ScriptPipeline": 300,
+#    "python.pipelines.PythonPipeline": 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
