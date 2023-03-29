@@ -179,6 +179,20 @@ model Country {
   sizes Size[]
 }
 
+// A style group represents a collection of mutually exclusive styles.
+// Allegorical to Linear's label groups (you can only filter on one at a time).
+// e.g. the "Neckline" style group contains "Crewneck", "V-Neck", etc (a product
+// can not have a crewneck and a v-neck at the same time).
+model StyleGroup {
+  id Int @id @default(autoincrement())
+
+  // The style group's name.
+  name String @unique
+
+  // The styles that belong to the style group.
+  styles Style[]
+}
+
 // A product style category is a high-level grouping of products. Styles are a
 // tad bit reminiscent of the typical issue tracking tool's "labels" feature.
 // e.g. blazer, bomber, cardigan, quilted, raincoat, jeans, tuxedos, etc.
@@ -197,11 +211,15 @@ model Style {
   // The collections that exclusively contain products from this style.
   collections Collection[]
 
+  // The style group that the style belongs to, if any.
+  styleGroup   StyleGroup? @relation(fields: [styleGroupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  styleGroupId Int?
+
   // The style subcategories that can be nested underneath this style.
   // e.g. tops > t-shirts > crew neck, tops > t-shirts > v-neck, etc.
-  parentStyleId Int?
-  parentStyle   Style?  @relation("ParentChildStyles", fields: [parentStyleId], references: [id])
-  childStyles    Style[] @relation("ParentChildStyles")
+  parentId Int?
+  parent   Style?  @relation("ParentChildStyle", fields: [parentId], references: [id])
+  children Style[] @relation("ParentChildStyle")
 }
 
 // A size is a measurement of a product's dimensions. Sizes can either be owned
@@ -273,6 +291,46 @@ model Color {
   // @todo perhaps colors should be associated with brands? e.g. "Gucci Beige"?
 }
 
+// A sustainability is a label indicating some level of sustainability.
+enum Sustainability {
+  RECYCLED // Certified recycled materials. 
+  ORGANIC // Certified organic materials.
+  RESPONSIBLE_DOWN // Responsible Down Standard cerified.
+  RESPONSIBLE_FORESTRY // Wood-based fabrics from sustainably managed forests.
+  RESPONSIBLE_WOOL // Responsible Wool Standard certified.
+  RESPONSIBLE_CASHMERE // Responsible Cashmere Standard certified.
+}
+
+// A material is a fabric or other ingrediant used to formulate a product.
+model Material {
+  id Int @id @default(autoincrement())
+
+  // The material's name, as designated by industry standard (e.g. "Cotton") or
+  // the brand for proprietary fabrics (e.g. "Bombtwill", "City Wool").
+  name String @unique
+
+  // The material's description, as designated by the brand (e.g. for
+  // proprietary fabrics like LENZING ECOVERO Viscose) or industry standard.
+  description String
+
+  // The material's sustainability status, if any.
+  sustainability Sustainability?
+
+  // The product variants that are available in this material.
+  variants Variant[]
+
+  // The style subcategories that can be nested underneath this style.
+  // e.g. Viscose > LENZING ECOVERO Viscose, Wool > Merino > City Wool, etc.
+  parentId Int?
+  parent   Material?  @relation("ParentChildMaterial", fields: [parentId], references: [id])
+  children Material[] @relation("ParentChildMaterial")
+
+  // @todo perhaps materials should be associated with brands or countries
+  // similar to how sizes are associated with either a brand or country?
+
+  // @todo perhaps create a manufacturer model to associate with materials?
+}
+
 // A variant is a specific colorway of a product. Variants are product-specific.
 model Variant {
   id Int @id @default(autoincrement())
@@ -284,10 +342,20 @@ model Variant {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId Int
 
-  // The colors the variant consists of.
+  // The colors the variant consists of. Typically a single color but can be
+  // multiple if the variant contains a gradient or a mix of multiple colors.
   colors Color[]
 
-  // The prices that are associated with the variant.
+  // The materials (a.k.a. fabrics) that the variant is made of.
+  materials Material[]
+
+  // Images and videos of the product variant being modeled.
+  videos Video[]
+  images Image[]
+
+  // The prices that are associated with the variant. Typically a single price
+  // but can be multiple if the item is sold by multiple retailers or if there
+  // are different prices per size. Can also be zero if the variant is sold out.
   prices Price[]
 
   // Each product can only have a single variant with a given name.
@@ -331,16 +399,13 @@ model Price {
   brand   Brand? @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   brandId Int?
 
-  // The product that is sold at this price.
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId Int
-
   // The product size(s) sold at this price. Secondary retailers sell different
   // sizes at different prices (e.g. Ebay, GOAT, Grailed, StockX, etc). 
   sizes Size[]
 
-  // The product variant(s) sold at this price (behaves the same as "sizes").
-  variants Variant[]
+  // The product variant sold at this price (behaves the same as "sizes").
+  variants Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int
 
   // Each price must have a unique value and URL (note that I can't simply put a
   // unique constraint on the URL due to secondary markets like GOAT that have a
@@ -359,9 +424,9 @@ model Image {
   // The image's URL (either fully qualified or a relative path).
   url String @unique
 
-  // The product the image is of.
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId Int
+  // The product variant the image is of.
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int
 
   // @todo store information on the models in the image (e.g. insta, etc).
 }
@@ -377,9 +442,9 @@ model Video {
   // The video's mime type.
   mimeType String
 
-  // The product the video is of.
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId Int
+  // The product variant the video is of.
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int
 
   // @todo store information on the models in the video (e.g. insta, etc).
 }
@@ -414,18 +479,11 @@ model Product {
   // The sizes the product was originally made to fit.
   sizes Size[]
 
-  // The variants the product was originally made in.
+  // The variants (colors + materials) the product was originally made in.
   variants Variant[]
 
   // The original MSRP value of the product in USD (if applicable).
   msrp Decimal?
-
-  // The product's available prices (MSRP, retail, resale) per size and color.
-  prices Price[]
-
-  // Images and videos of the product being modeled.
-  videos Video[]
-  images Image[]
 
   // When a product was originally conceived.
   designedAt DateTime
@@ -434,6 +492,8 @@ model Product {
   releasedAt DateTime
 
   // The product's styles. Allegorical to labels (e.g. top, t-shirt, v-neck).
+  // @todo preserve relationships between the same product in two different 
+  // styles (e.g. the "Agency Pant" and the "Agency Cropped Pant").
   styles Style[]
 
   // The collections that feature the product.
