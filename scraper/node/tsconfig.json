@@ -36,8 +36,8 @@
     "strictNullChecks": true,
     "target": "ES2019",
     "outDir": "out",
-    "rootDir": "src"
+    "rootDir": "save"
   },
-  "include": ["src/**/*"],
+  "include": ["save/**/*"],
   "exclude": ["lib", "dist", "build", "node_modules", "test/**/*.spec.ts"]
 }
