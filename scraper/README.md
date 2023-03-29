@@ -18,3 +18,12 @@ While using Python for web scraping is more widely adopted than using Node.js (e
 
 For scraping tasks that do not require running JS and avoiding bot protection tools, using Python-based scraping solutions can be significantly faster.
 This directory contains a Scrapy project designed just for that.
+
+To run the `python/spiders/aritzia_spider.py` to get product information from [Aritzia](https://aritzia.com) in JSON format:
+
+```
+$ poetry install
+$ source .venv/bin/activate
+$ cd scraper
+$ scrapy crawl aritzia -L INFO -O json/aritzia.json
+```
