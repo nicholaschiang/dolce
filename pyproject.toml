@@ -6,7 +6,7 @@ authors = ["Nicholas Chiang <nicholas.h.chiang@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.11.2"
 Scrapy = "^2.8.0"
 
 [tool.poetry.dev-dependencies]
