@@ -336,6 +336,7 @@ model Variant {
   id Int @id @default(autoincrement())
 
   // The variant's name, as designated by the brand (e.g. "Black", "White", etc).
+  // @todo don't use the color as the variant name bc there's already colors. 
   name String
 
   // The product the variant is of.
@@ -421,7 +422,8 @@ model Price {
 model Image {
   id Int @id @default(autoincrement())
 
-  // The image's URL (either fully qualified or a relative path).
+  // The URL (either fully qualified or a relative path) to the largest size of
+  // the image available (the front-end optimizes images at runtime).
   url String @unique
 
   // The product variant the image is of.

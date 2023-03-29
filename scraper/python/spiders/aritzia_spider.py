@@ -29,17 +29,6 @@ query = "?lastViewed=1000000000"
 link_sel = ".ar-visual-swiper .ar-swiper-item a[data-cat-id]"
 
 
-def get_largest_img(srcset):
-    urls_and_sizes = re.sub(",", "", srcset).split()
-    sizes = [
-        int(match.group(1))
-        for match in (re.search(r"(\d+)w$", size) for size in urls_and_sizes)
-        if match
-    ]
-    sizes.sort(reverse=True)
-    return urls_and_sizes[urls_and_sizes.index(f"{sizes[0]}w") - 1]
-
-
 class AritziaSpider(scrapy.Spider):
     name = "aritzia"
     start_urls = [
@@ -81,7 +70,6 @@ class AritziaSpider(scrapy.Spider):
                 "srcset": img.attrib["data-srcset"],
                 "srcset_mouseover": img.attrib["data-srcset-mouseover"],
                 "sizes": img.attrib["sizes"],
-                "largest": get_largest_img(img.attrib["data-srcset"]),
             }
             yield {
                 "image": image,
@@ -96,6 +84,8 @@ class AritziaSpider(scrapy.Spider):
                 "variant": json.loads(product.attrib["data-variant"] or "{}"),
                 "vg": product.attrib["data-vg"],
                 "campaignimg": product.attrib["data-campaignimg"],
+                "url": product.css("a::attr(href)").get(),
+                "sales_price": product.css(".js-product__sales-price span::text").get(),
             }
 
     def parse(self, response):
