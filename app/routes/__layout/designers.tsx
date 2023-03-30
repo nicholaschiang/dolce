@@ -10,7 +10,7 @@ import { prisma } from 'db.server'
 
 export async function loader() {
   log.debug('getting designers...')
-  const designers = await prisma.designer.findMany()
+  const designers = await prisma.designer.findMany({ take: 100 })
   log.debug('got %d designers', designers.length)
   return designers
 }

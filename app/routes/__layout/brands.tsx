@@ -10,7 +10,7 @@ import { prisma } from 'db.server'
 
 export async function loader() {
   log.debug('getting brands...')
-  const brands = await prisma.brand.findMany()
+  const brands = await prisma.brand.findMany({ take: 100 })
   log.debug('got %d brands', brands.length)
   return brands
 }
