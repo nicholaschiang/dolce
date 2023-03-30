@@ -295,18 +295,20 @@ function ProductItem({
           className='absolute w-full'
           style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
         >
-          <Image
-            className='absolute top-0 z-20 h-full w-full overflow-hidden rounded-md bg-gray-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-gray-800'
-            loading='lazy'
-            decoding='async'
-            src={images[1]}
-            responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
-              (width) => ({
-                size: { width, height: width * widthToHeightImageRatio },
-                maxWidth: width * resultsPerRow,
-              }),
-            )}
-          />
+          {images.length > 1 && (
+            <Image
+              className='absolute top-0 z-20 h-full w-full overflow-hidden rounded-md bg-gray-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-gray-800'
+              loading='lazy'
+              decoding='async'
+              src={images[1]}
+              responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
+                (width) => ({
+                  size: { width, height: width * widthToHeightImageRatio },
+                  maxWidth: width * resultsPerRow,
+                }),
+              )}
+            />
+          )}
           <Image
             className='absolute top-0 z-10 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
             loading={index < resultsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
@@ -324,7 +326,7 @@ function ProductItem({
         </div>
         <Link prefetch='intent' to={`${id}${location.search}`}>
           <div
-            className='relative mb-2 rounded-md z-30'
+            className='relative z-30 mb-2 rounded-md'
             style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
           />
           <h2 className='leading-none'>{name}</h2>
