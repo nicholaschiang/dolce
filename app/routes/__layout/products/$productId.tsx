@@ -140,18 +140,29 @@ export default function ProductPage() {
         </span>
       </div>
       <div className='flex w-full items-start gap-6 p-6'>
-        <Image
-          className='w-0 flex-1 overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
-          loading='eager'
-          decoding='sync'
-          src={images[0].url}
-          responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
-            (width) => ({
-              size: { width, height: width * widthToHeightImageRatio },
-              maxWidth: width * 2,
-            }),
-          )}
-        />
+        <div className='relative w-0 flex-1'>
+          <div
+            className='absolute w-full'
+            style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
+          >
+            <Image
+              className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
+              loading='eager'
+              decoding='sync'
+              src={images[0].url}
+              responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
+                (width) => ({
+                  size: { width, height: width * widthToHeightImageRatio },
+                  maxWidth: width * 2,
+                }),
+              )}
+            />
+          </div>
+          <div
+            className='relative z-30 mb-2 rounded-md'
+            style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
+          />
+        </div>
         <article className='flex w-0 flex-1 flex-col gap-3'>
           <Section>
             <p className='text-sm text-gray-400 dark:text-gray-600'>
