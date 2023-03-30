@@ -86,8 +86,6 @@ type DataProduct = {
 let styleId = 1
 const products: DataProduct[] = []
 
-window.products = products
-
 function getLargestImageURL(srcset: string): string {
   const urls = srcset.replace(/\s+[0-9]+(\.[0-9]+)?[wx]/g, '').split(/,/)
   const large = urls.find((url) => url.includes('/large/'))
