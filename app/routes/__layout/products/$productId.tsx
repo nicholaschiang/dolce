@@ -28,14 +28,12 @@ export async function loader({ params }: LoaderArgs) {
   const product = await prisma.product.findUnique({
     where: { id },
     include: {
-      images: true,
       sizes: true,
-      variants: true,
+      variants: { include: { images: true, prices: true } },
       styles: true,
       collections: true,
       designers: true,
       brands: true,
-      prices: true,
     },
   })
   if (product === null) throw new Response('Not Found', { status: 404 })
@@ -101,6 +99,7 @@ export default function ProductPage() {
     },
     [nav, productIds, location.search],
   )
+  const images = product.variants.map((v) => v.images).flat()
   return (
     <Dialog
       open
@@ -145,8 +144,7 @@ export default function ProductPage() {
           className='w-0 flex-1 overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
           loading='eager'
           decoding='sync'
-          src={product.images.slice(-1)[0].url}
-          data-image={product.images.slice(-1)[0].url}
+          src={images[0].url}
           responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
             (width) => ({
               size: { width, height: width * widthToHeightImageRatio },
@@ -160,11 +158,7 @@ export default function ProductPage() {
               {product.level}
             </p>
             <Dialog.Title className='text-2xl'>{product.name}</Dialog.Title>
-            <p className='text-2xs'>
-              This slim-fit turtleneck made of superfine wool is decorated with
-              the jacquard lettering logo at the bottom of the neck for an
-              iconic, minimalist touch.
-            </p>
+            <p className='text-2xs'>{product.description}</p>
           </Section>
           <Section>
             <Section.Title>

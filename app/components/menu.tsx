@@ -12,7 +12,7 @@ export type RootProps = {
 
 export function Root({ children }: RootProps) {
   return (
-    <Command className='frosted fixed z-40 mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'>
+    <Command className='frosted fixed mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-700'>
       {children}
     </Command>
   )

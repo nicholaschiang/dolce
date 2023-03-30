@@ -57,13 +57,17 @@ async function getProducts({ request }: LoaderArgs) {
   )
   const products = (
     await prisma.product.findMany({
-      include: { images: true },
+      include: { variants: { include: { images: true } } },
       where: { [join]: filters.map(filterToPrismaWhere) },
+      take: 100,
     })
   ).map((product) => ({
     id: product.id,
     name: product.name,
-    images: product.images.map((image) => image.url),
+    images: product.variants
+      .map((v) => v.images)
+      .flat()
+      .map((image) => image.url),
     // real users don't care about cents. most reputable brands won't include
     // cents in their prices anyway. prices that do include cents are usually
     // intended to be misleading (e.g. $69.70 instead of $70).
@@ -89,11 +93,7 @@ export async function loader(args: LoaderArgs) {
 }
 
 // Don't allow users to filter on back-end only fields.
-const hiddenFields: (keyof Prisma.ProductSelect)[] = [
-  'prices',
-  'videos',
-  'images',
-]
+const hiddenFields: (keyof Prisma.ProductSelect)[] = []
 
 // There must be at least one product per row.
 const minResultsPerRow = 1
@@ -287,7 +287,7 @@ function ProductItem({
   const location = useLocation()
   return (
     <li
-      className='shrink-0 grow-0'
+      className='group shrink-0 grow-0'
       style={{ flexBasis: `${(1 / resultsPerRow) * 100}%` }}
     >
       <div className='relative m-2'>
@@ -296,13 +296,24 @@ function ProductItem({
           style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
         >
           <Image
-            className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
+            className='absolute top-0 z-20 h-full w-full overflow-hidden rounded-md bg-gray-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-gray-800'
+            loading='lazy'
+            decoding='async'
+            src={images[1]}
+            responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
+              (width) => ({
+                size: { width, height: width * widthToHeightImageRatio },
+                maxWidth: width * resultsPerRow,
+              }),
+            )}
+          />
+          <Image
+            className='absolute top-0 z-10 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
             loading={index < resultsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
             decoding={
               index < resultsPerRow * rowsToEagerLoad ? 'sync' : 'async'
             }
-            src={images.slice(-1)[0]}
-            data-image={images.slice(-1)[0]}
+            src={images[0]}
             responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
               (width) => ({
                 size: { width, height: width * widthToHeightImageRatio },
@@ -313,7 +324,7 @@ function ProductItem({
         </div>
         <Link prefetch='intent' to={`${id}${location.search}`}>
           <div
-            className='relative mb-2 rounded-md'
+            className='relative mb-2 rounded-md z-30'
             style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
           />
           <h2 className='leading-none'>{name}</h2>
