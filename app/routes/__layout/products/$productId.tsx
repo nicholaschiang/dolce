@@ -213,7 +213,7 @@ export default function ProductPage() {
                 <Section.InfoDetail>
                   A product style category is a high-level grouping of products.
                   Styles are a tad bit reminiscent of the typical issue tracking
-                  tool’s "labels" feature. e.g. blazer, bomber, cardigan,
+                  tool’s “labels” feature. e.g. blazer, bomber, cardigan,
                   quilted, raincoat, jeans, tuxedos, etc.
                 </Section.InfoDetail>
               </Section.Info>
