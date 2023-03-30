@@ -36,16 +36,7 @@ jobs:
         run: git checkout $GITHUB_HEAD_REF
 
       - name: Release
-        run: |
-          unset GITHUB_ACTIONS && \
-          yarn semantic-release \
-            --no-ci \
-            --preset conventionalcommits \
-            --dry-run \
-            --plugins \
-            --analyze-commits "@semantic-release/commit-analyzer" \
-            --generate-notes "@semantic-release/release-notes-generator" \
-            --repository-url "file://$PWD"
+        run: unset GITHUB_ACTIONS && yarn semantic-release --dry-run
 
   release:
     name: Release
