@@ -123,10 +123,20 @@ jobs:
           start: yarn start:mocks
           wait-on: 'http://localhost:8811'
           record: true
+          tag: ${{ github.event_name }}
+          # right now, we can't easily reset state between tests and thus we're
+          # only going to run a single smoke test (hitting k8s back-end) in CI.
+          spec: cypress/e2e/smoke.cy.ts
         env:
           PORT: '8811'
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # override the github commit message for better Cypress Cloud mesages.
+          # @see https://github.com/cypress-io/github-action/issues/124#issuecomment-653180260
+          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+          # re-enable the Cypress GitHub PR comment bot
+          # @see https://docs.cypress.io/guides/continuous-integration/github-actions#Pull-requests-commit-message-is-merge-SHA-into-SHA
+          COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
 
   build:
     name: Build
