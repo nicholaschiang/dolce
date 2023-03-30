@@ -10,7 +10,10 @@ import { prisma } from 'db.server'
 
 export async function loader() {
   log.debug('getting variants...')
-  const variants = await prisma.variant.findMany({ take: 100 })
+  const variants = await prisma.variant.findMany({ 
+    take: 100,
+    include: { colors: true },
+  })
   log.debug('got %d variants', variants.length)
   return variants
 }

@@ -20,6 +20,7 @@ import {
 } from 'react'
 import type { Level, Prisma } from '@prisma/client'
 import cn from 'classnames'
+import { dequal } from 'dequal/lite'
 import invariant from 'tiny-invariant'
 import { nanoid } from 'nanoid'
 import { useCommandState } from 'cmdk'
@@ -28,6 +29,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 import type { loader as layout } from 'routes/__layout'
 import type { loader as sizes } from 'routes/__layout/sizes'
+import type { loader as variants } from 'routes/__layout/variants'
 
 import * as Menu from 'components/menu'
 import { Dialog } from 'components/dialog'
@@ -139,7 +141,10 @@ export function Filters({
       <nav className='frosted flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-700'>
         <ul className='-mb-1.5 flex flex-wrap'>
           {filters.map((f) => (
-            <Item key={f.id} filter={f} />
+            <>
+              {f.name !== 'variants' && <Item key={f.id} filter={f} />}
+              {f.name === 'variants' && <VariantItem key={f.id} filter={f} />}
+            </>
           ))}
           <AddFilterButton model={model} hiddenFields={hiddenFields} />
         </ul>
@@ -152,10 +157,14 @@ export function Filters({
 //////////////////////////////////////////////////////////////////
 
 type ItemProps = { filter: Filter }
+type GenericItemProps = {
+  name: string
+  condition: string
+  value: string
+  onClick: () => void
+}
 
-function Item({ filter }: ItemProps) {
-  const { removeFilter } = useContext(FiltersContext)
-  const { name, condition, value } = filterToStrings(filter)
+function GenericItem({ name, condition, value, onClick }: GenericItemProps) {
   return (
     <li className='mr-1.5 mb-1.5 flex h-6 flex-none items-stretch gap-px overflow-hidden rounded border border-gray-200 bg-white last:mr-0 dark:border-none dark:bg-transparent'>
       <ItemButton>{name}</ItemButton>
@@ -163,11 +172,65 @@ function Item({ filter }: ItemProps) {
       <ItemButton>{value}</ItemButton>
       <ItemButton
         className='text-gray-400 hover:text-inherit'
-        onClick={() => removeFilter(filter)}
+        onClick={onClick}
       >
         <Cross2Icon />
       </ItemButton>
     </li>
+  )
+}
+
+function Item({ filter }: ItemProps) {
+  const { removeFilter } = useContext(FiltersContext)
+  const { name, condition, value } = filterToStrings(filter)
+  return (
+    <GenericItem
+      name={name}
+      condition={condition}
+      value={value}
+      onClick={() => removeFilter(filter)}
+    />
+  )
+}
+
+function isColorsArray(array: unknown[]): array is { name: string }[] {
+  return array.every(
+    (object) =>
+      typeof object === 'object' &&
+      object !== null &&
+      'name' in object &&
+      typeof object.name === 'string',
+  )
+}
+
+function VariantItem({ filter }: ItemProps) {
+  const { removeFilter } = useContext(FiltersContext)
+  const { name, condition } = filterToStrings(filter)
+  if (
+    typeof filter.value === 'object' &&
+    filter.value !== null &&
+    'colors' in filter.value &&
+    typeof filter.value.colors === 'object' &&
+    filter.value.colors !== null &&
+    'some' in filter.value.colors &&
+    typeof filter.value.colors.some === 'object' &&
+    filter.value.colors.some !== null &&
+    'AND' in filter.value.colors.some &&
+    filter.value.colors.some.AND instanceof Array &&
+    isColorsArray(filter.value.colors.some.AND)
+  )
+    return (
+      <GenericItem
+        name={name}
+        condition={condition}
+        value={filter.value.colors.some.AND.map((c) => c.name).join(' ')}
+        onClick={() => removeFilter(filter)}
+      />
+    )
+  throw new Error(
+    `<VariantItem> expected a variant filter value but got: ${JSON.stringify(
+      filter.value,
+    )}.`,
   )
 }
 
@@ -258,10 +321,15 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
                         {f.kind === 'enum' && (
                           <EnumItems nested={!field} field={f} />
                         )}
-                        {f.kind === 'object' && f.name !== 'sizes' && (
-                          <ObjectItems nested={!field} field={f} />
-                        )}
+                        {f.kind === 'object' &&
+                          f.name !== 'sizes' &&
+                          f.name !== 'variants' && (
+                            <ObjectItems nested={!field} field={f} />
+                          )}
                         {f.name === 'sizes' && <SizeItems nested={!field} />}
+                        {f.name === 'variants' && (
+                          <VariantItems nested={!field} />
+                        )}
                       </Fragment>
                     ))}
                 </Menu.List>
@@ -400,6 +468,54 @@ function ObjectItems({ field, nested }: Props) {
           </Menu.ItemLabel>
         </Menu.Item>
       ))}
+    </>
+  )
+}
+
+function VariantItems({ nested }: Pick<Props, 'nested'>) {
+  const fetcher = useFetcher<typeof variants>()
+  useEffect(() => {
+    if (fetcher.type === 'init') fetcher.load(MODEL_TO_ROUTE.Variant)
+  }, [fetcher])
+  const { addOrUpdateFilter } = useContext(FiltersContext)
+  const setOpen = useContext(MenuContext)
+  const search = useCommandState((state) => state.search)
+  if (search.length < 2 && nested) return null
+  return (
+    <>
+      {(fetcher.data ?? [])
+        .filter(
+          (variant, index, self) =>
+            index === self.findIndex((v) => dequal(v.colors, variant.colors)),
+        )
+        .map((variant) => (
+          <Menu.Item
+            key={variant.id}
+            value={`variant-${variant.name}`}
+            onSelect={() => {
+              addOrUpdateFilter({
+                id: nanoid(5),
+                name: 'variants',
+                condition: 'some',
+                value: {
+                  colors: {
+                    some: {
+                      AND: variant.colors.map((color) => ({
+                        id: color.id,
+                        name: color.name,
+                      })),
+                    },
+                  },
+                },
+              })
+              setOpen(false)
+            }}
+          >
+            <Menu.ItemLabel group={nested ? 'variants' : undefined}>
+              {variant.colors.map((color) => color.name).join(' ')}
+            </Menu.ItemLabel>
+          </Menu.Item>
+        ))}
     </>
   )
 }
