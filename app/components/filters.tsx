@@ -227,6 +227,7 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
       <Popover.Portal>
         <Popover.Content
           align='start'
+          className='z-50'
           onCloseAutoFocus={(event) => event.preventDefault()}
         >
           <MenuContext.Provider value={setOpen}>
