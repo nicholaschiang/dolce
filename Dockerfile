@@ -1,47 +1,42 @@
 # base node image
 FROM node:18-bullseye-slim as base
 RUN corepack enable
+WORKDIR /site
 
 # set for base and all layer that inherit from it
-ENV NODE_ENV production
 ENV PORT 8080
+ENV PUPPETEER_SKIP_DOWNLOAD true
 
-# Install openssl for Prisma
+# install openssl for prisma
 RUN apt-get update && apt-get install -y openssl
 
-# Install all node_modules, including dev dependencies
-FROM base as deps
+# install all node_modules, including dev dependencies
+FROM base as build
 
-WORKDIR /site
+ADD pnpm-lock.yaml .
+RUN pnpm fetch
 
-ADD package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+ADD package.json .
+RUN pnpm install --frozen-lockfile --offline
 
-# Build the app
-FROM deps as build
-
-WORKDIR /site
-
-ADD prisma .
-RUN pnpm prisma generate
-
+# build the app
 ADD . .
-RUN pnpm build
+RUN pnpm prisma generate
+RUN pnpm run build
 
-# Finally, build the production image with minimal footprint
+# setup production node_modules
+RUN pnpm prune --prod
+
+# finally, build the production image with minimal footprint
 FROM base
-
-RUN mkdir /site
 WORKDIR /site
 
 COPY --from=build /site/node_modules /site/node_modules
-COPY --from=build /site/tsconfig.json /site/tsconfig.json
-COPY --from=build /site/package.json /site/package.json
+
 COPY --from=build /site/build /site/build
 COPY --from=build /site/public /site/public
-COPY --from=build /site/prisma /site/prisma
-COPY --from=build /site/app /site/app
+ADD . .
 
 EXPOSE 8080
 
-CMD ["pnpm", "start"]
+CMD node build/server.js 
