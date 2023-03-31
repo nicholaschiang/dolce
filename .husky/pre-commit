@@ -1,1 +1,1 @@
-yarn pretty-quick --staged
+pnpm pretty-quick --staged

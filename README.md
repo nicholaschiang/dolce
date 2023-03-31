@@ -98,27 +98,27 @@ Click this button to create a [Gitpod](https://gitpod.io) workspace with the pro
 - Start the Postgres Database in [Docker](https://www.docker.com/get-started):
 
   ```sh
-  yarn docker
+  pnpm docker
   ```
 
-  > **Note:** The yarn script will complete while Docker sets up the container in the background. Ensure that Docker has finished and your container is running before proceeding.
+  > **Note:** The pnpm script will complete while Docker sets up the container in the background. Ensure that Docker has finished and your container is running before proceeding.
 
 - Initial setup:
 
   ```sh
-  yarn setup
+  pnpm setup
   ```
 
 - Run the first build:
 
   ```sh
-  yarn build
+  pnpm build
   ```
 
 - Start dev server:
 
   ```sh
-  yarn dev
+  pnpm dev
   ```
 
 This starts your app in development mode, rebuilding assets on file changes.
@@ -247,7 +247,7 @@ We use Cypress for our End-to-End tests in this project. You'll find those in th
 
 We use [`@testing-library/cypress`](https://testing-library.com/cypress) for selecting elements on the page semantically.
 
-To run these tests in development, run `yarn test:e2e:dev` which will start the dev server for the app as well as the Cypress client. Make sure the database is running in docker as described above.
+To run these tests in development, run `pnpm test:e2e:dev` which will start the dev server for the app as well as the Cypress client. Make sure the database is running in docker as described above.
 
 We have a utility for testing authenticated features without having to go through the login flow:
 
@@ -272,7 +272,7 @@ For lower level tests of utilities and individual components, we use `vitest`. W
 
 #### Type Checking
 
-This project uses TypeScript. It's recommended to get TypeScript set up for your editor to get a really great in-editor experience with type checking and auto-complete. To run type checking across the whole project, run `yarn typecheck`.
+This project uses TypeScript. It's recommended to get TypeScript set up for your editor to get a really great in-editor experience with type checking and auto-complete. To run type checking across the whole project, run `pnpm typecheck`.
 
 #### Linting
 
@@ -280,4 +280,4 @@ This project uses ESLint for linting. That is configured in `.eslintrc.js`.
 
 #### Formatting
 
-We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `yarn format` script you can run to format all files in the project.
+We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `pnpm format` script you can run to format all files in the project.
