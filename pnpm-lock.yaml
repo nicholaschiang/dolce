@@ -141,6 +141,9 @@ devDependencies:
   '@types/compression':
     specifier: ^1.7.2
     version: 1.7.2
+  '@types/cookie':
+    specifier: ^0.5.1
+    version: 0.5.1
   '@types/eslint':
     specifier: ^8.21.3
     version: 8.21.3
@@ -306,6 +309,9 @@ devDependencies:
   tsconfig-paths:
     specifier: ^4.1.2
     version: 4.1.2
+  tslib:
+    specifier: ^2.5.0
+    version: 2.5.0
   typescript:
     specifier: ^4.9.5
     version: 4.9.5
@@ -3774,6 +3780,10 @@ packages:
 
   /@types/cookie@0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
+
+  /@types/cookie@0.5.1:
+    resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
+    dev: true
 
   /@types/debug@4.1.7:
     resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
