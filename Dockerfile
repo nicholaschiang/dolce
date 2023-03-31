@@ -1,5 +1,6 @@
 # base node image
 FROM node:18-bullseye-slim as base
+RUN corepack enable
 
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
@@ -13,9 +14,8 @@ FROM base as deps
 
 WORKDIR /site
 
-ADD package.json yarn.lock .yarnrc.yml ./
-ADD .yarn .yarn
-RUN yarn install --immutable
+ADD package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # Build the app
 FROM deps as build
@@ -23,10 +23,10 @@ FROM deps as build
 WORKDIR /site
 
 ADD prisma .
-RUN npx prisma generate
+RUN pnpm prisma generate
 
 ADD . .
-RUN yarn build
+RUN pnpm build
 
 # Finally, build the production image with minimal footprint
 FROM base
@@ -44,4 +44,4 @@ COPY --from=build /site/app /site/app
 
 EXPOSE 8080
 
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]
