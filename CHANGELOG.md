@@ -1,5 +1,45 @@
 # Release Notes
 
+## [1.1.0](https://github.com/nicholaschiang/site/compare/v1.0.1...v1.1.0) (2023-04-01)
+
+
+### Features
+
+* **cypress:** add aritzia scraping script ([4eb1486](https://github.com/nicholaschiang/site/commit/4eb148661ad05fec6e98c890b2a89dd3c82d41b3))
+* **filters:** add custom `<SizeItems>` component ([1896c2b](https://github.com/nicholaschiang/site/commit/1896c2b49dee7717a0a951a4e7fb31b21badeb7e))
+* **filters:** show nested filter values ([7b800eb](https://github.com/nicholaschiang/site/commit/7b800eb3da3740b2d0ed24f3332f058b3a262264))
+* **layout:** reduce x padding to match y ([451814f](https://github.com/nicholaschiang/site/commit/451814fb7ab74da8b117d9b2800d1de6e6f1977f))
+* **menu:** simply extend the `cmdk` library ([4288a3c](https://github.com/nicholaschiang/site/commit/4288a3c38ff592ab609ed4edd079d8338b788d7e))
+* **prisma/schema:** add materials and sustainability ([e8646c0](https://github.com/nicholaschiang/site/commit/e8646c01382fea9b3df7813c731e5aa259e48cc2))
+* **prisma:** add unique product descriptions ([714e88e](https://github.com/nicholaschiang/site/commit/714e88e3247db4ffadeb05307a8e6d66b3e6f891))
+* **product:** add basic product page to display info ([9a5ae6c](https://github.com/nicholaschiang/site/commit/9a5ae6c35663a87c6aedb5af0efb71497b29b696))
+* **product:** make product page a dialog ([3551414](https://github.com/nicholaschiang/site/commit/3551414fe089325f2f581ae22354c7fdb19ef5fb))
+* **products:** add join selector and count indicator ([70ee6ed](https://github.com/nicholaschiang/site/commit/70ee6ed8000b61408bff1bad935606dccd08de8b))
+* **products:** show secondary image on hover ([e464dad](https://github.com/nicholaschiang/site/commit/e464dadfd438e2e5fe31ef87f1b82e79f528a1a7))
+* **routes:** add max width to product page ([0f0fd5f](https://github.com/nicholaschiang/site/commit/0f0fd5fee9094ca7175c297242791d2e4747ae24))
+* **scraper/src/ald:** add aime leon dore script ([f7f408e](https://github.com/nicholaschiang/site/commit/f7f408e4e7804059ff5ef43a9b14f958539d5bc0))
+* **scraper:** add aritzia script and update marant ([d9730fb](https://github.com/nicholaschiang/site/commit/d9730fb3e19c32a191973982b1379a0d9aa5b8f5))
+* **scraper:** save aritzia data to database ([2eecd23](https://github.com/nicholaschiang/site/commit/2eecd2330f540681cafc5cd9fccaa3f6bb948cdb))
+* **scraper:** scrape aritzia sales prices ([7264d4d](https://github.com/nicholaschiang/site/commit/7264d4dcf7d1d9cbeea649780f752f4043e38aec))
+* **scraper:** use scrapy to get aritzia products ([2dd308e](https://github.com/nicholaschiang/site/commit/2dd308e24bc0fd9737e89eeb9346a3671708c6b7))
+
+
+### Bug Fixes
+
+* address typescript compilation errors ([fc1caae](https://github.com/nicholaschiang/site/commit/fc1caaeea8548c218a02d95c96a2b8beede3be6c))
+* **app.css:** optimize text for legibility ([50a434d](https://github.com/nicholaschiang/site/commit/50a434d79b5f83ee5dd025763dad5b2cfecb562c))
+* **app/products:** only show hover image if it exists ([8d11083](https://github.com/nicholaschiang/site/commit/8d11083b958cbd4542d46ced7430b89b9a7bd178))
+* **app/routes/product:** address eslint errors ([5c17b9e](https://github.com/nicholaschiang/site/commit/5c17b9e56204d01a5280555e36023f61e0420741))
+* filtering by variant is just filtering by color ([21e6ce8](https://github.com/nicholaschiang/site/commit/21e6ce8ba9baf5ed591ce53dd0fffd5106f4d03c))
+* **filters:** close filter menu on item select ([dcda774](https://github.com/nicholaschiang/site/commit/dcda774e5737bc572b1eb1b9f80cc4179d578695))
+* **routes/product:** add fallback image placeholder ([0dace9b](https://github.com/nicholaschiang/site/commit/0dace9b5b73aab44bf9e09faf751d3fbf7df9ff7))
+
+
+### Performance Improvements
+
+* **app/routes/layout:** limit to 100 results ([59bf1f5](https://github.com/nicholaschiang/site/commit/59bf1f58f760823a7fe106c54c558c842683d458))
+* **filters:** reuse already mounted field items ([b194b36](https://github.com/nicholaschiang/site/commit/b194b36b3ee1998bc642b63be4a55b418a130133))
+
 ## [1.0.1](https://github.com/nicholaschiang/site/compare/v1.0.0...v1.0.1) (2023-03-21)
 
 
