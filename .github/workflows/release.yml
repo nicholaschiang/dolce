@@ -18,6 +18,13 @@ jobs:
     name: Dry Release
     runs-on: ubuntu-latest
     steps:
+      - name: Generate token
+        id: generate-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.RELEASE_APP_ID }}
+          private_key: ${{ secrets.RELEASE_PEM }}
+
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
@@ -40,6 +47,8 @@ jobs:
 
       - name: Release
         run: unset GITHUB_ACTIONS && pnpm semantic-release --dry-run
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
   release:
     name: Release
