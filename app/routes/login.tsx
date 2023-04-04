@@ -8,6 +8,8 @@ import { verifyLogin } from 'models/user.server'
 import { createUserSession, getUserId } from 'session.server'
 import { safeRedirect, validateEmail } from 'utils'
 
+export const config = { runtime: 'edge' }
+
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request)
   if (userId) return redirect('/')

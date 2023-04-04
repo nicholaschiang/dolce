@@ -9,65 +9,7 @@ import { Link } from '@remix-run/react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
 
-const DATE_FORMAT: Intl.DateTimeFormatOptions = {
-  month: 'numeric',
-  year: 'numeric',
-}
-
-interface MilestoneProps {
-  start: Date
-  end?: Date
-  title: string
-  subtitle: string
-  url?: string
-  icon?: FunctionComponent<IconProps>
-  openInNew?: boolean
-}
-
-function Milestone({
-  start,
-  end,
-  title,
-  subtitle,
-  url,
-  icon,
-  openInNew,
-}: MilestoneProps) {
-  const Icon = icon ?? ArrowTopRightIcon
-  return (
-    <article className='before:content-[" "] relative m-12 text-lg leading-none before:absolute before:-left-6.5 before:top-1/2 before:h-1 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-gray-300 after:absolute after:-left-[calc(1.5rem_+_0.5px)] after:top-1/2 after:h-[calc(100%_+_3rem)] after:border-l after:border-gray-300 last:after:hidden dark:before:bg-gray-100 dark:after:border-gray-100'>
-      <p className='text-xs lowercase text-gray-900/50 dark:text-gray-100/50'>
-        {start.toLocaleString(undefined, DATE_FORMAT)}
-        {end ? `–${end.toLocaleString(undefined, DATE_FORMAT)}` : ''}
-      </p>
-      <h1 className='my-2 font-semibold'>
-        {!url && title}
-        {url && !openInNew && (
-          <Link
-            to={url}
-            prefetch='intent'
-            className='items-top link group flex underline'
-          >
-            {title}
-            <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
-          </Link>
-        )}
-        {url && openInNew && (
-          <a
-            href={url}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='items-top link group flex underline'
-          >
-            {title}
-            <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
-          </a>
-        )}
-      </h1>
-      <h2>{subtitle}</h2>
-    </article>
-  )
-}
+export const config = { runtime: 'edge' }
 
 export default function IndexPage() {
   return (
@@ -139,5 +81,65 @@ export default function IndexPage() {
         />
       </section>
     </main>
+  )
+}
+
+const DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  month: 'numeric',
+  year: 'numeric',
+}
+
+interface MilestoneProps {
+  start: Date
+  end?: Date
+  title: string
+  subtitle: string
+  url?: string
+  icon?: FunctionComponent<IconProps>
+  openInNew?: boolean
+}
+
+function Milestone({
+  start,
+  end,
+  title,
+  subtitle,
+  url,
+  icon,
+  openInNew,
+}: MilestoneProps) {
+  const Icon = icon ?? ArrowTopRightIcon
+  return (
+    <article className='before:content-[" "] relative m-12 text-lg leading-none before:absolute before:-left-6.5 before:top-1/2 before:h-1 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-gray-300 after:absolute after:-left-[calc(1.5rem_+_0.5px)] after:top-1/2 after:h-[calc(100%_+_3rem)] after:border-l after:border-gray-300 last:after:hidden dark:before:bg-gray-100 dark:after:border-gray-100'>
+      <p className='text-xs lowercase text-gray-900/50 dark:text-gray-100/50'>
+        {start.toLocaleString(undefined, DATE_FORMAT)}
+        {end ? `–${end.toLocaleString(undefined, DATE_FORMAT)}` : ''}
+      </p>
+      <h1 className='my-2 font-semibold'>
+        {!url && title}
+        {url && !openInNew && (
+          <Link
+            to={url}
+            prefetch='intent'
+            className='items-top link group flex underline'
+          >
+            {title}
+            <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
+          </Link>
+        )}
+        {url && openInNew && (
+          <a
+            href={url}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='items-top link group flex underline'
+          >
+            {title}
+            <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
+          </a>
+        )}
+      </h1>
+      <h2>{subtitle}</h2>
+    </article>
   )
 }
