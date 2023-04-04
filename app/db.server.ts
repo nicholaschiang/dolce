@@ -15,11 +15,10 @@ function getClient() {
   const isReadReplicaRegion = !PRIMARY_REGION || PRIMARY_REGION === FLY_REGION
 
   if (!isLocalHost) {
-    databaseUrl.host = `${FLY_REGION ?? ''}.${databaseUrl.host}`
-    if (!isReadReplicaRegion) {
-      // 5433 is the read-replica port
-      databaseUrl.port = '5433'
-    }
+    databaseUrl.host = FLY_REGION
+      ? `${FLY_REGION}.${databaseUrl.host}`
+      : databaseUrl.host
+    if (!isReadReplicaRegion) databaseUrl.port = '5433' // the read-replica port
   }
 
   console.log(`🔌 setting up prisma client to ${databaseUrl.host}`)
