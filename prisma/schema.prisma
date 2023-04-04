@@ -1,6 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -121,10 +122,10 @@ model Brand {
 
   // A short description of the brand, typically sourced from Wikipedia.
   description String
-  
+
   // The brand's tier.
   // @todo perhaps rename this to "BrandTier" to avoid confusion with "Level"? 
-  tier Tier 
+  tier Tier
 
   // The company that owns and operates the brand.
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -234,9 +235,9 @@ model Size {
   name String @unique
 
   // The product style the size is used for (e.g. tops, outerwear, puffers).
-  style Style @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  style   Style @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   styleId Int
-  
+
   // The original intended sex the size is specifying for.
   sex Sex
 
@@ -405,16 +406,16 @@ model Price {
   sizes Size[]
 
   // The product variant sold at this price (behaves the same as "sizes").
-  variants Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variants  Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantId Int
+
+  // @todo ensure that a price always has either a retailer or a brand.
+  // @see https://github.com/prisma/prisma/issues/17319
 
   // Each price must have a unique value and URL (note that I can't simply put a
   // unique constraint on the URL due to secondary markets like GOAT that have a
   // single URL for many different sizes at many different prices).
-  @@unique ([value, url])
-
-  // @todo ensure that a price always has either a retailer or a brand.
-  // @see https://github.com/prisma/prisma/issues/17319
+  @@unique([value, url])
 }
 
 // An image. Typically of a product being modeled.
@@ -461,7 +462,7 @@ enum Level {
   BESPOKE
   COUTURE
   HANDMADE
-  RTW 
+  RTW
 }
 
 // A product is an item that can be bought and sold.
@@ -476,7 +477,7 @@ model Product {
 
   // The product's level.
   // @todo perhaps rename this to "ProductLevel" to avoid confusion with "Tier"? 
-  level Level 
+  level Level
 
   // The sizes the product was originally made to fit.
   sizes Size[]
@@ -499,7 +500,7 @@ model Product {
   styles Style[]
 
   // The collections that feature the product.
-  collections Collection[] 
+  collections Collection[]
 
   // The product's designers. Typically, this will be a single person.
   designers Designer[]
@@ -521,7 +522,7 @@ model Collection {
   name String @unique
 
   // The collection's style category (if limited to a single category).
-  style Style? @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  style   Style? @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   styleId Int?
 
   // The collection's season. Typically, collection have seasons. While unusual,
@@ -561,7 +562,7 @@ model Season {
   id Int @id @default(autoincrement())
 
   // The name of the season, as widely accepted and recognized.
-  name SeasonName 
+  name SeasonName
 
   // The year the season takes place in.
   year Int
@@ -635,7 +636,7 @@ model Designer {
   diedAt DateTime?
 
   // Where the designer purports to be from.
-  country Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   countryId Int
 
   // The shows that the designer presented at.
