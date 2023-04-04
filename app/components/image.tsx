@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from 'react'
 
 export function Image({
-  optimizerUrl = '/_vercel/image',
+  optimizerUrl = '/image',
   responsive,
   src,
   alt,
@@ -13,7 +13,7 @@ export function Image({
 }) {
   const url = `${optimizerUrl}?url=${encodeURIComponent(src)}`
   const props: ComponentPropsWithoutRef<'img'> = {
-    src: `${url}&w=${rest.width ?? ''}`,
+    src: `${url}&w=${rest.width ?? ''}&q=75`,
   }
 
   let largestImageWidth = 0
@@ -25,7 +25,7 @@ export function Image({
       if (srcSet) {
         srcSet += ', '
       }
-      const srcSetUrl = `${url}&w=${size.width} ${size.width}w`
+      const srcSetUrl = `${url}&w=${size.width}&q=75 ${size.width}w`
       srcSet += srcSetUrl
 
       if (maxWidth) {
