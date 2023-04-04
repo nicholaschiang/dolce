@@ -1,6 +1,7 @@
 # `site`
 
 A landing page for everything I love.
+Often used as a sort of guinea pig for testing technologies before I use them in more important enterprise projects.
 
 ## The Fashion Index
 
