@@ -1,22 +1,19 @@
 import type { ComponentPropsWithoutRef } from 'react'
 
 export function Image({
-  optimizerUrl = '/api/image',
+  optimizerUrl = '/_vercel/image',
   responsive,
   src,
   alt,
   ...rest
 }: ComponentPropsWithoutRef<'img'> & {
+  src: string
   optimizerUrl?: string
-  responsive?: {
-    maxWidth?: number
-    size: { width: number; height?: number }
-  }[]
+  responsive?: { maxWidth?: number; size: { width: number } }[]
 }) {
-  const url = src ? `${optimizerUrl}?src=${encodeURIComponent(src)}` : src
-
+  const url = `${optimizerUrl}?url=${encodeURIComponent(src)}`
   const props: ComponentPropsWithoutRef<'img'> = {
-    src: `${url}&width=${rest.width || ''}&height=${rest.height || ''}`,
+    src: `${url}&w=${rest.width ?? ''}`,
   }
 
   let largestImageWidth = 0
@@ -28,9 +25,7 @@ export function Image({
       if (srcSet) {
         srcSet += ', '
       }
-      const srcSetUrl = `${url}&width=${size.width}&height=${
-        size.height || ''
-      } ${size.width}w`
+      const srcSetUrl = `${url}&w=${size.width} ${size.width}w`
       srcSet += srcSetUrl
 
       if (maxWidth) {
@@ -50,9 +45,8 @@ export function Image({
     props.src = ''
   }
 
-  if (largestImageSrc && (!rest.width || largestImageWidth > rest.width)) {
+  if (largestImageSrc && (!rest.width || largestImageWidth > rest.width))
     props.src = largestImageSrc
-  }
 
   return <img alt={alt ?? ''} {...rest} {...props} />
 }
