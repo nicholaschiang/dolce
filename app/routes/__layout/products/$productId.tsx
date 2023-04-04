@@ -7,7 +7,7 @@ import {
 } from '@radix-ui/react-icons'
 import { Link, useLoaderData, useLocation, useNavigate } from '@remix-run/react'
 import type { PropsWithChildren, ReactNode } from 'react'
-import type { LoaderArgs } from '@remix-run/node'
+import type { LoaderArgs } from '@vercel/remix'
 import invariant from 'tiny-invariant'
 import { useHotkeys } from 'react-hotkeys-hook'
 

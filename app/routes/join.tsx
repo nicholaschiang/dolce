@@ -1,7 +1,7 @@
 import * as React from 'react'
-import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node'
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@vercel/remix'
 import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
-import { json, redirect } from '@remix-run/node'
+import { json, redirect } from '@vercel/remix'
 
 import { createUser, getUserByEmail } from 'models/user.server'
 

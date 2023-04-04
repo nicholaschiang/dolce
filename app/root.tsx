@@ -9,11 +9,11 @@ import {
   useCatch,
   useLoaderData,
 } from '@remix-run/react'
-import type { LinksFunction, LoaderArgs, MetaFunction } from '@remix-run/node'
+import type { LinksFunction, LoaderArgs, MetaFunction } from '@vercel/remix'
 import type { ReactNode } from 'react'
 import type { ThrownResponse } from '@remix-run/react'
 import cn from 'classnames'
-import { json } from '@remix-run/node'
+import { json } from '@vercel/remix'
 
 import type { User } from 'models/user.server'
 

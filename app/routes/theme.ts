@@ -1,4 +1,4 @@
-import type { ActionFunction } from '@remix-run/node'
+import type { ActionFunction } from '@vercel/remix'
 
 import { getSession, sessionStorage } from 'session.server'
 import { isTheme } from 'theme'

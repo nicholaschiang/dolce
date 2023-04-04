@@ -6,11 +6,11 @@ import fsp from 'fs/promises'
 import https from 'https'
 import path from 'path'
 
-import type { LoaderFunction, Request as NodeRequest } from '@remix-run/node'
+import type { LoaderFunction, Request as NodeRequest } from '@vercel/remix'
 import {
   Response as NodeResponse,
   writeReadableStreamToWritable,
-} from '@remix-run/node'
+} from '@vercel/remix'
 import type { FitEnum } from 'sharp'
 import sharp from 'sharp'
 
