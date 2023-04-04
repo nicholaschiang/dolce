@@ -9,7 +9,7 @@ import {
 } from '@remix-run/react'
 import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { LoaderArgs } from '@remix-run/node'
+import type { LoaderArgs } from '@vercel/remix'
 import type { Prisma } from '@prisma/client'
 import { useHotkeys } from 'react-hotkeys-hook'
 

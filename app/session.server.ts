@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, redirect } from '@remix-run/node'
+import { createCookieSessionStorage, redirect } from '@vercel/remix'
 import invariant from 'tiny-invariant'
 
 import type { User } from 'models/user.server'
