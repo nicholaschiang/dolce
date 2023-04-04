@@ -1,5 +1,24 @@
 # Release Notes
 
+## [1.2.0](https://github.com/nicholaschiang/site/compare/v1.1.0...v1.2.0) (2023-04-04)
+
+
+### Features
+
+* replace `@remix-run/node` with `@vercel/remix` ([430000b](https://github.com/nicholaschiang/site/commit/430000bc365348db2314900a1b40eea4467f2d63))
+* use `vercel` built-in image optimization ([92e99bb](https://github.com/nicholaschiang/site/commit/92e99bb086d5816678cda0c5a0a2f840adc66a86))
+
+
+### Bug Fixes
+
+* **app/db:** remove `FLY_REGION` assumptions ([d4a7f0f](https://github.com/nicholaschiang/site/commit/d4a7f0f7198d1f16021937e4ad426945d5a849a7))
+* **image:** only optimize images when deployed ([9e6ead1](https://github.com/nicholaschiang/site/commit/9e6ead152a0a50fea802909f680736836da6423b))
+
+
+### Performance Improvements
+
+* use `pgbouncer` to pool postgres connections ([32edb7b](https://github.com/nicholaschiang/site/commit/32edb7bb2c6d9314e25860ce1a7528f954eab830))
+
 ## [1.1.0](https://github.com/nicholaschiang/site/compare/v1.0.1...v1.1.0) (2023-04-01)
 
 
