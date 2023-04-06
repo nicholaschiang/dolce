@@ -111,18 +111,14 @@ export default function ProductsPage() {
   const setFilters = useCallback<Dispatch<SetStateAction<Filter[]>>>(
     (action: SetStateAction<Filter[]>) => {
       setSearchParams((prevSearchParams) => {
-        let nextFilters: Filter[]
-        if (typeof action === 'function') {
-          const prevFilters = prevSearchParams
-            .getAll(FILTER_PARAM)
-            .map(searchParamToFilter)
-          nextFilters = action(prevFilters)
-        } else {
-          nextFilters = action
-        }
+        const prev = prevSearchParams
+          .getAll(FILTER_PARAM)
+          .map(searchParamToFilter)
+        const next = typeof action === 'function' ? action(prev) : action
+        if (next === prev) return prevSearchParams
         const nextSearchParams = new URLSearchParams(prevSearchParams)
         nextSearchParams.delete(FILTER_PARAM)
-        nextFilters.forEach((filter) =>
+        next.forEach((filter) =>
           nextSearchParams.append(FILTER_PARAM, filterToSearchParam(filter)),
         )
         return nextSearchParams
@@ -150,15 +146,11 @@ export default function ProductsPage() {
   const setJoin = useCallback(
     (action: SetStateAction<Join>) => {
       setSearchParams((prevSearchParams) => {
-        let nextJoin: Join
-        if (typeof action === 'function') {
-          const prevJoin = getJoinFromSearchParams(prevSearchParams)
-          nextJoin = action(prevJoin)
-        } else {
-          nextJoin = action
-        }
+        const prev = getJoinFromSearchParams(prevSearchParams)
+        const next = typeof action === 'function' ? action(prev) : action
+        if (next === prev) return prevSearchParams
         const nextSearchParams = new URLSearchParams(prevSearchParams)
-        nextSearchParams.set(JOIN_PARAM, nextJoin)
+        nextSearchParams.set(JOIN_PARAM, next)
         return nextSearchParams
       })
     },
