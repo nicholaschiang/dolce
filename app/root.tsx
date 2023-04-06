@@ -10,6 +10,7 @@ import {
   useLoaderData,
 } from '@remix-run/react'
 import type { LinksFunction, LoaderArgs, MetaFunction } from '@vercel/remix'
+import { Analytics } from '@vercel/analytics/react'
 import type { ReactNode } from 'react'
 import type { ThrownResponse } from '@remix-run/react'
 import cn from 'classnames'
@@ -146,6 +147,7 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <ThemeHead ssrTheme={Boolean(data?.theme)} />
       </head>
       <body className='bg-white text-gray-900 selection:bg-gray-200 selection:text-black dark:bg-gray-900 dark:text-gray-100 dark:selection:bg-gray-700 dark:selection:text-gray-100'>
+        <Analytics />
         {children}
         <ThemeBody ssrTheme={Boolean(data?.theme)} />
         <ScrollRestoration />

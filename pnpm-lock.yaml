@@ -31,6 +31,9 @@ dependencies:
   '@remix-run/server-runtime':
     specifier: 1.11.1
     version: 1.11.1(react-dom@18.2.0)(react@18.2.0)
+  '@vercel/analytics':
+    specifier: ^0.1.11
+    version: 0.1.11(react@18.2.0)
   '@vercel/remix':
     specifier: 1.11.1
     version: 1.11.1(react-dom@18.2.0)(react@18.2.0)
@@ -4307,6 +4310,14 @@ packages:
   /@vanilla-extract/private@1.0.3:
     resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
     dev: true
+
+  /@vercel/analytics@0.1.11(react@18.2.0):
+    resolution: {integrity: sha512-mj5CPR02y0BRs1tN3oZcBNAX9a8NxsIUl9vElDPcqxnMfP0RbRc9fI9Ud7+QDg/1Izvt5uMumsr+6YsmVHcyuw==}
+    peerDependencies:
+      react: ^16.8||^17||^18
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /@vercel/remix@1.11.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Qh0nVYHw+/XPo84C3kMcl1jvmHXVVyM3R4r+aAMkIrOGgM3JfhHnFM1QJvPRtuWn7UHhAMfLwKC62Ecdg2pyvw==}
