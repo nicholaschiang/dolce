@@ -122,7 +122,15 @@ export const meta: MetaFunction = () => ({
   viewport: 'width=device-width,initial-scale=1',
 })
 
-export type LoaderData = { user: User | null; theme: Theme | null }
+type Env = { VERCEL_ANALYTICS_ID?: string }
+
+declare global {
+  interface Window {
+    env: Env
+  }
+}
+
+export type LoaderData = { user: User | null; theme: Theme | null; env: Env }
 
 export async function loader({ request }: LoaderArgs) {
   const session = await getSession(request)
@@ -132,6 +140,7 @@ export async function loader({ request }: LoaderArgs) {
     {
       user: await getUser(request),
       theme: isTheme(theme) ? theme : null,
+      env: { VERCEL_ANALYTICS_ID: process.env.VERCEL_ANALYTICS_ID },
     },
     { headers },
   )
@@ -147,8 +156,13 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <ThemeHead ssrTheme={Boolean(data?.theme)} />
       </head>
       <body className='bg-white text-gray-900 selection:bg-gray-200 selection:text-black dark:bg-gray-900 dark:text-gray-100 dark:selection:bg-gray-700 dark:selection:text-gray-100'>
-        <Analytics />
         {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.env = ${JSON.stringify(data?.env ?? {})}`,
+          }}
+        />
+        <Analytics />
         <ThemeBody ssrTheme={Boolean(data?.theme)} />
         <ScrollRestoration />
         <Scripts />
