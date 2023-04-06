@@ -8,6 +8,7 @@ export default function entry(
   responseHeaders: Headers,
   remixContext: EntryContext,
 ) {
+  responseHeaders.set('Cache-Control', 's-maxage=1, stale-while-revalidate=59')
   return handleRequest(
     request,
     responseStatusCode,
