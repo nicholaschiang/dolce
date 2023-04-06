@@ -1,5 +1,25 @@
 # Release Notes
 
+## [1.3.0](https://github.com/nicholaschiang/site/compare/v1.2.0...v1.3.0) (2023-04-06)
+
+
+### Features
+
+* **app/root:** add `vercel` page analytics ([385a794](https://github.com/nicholaschiang/site/commit/385a794500aaaaedd281a4ffcab05d86fa1f9d2f))
+* report real web vital analytics to vercel ([4c77c7e](https://github.com/nicholaschiang/site/commit/4c77c7e402a6b221fcc172ca4e0c9363b861ff00))
+
+
+### Bug Fixes
+
+* **routes:** use `nanoid/non-secure` to avoid `crypto` ([5a825b0](https://github.com/nicholaschiang/site/commit/5a825b067681d634497c2efae99575e6ba872d23))
+* use `@prisma/client/edge` for edge runtime ([ab44e66](https://github.com/nicholaschiang/site/commit/ab44e66515287f6932eb413eae3ba46a13f987b4))
+
+
+### Performance Improvements
+
+* **entry.server:** use swr cache control directive ([74bfa1e](https://github.com/nicholaschiang/site/commit/74bfa1e08c458a0abac11f6494df212d5d45ba7f))
+* **routes:** use `vercel` edge functions ([9e29c6f](https://github.com/nicholaschiang/site/commit/9e29c6f34cf5b8d2e106dbe810576f9f80b27dcb))
+
 ## [1.2.0](https://github.com/nicholaschiang/site/compare/v1.1.0...v1.2.0) (2023-04-04)
 
 
