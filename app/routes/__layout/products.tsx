@@ -110,19 +110,22 @@ export default function ProductsPage() {
   )
   const setFilters = useCallback<Dispatch<SetStateAction<Filter[]>>>(
     (action: SetStateAction<Filter[]>) => {
-      setSearchParams((prevSearchParams) => {
-        const prev = prevSearchParams
-          .getAll(FILTER_PARAM)
-          .map(searchParamToFilter)
-        const next = typeof action === 'function' ? action(prev) : action
-        if (next === prev) return prevSearchParams
-        const nextSearchParams = new URLSearchParams(prevSearchParams)
-        nextSearchParams.delete(FILTER_PARAM)
-        next.forEach((filter) =>
-          nextSearchParams.append(FILTER_PARAM, filterToSearchParam(filter)),
-        )
-        return nextSearchParams
-      })
+      setSearchParams(
+        (prevSearchParams) => {
+          const prev = prevSearchParams
+            .getAll(FILTER_PARAM)
+            .map(searchParamToFilter)
+          const next = typeof action === 'function' ? action(prev) : action
+          if (next === prev) return prevSearchParams
+          const nextSearchParams = new URLSearchParams(prevSearchParams)
+          nextSearchParams.delete(FILTER_PARAM)
+          next.forEach((filter) =>
+            nextSearchParams.append(FILTER_PARAM, filterToSearchParam(filter)),
+          )
+          return nextSearchParams
+        },
+        { replace: true },
+      )
     },
     [setSearchParams],
   )
@@ -145,14 +148,17 @@ export default function ProductsPage() {
   const join = getJoinFromSearchParams(searchParams)
   const setJoin = useCallback(
     (action: SetStateAction<Join>) => {
-      setSearchParams((prevSearchParams) => {
-        const prev = getJoinFromSearchParams(prevSearchParams)
-        const next = typeof action === 'function' ? action(prev) : action
-        if (next === prev) return prevSearchParams
-        const nextSearchParams = new URLSearchParams(prevSearchParams)
-        nextSearchParams.set(JOIN_PARAM, next)
-        return nextSearchParams
-      })
+      setSearchParams(
+        (prevSearchParams) => {
+          const prev = getJoinFromSearchParams(prevSearchParams)
+          const next = typeof action === 'function' ? action(prev) : action
+          if (next === prev) return prevSearchParams
+          const nextSearchParams = new URLSearchParams(prevSearchParams)
+          nextSearchParams.set(JOIN_PARAM, next)
+          return nextSearchParams
+        },
+        { replace: true },
+      )
     },
     [setSearchParams],
   )
