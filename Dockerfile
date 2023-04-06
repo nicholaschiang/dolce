@@ -21,7 +21,6 @@ RUN pnpm install --frozen-lockfile --offline
 
 # build the app
 ADD . .
-RUN pnpm prisma generate
 RUN pnpm run build
 
 # setup production node_modules
