@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.3.1](https://github.com/nicholaschiang/site/compare/v1.3.0...v1.3.1) (2023-05-09)
+
+
+### Bug Fixes
+
+* **vercel.json:** add cross-origin access headers ([bae6349](https://github.com/nicholaschiang/site/commit/bae63496c18c2529b9ba3d80629406737a8dcb35))
+
 ## [1.3.0](https://github.com/nicholaschiang/site/compare/v1.2.0...v1.3.0) (2023-04-06)
 
 
