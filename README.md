@@ -107,7 +107,7 @@ Click this button to create a [Gitpod](https://gitpod.io) workspace with the pro
 - Initial setup:
 
   ```sh
-  pnpm setup
+  pnpm run setup
   ```
 
 - Run the first build:
