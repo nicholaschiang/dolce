@@ -6,17 +6,21 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useCatch,
   useLoaderData,
+  useRouteError,
+  isRouteErrorResponse,
 } from '@remix-run/react'
-import type { ThrownResponse } from '@remix-run/react'
 import { Analytics } from '@vercel/analytics/react'
-import type { LinksFunction, LoaderArgs, MetaFunction } from '@vercel/remix'
+import {
+  type LinksFunction,
+  type LoaderArgs,
+  type V2_MetaFunction,
+} from '@vercel/remix'
 import { json } from '@vercel/remix'
 import cn from 'classnames'
-import type { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
-import type { User } from 'models/user.server'
+import { type User } from 'models/user.server'
 
 import tailwindStylesheetUrl from 'styles/tailwind.css'
 
@@ -116,11 +120,11 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: tailwindStylesheetUrl },
 ]
 
-export const meta: MetaFunction = () => ({
-  charset: 'utf-8',
-  title: 'nicholas engineering',
-  viewport: 'width=device-width,initial-scale=1',
-})
+export const meta: V2_MetaFunction = () => [
+  { charSet: 'utf-8' },
+  { title: 'nicholas engineering' },
+  { name: 'viewport', content: 'width=device-width,initial-scale=1' },
+]
 
 type Env = { VERCEL_ANALYTICS_ID?: string }
 
@@ -204,32 +208,36 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
   )
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
+export function ErrorBoundary() {
+  const error = useRouteError()
+  if (isRouteErrorResponse(error))
+    return (
+      <ErrorDisplay>
+        <code>
+          <a
+            href={`https://httpstatuses.io/${error.status}`}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='underline'
+          >
+            {error.status} {error.statusText}
+          </a>
+        </code>
+        <br />
+        <code dangerouslySetInnerHTML={{ __html: String(error.data) }} />
+      </ErrorDisplay>
+    )
+  if (error instanceof Error)
+    return (
+      <ErrorDisplay>
+        <code>{error.message}</code>
+        <br />
+        <code dangerouslySetInnerHTML={{ __html: error.stack ?? '' }} />
+      </ErrorDisplay>
+    )
   return (
     <ErrorDisplay>
-      <code>{error.message}</code>
-      <br />
-      <code dangerouslySetInnerHTML={{ __html: error.stack ?? '' }} />
-    </ErrorDisplay>
-  )
-}
-
-export function CatchBoundary() {
-  const caught = useCatch<ThrownResponse<number, string>>()
-  return (
-    <ErrorDisplay>
-      <code>
-        <a
-          href={`https://httpstatuses.io/${caught.status}`}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='underline'
-        >
-          {caught.status} {caught.statusText}
-        </a>
-      </code>
-      <br />
-      <code dangerouslySetInnerHTML={{ __html: caught.data }} />
+      <code>An unexpected runtime error ocurred</code>
     </ErrorDisplay>
   )
 }
