@@ -8,6 +8,10 @@ on:
     branches:
       - main
       - '*.x'
+  merge_group:
+    branches:
+      - main
+      - '*.x'
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}
@@ -53,7 +57,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name == 'push' }}
     needs:
       - dry-release
     steps:
