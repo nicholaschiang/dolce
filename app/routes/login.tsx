@@ -1,7 +1,7 @@
-import * as React from 'react'
-import type { ActionArgs, LoaderArgs, MetaFunction } from '@vercel/remix'
 import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@vercel/remix'
 import { json, redirect } from '@vercel/remix'
+import * as React from 'react'
 
 import { verifyLogin } from 'models/user.server'
 

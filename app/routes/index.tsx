@@ -3,9 +3,9 @@ import {
   CardStackIcon,
   PersonIcon,
 } from '@radix-ui/react-icons'
-import type { FunctionComponent } from 'react'
 import type { IconProps } from '@radix-ui/react-icons/dist/types'
 import { Link } from '@remix-run/react'
+import type { FunctionComponent } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
 

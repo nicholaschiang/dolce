@@ -1,7 +1,7 @@
 import { ArrowTopRightIcon } from '@radix-ui/react-icons'
 import { Link } from '@remix-run/react'
-import type { ReactNode } from 'react'
 import cn from 'classnames'
+import type { ReactNode } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
 

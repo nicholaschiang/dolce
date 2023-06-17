@@ -1,8 +1,8 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
 import { CaretDownIcon, CheckIcon } from '@radix-ui/react-icons'
+import cn from 'classnames'
 import { Command, useCommandState } from 'cmdk'
 import type { ReactNode } from 'react'
-import cn from 'classnames'
 
 import { Hotkey } from 'components/hotkey'
 

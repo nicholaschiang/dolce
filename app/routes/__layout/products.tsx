@@ -1,4 +1,5 @@
-import type { Dispatch, SetStateAction } from 'react'
+import type { Prisma } from '@prisma/client'
+import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
 import {
   Link,
   Outlet,
@@ -7,16 +8,16 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react'
-import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { LoaderArgs } from '@vercel/remix'
-import type { Prisma } from '@prisma/client'
+import type { Dispatch, SetStateAction } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Filters } from 'components/filters'
 import { Image } from 'components/image'
 import { Tooltip } from 'components/tooltip'
 
+import { prisma } from 'db.server'
 import {
   FILTER_PARAM,
   JOIN_PARAM,
@@ -27,7 +28,6 @@ import {
 } from 'filters'
 import type { Filter } from 'filters'
 import { log } from 'log.server'
-import { prisma } from 'db.server'
 
 enum Join {
   And = 'AND',

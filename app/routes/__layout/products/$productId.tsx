@@ -1,15 +1,15 @@
-import * as Popover from '@radix-ui/react-popover'
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   Cross2Icon,
   InfoCircledIcon,
 } from '@radix-ui/react-icons'
+import * as Popover from '@radix-ui/react-popover'
 import { Link, useLoaderData, useLocation, useNavigate } from '@remix-run/react'
-import type { PropsWithChildren, ReactNode } from 'react'
 import type { LoaderArgs } from '@vercel/remix'
-import invariant from 'tiny-invariant'
+import type { PropsWithChildren, ReactNode } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import invariant from 'tiny-invariant'
 
 import type { loader as products } from 'routes/__layout/products'
 

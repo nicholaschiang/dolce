@@ -31,6 +31,11 @@ module.exports = {
     'import/resolver': { typescript: {} },
   },
   rules: {
+    // Only allow === except int he case of nulls. `myVar != null` is less code
+    // to write to check for both `undefined` and `null` while still being safe.
+    // @see {@link https://eslint.org/docs/latest/rules/eqeqeq}
+    'eqeqeq': ['error', 'always', { null: 'ignore' }],
+
     // Allow using functions before they are defined. This lets us better
     // organize component definitions so the main API is at the top and smaller
     // components are defined in sections below.
@@ -217,21 +222,6 @@ module.exports = {
     // @see {@link https://git.io/Jns2B}
     'jsx-a11y/anchor-is-valid': 'warn',
 
-    // Sort imports using ESLint (the AirBNB config disables these opinionated
-    // import sorting rules). This sorts the imports within each import group
-    // (e.g. built-ins, externals, internals) alphabetically.
-    // @see {@link https://eslint.org/docs/rules/sort-imports}
-    'sort-imports': [
-      'error',
-      {
-        ignoreCase: false,
-        ignoreDeclarationSort: false,
-        ignoreMemberSort: false,
-        memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-        allowSeparatedGroups: true,
-      },
-    ],
-
     // Remix requires specific named exports for route files (e.g. loader).
     // @see {@link https://remix.run/docs/en/v1/api/conventions#loader}
     // @see {@link https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/prefer-default-export.md}
@@ -244,6 +234,7 @@ module.exports = {
     'import/order': [
       'error',
       {
+        'alphabetize': { order: 'asc', caseInsensitive: true },
         'groups': [
           'builtin',
           'external',

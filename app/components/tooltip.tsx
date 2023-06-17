@@ -1,6 +1,6 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
-import type { ReactNode } from 'react'
 import cn from 'classnames'
+import type { ReactNode } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Hotkey } from 'components/hotkey'

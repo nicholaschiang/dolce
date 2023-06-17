@@ -1,5 +1,11 @@
-import * as Popover from '@radix-ui/react-popover'
+import type { Level, Prisma } from '@prisma/client'
 import { CaretDownIcon, Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
+import * as Popover from '@radix-ui/react-popover'
+import { useFetcher } from '@remix-run/react'
+import cn from 'classnames'
+import { useCommandState } from 'cmdk'
+import { dequal } from 'dequal/lite'
+import { nanoid } from 'nanoid/non-secure'
 import type {
   Dispatch,
   FormEvent,
@@ -18,26 +24,20 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { Level, Prisma } from '@prisma/client'
-import cn from 'classnames'
-import { dequal } from 'dequal/lite'
-import invariant from 'tiny-invariant'
-import { nanoid } from 'nanoid/non-secure'
-import { useCommandState } from 'cmdk'
-import { useFetcher } from '@remix-run/react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import invariant from 'tiny-invariant'
 
 import type { loader as layout } from 'routes/__layout'
 import type { loader as sizes } from 'routes/__layout/sizes'
 import type { loader as variants } from 'routes/__layout/variants'
 
-import * as Menu from 'components/menu'
 import { Dialog } from 'components/dialog'
+import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
-import { clone, useData } from 'utils'
 import { filterToStrings } from 'filters'
+import { clone, useData } from 'utils'
 
 // we need a way to load menu options when filtering based on a model; this
 // constant aims to map models to the routes that have loaders to get their

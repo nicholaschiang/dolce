@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import type { ReactNode } from 'react'
 import cn from 'classnames'
+import type { ReactNode } from 'react'
 
 export type DialogProps = {
   open?: boolean
