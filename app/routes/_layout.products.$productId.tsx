@@ -11,7 +11,7 @@ import type { PropsWithChildren, ReactNode } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
 
-import type { loader as products } from 'routes/__layout/products'
+import type { loader as products } from 'routes/_layout.products'
 
 import { Dialog } from 'components/dialog'
 import { Image } from 'components/image'
@@ -77,7 +77,7 @@ function LinkWithHotkey({
 export default function ProductPage() {
   const nav = useNavigate()
   const location = useLocation()
-  const data = useData<typeof products>('routes/__layout/products')
+  const data = useData<typeof products>('routes/_layout.products')
   const productIds = (data?.products ?? []).map((product) => product.id)
   const product = useLoaderData<typeof loader>()
   const productIndex = productIds.indexOf(product.id)
