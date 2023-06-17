@@ -1,5 +1,5 @@
-import { Outlet } from '@remix-run/react'
 import { Prisma } from '@prisma/client'
+import { Outlet } from '@remix-run/react'
 
 import * as Header from 'components/header'
 

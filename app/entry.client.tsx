@@ -1,7 +1,7 @@
-import type { Metric, ReportCallback } from 'web-vitals'
-import { StrictMode, startTransition } from 'react'
 import { RemixBrowser } from '@remix-run/react'
+import { StrictMode, startTransition } from 'react'
 import { hydrateRoot } from 'react-dom/client'
+import type { Metric, ReportCallback } from 'web-vitals'
 
 import { logStayCurious } from 'curious'
 

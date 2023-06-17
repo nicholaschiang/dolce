@@ -9,17 +9,18 @@ import {
   useCatch,
   useLoaderData,
 } from '@remix-run/react'
-import type { LinksFunction, LoaderArgs, MetaFunction } from '@vercel/remix'
-import { Analytics } from '@vercel/analytics/react'
-import type { ReactNode } from 'react'
 import type { ThrownResponse } from '@remix-run/react'
-import cn from 'classnames'
+import { Analytics } from '@vercel/analytics/react'
+import type { LinksFunction, LoaderArgs, MetaFunction } from '@vercel/remix'
 import { json } from '@vercel/remix'
+import cn from 'classnames'
+import type { ReactNode } from 'react'
 
 import type { User } from 'models/user.server'
 
 import tailwindStylesheetUrl from 'styles/tailwind.css'
 
+import { getSession, getUser, sessionStorage } from 'session.server'
 import {
   Theme,
   ThemeBody,
@@ -28,7 +29,6 @@ import {
   isTheme,
   useTheme,
 } from 'theme'
-import { getSession, getUser, sessionStorage } from 'session.server'
 
 export const links: LinksFunction = () => [
   {

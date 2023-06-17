@@ -1,7 +1,7 @@
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
+import { useFetcher } from '@remix-run/react'
 import cn from 'classnames'
 import { useEffect } from 'react'
-import { useFetcher } from '@remix-run/react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Tooltip } from 'components/tooltip'

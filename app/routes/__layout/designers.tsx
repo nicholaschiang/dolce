@@ -3,10 +3,10 @@ import { nanoid } from 'nanoid/non-secure'
 
 import { ListLayout } from 'components/list-layout'
 
+import { prisma } from 'db.server'
 import { FILTER_PARAM, filterToSearchParam } from 'filters'
 import type { Filter } from 'filters'
 import { log } from 'log.server'
-import { prisma } from 'db.server'
 
 export async function loader() {
   log.debug('getting designers...')
