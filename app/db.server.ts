@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import invariant from 'tiny-invariant'
 
+import { log } from 'log.server'
+
 function getClient() {
   const { DATABASE_URL } = process.env
   invariant(typeof DATABASE_URL === 'string', 'DATABASE_URL env var not set')
@@ -21,7 +23,7 @@ function getClient() {
     if (!isReadReplicaRegion) databaseUrl.port = '5433' // the read-replica port
   }
 
-  console.log(`🔌 setting up prisma client to ${databaseUrl.host}`)
+  log.info(`🔌 setting up prisma client to ${databaseUrl.host}`)
   // NOTE: during development if you change anything in this function, remember
   // that this only runs once per server restart and won't automatically be
   // re-run per request like everything else is. So if you need to change
