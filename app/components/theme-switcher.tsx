@@ -12,12 +12,12 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   const [theme, setTheme] = useTheme()
   const fetcher = useFetcher()
   useEffect(() => {
-    if (fetcher.submission)
+    if (fetcher.formData)
       setTheme((prev) => {
-        const themeValue = fetcher.submission.formData.get('theme')
+        const themeValue = fetcher.formData.get('theme')
         return isTheme(themeValue) ? themeValue : prev
       })
-  }, [fetcher.submission, setTheme])
+  }, [fetcher.formData, setTheme])
   useHotkeys(
     't',
     () => setTheme((prev) => (prev === Theme.Light ? Theme.Dark : Theme.Light)),
