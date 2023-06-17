@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.3.2](https://github.com/nicholaschiang/site/compare/v1.3.1...v1.3.2) (2023-06-17)
+
+
+### Bug Fixes
+
+* **products:** replace search params instead of nav ([8c81dcc](https://github.com/nicholaschiang/site/commit/8c81dcc3392c6664fb8f493295195888796169f8))
+* **products:** skip unnecessary search param change ([474832a](https://github.com/nicholaschiang/site/commit/474832a679f9336469a3d4fc68319220c496e791))
+
 ## [1.3.1](https://github.com/nicholaschiang/site/compare/v1.3.0...v1.3.1) (2023-05-09)
 
 
