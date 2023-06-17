@@ -27,9 +27,9 @@ import {
 import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
 
-import type { loader as layout } from 'routes/__layout'
-import type { loader as sizes } from 'routes/__layout/sizes'
-import type { loader as variants } from 'routes/__layout/variants'
+import type { loader as layout } from 'routes/_layout'
+import type { loader as sizes } from 'routes/_layout.sizes'
+import type { loader as variants } from 'routes/_layout.variants'
 
 import { Dialog } from 'components/dialog'
 import * as Menu from 'components/menu'
@@ -115,7 +115,7 @@ export function Filters({
 
   // TODO perhaps refactor this component to simply accept a Prisma data model
   // instead of relying on our own proprietary Remix API routes.
-  const data = useData<typeof layout>('routes/__layout')
+  const data = useData<typeof layout>('routes/_layout')
   const model = data?.models.find((m) => m.name === modelName)
   invariant(model, `Could not find model "${modelName}"`)
 
@@ -360,7 +360,7 @@ function EnumItems({ field, nested }: Props) {
     | Filter<'level', 'in', Level[]>
     | undefined
 
-  const data = useData<typeof layout>('routes/__layout')
+  const data = useData<typeof layout>('routes/_layout')
   const en = data?.enums.find((e) => e.name === field.type)
   invariant(en, `Could not find enum "${field.type}"`)
 
