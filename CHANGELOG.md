@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.5.0](https://github.com/nicholaschiang/site/compare/v1.4.0...v1.5.0) (2023-06-18)
+
+
+### Features
+
+* **app/atoms:** add basic boilerplate components ([65ea616](https://github.com/nicholaschiang/site/commit/65ea616865cc84f94db934c86c80e66c7e1b619c))
+
 ## [1.4.0](https://github.com/nicholaschiang/site/compare/v1.3.2...v1.4.0) (2023-06-18)
 
 
