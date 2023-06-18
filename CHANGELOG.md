@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.4.0](https://github.com/nicholaschiang/site/compare/v1.3.2...v1.4.0) (2023-06-18)
+
+
+### Features
+
+* **components/dialog:** reduce border radius ([5e1f12e](https://github.com/nicholaschiang/site/commit/5e1f12ee5465150d80cd432b74defeb7d1397fa0))
+* **routes:** add placeholder collection page ([b9f176b](https://github.com/nicholaschiang/site/commit/b9f176bb92be190a4f710e510b31880978ad375a))
+
 ## [1.3.2](https://github.com/nicholaschiang/site/compare/v1.3.1...v1.3.2) (2023-06-17)
 
 
