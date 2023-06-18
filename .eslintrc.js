@@ -186,6 +186,12 @@ module.exports = {
     // @see {@link https://github.com/airbnb/javascript/tree/master/react#ordering}
     'react/static-property-placement': ['error', 'static public field'],
 
+    // This rule is not necessary when using TypeScript prop types properly. It
+    // also would've been such a pain to manually update all of the atom
+    // component prop types to conform with this rule, so I'm just disabling it.
+    // @see {@link https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md}
+    'react/prop-types': 'off',
+
     // We're disabling this so often, it just made sense to make it a 'warning'.
     // {@link https://github.com/airbnb/javascript/tree/master/react#props}
     // {@link https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-props-no-spreading.md}
