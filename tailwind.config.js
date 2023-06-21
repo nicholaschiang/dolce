@@ -15,8 +15,7 @@ module.exports = {
     },
     fontFamily: {
       sans: [
-        'UniversTE20T',
-        'UnicodeT',
+        'Inter',
         '-apple-system',
         'BlinkMacSystemFont',
         'Segoe UI',
