@@ -108,7 +108,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
-    "@google/semantic-release-replace-plugin": "^1.2.0",
+    "semantic-release-replace-plugin": "^1.2.0",
     "@remix-run/dev": "^1.17.1",
     "@remix-run/eslint-config": "^1.17.1",
     "@remix-run/serve": "^1.17.1",
