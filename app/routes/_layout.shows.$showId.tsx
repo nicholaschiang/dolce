@@ -14,15 +14,20 @@ import type { Filter } from 'filters'
 import { log } from 'log.server'
 
 export async function loader({ params }: LoaderArgs) {
-  log.debug('getting collection...')
-  const collectionId = Number(params.collectionId)
-  if (Number.isNaN(collectionId)) throw new Response(null, { status: 404 })
-  const collection = await prisma.collection.findUnique({
-    where: { id: collectionId },
+  log.debug('getting show...')
+  const showId = Number(params.showId)
+  if (Number.isNaN(showId)) throw new Response(null, { status: 404 })
+  const show = await prisma.show.findUnique({
+    where: { id: showId },
+    include: {
+      video: true,
+      reviews: true,
+      looks: { include: { image: true } },
+    },
   })
-  log.debug('got collection %o', collection)
-  if (collection == null) throw new Response(null, { status: 404 })
-  return collection
+  log.debug('got show %o', show)
+  if (show == null) throw new Response(null, { status: 404 })
+  return show
 }
 
 type ScoreProps = { value: number; label: string; count: string }
@@ -55,44 +60,34 @@ function Subheader({ children }: { children: string }) {
 }
 
 export default function CollectionsPage() {
-  const collection = useLoaderData<typeof loader>()
-  const filter: Filter<'collections', 'some'> = {
+  const show = useLoaderData<typeof loader>()
+  const filter: Filter<'looks', 'some'> = {
     id: nanoid(5),
-    name: 'collections',
+    name: 'looks',
     condition: 'some',
-    value: { id: collection.id, name: collection.name },
+    value: { showId: show.id },
   }
   const param = filterToSearchParam(filter)
   return (
     <main className='h-full flex-1 overflow-hidden max-w-screen-xl mx-auto grid grid-cols-5'>
       <div className='overflow-auto col-span-2 py-6 pl-6 pr-3'>
         <ol className='grid grid-cols-2 gap-2'>
-          {Array(22)
-            .fill(null)
-            .map((_, index) => (
-              <li className='rounded-md overflow-hidden' key={index}>
-                <img
-                  src={`/looks/Isabel-Marant-FW23-${(index + 1).toLocaleString(
-                    undefined,
-                    { minimumIntegerDigits: 2 },
-                  )}-1.jpg`}
-                  alt={`Look ${index + 1}`}
-                />
-              </li>
-            ))}
+          {show.looks.map((look) => (
+            <li className='rounded-md overflow-hidden' key={look.id}>
+              <img src={look.image.url} alt={`Look ${look.number}`} />
+            </li>
+          ))}
         </ol>
       </div>
       <div className='overflow-auto col-span-3 flex flex-col gap-4 py-6 pr-6 pl-3'>
         <video className='rounded-md' controls>
-          <source src='/isabel-marant.mp4' type='video/mp4' />
-          Download the <a href='/isabel-marant.mp4'>MP4</a> video.
+          <source src={show.video.url} type={show.video.mimeType} />
+          Download the <a href={show.video.url}>MP4</a> video.
         </video>
         <div className='flex gap-4'>
           <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 rounded-md' />
           <article className='flex-1 bg-gray-100 dark:bg-gray-800 rounded-md text-center p-6'>
-            <h1 className='text-2xl mb-2 font-semibold'>
-              Isabel Marant Fall-Winter 2023
-            </h1>
+            <h1 className='text-2xl mb-2 font-semibold'>{show.name}</h1>
             <ul className='grid grid-cols-2 gap-2'>
               <Score value={0.82} label='Tomatometer' count='339 Reviews' />
               <Score
@@ -105,59 +100,24 @@ export default function CollectionsPage() {
         </div>
         <Section header='What to know'>
           <Subheader>Critics Consensus</Subheader>
-          <p>
-            Just as visually dazzling and action-packed as its predecessor,
-            Spider-Man: Across the Spider-Verse thrills from start to
-            cliffhanger conclusion. Read critic reviews
-          </p>
+          <p>{show.criticReviewSummary}</p>
           <Subheader>Audience Says</Subheader>
-          <p>
-            From incredible animation to a super story and tons of Easter eggs,
-            Spider-Man: Across the Spider-Verse has everything fans could ask
-            for. Read audience reviews
-          </p>
+          <p>{show.consumerReviewSummary}</p>
         </Section>
         <Section header='Where to buy'>
           <Empty>Coming soon</Empty>
         </Section>
         <Section header='Collection info'>
-          <article className='prose-sm dark:prose-invert'>
-            <p>
-              A desire to cuddle up in comfy knitwear and swaddling coats. The
-              disorder of some kind of irreverence and a sexy unconventional
-              attitude.
-            </p>
-            <p>
-              Metallic zips breathe a perfecto spirit into the collection where
-              leather rules. They fasten the jackets and their pockets and blend
-              into the pieces as precious details baring a neckline or splitting
-              a dress.
-            </p>
-            <p>
-              The graphic cut-outs of the flou shape new cleavages while plays
-              on transparency subtly reveal parts of the body. These supple and
-              feminine fabrics contrast with heavy cable knits, dyed denim,
-              wool, and warm shearlings.
-            </p>
-            <p>
-              The color palette, first natural and minimal, explores yellow and
-              magenta horizons before diving into black. A sparkling evening
-              mixes textures – embroideries, velvet lurex – and volumes –
-              oversized, fitted, cropped.
-            </p>
-            <p>
-              Inside the venue, the show’s soundtrack performed live by DJ
-              Gabber Eleganza and Lulu Van Trapp resonates and intoxicates the
-              crowd. A unique creation composed on the idea of desire and
-              disorder, this season’s mantra.
-            </p>
-          </article>
+          <article
+            className='prose-sm dark:prose-invert'
+            dangerouslySetInnerHTML={{ __html: show.description }}
+          />
         </Section>
         <Section header='Rate and review'>
           <Textarea placeholder='What did you think of the collection? (optional)' />
           <Button>Submit</Button>
         </Section>
-        <Section header='Critic reviews for Isabel Marant Fall-Winter 2023'>
+        <Section header={`Critic reviews for ${show.name}`}>
           <Review
             author={{
               name: 'Mark Holgate',
