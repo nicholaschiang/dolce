@@ -617,12 +617,15 @@ model Look {
   show   Show @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   showId Int
 
-  // The look's model.
-  model   User @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  modelId Int
+  // The look's model (if known).
+  model   User? @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  modelId Int?
 
-  // The look's products.
+  // The look's products (if known).
   products Product[]
+
+  // Each look must have a unique number in the show.
+  @@unique([number, showId])
 }
 
 // A review is a review for a show from a fashion critic or consumer.
