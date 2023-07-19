@@ -539,6 +539,11 @@ model Product {
 
 // A collection is an arbitrary grouping of products, typically done by a brand
 // or a designer. Often, collections are created entirely by a single designer.
+// Collections are separate from shows as every show has a collection but not
+// every collection has a show (e.g. Mission Workshop "Merino Core" collection
+// has no show v.s. Saint Laurent Fall-Winter 2023 has a show). Each show can
+// also have multiple collections shown (e.g. Fashion East often showcases
+// three collections from three different designers on the same runway).
 model Collection {
   id Int @id @default(autoincrement())
 
