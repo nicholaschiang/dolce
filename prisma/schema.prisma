@@ -449,8 +449,11 @@ model Image {
   url String @unique
 
   // The product variant the image is of.
-  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId Int
+  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int?
+
+  // The runway look the image is of.
+  look Look?
 
   // @todo store information on the models in the image (e.g. insta, etc).
 }
@@ -467,8 +470,11 @@ model Video {
   mimeType String
 
   // The product variant the video is of.
-  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId Int
+  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int?
+
+  // The show the video is of.
+  show Show?
 
   // @todo store information on the models in the video (e.g. insta, etc).
 }
@@ -624,6 +630,10 @@ model Look {
   // The look's products (if known).
   products Product[]
 
+  // The look's picture (if known).
+  image   Image @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  imageId Int   @unique
+
   // Each look must have a unique number in the show.
   @@unique([number, showId])
 }
@@ -632,7 +642,7 @@ model Look {
 model Review {
   id Int @id @default(autoincrement())
 
-  // The review content.
+  // The review content (typically an HTML string).
   content String
 
   // The review author.
@@ -671,7 +681,7 @@ model Show {
 
   // The name of the show, as designated by the show's organizer.
   // @todo often this will be the same as the collection name; do we need this?
-  name String
+  name String @unique
 
   // A description of the collection, typically provided by the brand.
   description String
@@ -685,20 +695,21 @@ model Show {
   // Critic and consumer reviews of the show.
   reviews Review[]
 
+  // Video of the show (typically just a single shot of runway models walking).
+  video   Video @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId Int   @unique
+
   // The fashion season in which the show was presented. e.g. Spring 2021
   // @todo collections are already associated with seasons; do we need this?
   season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seasonId Int
 
   // The date when the show started.
-  startedAt DateTime
-
-  // The date when the show ended. Often, this will match the start date.
-  endedAt DateTime
+  date DateTime
 
   // The runway show's location.
   // @todo perhaps this should be a separate model and simply a relation here.
-  venue String
+  location String
 
   // The designers who presented at the show. Often, there is only one.
   // @todo collections are already associated with designers; do we need this?
