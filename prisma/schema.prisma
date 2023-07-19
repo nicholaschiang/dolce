@@ -26,6 +26,12 @@ model User {
 
   // The user's designer profiles (if any).
   designers Designer[]
+
+  // The user's modeling profiles (if any).
+  models Model[]
+
+  // The user's reviews.
+  reviews Review[]
 }
 
 // A user's password, stored in Postgres as an encrypted hash.
@@ -508,6 +514,9 @@ model Product {
   // The product's brands. Collaborations can have multiple brands.
   brands Brand[]
 
+  // The product's looks (runway outfits that it was included in).
+  looks Look[]
+
   // @todo perhaps we should also store the product's original source?
 
   // @todo products must have a unique name per brand(s).
@@ -577,6 +586,62 @@ model Season {
   @@unique([name, year])
 }
 
+// A look is an outfit that a model wore during a runway show.
+model Look {
+  id Int @id @default(autoincrement())
+
+  // The look's number. Typically, looks are numbered sequentially.
+  number Int
+
+  // The look's show.
+  show   Show @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  showId Int
+
+  // The look's model.
+  model   Model @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  modelId Int
+
+  // The look's products.
+  products Product[]
+}
+
+// A review is a review for a show from a fashion critic or consumer.
+model Review {
+  id Int @id @default(autoincrement())
+
+  // The review content.
+  content String
+
+  // The review author.
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId Int
+
+  // The show that the review is about.
+  show   Show @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  showId Int
+
+  // The publication that the review was posted to.
+  publication   Publication? @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId Int?
+
+  // The review article URL (if it was posted online e.g. on Vogue).
+  url String?
+}
+
+// A publication is a resource that publishes fashion reviews (e.g. Vogue).
+model Publication {
+  id Int @id @default(autoincrement())
+
+  // The publication's name.
+  name String @unique
+
+  // The publication's avatar URL (i.e. logo).
+  avatar String
+
+  // The publication's reviews.
+  reviews Review[]
+}
+
 // A show is a fashion runway show.
 model Show {
   id Int @id @default(autoincrement())
@@ -584,6 +649,18 @@ model Show {
   // The name of the show, as designated by the show's organizer.
   // @todo often this will be the same as the collection name; do we need this?
   name String
+
+  // A description of the collection, typically provided by the brand.
+  description String
+
+  // The critic's consensus on the show.
+  criticReviewSummary String
+
+  // The consumer's consensus on the show.
+  consumerReviewSummary String
+
+  // Critic and consumer reviews of the show.
+  reviews Review[]
 
   // The fashion season in which the show was presented. e.g. Spring 2021
   // @todo collections are already associated with seasons; do we need this?
@@ -607,6 +684,9 @@ model Show {
   // The collections that were presented at the show. Often, there is only one.
   collections Collection[]
 
+  // The looks that were presented at the show.
+  looks Look[]
+
   // The brands that were showcased by the show. Typically, these will also be 
   // the brands that produced the show. Generally, a show will only have one 
   // brand, but—according to ChatGPT—there have been runway fashion shows that 
@@ -619,6 +699,21 @@ model Show {
   // designers and brands.
   // @todo collections are already associated with brands; do we need this?
   brands Brand[]
+}
+
+// A model is a person who wears clothes during a runway show.
+model Model {
+  id Int @id @default(autoincrement())
+
+  // The model's name.
+  name String
+
+  // The looks that the model wore during runway shows.
+  looks Look[]
+  
+  // The designer's user account (if created).
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int?
 }
 
 // A designer is a person who contributed to the design of a product.
