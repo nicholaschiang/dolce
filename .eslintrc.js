@@ -261,6 +261,11 @@ module.exports = {
             position: 'before',
           },
           {
+            pattern: 'atoms/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
             pattern: 'icons/**',
             group: 'internal',
             position: 'before',
