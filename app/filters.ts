@@ -43,7 +43,6 @@ type PrismaFilter =
   | Prisma.DateTimeFilter
   | Prisma.StyleListRelationFilter
   | Prisma.CollectionListRelationFilter
-  | Prisma.DesignerListRelationFilter
   | Prisma.BrandListRelationFilter
 
 // keyof union types will return the common keys (thus never), so we have to use
