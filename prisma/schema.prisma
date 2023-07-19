@@ -13,7 +13,8 @@ model User {
   id Int @id @default(autoincrement())
 
   // The user's name, as designated by the user.
-  name String
+  // @todo there may be multiple users with the same name...
+  name String @unique
 
   // The user's publicly visible username, as designated by the user.
   username String @unique
@@ -24,14 +25,28 @@ model User {
   // The user's password, stored as an encrypted hash.
   password Password?
 
-  // The user's designer profiles (if any).
-  designers Designer[]
-
-  // The user's modeling profiles (if any).
-  models Model[]
-
   // The user's reviews.
   reviews Review[]
+
+  // DESIGNER FIELDS - only applicable to fashion designers.
+
+  // Where the designer purports to be from.
+  country   Country? @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId Int?
+
+  // The shows that the designer presented at.
+  shows Show[]
+
+  // The collections that the designer created or otherwise curated.
+  collections Collection[]
+
+  // The products that the designer designed.
+  products Product[]
+
+  // MODEL FIELDS - only applicable to fashion models.
+
+  // The looks that this model wore during runway shows.
+  looks Look[]
 }
 
 // A user's password, stored in Postgres as an encrypted hash.
@@ -171,7 +186,7 @@ model Country {
   code String @unique
 
   // The designers that purport to be from the country.
-  designers Designer[]
+  designers User[]
 
   // The companies that are legally headquartered in the country.
   companies Company[]
@@ -509,7 +524,7 @@ model Product {
   collections Collection[]
 
   // The product's designers. Typically, this will be a single person.
-  designers Designer[]
+  designers User[]
 
   // The product's brands. Collaborations can have multiple brands.
   brands Brand[]
@@ -548,7 +563,7 @@ model Collection {
 
   // The designers that created the collection. Often, this is one person.
   // @todo products are already associated with designers; do we need this?
-  designers Designer[]
+  designers User[]
 
   // The brands that created the collection.
   // @todo products are already associated with brands; do we need this?
@@ -598,7 +613,7 @@ model Look {
   showId Int
 
   // The look's model.
-  model   Model @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  model   User @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   modelId Int
 
   // The look's products.
@@ -613,7 +628,7 @@ model Review {
   content String
 
   // The review author.
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   authorId Int
 
   // The show that the review is about.
@@ -679,7 +694,7 @@ model Show {
 
   // The designers who presented at the show. Often, there is only one.
   // @todo collections are already associated with designers; do we need this?
-  designers Designer[]
+  designers User[]
 
   // The collections that were presented at the show. Often, there is only one.
   collections Collection[]
@@ -699,51 +714,4 @@ model Show {
   // designers and brands.
   // @todo collections are already associated with brands; do we need this?
   brands Brand[]
-}
-
-// A model is a person who wears clothes during a runway show.
-model Model {
-  id Int @id @default(autoincrement())
-
-  // The model's name.
-  name String
-
-  // The looks that the model wore during runway shows.
-  looks Look[]
-  
-  // The designer's user account (if created).
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId Int?
-}
-
-// A designer is a person who contributed to the design of a product.
-model Designer {
-  id Int @id @default(autoincrement())
-
-  // The designer's name, as designated by the designer.
-  // @todo there may be multiple designers with the same name...
-  name String @unique
-
-  // When the designer was born.
-  bornAt DateTime
-
-  // When the designer died. If the designer lives, this will not be set.
-  diedAt DateTime?
-
-  // Where the designer purports to be from.
-  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  countryId Int
-
-  // The shows that the designer presented at.
-  shows Show[]
-
-  // The collections that the designer created or otherwise curated.
-  collections Collection[]
-
-  // The products that the designer designed.
-  products Product[]
-
-  // The designer's user account (if created).
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId Int?
 }
