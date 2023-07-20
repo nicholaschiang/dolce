@@ -59,16 +59,16 @@ function About({ className }: { className: string }) {
           <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden'>
             <img src={show.looks[0].image.url} alt='' />
           </div>
-          <article className='flex-1 bg-gray-100 dark:bg-gray-800 text-center p-6 flex flex-col justify-center'>
-            <h1 className='font-serif font-bold text-5xl mb-1'>
+          <article className='flex-1 bg-gray-100 dark:bg-gray-800 text-center px-6 flex flex-col'>
+            <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
               {show.brands.map((brand) => brand.name).join(', ')}
             </h1>
             <h2 className='uppercase mb-6 text-sm'>
               {show.season.name.replace('_', '-')} {show.season.year}{' '}
               READY-TO-WEAR
             </h2>
-            <ul className='grid grid-cols-2 gap-2'>
-              <Score value={0.82} label='Critic Score' count='339 Reviews' />
+            <ul className='grid grid-cols-2 gap-2 mt-auto'>
+              <Score value={0.72} label='Critic Score' count='339 Reviews' />
               <Score
                 value={0.94}
                 label='Consumer Score'
@@ -186,11 +186,21 @@ function Review({ author, publication, url, content }: ReviewProps) {
 type ScoreProps = { value: number; label: string; count: string }
 
 function Score({ value, label, count }: ScoreProps) {
+  let img
+  if (value > 0.9) img = '90'
+  else if (value > 0.8) img = '80'
+  else if (value > 0.7) img = '70'
+  else if (value > 0.6) img = '60'
+  else if (value > 0.5) img = '50'
+  else img = '40'
   return (
-    <li>
-      <h2 className='text-5xl font-black font-serif'>{value * 100}%</h2>
-      <p className='text-xs font-semibold uppercase'>{label}</p>
-      <p className='text-xs'>{count}</p>
+    <li className='flex gap-2'>
+      <img className='flex-none w-20' src={`/flowers/${img}.png`} alt='' />
+      <div>
+        <h2 className='text-5xl font-black font-serif'>{value * 100}%</h2>
+        <p className='text-xs font-semibold uppercase'>{label}</p>
+        <p className='text-xs'>{count}</p>
+      </div>
     </li>
   )
 }
