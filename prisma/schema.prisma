@@ -692,11 +692,17 @@ model Show {
   // A description of the collection, typically provided by the brand.
   description String
 
+  // The critic consensus score on the show (a percentage of "rose growth").
+  criticReviewScore Decimal?
+
   // The critic's consensus on the show.
-  criticReviewSummary String
+  criticReviewSummary String?
+
+  // The consumer's consensus score on teh show (a percentage of "rose growth").
+  consumerReviewScore Decimal?
 
   // The consumer's consensus on the show.
-  consumerReviewSummary String
+  consumerReviewSummary String?
 
   // Critic and consumer reviews of the show.
   reviews Review[]
