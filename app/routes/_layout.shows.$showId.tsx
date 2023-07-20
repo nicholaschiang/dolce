@@ -49,15 +49,15 @@ export default function ShowPage() {
       </div>
       <div className='overflow-auto col-span-3 grid gap-10 py-6 pr-6 pl-3'>
         <div className='grid gap-4'>
-          <video className='rounded-md' controls>
+          <video controls>
             <source src={show.video.url} type={show.video.mimeType} />
             Download the <a href={show.video.url}>MP4</a> video.
           </video>
           <div className='flex gap-4'>
-            <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 rounded-md flex items-center justify-center overflow-hidden'>
+            <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden'>
               <img src={show.looks[0].image.url} alt='' />
             </div>
-            <article className='flex-1 bg-gray-100 dark:bg-gray-800 rounded-md text-center p-6 flex flex-col justify-center'>
+            <article className='flex-1 bg-gray-100 dark:bg-gray-800 text-center p-6 flex flex-col justify-center'>
               <h1 className='font-serif font-bold text-5xl mb-1'>
                 {show.brands.map((brand) => brand.name).join(', ')}
               </h1>
@@ -85,7 +85,7 @@ export default function ShowPage() {
               yet.
             </Empty>
           )}
-          <Subheader>Consumers Says</Subheader>
+          <Subheader>Consumers Say</Subheader>
           {show.consumerReviewSummary ? (
             <p>{show.consumerReviewSummary}</p>
           ) : (
@@ -132,7 +132,7 @@ type ReviewProps = {
 
 function Review({ author, publication, url, content }: ReviewProps) {
   return (
-    <figure className='flex-none bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden pb-4'>
+    <figure className='flex-none bg-gray-100 dark:bg-gray-800 overflow-hidden pb-4'>
       <figcaption className='mt-8 text-center'>
         <cite className='text-lg underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-600'>
           <span className='text-gray-500'>By </span>
