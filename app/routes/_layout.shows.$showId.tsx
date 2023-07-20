@@ -34,9 +34,9 @@ export default function ShowPage() {
   const show = useLoaderData<typeof loader>()
   return (
     <main className='h-full flex-1 overflow-hidden max-w-screen-xl mx-auto grid grid-cols-5'>
-      <div className='overflow-auto col-span-2 pl-6 pr-3 pb-6'>
-        <header className='my-6 bg-white dark:bg-gray-900'>
-          <Header>Collection</Header>
+      <div className='overflow-auto col-span-2 pl-6 pr-3 py-6'>
+        <header className='mb-4 bg-white dark:bg-gray-900'>
+          <h1 className='text-center uppercase text-xl'>Looks</h1>
         </header>
         <ol className='grid grid-cols-2 gap-x-2 gap-y-6'>
           {show.looks.map((look) => (
@@ -48,12 +48,18 @@ export default function ShowPage() {
         </ol>
       </div>
       <div className='overflow-auto col-span-3 grid gap-10 py-6 pr-6 pl-3'>
-        <div className='grid gap-4'>
-          <video controls>
+        <div className='grid gap-2'>
+          <video
+            className='aspect-video w-full bg-gray-100 dark:bg-gray-800'
+            controls
+            autoPlay
+            playsInline
+            muted
+          >
             <source src={show.video.url} type={show.video.mimeType} />
             Download the <a href={show.video.url}>MP4</a> video.
           </video>
-          <div className='flex gap-4'>
+          <div className='flex gap-2'>
             <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden'>
               <img src={show.looks[0].image.url} alt='' />
             </div>
@@ -62,7 +68,8 @@ export default function ShowPage() {
                 {show.brands.map((brand) => brand.name).join(', ')}
               </h1>
               <h2 className='uppercase mb-6 text-sm'>
-                {show.season.name.replace('_', '-')} {show.season.year} READY-TO-WEAR
+                {show.season.name.replace('_', '-')} {show.season.year}{' '}
+                READY-TO-WEAR
               </h2>
               <ul className='grid grid-cols-2 gap-2'>
                 <Score value={0.82} label='Critic Score' count='339 Reviews' />
@@ -99,11 +106,13 @@ export default function ShowPage() {
           <article>{show.description}</article>
         </Section>
         <Section header='Rate and review'>
-          <Textarea placeholder='What did you think of the collection? (optional)' />
-          <Button>Submit</Button>
+          <div className='mt-2 grid gap-2'>
+            <Textarea placeholder='What did you think of the collection? (optional)' />
+            <Button>Submit</Button>
+          </div>
         </Section>
         <Section header={`Critic reviews for ${show.name}`}>
-          <ol className='mt-4 grid gap-4'>
+          <ol className='mt-2 grid gap-4'>
             {show.reviews
               .filter((r) => r.publication != null && r.url != null)
               .map((review) => (
@@ -178,7 +187,7 @@ function Score({ value, label, count }: ScoreProps) {
 function Section({ header, children }: PropsWithChildren<{ header: string }>) {
   return (
     <section className='grid gap-2'>
-      <h1 className='border-l-[3px] border-primary pl-2 font-semibold text-base uppercase'>
+      <h1 className='border-l-2 border-primary pl-1.5 font-medium text-base uppercase'>
         {header}
       </h1>
       {children}
@@ -188,8 +197,4 @@ function Section({ header, children }: PropsWithChildren<{ header: string }>) {
 
 function Subheader({ children }: { children: string }) {
   return <h2 className='font-semibold'>{children}</h2>
-}
-
-function Header({ children }: { children: string }) {
-  return <h1 className='text-center uppercase text-2xl'>{children}</h1>
 }
