@@ -10,7 +10,7 @@ export async function getUserById(id: User['id']) {
 }
 
 export async function getUserByEmail(email: User['email']) {
-  return prisma.user.findUnique({ where: { email } })
+  return prisma.user.findFirst({ where: { email } })
 }
 
 export async function createUser(
@@ -35,15 +35,11 @@ export async function createUser(
   })
 }
 
-export async function deleteUserByEmail(email: User['email']) {
-  return prisma.user.delete({ where: { email } })
-}
-
 export async function verifyLogin(
   email: User['email'],
   password: Password['hash'],
 ) {
-  const userWithPassword = await prisma.user.findUnique({
+  const userWithPassword = await prisma.user.findFirst({
     where: { email },
     include: {
       password: true,
