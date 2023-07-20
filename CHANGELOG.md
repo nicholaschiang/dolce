@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.7.1](https://github.com/nicholaschiang/site/compare/v1.7.0...v1.7.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* **routes/show:** always show accurate review count ([4fd2ce6](https://github.com/nicholaschiang/site/commit/4fd2ce634a24f61a7936f8314a5442e18f11dc55))
+
 ## [1.7.0](https://github.com/nicholaschiang/site/compare/v1.6.0...v1.7.0) (2023-07-20)
 
 
