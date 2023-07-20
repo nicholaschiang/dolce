@@ -34,7 +34,7 @@
     "validate": "run-p \"test --run\" lint typecheck test:e2e:run",
     "scrape": "run-s 'scrape:*'",
     "scrape:build": "tsc -p scraper/node",
-    "scrape:run": "node scraper/node/out/looks.js | pino-pretty"
+    "scrape:run": "node scraper/node/out/show.js | pino-pretty"
   },
   "eslintIgnore": [
     "/node_modules",

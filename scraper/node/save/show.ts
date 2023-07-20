@@ -1,18 +1,19 @@
-import { type Prisma, PrismaClient, SeasonName } from '@prisma/client'
+import { type Prisma, Tier, PrismaClient, SeasonName } from '@prisma/client'
 
 const prisma = new PrismaClient({
   datasources: { db: { url: process.env.DATABASE_URL } },
 })
 
 function getIsabelMarantLookImage(number: number) {
-  return `/looks/Isabel-Marant-FW23-${number.toLocaleString(undefined, {
-    minimumIntegerDigits: 2,
-  })}-1.jpg`
+  const url =
+    `https://static.nicholas.engineering/shows/isabel-marant/FW23/Isabel-Marant-FW23-` +
+    `${number.toLocaleString(undefined, { minimumIntegerDigits: 2 })}-1.jpg`
+  return url
 }
 
 export async function save() {
   const video: Prisma.VideoCreateInput = {
-    url: '/isabel-marant.mp4',
+    url: 'https://static.nicholas.engineering/shows/isabel-marant/FW23/FW23.mp4',
     mimeType: 'video/mp4',
   }
   const season: Prisma.SeasonCreateInput = {
@@ -40,7 +41,8 @@ export async function save() {
   }
   const savoir: Prisma.PublicationCreateInput = {
     name: 'Savior Flair',
-    avatar: '/savoir-flair.svg',
+    avatar:
+      'https://www.kindpng.com/picc/m/266-2665896_file-ntsw4mb-savoir-flair-arabia-logo-hd-png.png',
   }
   const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
     {
@@ -171,39 +173,42 @@ export async function save() {
 `,
     },
   ]
+  const country = {
+    where: { code: 'fr' },
+    create: { name: 'france', code: 'fr' },
+  }
+  const brand: Prisma.BrandCreateInput = {
+    name: 'Isabel Marant',
+    description:
+      'Isabel Marant is a French fashion designer, owner of the eponymous fashion brand. She won the Award de la Mode, the Whirlpool Award for best female designer, Fashion Designer of the Year at British Glamour’s Women of the Year Awards. She was named Contemporary Designer of the Year at the Elle Style Awards in 2014.',
+    tier: Tier.PREMIUM_CORE,
+    country: { connectOrCreate: country },
+    company: {
+      connectOrCreate: {
+        where: { name: 'Montefiore Investment' },
+        create: {
+          name: 'Montefiore Investment',
+          description: '',
+          country: { connectOrCreate: country },
+        },
+      },
+    },
+  }
   const show: Prisma.ShowCreateInput = {
     name: 'Isabel Marant Fall-Winter 2023',
-    description: `<p>
-          A desire to cuddle up in comfy knitwear and swaddling coats. The
-          disorder of some kind of irreverence and a sexy unconventional
-          attitude.
-        </p>
-        <p>
-          Metallic zips breathe a perfecto spirit into the collection where
-          leather rules. They fasten the jackets and their pockets and blend
-          into the pieces as precious details baring a neckline or splitting
-          a dress.
-        </p>
-        <p>
-          The graphic cut-outs of the flou shape new cleavages while plays
-          on transparency subtly reveal parts of the body. These supple and
-          feminine fabrics contrast with heavy cable knits, dyed denim,
-          wool, and warm shearlings.
-        </p>
-        <p>
-          The color palette, first natural and minimal, explores yellow and
-          magenta horizons before diving into black. A sparkling evening
-          mixes textures ‚Äì embroideries, velvet lurex ‚Äì and volumes ‚Äì
-          oversized, fitted, cropped.
-        </p>
-        <p>
-          Inside the venue, the show‚Äôs soundtrack performed live by DJ
-          Gabber Eleganza and Lulu Van Trapp resonates and intoxicates the
-          crowd. A unique creation composed on the idea of desire and
-          disorder, this season‚Äôs mantra.
-        </p>`,
-    criticReviewSummary: `Just as visually dazzling and action-packed as its predecessor, Spider-Man: Across the Spider-Verse thrills from start to cliffhanger conclusion.`,
-    consumerReviewSummary: `From incredible animation to a super story and tons of Easter eggs, Spider-Man: Across the Spider-Verse has everything fans could ask for.`,
+    description: `A desire to cuddle up in comfy knitwear and swaddling coats. The disorder of some kind of irreverence and a sexy unconventional attitude.
+
+Metallic zips breathe a perfecto spirit into the collection where leather rules. They fasten the jackets and their pockets and blend into the pieces as precious details baring a neckline or splitting a dress.
+
+The graphic cut-outs of the flou shape new cleavages while plays on transparency subtly reveal parts of the body. These supple and feminine fabrics contrast with heavy cable knits, dyed denim, wool, and warm shearlings.
+
+ The color palette, first natural and minimal, explores yellow and magenta horizons before diving into black. A sparkling evening mixes textures – embroideries, velvet lurex – and volumes – oversized, fitted, cropped.
+
+ Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza and Lulu Van Trapp resonates and intoxicates the crowd. A unique creation composed on the idea of desire and disorder, this season’s mantra.`,
+    criticReviewScore: 0.94,
+    criticReviewSummary: `A high-energy party atmosphere and a stunning lineup of veteran supermodels—a much needed refresher from Paris Fashion Week. The designs exude Isabel Marant’s signature style, featuring roomy knitwear, smashing outerwear, and cool-girl attire, all while empowering wearability and desirability. With a focus on desire and disorder, the collection showcases unique graphic cut-outs, metallic zips, and playful contrasts, leaving a lasting impression on the audience.`,
+    consumerReviewScore: null,
+    consumerReviewSummary: null,
     date: new Date('March 2, 2023'),
     location: 'Paris, France',
     video: { connectOrCreate: { where: { url: video.url }, create: video } },
@@ -215,6 +220,7 @@ export async function save() {
     },
     looks: { create: looks },
     reviews: { create: reviews },
+    brands: { connectOrCreate: { where: { name: brand.name }, create: brand } },
   }
   await prisma.show.create({ data: show })
 }
