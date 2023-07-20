@@ -18,6 +18,8 @@ export async function loader({ params }: LoaderArgs) {
     where: { id: showId },
     include: {
       video: true,
+      season: true,
+      brands: true,
       reviews: { include: { author: true, publication: true } },
       looks: { include: { image: true } },
     },
@@ -55,13 +57,18 @@ export default function ShowPage() {
             <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 rounded-md flex items-center justify-center overflow-hidden'>
               <img src={show.looks[0].image.url} alt='' />
             </div>
-            <article className='flex-1 bg-gray-100 dark:bg-gray-800 rounded-md text-center p-6 gap-4 flex flex-col justify-center'>
-              <Header>{show.name}</Header>
+            <article className='flex-1 bg-gray-100 dark:bg-gray-800 rounded-md text-center p-6 flex flex-col justify-center'>
+              <h1 className='font-serif font-bold text-5xl mb-1'>
+                {show.brands.map((brand) => brand.name).join(', ')}
+              </h1>
+              <h2 className='uppercase mb-6 text-sm'>
+                {show.season.name.replace('_', '-')} {show.season.year} READY-TO-WEAR
+              </h2>
               <ul className='grid grid-cols-2 gap-2'>
-                <Score value={0.82} label='Tomatometer' count='339 Reviews' />
+                <Score value={0.82} label='Critic Score' count='339 Reviews' />
                 <Score
                   value={0.94}
-                  label='Audience Score'
+                  label='Consumer Score'
                   count='10,000+ Ratings'
                 />
               </ul>
@@ -70,12 +77,23 @@ export default function ShowPage() {
         </div>
         <Section header='What to know'>
           <Subheader>Critics Consensus</Subheader>
-          <p className='mb-2'>{show.criticReviewSummary}</p>
-          <Subheader>Audience Says</Subheader>
-          <p>{show.consumerReviewSummary}</p>
-        </Section>
-        <Section header='Where to buy'>
-          <Empty>Coming soon</Empty>
+          {show.criticReviewSummary ? (
+            <p className='mb-2'>{show.criticReviewSummary}</p>
+          ) : (
+            <Empty className='mb-2'>
+              There is no Critics Consensus because there are not enough reviews
+              yet.
+            </Empty>
+          )}
+          <Subheader>Consumers Says</Subheader>
+          {show.consumerReviewSummary ? (
+            <p>{show.consumerReviewSummary}</p>
+          ) : (
+            <Empty>
+              There is no Consumer Summary because there are not enough reviews
+              yet.
+            </Empty>
+          )}
         </Section>
         <Section header='Collection info'>
           <article>{show.description}</article>
@@ -150,7 +168,7 @@ type ScoreProps = { value: number; label: string; count: string }
 function Score({ value, label, count }: ScoreProps) {
   return (
     <li>
-      <h2 className='text-5xl font-black'>{value * 100}%</h2>
+      <h2 className='text-5xl font-black font-serif'>{value * 100}%</h2>
       <p className='text-xs font-semibold uppercase'>{label}</p>
       <p className='text-xs'>{count}</p>
     </li>

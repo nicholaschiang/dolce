@@ -84,11 +84,27 @@ export const links: LinksFunction = () => [
     type: 'font/woff2',
     as: 'font',
   },
+  {
+    rel: 'preload',
+    href: '/fonts/bodoni-moda-latin-ext.woff2',
+    crossOrigin: 'anonymous',
+    type: 'font/woff2',
+    as: 'font',
+  },
+  {
+    rel: 'preload',
+    href: '/fonts/bodoni-moda-latin.woff2',
+    crossOrigin: 'anonymous',
+    type: 'font/woff2',
+    as: 'font',
+  },
   { rel: 'preload', href: '/fonts/inter.css', as: 'style' },
   { rel: 'preload', href: '/fonts/hack-subset.css', as: 'style' },
+  { rel: 'preload', href: '/fonts/bodoni-moda.css', as: 'style' },
   { rel: 'preload', href: tailwindStylesheetUrl, as: 'style' },
   { rel: 'stylesheet', href: '/fonts/inter.css' },
   { rel: 'stylesheet', href: '/fonts/hack-subset.css' },
+  { rel: 'stylesheet', href: '/fonts/bodoni-moda.css' },
   { rel: 'stylesheet', href: tailwindStylesheetUrl },
 ]
 
