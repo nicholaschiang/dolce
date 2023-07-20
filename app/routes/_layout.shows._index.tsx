@@ -29,11 +29,7 @@ export default function ShowsPage() {
           {shows.map((show) => (
             <li key={show.id}>
               <Link to={`/shows/${show.id}`} className='text-center'>
-                <img
-                  className='mb-2'
-                  src={show.looks[0].image.url}
-                  alt={`${show.name} Look 1`}
-                />
+                <img className='mb-2' src={show.looks[0].image.url} alt='' />
                 <h2 className='text-xl font-serif font-semibold'>
                   {show.brands.map((brand) => brand.name).join(', ')}
                 </h2>
