@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.7.0](https://github.com/nicholaschiang/site/compare/v1.6.0...v1.7.0) (2023-07-20)
+
+
+### Features
+
+* **scraper:** add hermes fashion show ([d29e35a](https://github.com/nicholaschiang/site/commit/d29e35ab26c43c1a6f1c9d16f2017f60af577fec))
+
+
+### Bug Fixes
+
+* **routes/shows:** remove image alt text ([4c9eddf](https://github.com/nicholaschiang/site/commit/4c9eddff7ac1541abe609b14bed6831fa024b641))
+
 ## [1.6.0](https://github.com/nicholaschiang/site/compare/v1.5.0...v1.6.0) (2023-07-20)
 
 
