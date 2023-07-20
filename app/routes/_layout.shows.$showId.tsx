@@ -211,7 +211,7 @@ function Score({ value, label, count }: ScoreProps) {
         </h2>
         <p className='text-xs font-semibold uppercase'>{label}</p>
         <p className='text-xs'>
-          {value == null ? 'No Reviews' : `${count} Reviews`}
+          {count === 0 ? 'No Reviews' : `${count} Reviews`}
         </p>
       </div>
     </li>
