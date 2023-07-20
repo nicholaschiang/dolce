@@ -1,5 +1,4 @@
 const colors = require('tailwindcss/colors')
-const { fontFamily } = require("tailwindcss/defaultTheme")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -27,6 +26,10 @@ module.exports = {
         'Droid Sans',
         'Helvetica Neue',
         'sans-serif',
+      ],
+      serif: [
+        'Bodoni Moda',
+        'serif',
       ],
       mono: [
         'Hack',
