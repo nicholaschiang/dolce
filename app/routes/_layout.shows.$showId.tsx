@@ -3,9 +3,7 @@ import { type LoaderArgs } from '@vercel/remix'
 import { ExternalLink } from 'lucide-react'
 import { type PropsWithChildren, useMemo } from 'react'
 
-import { Button } from 'atoms/Button'
 import { Empty } from 'atoms/Empty'
-import { Textarea } from 'atoms/Textarea'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
@@ -110,12 +108,6 @@ function About({ className }: { className: string }) {
       </Section>
       <Section header='Collection info'>
         <article>{show.description}</article>
-      </Section>
-      <Section header='Rate and review'>
-        <div className='mt-2 grid gap-2'>
-          <Textarea placeholder='What did you think of the collection? (optional)' />
-          <Button>Submit</Button>
-        </div>
       </Section>
       <Section header={`Critic reviews for ${show.name}`}>
         <ol className='mt-2 grid gap-4'>
