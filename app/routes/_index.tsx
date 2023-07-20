@@ -1,4 +1,5 @@
 import {
+  CameraIcon,
   ArrowTopRightIcon,
   CardStackIcon,
   PersonIcon,
@@ -18,6 +19,13 @@ export default function IndexPage() {
         <ThemeSwitcher />
       </div>
       <section>
+        <Milestone
+          start={new Date(2023, 7, 20)}
+          title='/shows'
+          subtitle='rotten tomatoes for fashion'
+          url='/shows'
+          icon={CameraIcon}
+        />
         <Milestone
           start={new Date(2023, 3, 18)}
           title='/life'
@@ -121,7 +129,7 @@ function Milestone({
           <Link
             to={url}
             prefetch='intent'
-            className='items-top link group flex underline'
+            className='items-top link group flex underline items-end'
           >
             {title}
             <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
@@ -132,7 +140,7 @@ function Milestone({
             href={url}
             target='_blank'
             rel='noopener noreferrer'
-            className='items-top link group flex underline'
+            className='items-top link group flex underline items-end'
           >
             {title}
             <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
