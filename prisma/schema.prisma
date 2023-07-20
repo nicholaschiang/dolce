@@ -17,16 +17,22 @@ model User {
   name String @unique
 
   // The user's publicly visible username, as designated by the user.
-  username String @unique
+  username String? @unique
 
   // The user's email address, as designated by the user.
-  email String @unique
+  email String? @unique
 
   // The user's password, stored as an encrypted hash.
   password Password?
 
+  // The user's avatar image URL.
+  avatar String?
+
   // The user's reviews.
   reviews Review[]
+
+  // URL to the user's website or portfolio (e.g. journalist bio pages).
+  url String? @unique
 
   // DESIGNER FIELDS - only applicable to fashion designers.
 
@@ -658,7 +664,7 @@ model Review {
   publicationId Int?
 
   // The review article URL (if it was posted online e.g. on Vogue).
-  url String?
+  url String? @unique
 }
 
 // A publication is a resource that publishes fashion reviews (e.g. Vogue).
