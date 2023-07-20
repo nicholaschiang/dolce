@@ -1,5 +1,42 @@
 # Release Notes
 
+## [1.6.0](https://github.com/nicholaschiang/site/compare/v1.5.0...v1.6.0) (2023-07-20)
+
+
+### Features
+
+* add serif fonts for decorative headers ([78a8530](https://github.com/nicholaschiang/site/commit/78a8530ecaa6885636e72fafab13f72021f93466))
+* **app/app.css:** use royal green color ([fa1d163](https://github.com/nicholaschiang/site/commit/fa1d163271f959e95dfbd2eb9a0dda21e1d0daf3))
+* **atoms/empty:** add `<Empty>` component ([c7b0b57](https://github.com/nicholaschiang/site/commit/c7b0b5729b00d0ebf4f5b7cf8058a8363c96a519))
+* **prisma/schema:** add shows, looks, and reviews ([82ae45f](https://github.com/nicholaschiang/site/commit/82ae45fec8f7738809a83f9574c4cbcdecb511af))
+* **prisma:** update show models and add migration ([1d171c1](https://github.com/nicholaschiang/site/commit/1d171c19fa6a0f51e6aaa4eca5f996455ed9a25f))
+* replace univers font family with inter ([d457ec2](https://github.com/nicholaschiang/site/commit/d457ec23110dc579b7b6b3d6cce55e547c22cefa))
+* **routes/index:** add link to `/shows` to home ([58d0d49](https://github.com/nicholaschiang/site/commit/58d0d49462aa3602d826da39e491ec08f804f44c))
+* **routes/show:** add flowers for score icons ([6c24aeb](https://github.com/nicholaschiang/site/commit/6c24aebac91542699ce688c97130141edda4b758))
+* **routes/show:** add reviews from database ([d7711e2](https://github.com/nicholaschiang/site/commit/d7711e249b0b97f7487fc934a1ac08759111524f))
+* **routes/show:** auto-play runway show video ([961bf61](https://github.com/nicholaschiang/site/commit/961bf6169ad0914102bbabec61390388176574d5))
+* **routes/shows:** add a "shows" list page ([c0a8bea](https://github.com/nicholaschiang/site/commit/c0a8beacf097e9e7e4eb79bce5ff2daef4b5d78c))
+* **routes/show:** show scores from database ([a658b32](https://github.com/nicholaschiang/site/commit/a658b3209df1ca70ab4626e03ef5b0619c5d0072))
+* **routes:** add basic collections page ([90ec724](https://github.com/nicholaschiang/site/commit/90ec724d4c8504f06e4a82b8149ab0fdc4730212))
+* **routes:** update collection page for shows ([5afd6ab](https://github.com/nicholaschiang/site/commit/5afd6ab71d89c91d847a409c31ed709b518038b0))
+* **scraper/looks:** add reviews to show ([c25c059](https://github.com/nicholaschiang/site/commit/c25c0594525624c3acdd660224fef8b6062068bb))
+* **scraper:** add script to create runway show ([f2ac9bf](https://github.com/nicholaschiang/site/commit/f2ac9bf546cfcd4a46cb6ea0c74f39645b872b00))
+
+
+### Bug Fixes
+
+* **app/app.css:** hide opening and closing quotes ([a65b4e9](https://github.com/nicholaschiang/site/commit/a65b4e939ca3dbb6db714cef1ce260d4abb7a5d2))
+* **atoms/empty:** add dark mode border colors ([da69c5a](https://github.com/nicholaschiang/site/commit/da69c5a2d80c265727c7ea67b1246d70d176235a))
+* **models/user.server:** user email is now optional ([86068b8](https://github.com/nicholaschiang/site/commit/86068b8182a80481734ad80041208a8a20e0931c))
+* **prisma/schema:** combine all user-based tables ([1796b29](https://github.com/nicholaschiang/site/commit/1796b29976acf4b47969caf268c60c2618389a96))
+* **prisma/schema:** make the look model optional ([1db6c17](https://github.com/nicholaschiang/site/commit/1db6c176f6bc73b172ffc23b6f0a7cf40f785413))
+* **prisma:** make user fields optional ([af604bd](https://github.com/nicholaschiang/site/commit/af604bd27ef27d5951e01d90b6775f82decdbbe1))
+* **routes/show:** move about to the left ([e6f05d8](https://github.com/nicholaschiang/site/commit/e6f05d81ca38b1df9094266efeafcab995e55e4a))
+* **routes/show:** remove all rounded corners ([a58dff5](https://github.com/nicholaschiang/site/commit/a58dff56f4b7178920816ed87d152bc33e2ce4f5))
+* **routes/show:** remove consumer review form ([b3f5c62](https://github.com/nicholaschiang/site/commit/b3f5c628c7c7d87e5c1fb4fc369b2759563eec4e))
+* **scraper/show:** use `static.nicholas` image links ([1f14dd4](https://github.com/nicholaschiang/site/commit/1f14dd4edfaabd7e05a70b650fb11283462af510))
+* **tailwind:** do not override `font-sans` ([e1f9446](https://github.com/nicholaschiang/site/commit/e1f944617aaaa2b8e509dc202939e75c55114554))
+
 ## [1.5.0](https://github.com/nicholaschiang/site/compare/v1.4.0...v1.5.0) (2023-06-18)
 
 
