@@ -1,7 +1,7 @@
 import { useLoaderData } from '@remix-run/react'
 import { type LoaderArgs } from '@vercel/remix'
 import { ExternalLink } from 'lucide-react'
-import { type PropsWithChildren } from 'react'
+import { type PropsWithChildren, useMemo } from 'react'
 
 import { Button } from 'atoms/Button'
 import { Empty } from 'atoms/Empty'
@@ -68,11 +68,21 @@ function About({ className }: { className: string }) {
               READY-TO-WEAR
             </h2>
             <ul className='grid grid-cols-2 gap-2 mt-auto'>
-              <Score value={0.72} label='Critic Score' count='339 Reviews' />
               <Score
-                value={0.94}
+                value={show.criticReviewScore}
+                label='Critic Score'
+                count={
+                  show.reviews.filter((review) => review.publication != null)
+                    .length
+                }
+              />
+              <Score
+                value={show.consumerReviewScore}
                 label='Consumer Score'
-                count='10,000+ Ratings'
+                count={
+                  show.reviews.filter((review) => review.publication == null)
+                    .length
+                }
               />
             </ul>
           </article>
@@ -183,23 +193,34 @@ function Review({ author, publication, url, content }: ReviewProps) {
   )
 }
 
-type ScoreProps = { value: number; label: string; count: string }
+type ScoreProps = { value: string | null; label: string; count: number }
 
 function Score({ value, label, count }: ScoreProps) {
-  let img
-  if (value > 0.9) img = '90'
-  else if (value > 0.8) img = '80'
-  else if (value > 0.7) img = '70'
-  else if (value > 0.6) img = '60'
-  else if (value > 0.5) img = '50'
-  else img = '40'
+  const img = useMemo(() => {
+    if (value == null) return '70'
+    const num = Number(value)
+    if (num > 0.9) return '90'
+    if (num > 0.8) return '80'
+    if (num > 0.7) return '70'
+    if (num > 0.6) return '60'
+    if (num > 0.5) return '50'
+    return '40'
+  }, [value])
   return (
-    <li className='flex gap-2'>
-      <img className='flex-none w-20' src={`/flowers/${img}.png`} alt='' />
+    <li className='flex gap-2 justify-center'>
+      <img
+        className={cn('flex-none w-20', value == null && 'grayscale')}
+        src={`/flowers/${img}.png`}
+        alt=''
+      />
       <div>
-        <h2 className='text-5xl font-black font-serif'>{value * 100}%</h2>
+        <h2 className='text-5xl font-black font-serif'>
+          {value == null ? '--' : `${Number(value) * 100}%`}
+        </h2>
         <p className='text-xs font-semibold uppercase'>{label}</p>
-        <p className='text-xs'>{count}</p>
+        <p className='text-xs'>
+          {value == null ? 'No Reviews' : `${count} Reviews`}
+        </p>
       </div>
     </li>
   )
