@@ -5,6 +5,13 @@ module.exports = {
   darkMode: 'class',
   content: ['./app/**/*.{ts,tsx,jsx,js}'],
   theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: {
+        '2xl': '1400px',
+      },
+    },
     fontFamily: {
       sans: [
         'Inter',
@@ -20,10 +27,7 @@ module.exports = {
         'Helvetica Neue',
         'sans-serif',
       ],
-      serif: [
-        'Bodoni Moda',
-        'serif',
-      ],
+      serif: ['Bodoni Moda', 'serif'],
       mono: [
         'Hack',
         'Menlo',
@@ -57,7 +61,7 @@ module.exports = {
         '5/4': '125%',
       },
       keyframes: {
-        // Tooltip
+        // Tooltip (tailwindcss-radix)
         'slide-up-fade': {
           '0%': { opacity: 0, transform: 'translateY(2px)' },
           '100%': { opacity: 1, transform: 'translateY(0)' },
@@ -74,16 +78,32 @@ module.exports = {
           '0%': { opacity: 0, transform: 'translateX(2px)' },
           '100%': { opacity: 1, transform: 'translateX(0)' },
         },
+        // Accordion (shadcn-ui)
+        'accordion-down': {
+          from: { height: 0 },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: 0 },
+        },
       },
       animation: {
-        // Tooltip
+        // Tooltip (tailwindcss-radix)
         'slide-up-fade': 'slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-right-fade':
           'slide-right-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-down-fade': 'slide-down-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         'slide-left-fade': 'slide-left-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        // Accordion (shadcn-ui)
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },
-  plugins: [require('tailwindcss-radix'), require('@tailwindcss/typography')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwindcss-radix'),
+    require('@tailwindcss/typography'),
+  ],
 }
