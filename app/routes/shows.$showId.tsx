@@ -3,7 +3,7 @@ import { type LoaderArgs, type SerializeFrom } from '@vercel/remix'
 import { ExternalLink } from 'lucide-react'
 import { type PropsWithChildren, useMemo } from 'react'
 
-import { Empty } from 'atoms/Empty'
+import { Empty } from 'components/empty'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
