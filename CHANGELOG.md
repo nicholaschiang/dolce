@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.10.0](https://github.com/nicholaschiang/site/compare/v1.9.2...v1.10.0) (2023-07-21)
+
+
+### Features
+
+* **prisma:** add critic review fields ([1b93f00](https://github.com/nicholaschiang/site/commit/1b93f000c41f71d6a39352143b97e965f25e089d))
+
 ## [1.9.2](https://github.com/nicholaschiang/site/compare/v1.9.1...v1.9.2) (2023-07-21)
 
 
