@@ -9,6 +9,8 @@ import {
   useLoaderData,
   useRouteError,
   isRouteErrorResponse,
+  useMatches,
+  type RouteMatch,
 } from '@remix-run/react'
 import { Analytics } from '@vercel/analytics/react'
 import {
@@ -18,7 +20,9 @@ import {
 } from '@vercel/remix'
 import { json } from '@vercel/remix'
 import cn from 'classnames'
-import { type ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
+
+import { ThemeSwitcher } from 'components/theme-switcher'
 
 import { type User } from 'models/user.server'
 
@@ -33,6 +37,33 @@ import {
   isTheme,
   useTheme,
 } from 'theme'
+
+export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
+
+export const handle: Handle = {
+  breadcrumb: () => <Link to='/'>nicholas.engineering</Link>,
+}
+
+function Header() {
+  const matches = useMatches()
+  return (
+    <header className='sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
+      <ol className='flex items-center gap-2'>
+        {matches
+          .filter((match) => match.handle && match.handle.breadcrumb)
+          .map((match, index) => (
+            <Fragment key={index}>
+              {index !== 0 && (
+                <span className='text-gray-300 dark:text-gray-600'>/</span>
+              )}
+              <li>{(match.handle as Handle).breadcrumb(match)}</li>
+            </Fragment>
+          ))}
+      </ol>
+      <ThemeSwitcher />
+    </header>
+  )
+}
 
 export const links: LinksFunction = () => [
   {
@@ -148,6 +179,7 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <ThemeHead ssrTheme={Boolean(data?.theme)} />
       </head>
       <body className='bg-white text-gray-900 selection:bg-gray-200 selection:text-black dark:bg-gray-900 dark:text-gray-100 dark:selection:bg-gray-700 dark:selection:text-gray-100'>
+        <Header />
         {children}
         <script
           dangerouslySetInnerHTML={{
@@ -231,7 +263,7 @@ export function ErrorBoundary() {
 }
 
 export default function AppWithProviders() {
-  const data = useLoaderData<LoaderData>()
+  const data = useLoaderData<typeof loader>()
   return (
     <ThemeProvider specifiedTheme={data.theme}>
       <App data={data}>

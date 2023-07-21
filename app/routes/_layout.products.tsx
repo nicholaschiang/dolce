@@ -8,9 +8,15 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react'
-import type { LoaderArgs } from '@vercel/remix'
-import type { Dispatch, SetStateAction } from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { type LoaderArgs } from '@vercel/remix'
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Filters } from 'components/filters'
@@ -19,6 +25,7 @@ import { Tooltip } from 'components/tooltip'
 
 import { prisma } from 'db.server'
 import {
+  type Filter,
   FILTER_PARAM,
   JOIN_PARAM,
   filterToPrismaWhere,
@@ -26,8 +33,12 @@ import {
   filterToString,
   searchParamToFilter,
 } from 'filters'
-import type { Filter } from 'filters'
 import { log } from 'log.server'
+import { type Handle } from 'root'
+
+export const handle: Handle = {
+  breadcrumb: () => <Link to='/products'>products</Link>,
+}
 
 enum Join {
   And = 'AND',
