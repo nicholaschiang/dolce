@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.9.2](https://github.com/nicholaschiang/site/compare/v1.9.1...v1.9.2) (2023-07-21)
+
+
+### Bug Fixes
+
+* add necessary routes for product filters ([07e3a62](https://github.com/nicholaschiang/site/commit/07e3a6268c4b45c3f760df47f4df11650b33e34e))
+
+
+### Performance Improvements
+
+* **routes/show:** apply look sorting in database ([4a9ae15](https://github.com/nicholaschiang/site/commit/4a9ae15298cc0ca480b5c81e812da909d080e089))
+
 ## [1.9.1](https://github.com/nicholaschiang/site/compare/v1.9.0...v1.9.1) (2023-07-21)
 
 
