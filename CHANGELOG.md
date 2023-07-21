@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.8.0](https://github.com/nicholaschiang/site/compare/v1.7.1...v1.8.0) (2023-07-21)
+
+
+### Features
+
+* **routes/shows:** set look image aspect ratio ([d0367d2](https://github.com/nicholaschiang/site/commit/d0367d2e5d4c4734dfad84876a671950e89b015c))
+
 ## [1.7.1](https://github.com/nicholaschiang/site/compare/v1.7.0...v1.7.1) (2023-07-20)
 
 
