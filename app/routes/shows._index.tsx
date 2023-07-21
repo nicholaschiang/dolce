@@ -1,9 +1,11 @@
 import { Link, useLoaderData } from '@remix-run/react'
+import { useMemo } from 'react'
 
 import { Empty } from 'atoms/Empty'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
+import { cn } from 'utils/cn'
 
 export async function loader() {
   log.debug('getting shows...')
@@ -28,18 +30,23 @@ export default function ShowsPage() {
         <ul className='grid grid-cols-5 gap-x-2 gap-y-10 mx-auto max-w-screen-xl'>
           {shows.map((show) => (
             <li key={show.id}>
-              <Link to={`/shows/${show.id}`} className='text-center'>
-                <div className='bg-gray-100 dark:bg-gray-800 aspect-person mb-2'>
+              <Link to={`/shows/${show.id}`}>
+                <div className='bg-gray-100 dark:bg-gray-800 aspect-person mb-2 relative'>
                   <img
                     className='object-cover h-full'
                     src={show.looks[0].image.url}
                     alt=''
                   />
+                  <div className='absolute bottom-12 inset-x-0 bg-gradient-to-t from-white/70 dark:from-gray-900/70 to-transparent pt-24' />
+                  <ul className='absolute bottom-0 inset-x-0 h-12 flex gap-2 mt-auto justify-center items-end bg-white/70 dark:bg-gray-900/70'>
+                    <Score value={show.criticReviewScore} label='Critic' />
+                    <Score value={show.consumerReviewScore} label='Consumer' />
+                  </ul>
                 </div>
-                <h2 className='text-xl font-serif font-semibold'>
+                <h2 className='text-xl font-serif font-semibold text-center'>
                   {show.brands.map((brand) => brand.name).join(', ')}
                 </h2>
-                <h3 className='text-xs uppercase'>
+                <h3 className='text-xs uppercase text-center'>
                   {show.season.name.replace('_', '-')} {show.season.year}
                 </h3>
               </Link>
@@ -52,5 +59,35 @@ export default function ShowsPage() {
         </Empty>
       )}
     </main>
+  )
+}
+
+type ScoreProps = { value: string | null; label: string }
+
+function Score({ value, label }: ScoreProps) {
+  const img = useMemo(() => {
+    if (value == null) return '70'
+    const num = Number(value)
+    if (num > 0.9) return '90'
+    if (num > 0.8) return '80'
+    if (num > 0.7) return '70'
+    if (num > 0.6) return '60'
+    if (num > 0.5) return '50'
+    return '40'
+  }, [value])
+  return (
+    <li className='flex gap-2 items-end'>
+      <img
+        className={cn('flex-none w-8', value == null && 'grayscale')}
+        src={`/flowers/${img}.png`}
+        alt=''
+      />
+      <div className='mb-2'>
+        <h2 className='text-lg font-black font-serif leading-none'>
+          {value == null ? '--' : `${Number(value) * 100}%`}
+        </h2>
+        <p className='text-3xs uppercase'>{label}</p>
+      </div>
+    </li>
   )
 }
