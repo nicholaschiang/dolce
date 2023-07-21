@@ -63,7 +63,7 @@ function About({ className }: { className: string }) {
           Download the <a href={show.video.url}>MP4</a> video.
         </video>
         <div className='flex gap-2'>
-          <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800'>
+          <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 h-0 min-h-full'>
             <img
               className='object-cover h-full'
               src={show.looks[0].image.url}
