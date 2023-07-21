@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.9.1](https://github.com/nicholaschiang/site/compare/v1.9.0...v1.9.1) (2023-07-21)
+
+
+### Bug Fixes
+
+* **routes/show:** adjust `object-cover` for safari ([79ce8b1](https://github.com/nicholaschiang/site/commit/79ce8b12826d5e5caccb63109b3d0415973cd8e7))
+
 ## [1.9.0](https://github.com/nicholaschiang/site/compare/v1.8.0...v1.9.0) (2023-07-21)
 
 
