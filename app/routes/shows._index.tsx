@@ -24,10 +24,11 @@ export async function loader() {
 export default function ShowsPage() {
   const shows = useLoaderData<typeof loader>()
   return (
-    <main className='p-6'>
-      <h1 className='text-6xl text-center mb-6'>shows</h1>
+    <main className='p-6 mx-auto max-w-screen-xl'>
+      <h1 className='text-6xl mb-6'>shows</h1>
+      <ScoreKey className='mb-2' />
       {shows.length > 0 ? (
-        <ul className='grid grid-cols-5 gap-x-2 gap-y-10 mx-auto max-w-screen-xl'>
+        <ul className='grid grid-cols-5 gap-x-2 gap-y-10'>
           {shows.map((show) => (
             <li key={show.id}>
               <Link to={`/shows/${show.id}`}>
@@ -37,8 +38,7 @@ export default function ShowsPage() {
                     src={show.looks[0].image.url}
                     alt=''
                   />
-                  <div className='absolute bottom-12 inset-x-0 bg-gradient-to-t from-white/70 dark:from-gray-900/70 to-transparent pt-24' />
-                  <ul className='absolute bottom-0 inset-x-0 h-12 flex gap-2 mt-auto justify-center items-end bg-white/70 dark:bg-gray-900/70'>
+                  <ul className='absolute bottom-2 inset-x-2 pt-2 flex gap-2 mt-auto justify-center items-end bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl'>
                     <Score value={show.criticReviewScore} label='Critic' />
                     <Score value={show.consumerReviewScore} label='Consumer' />
                   </ul>
@@ -62,17 +62,54 @@ export default function ShowsPage() {
   )
 }
 
+function ScoreKey({ className }: { className: string }) {
+  const scores = [40, 50, 60, 70, 80, 90]
+  return (
+    <section
+      className={cn(
+        'flex gap-4 bg-gray-100 dark:bg-gray-700 p-4 items-center',
+        className,
+      )}
+    >
+      <ol className='flex gap-2 px-2'>
+        {scores.map((score) => (
+          <li key={score} className='flex flex-col gap-0.5 items-center'>
+            <img className='w-12 mt-2' src={`/flowers/${score}.png`} alt='' />
+            <span className='text-xs font-serif font-black'>{`${score}%`}</span>
+          </li>
+        ))}
+      </ol>
+      <article className='text-sm'>
+        <h2 className='font-medium'>What do the roses mean?</h2>
+        <p>Rose growth indicates a more positively reviewed show.</p>
+        <p>
+          <i>
+            Ex: When at least 60% of reviews for a show are positive, a
+            blossoming rose is displayed to indicate its popularity.
+          </i>
+        </p>
+        <p>
+          <i>
+            Ex: When less than 50% of reviews for a show are positive, an
+            unblossomed rose bud is displayed to indicate its unpopularity.
+          </i>
+        </p>
+      </article>
+    </section>
+  )
+}
+
 type ScoreProps = { value: string | null; label: string }
 
 function Score({ value, label }: ScoreProps) {
   const img = useMemo(() => {
     if (value == null) return '70'
     const num = Number(value)
-    if (num > 0.9) return '90'
-    if (num > 0.8) return '80'
-    if (num > 0.7) return '70'
-    if (num > 0.6) return '60'
-    if (num > 0.5) return '50'
+    if (num >= 0.9) return '90'
+    if (num >= 0.8) return '80'
+    if (num >= 0.7) return '70'
+    if (num >= 0.6) return '60'
+    if (num >= 0.5) return '50'
     return '40'
   }, [value])
   return (

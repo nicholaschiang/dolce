@@ -209,11 +209,11 @@ function Score({ value, label, count }: ScoreProps) {
   const img = useMemo(() => {
     if (value == null) return '70'
     const num = Number(value)
-    if (num > 0.9) return '90'
-    if (num > 0.8) return '80'
-    if (num > 0.7) return '70'
-    if (num > 0.6) return '60'
-    if (num > 0.5) return '50'
+    if (num >= 0.9) return '90'
+    if (num >= 0.8) return '80'
+    if (num >= 0.7) return '70'
+    if (num >= 0.6) return '60'
+    if (num >= 0.5) return '50'
     return '40'
   }, [value])
   return (
