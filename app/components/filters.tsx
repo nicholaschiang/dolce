@@ -53,11 +53,12 @@ const MODEL_TO_ROUTE: Record<string, string> = {
   Size: '/sizes',
   Color: '/colors',
   Variant: '/variants',
+  Look: '/looks',
   Price: '/prices',
   Collection: '/collections',
   Season: '/seasons',
   Show: '/shows',
-  Designer: '/designers',
+  User: '/designers',
 }
 
 //////////////////////////////////////////////////////////////////
