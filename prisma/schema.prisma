@@ -648,6 +648,18 @@ model Look {
 model Review {
   id Int @id @default(autoincrement())
 
+  // The review title (usually included as the header on their webpage).
+  title String @default("")
+
+  // The review subtitle (typically included below the title on their webpage).
+  subtitle String?
+
+  // The review sentiment score from 0-1 (assigned via OpenAI).
+  score Decimal?
+
+  // The review summary (generated via OpenAI).
+  summary String?
+
   // The review content (typically an HTML string).
   content String
 
