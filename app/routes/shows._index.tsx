@@ -38,7 +38,7 @@ export default function ShowsPage() {
                     src={show.looks[0].image.url}
                     alt=''
                   />
-                  <ul className='absolute bottom-2 inset-x-2 pt-2 flex gap-2 mt-auto justify-center items-end bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl'>
+                  <ul className='absolute bottom-2 inset-x-2 pt-2 flex gap-2 justify-center items-end bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl'>
                     <Score value={show.criticReviewScore} label='Critic' />
                     <Score value={show.consumerReviewScore} label='Consumer' />
                   </ul>
