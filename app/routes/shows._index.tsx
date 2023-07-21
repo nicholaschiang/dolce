@@ -22,7 +22,7 @@ export async function loader() {
 export default function ShowsPage() {
   const shows = useLoaderData<typeof loader>()
   return (
-    <main className='h-full w-full flex-1 overflow-auto p-6'>
+    <main className='p-6'>
       <h1 className='text-6xl text-center mb-6'>shows</h1>
       {shows.length > 0 ? (
         <ul className='grid grid-cols-5 gap-x-2 gap-y-10 mx-auto max-w-screen-xl'>

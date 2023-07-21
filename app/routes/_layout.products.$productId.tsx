@@ -6,8 +6,8 @@ import {
 } from '@radix-ui/react-icons'
 import * as Popover from '@radix-ui/react-popover'
 import { Link, useLoaderData, useLocation, useNavigate } from '@remix-run/react'
-import type { LoaderArgs } from '@vercel/remix'
-import type { PropsWithChildren, ReactNode } from 'react'
+import { type LoaderArgs, type SerializeFrom } from '@vercel/remix'
+import { type PropsWithChildren, type ReactNode } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
 
@@ -18,7 +18,16 @@ import { Image } from 'components/image'
 import { Tooltip } from 'components/tooltip'
 
 import { prisma } from 'db.server'
+import { type Handle } from 'root'
 import { useData } from 'utils'
+
+export const handle: Handle = {
+  breadcrumb: (match) => (
+    <Link to={`/products/${match.params.productId as string}`}>
+      {(match.data as SerializeFrom<typeof loader>).name}
+    </Link>
+  ),
+}
 
 export async function loader({ params }: LoaderArgs) {
   invariant(params.productId, 'productId is required')

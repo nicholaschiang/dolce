@@ -8,16 +8,11 @@ import type { IconProps } from '@radix-ui/react-icons/dist/types'
 import { Link } from '@remix-run/react'
 import type { FunctionComponent } from 'react'
 
-import { ThemeSwitcher } from 'components/theme-switcher'
-
 export const config = { runtime: 'edge' }
 
 export default function IndexPage() {
   return (
-    <main className='flex min-h-screen w-screen items-center justify-center'>
-      <div className='fixed top-8 right-8'>
-        <ThemeSwitcher />
-      </div>
+    <main className='flex w-screen items-center justify-center'>
       <section>
         <Milestone
           start={new Date(2023, 7, 20)}

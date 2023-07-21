@@ -1,8 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { Outlet } from '@remix-run/react'
 
-import * as Header from 'components/header'
-
 import { log } from 'log.server'
 
 export const config = { runtime: 'edge' }
@@ -50,10 +48,7 @@ export function loader() {
 
 export default function LayoutPage() {
   return (
-    <main className='flex h-screen w-screen flex-col overflow-hidden'>
-      <Header.Root>
-        <Header.Content />
-      </Header.Root>
+    <main className='fixed inset-0 pt-10 flex flex-col overflow-hidden'>
       <Outlet />
     </main>
   )

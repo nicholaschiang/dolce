@@ -1,5 +1,5 @@
-import { useLoaderData } from '@remix-run/react'
-import { type LoaderArgs } from '@vercel/remix'
+import { Link, useLoaderData } from '@remix-run/react'
+import { type LoaderArgs, type SerializeFrom } from '@vercel/remix'
 import { ExternalLink } from 'lucide-react'
 import { type PropsWithChildren, useMemo } from 'react'
 
@@ -7,7 +7,16 @@ import { Empty } from 'atoms/Empty'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
+import { type Handle } from 'root'
 import { cn } from 'utils/cn'
+
+export const handle: Handle = {
+  breadcrumb: (match) => (
+    <Link to={`/shows/${match.params.showId as string}`}>
+      {(match.data as SerializeFrom<typeof loader>).name}
+    </Link>
+  ),
+}
 
 export async function loader({ params }: LoaderArgs) {
   log.debug('getting show...')
@@ -31,9 +40,9 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function ShowPage() {
   return (
-    <main className='h-full flex-1 overflow-hidden max-w-screen-xl mx-auto grid grid-cols-5 gap-6 px-6'>
-      <About className='col-span-3 py-6' />
-      <Looks className='col-span-2 py-6' />
+    <main className='fixed inset-0 overflow-hidden max-w-screen-xl mx-auto grid grid-cols-5 gap-6 px-6'>
+      <About className='col-span-3 pb-6 pt-16' />
+      <Looks className='col-span-2 pb-6 pt-16' />
     </main>
   )
 }
