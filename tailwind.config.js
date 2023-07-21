@@ -44,6 +44,9 @@ module.exports = {
       ],
     },
     extend: {
+      aspectRatio: {
+        person: '9 / 16',
+      },
       fontSize: {
         'xs': ['0.8125rem', '1.0625rem'],
         '2xs': ['0.75rem', '1rem'],

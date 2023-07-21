@@ -54,8 +54,12 @@ function About({ className }: { className: string }) {
           Download the <a href={show.video.url}>MP4</a> video.
         </video>
         <div className='flex gap-2'>
-          <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden'>
-            <img src={show.looks[0].image.url} alt='' />
+          <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800'>
+            <img
+              className='object-cover h-full'
+              src={show.looks[0].image.url}
+              alt=''
+            />
           </div>
           <article className='flex-1 bg-gray-100 dark:bg-gray-800 text-center px-6 flex flex-col'>
             <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
@@ -136,7 +140,13 @@ function Looks({ className }: { className: string }) {
       <ol className='grid grid-cols-2 gap-x-2 gap-y-6'>
         {show.looks.map((look) => (
           <li key={look.id}>
-            <img src={look.image.url} alt={`Look ${look.number}`} />
+            <div className='bg-gray-100 dark:bg-gray-800 aspect-person'>
+              <img
+                className='object-cover h-full'
+                src={look.image.url}
+                alt=''
+              />
+            </div>
             <p className='mt-0.5 text-sm'>Look {look.number}</p>
           </li>
         ))}
