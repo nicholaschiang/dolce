@@ -29,12 +29,11 @@ export async function loader({ params }: LoaderArgs) {
       season: true,
       brands: true,
       reviews: { include: { author: true, publication: true } },
-      looks: { include: { image: true } },
+      looks: { include: { image: true }, orderBy: { number: 'asc' } },
     },
   })
   log.debug('got show %o', show)
   if (show == null) throw new Response(null, { status: 404 })
-  show.looks = show.looks.sort((a, b) => a.number - b.number)
   return show
 }
 
