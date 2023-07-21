@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.11.0](https://github.com/nicholaschiang/site/compare/v1.10.0...v1.11.0) (2023-07-21)
+
+
+### Features
+
+* **routes/shows:** add rose score key explanation ([014e5e4](https://github.com/nicholaschiang/site/commit/014e5e4aa75bc6abdeeb19cf53f559399d257805))
+* **routes/shows:** show percentage ratings ([badcf52](https://github.com/nicholaschiang/site/commit/badcf520525e7f8e37ac3c25bf125d8a68374012))
+
 ## [1.10.0](https://github.com/nicholaschiang/site/compare/v1.9.2...v1.10.0) (2023-07-21)
 
 
