@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.9.0](https://github.com/nicholaschiang/site/compare/v1.8.0...v1.9.0) (2023-07-21)
+
+
+### Features
+
+* add breadcrumb header with `useMatches` ([40261c9](https://github.com/nicholaschiang/site/commit/40261c93860ec27f24d5b3cd2d96c0e07681700f))
+
 ## [1.8.0](https://github.com/nicholaschiang/site/compare/v1.7.1...v1.8.0) (2023-07-21)
 
 
