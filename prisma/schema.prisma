@@ -108,6 +108,9 @@ model Retailer {
 
   // The countries in which the retailer operates.
   countries Country[]
+
+  // The links (to collections or brands) on this retailer's website.
+  links Link[]
 }
 
 // Tiers attempt to encapsulate a brand's reputation, business model, and prices:
@@ -169,6 +172,9 @@ model Brand {
 
   // The prices (associated with products) sold by the brand (i.e. MSRPs).
   prices Price[]
+
+  // Links to the brand's page on retailer sites.
+  links Link[]
 
   // The retailers that sell the brand.
   retailers Retailer[]
@@ -575,6 +581,9 @@ model Collection {
   show   Show? @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   showId Int?
 
+  // The collection's webpage (from the designer, brand, or retailer site).
+  link Link[]
+
   // The products that belong to the collection.
   products Product[]
 
@@ -585,6 +594,34 @@ model Collection {
   // The brands that created the collection.
   // @todo products are already associated with brands; do we need this?
   brands Brand[]
+}
+
+// A link is exactly that. A link to an external website. Currently, this model
+// is just used for collections, but will likely be used more in the future.
+model Link {
+  id Int @id @default(autoincrement())
+
+  // The link's URL.
+  url String @unique
+
+  // The collection the link is associated with.
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId Int?
+
+  // The brand that the link is associated with.
+  brand   Brand? @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brandId Int?
+
+  // The retailer that the link is associated with.
+  retailer   Retailer? @relation(fields: [retailerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  retailerId Int?
+
+  // Each collection can only have one link per brand or retailer.
+  @@unique([collectionId, brandId])
+  @@unique([collectionId, retailerId])
+
+  // Each brand can only have one link per retailer.
+  @@unique([brandId, retailerId])
 }
 
 // A widely accepted and used season name.
