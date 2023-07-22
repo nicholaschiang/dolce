@@ -103,7 +103,7 @@ export default function LoginPage() {
             {email.error && <FormMessage>{email.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input type='email' placeholder='john@doe.com' />
+            <Input type='email' placeholder='anna@vogue.com' />
           </FormControl>
         </FormField>
         <FormField name={password.name}>

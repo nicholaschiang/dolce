@@ -140,7 +140,7 @@ export default function Join() {
             {name.error && <FormMessage>{name.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input placeholder='John Doe' />
+            <Input placeholder='Anna Wintour' />
           </FormControl>
         </FormField>
         <FormField name={username.name}>
@@ -149,7 +149,7 @@ export default function Join() {
             {username.error && <FormMessage>{username.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input placeholder='john.doe' />
+            <Input placeholder='anna.wintour' />
           </FormControl>
         </FormField>
         <FormField name={email.name}>
@@ -158,7 +158,7 @@ export default function Join() {
             {email.error && <FormMessage>{email.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input type='email' placeholder='john@doe.com' />
+            <Input type='email' placeholder='anna@vogue.com' />
           </FormControl>
         </FormField>
         <FormField name={password.name}>
