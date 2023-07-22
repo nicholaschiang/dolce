@@ -46,7 +46,6 @@ const lofficiel: Prisma.PublicationCreateInput = {
 }
 const wwd: Prisma.PublicationCreateInput = {
   name: 'Women’s Wear Daily',
-  avatar: '',
 }
 const bazaar: Prisma.PublicationCreateInput = {
   name: 'Harper’s Bazaar',
@@ -55,11 +54,9 @@ const bazaar: Prisma.PublicationCreateInput = {
 }
 const highs: Prisma.PublicationCreateInput = {
   name: 'Highsnobiety',
-  avatar: '',
 }
 const fashionotography: Prisma.PublicationCreateInput = {
   name: 'Fashionotography',
-  avatar: '',
 }
 const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
   {

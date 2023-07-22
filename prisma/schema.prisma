@@ -26,7 +26,7 @@ model User {
   password Password?
 
   // The user's avatar image URL.
-  avatar String?
+  avatar String? @unique
 
   // The user's reviews.
   reviews Review[]
@@ -70,12 +70,15 @@ model Company {
   // The corporations legal name.
   name String @unique
 
+  // The company's avatar URL (i.e. logo).
+  avatar String? @unique
+
   // A short description of the company, typically sourced from Wikipedia.
   description String
 
   // The brands owned and operated by the corporation.
   brands Brand[]
-  
+
   // The retailers owned and operated by the corporation.
   retailers Retailer[]
 
@@ -94,6 +97,9 @@ model Retailer {
 
   // The retailer's most recognizable name, styled in their preferred format.
   name String @unique
+
+  // The retailer's avatar URL (i.e. logo).
+  avatar String? @unique
 
   // The company that owns and operates the retailer.
   company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -153,6 +159,9 @@ model Brand {
 
   // The brand's most recognizable name, styled in the brand's preferred format.
   name String @unique
+
+  // The brand's avatar URL (i.e. logo).
+  avatar String? @unique
 
   // A short description of the brand, typically sourced from Wikipedia.
   description String
@@ -623,7 +632,6 @@ model Link {
   // Each collection can only have one link per brand or retailer.
   @@unique([collectionId, brandId])
   @@unique([collectionId, retailerId])
-
   // Each brand can only have one link per retailer.
   @@unique([brandId, retailerId])
 }
@@ -728,7 +736,7 @@ model Publication {
   name String @unique
 
   // The publication's avatar URL (i.e. logo).
-  avatar String
+  avatar String? @unique
 
   // The publication's reviews.
   reviews Review[]
