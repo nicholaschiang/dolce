@@ -5,6 +5,7 @@ import {
   Link,
   useActionData,
   useSearchParams,
+  useNavigation,
 } from '@remix-run/react'
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from '@vercel/remix'
 import { json, redirect } from '@vercel/remix'
@@ -22,7 +23,12 @@ import {
 import { Button } from 'components/ui/button'
 import { Input } from 'components/ui/input'
 
-import { createUser, getUserByEmail } from 'models/user.server'
+import {
+  createUser,
+  getUserByName,
+  getUserByUsername,
+  getUserByEmail,
+} from 'models/user.server'
 
 import { type Handle } from 'root'
 import { createUserSession, getUserId } from 'session.server'
@@ -69,7 +75,19 @@ export async function action({ request }: ActionArgs) {
   if (!submission.value || submission.intent !== 'submit')
     return json(submission, { status: 400 })
 
-  const existingUser = await getUserByEmail(submission.value.email)
+  let existingUser = await getUserByName(submission.value.name)
+  if (existingUser) {
+    submission.error.name = 'A user already exists with this name'
+    return json(submission, { status: 400 })
+  }
+
+  existingUser = await getUserByUsername(submission.value.username)
+  if (existingUser) {
+    submission.error.username = 'A user already exists with this username'
+    return json(submission, { status: 400 })
+  }
+
+  existingUser = await getUserByEmail(submission.value.email)
   if (existingUser) {
     submission.error.email = 'A user already exists with this email'
     return json(submission, { status: 400 })
@@ -102,6 +120,7 @@ export default function Join() {
       return parse(formData, { schema })
     },
   })
+  const navigation = useNavigation()
   return (
     <Form asChild className='max-w-sm w-full mx-auto mt-6 p-6'>
       <RemixForm method='post' {...form.props}>
@@ -139,7 +158,7 @@ export default function Join() {
             {email.error && <FormMessage>{email.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input placeholder='john@doe.com' />
+            <Input type='email' placeholder='john@doe.com' />
           </FormControl>
         </FormField>
         <FormField name={password.name}>
@@ -152,7 +171,7 @@ export default function Join() {
           </FormControl>
         </FormField>
         <FormSubmit asChild>
-          <Button>Create account</Button>
+          <Button disabled={navigation.state !== 'idle'}>Create account</Button>
         </FormSubmit>
       </RemixForm>
     </Form>
