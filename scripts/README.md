@@ -1,4 +1,4 @@
-# `scraper`
+# `scripts`
 
 The goal of this directory is to implement some very light-weight and fast web scraping to populate our fashion database.
 
@@ -24,6 +24,6 @@ To run the `python/spiders/aritzia_spider.py` to get product information from [A
 ```
 $ poetry install
 $ source .venv/bin/activate
-$ cd scraper
+$ cd scripts
 $ scrapy crawl aritzia -L INFO -O json/aritzia.json
 ```

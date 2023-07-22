@@ -7,7 +7,7 @@ module.exports = {
     project: [
       path.resolve(__dirname, 'tsconfig.json'),
       path.resolve(__dirname, 'cypress/tsconfig.json'),
-      path.resolve(__dirname, 'scraper/node/tsconfig.json'),
+      path.resolve(__dirname, 'scripts/node/tsconfig.json'),
     ],
   },
   extends: [
