@@ -47,6 +47,8 @@ export const handle: Handle = {
   breadcrumb: () => <Link to='/'>nicholas.engineering</Link>,
 }
 
+export const config = { runtime: 'edge' }
+
 function Header() {
   const matches = useMatches()
   const user = useOptionalUser()
