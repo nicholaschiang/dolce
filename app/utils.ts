@@ -59,20 +59,10 @@ export function useOptionalUser(): User | undefined {
 export function useUser(): User {
   const maybeUser = useOptionalUser()
   if (!maybeUser) {
-    throw new Error(
-      'No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead.',
-    )
+    const error =
+      'No user found in root loader, but user is required by useUser. If ' +
+      'user is optional, try useOptionalUser instead.'
+    throw new Error(error)
   }
   return maybeUser
-}
-
-export function validateUsername(username: unknown): username is string {
-  return (
-    typeof username === 'string' &&
-    /^[A-Za-z0-9]+(?:[._\-A-Za-z0-9]+)*$/.test(username)
-  )
-}
-
-export function validateEmail(email: unknown): email is string {
-  return typeof email === 'string' && email.length > 3 && email.includes('@')
 }

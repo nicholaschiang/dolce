@@ -20,7 +20,7 @@ import {
 } from '@vercel/remix'
 import { json } from '@vercel/remix'
 import cn from 'classnames'
-import { LogIn } from 'lucide-react'
+import { LogIn, LogOut } from 'lucide-react'
 import { Fragment, type ReactNode } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
@@ -39,6 +39,7 @@ import {
   isTheme,
   useTheme,
 } from 'theme'
+import { useOptionalUser } from 'utils'
 
 export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
 
@@ -48,6 +49,7 @@ export const handle: Handle = {
 
 function Header() {
   const matches = useMatches()
+  const user = useOptionalUser()
   return (
     <header className='sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
       <ol className='flex items-center gap-2'>
@@ -66,9 +68,13 @@ function Header() {
         {!matches.some((match) => match.id.includes('login')) && (
           <Link
             className={buttonVariants({ size: 'icon', variant: 'ghost' })}
-            to='/login'
+            to={user ? '/logout' : '/login'}
           >
-            <LogIn className='w-3 h-3' />
+            {user ? (
+              <LogOut className='w-3 h-3' />
+            ) : (
+              <LogIn className='w-3 h-3' />
+            )}
           </Link>
         )}
         <ThemeSwitcher />
