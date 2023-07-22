@@ -1,5 +1,23 @@
 # Release Notes
 
+## [1.12.0](https://github.com/nicholaschiang/site/compare/v1.11.0...v1.12.0) (2023-07-22)
+
+
+### Features
+
+* add login form using new components ([e729835](https://github.com/nicholaschiang/site/commit/e72983509e15d803d8be4427217fc3c6c77bcaa5)), closes [/github.com/radix-ui/primitives/pull/1977#issuecomment-1440233271](https://github.com/nicholaschiang//github.com/radix-ui/primitives/pull/1977/issues/issuecomment-1440233271)
+* add sign up page and logout functionality ([0418464](https://github.com/nicholaschiang/site/commit/04184646a8dfb9ba3363f86e7158c38ec788e55e))
+* **routes/login:** add `/login` breadcrumb ([199f0a2](https://github.com/nicholaschiang/site/commit/199f0a29078fe099b9c1733c11ed5bba39e0668c))
+* **routes:** replace "John Doe" with "Anna Wintour" ([d65262e](https://github.com/nicholaschiang/site/commit/d65262e68526e468310b835f6e7d8770d63bb8a8))
+
+
+### Bug Fixes
+
+* **routes/shows:** remove opaque background from scores ([04b4043](https://github.com/nicholaschiang/site/commit/04b4043da3d8216e7a9e42d4e01049ca189333af))
+* **routes/shows:** remove unnecessary `mt-auto` ([39303ec](https://github.com/nicholaschiang/site/commit/39303ec8e650f19486b01495d75d1e4fee643f7d))
+* **routes:** update login and join `meta` function ([db4c726](https://github.com/nicholaschiang/site/commit/db4c726e8a28657b9e2d274032cdc227a9cac8c8))
+* **routes:** verify there are no existing users ([cf1ee57](https://github.com/nicholaschiang/site/commit/cf1ee5777b66701599c9032b80ad9fcf5e20c1f9))
+
 ## [1.11.0](https://github.com/nicholaschiang/site/compare/v1.10.0...v1.11.0) (2023-07-21)
 
 
