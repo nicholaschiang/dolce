@@ -8,8 +8,6 @@ import type { IconProps } from '@radix-ui/react-icons/dist/types'
 import { Link } from '@remix-run/react'
 import type { FunctionComponent } from 'react'
 
-export const config = { runtime: 'edge' }
-
 export default function IndexPage() {
   return (
     <main className='flex w-screen items-center justify-center'>

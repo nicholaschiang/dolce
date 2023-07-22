@@ -36,8 +36,6 @@ export const handle: Handle = {
   breadcrumb: () => <Link to='/login'>login</Link>,
 }
 
-export const config = { runtime: 'edge' }
-
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request)
   if (userId) return redirect('/')

@@ -3,8 +3,6 @@ import { Outlet } from '@remix-run/react'
 
 import { log } from 'log.server'
 
-export const config = { runtime: 'edge' }
-
 export function loader() {
   // the ui knows what type of filter select ux to show based on the field type:
   //
