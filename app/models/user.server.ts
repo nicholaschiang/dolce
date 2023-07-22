@@ -9,6 +9,14 @@ export async function getUserById(id: User['id']) {
   return prisma.user.findUnique({ where: { id } })
 }
 
+export async function getUserByName(name: User['name']) {
+  return prisma.user.findUnique({ where: { name } })
+}
+
+export async function getUserByUsername(username: User['username']) {
+  return prisma.user.findFirst({ where: { username } })
+}
+
 export async function getUserByEmail(email: User['email']) {
   return prisma.user.findFirst({ where: { email } })
 }

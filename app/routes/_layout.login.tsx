@@ -5,6 +5,7 @@ import {
   Form as RemixForm,
   useActionData,
   useSearchParams,
+  useNavigation,
 } from '@remix-run/react'
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from '@vercel/remix'
 import { json, redirect } from '@vercel/remix'
@@ -82,6 +83,7 @@ export default function LoginPage() {
       return parse(formData, { schema })
     },
   })
+  const navigation = useNavigation()
   return (
     <Form asChild className='max-w-sm w-full mx-auto mt-6 p-6'>
       <RemixForm method='post' {...form.props}>
@@ -101,7 +103,7 @@ export default function LoginPage() {
             {email.error && <FormMessage>{email.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input placeholder='john@doe.com' />
+            <Input type='email' placeholder='john@doe.com' />
           </FormControl>
         </FormField>
         <FormField name={password.name}>
@@ -114,7 +116,7 @@ export default function LoginPage() {
           </FormControl>
         </FormField>
         <FormSubmit asChild>
-          <Button>Login</Button>
+          <Button disabled={navigation.state !== 'idle'}>Login</Button>
         </FormSubmit>
       </RemixForm>
     </Form>
