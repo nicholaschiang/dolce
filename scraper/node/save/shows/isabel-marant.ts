@@ -191,8 +191,18 @@ const brand: Prisma.BrandCreateInput = {
     },
   },
 }
+const collection: Prisma.CollectionCreateInput = {
+  name: 'Isabel Marant Fall-Winter 2023',
+  season: {
+    connectOrCreate: {
+      where: { name_year: { name: season.name, year: season.year } },
+      create: season,
+    },
+  },
+}
 export const show: Prisma.ShowCreateInput = {
   name: 'Isabel Marant Fall-Winter 2023',
+  url: 'https://www.isabelmarant.com/us/lookbooks/isabel-marant/isabel-marant-fall-winter-2023/',
   description: `A desire to cuddle up in comfy knitwear and swaddling coats. The disorder of some kind of irreverence and a sexy unconventional attitude.
 
 Metallic zips breathe a perfecto spirit into the collection where leather rules. They fasten the jackets and their pockets and blend into the pieces as precious details baring a neckline or splitting a dress.
@@ -217,5 +227,8 @@ Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza a
   },
   looks: { create: looks },
   reviews: { create: reviews },
+  collections: {
+    connectOrCreate: { where: { name: collection.name }, create: collection },
+  },
   brands: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }

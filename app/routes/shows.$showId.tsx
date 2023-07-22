@@ -28,6 +28,9 @@ export async function loader({ params }: LoaderArgs) {
       video: true,
       season: true,
       brands: true,
+      collections: {
+        include: { links: { include: { brand: true, retailer: true } } },
+      },
       reviews: { include: { author: true, publication: true } },
       looks: { include: { image: true }, orderBy: { number: 'asc' } },
     },
