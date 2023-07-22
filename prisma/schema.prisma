@@ -40,9 +40,6 @@ model User {
   country   Country? @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   countryId Int?
 
-  // The shows that the designer presented at.
-  shows Show[]
-
   // The collections that the designer created or otherwise curated.
   collections Collection[]
 
@@ -78,6 +75,9 @@ model Company {
 
   // The brands owned and operated by the corporation.
   brands Brand[]
+  
+  // The retailers owned and operated by the corporation.
+  retailers Retailer[]
 
   // The country where the corporation is legally headquartered.
   country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -94,6 +94,10 @@ model Retailer {
 
   // The retailer's most recognizable name, styled in their preferred format.
   name String @unique
+
+  // The company that owns and operates the retailer.
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  companyId Int?
 
   // A short description of the retailer, typically sourced from Wikipedia.
   description String
@@ -582,7 +586,7 @@ model Collection {
   showId Int?
 
   // The collection's webpage (from the designer, brand, or retailer site).
-  link Link[]
+  links Link[]
 
   // The products that belong to the collection.
   products Product[]
@@ -738,6 +742,9 @@ model Show {
   // @todo often this will be the same as the collection name; do we need this?
   name String @unique
 
+  // The link to the show on the brand website (where the description is from).
+  url String @unique
+
   // A description of the collection, typically provided by the brand.
   description String
 
@@ -771,10 +778,6 @@ model Show {
   // The runway show's location.
   // @todo perhaps this should be a separate model and simply a relation here.
   location String
-
-  // The designers who presented at the show. Often, there is only one.
-  // @todo collections are already associated with designers; do we need this?
-  designers User[]
 
   // The collections that were presented at the show. Often, there is only one.
   collections Collection[]

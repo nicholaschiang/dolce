@@ -518,8 +518,23 @@ const brand: Prisma.BrandCreateInput = {
     },
   },
 }
+const link: Prisma.LinkCreateInput = {
+  url: 'https://www.hermes.com/us/en/category/men/ready-wear/spring-summer-collection/#|',
+  brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
+}
+const collection: Prisma.CollectionCreateInput = {
+  name: 'Hermès Spring-Summer 2023',
+  season: {
+    connectOrCreate: {
+      where: { name_year: { name: season.name, year: season.year } },
+      create: season,
+    },
+  },
+  links: { connectOrCreate: { where: { url: link.url }, create: link } },
+}
 export const show: Prisma.ShowCreateInput = {
   name: 'Hermès Spring-Summer 2023',
+  url: 'https://www.hermes.com/us/en/story/302944-men-summer-2023-runway-show/',
   description: `A bright, vibrant summer; the joy of being together. The vacation spirit, a magic destination both joyous and serene, with the breeze imperceptibly ruffling the clothes that enfold you. A feeling of lightness makes you float in the sunlight.
 
     The colors of the clothes are sweetly poetic: lemonade, lagoon, lilac, bubblegum, melon, etc. Sometimes the light turns them white, or pastel.
@@ -529,8 +544,8 @@ export const show: Prisma.ShowCreateInput = {
     Berlingot canvas, nubuck calfskin, crepe cotton serge, perforated leather, sunset tints... the collection is precise, crafted with the refinement of the hand and the nonchalance of a mind that is free of barriers.
 
     In the open-air enclosure of the Manufacture des Gobelins, Cyril Teste, close partner of Véronique Nichanian, imagined a gesture in the form of a canvas sliding out of the building, swaying slightly in the breeze before disappearing – as if diving – through a workshop window.`,
-  criticReviewScore: null,
-  criticReviewSummary: null,
+  criticReviewScore: 0.92,
+  criticReviewSummary: `Hermès Spring-Summer 2023 Mens Ready-to-Wear delights with its innovative fusion of colors, playful marine-themed designs, and luxurious practicality. Véronique Nichanian’s collection blurs the boundaries between menswear and womenswear, offering a tender and harmonious wardrobe that celebrates the joy and lightness of summer.`,
   consumerReviewScore: null,
   consumerReviewSummary: null,
   date: new Date('June 25, 2022'),
@@ -544,5 +559,8 @@ export const show: Prisma.ShowCreateInput = {
   },
   looks: { create: looks },
   reviews: { create: reviews },
+  collections: {
+    connectOrCreate: { where: { name: collection.name }, create: collection },
+  },
   brands: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }
