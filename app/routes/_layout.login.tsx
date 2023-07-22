@@ -1,6 +1,6 @@
 import { useForm } from '@conform-to/react'
 import { parse } from '@conform-to/zod'
-import { Form as RemixForm, useActionData } from '@remix-run/react'
+import { Link, Form as RemixForm, useActionData } from '@remix-run/react'
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from '@vercel/remix'
 import { json, redirect } from '@vercel/remix'
 import { z } from 'zod'
@@ -19,6 +19,7 @@ import { Input } from 'components/ui/input'
 
 import { verifyLogin } from 'models/user.server'
 
+import { type Handle } from 'root'
 import { createUserSession, getUserId } from 'session.server'
 import { safeRedirect } from 'utils'
 
@@ -29,6 +30,10 @@ const schema = z.object({
     .min(1, 'Password is required')
     .min(8, 'Password is too short'),
 })
+
+export const handle: Handle = {
+  breadcrumb: () => <Link to='/login'>login</Link>,
+}
 
 export const config = { runtime: 'edge' }
 
