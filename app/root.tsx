@@ -20,9 +20,11 @@ import {
 } from '@vercel/remix'
 import { json } from '@vercel/remix'
 import cn from 'classnames'
+import { LogIn } from 'lucide-react'
 import { Fragment, type ReactNode } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
+import { buttonVariants } from 'components/ui/button'
 
 import { type User } from 'models/user.server'
 
@@ -60,7 +62,17 @@ function Header() {
             </Fragment>
           ))}
       </ol>
-      <ThemeSwitcher />
+      <div className='flex items-center'>
+        {!matches.some((match) => match.id.includes('login')) && (
+          <Link
+            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
+            to='/login'
+          >
+            <LogIn className='w-3 h-3' />
+          </Link>
+        )}
+        <ThemeSwitcher />
+      </div>
     </header>
   )
 }
