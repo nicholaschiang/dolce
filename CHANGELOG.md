@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.12.1](https://github.com/nicholaschiang/site/compare/v1.12.0...v1.12.1) (2023-07-22)
+
+
+### Bug Fixes
+
+* **routes/show:** use explicit `emerald` color name ([3450b6d](https://github.com/nicholaschiang/site/commit/3450b6db55a0bb4f8c8491e2de4e5b28174c1e4d))
+
 ## [1.12.0](https://github.com/nicholaschiang/site/compare/v1.11.0...v1.12.0) (2023-07-22)
 
 
