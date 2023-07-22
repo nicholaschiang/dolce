@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.12.2](https://github.com/nicholaschiang/site/compare/v1.12.1...v1.12.2) (2023-07-22)
+
+
+### Bug Fixes
+
+* **app/utils:** remove unnecessary type assertion ([e37e997](https://github.com/nicholaschiang/site/commit/e37e997f5eba180a132a1b5c211d0c8aad63787b))
+
+
+### Performance Improvements
+
+* **root:** use edge runtime for all routes ([44a6ad4](https://github.com/nicholaschiang/site/commit/44a6ad4932bc46fca8caa88a0d60272c29ba82ce))
+
 ## [1.12.1](https://github.com/nicholaschiang/site/compare/v1.12.0...v1.12.1) (2023-07-22)
 
 
