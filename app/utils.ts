@@ -39,7 +39,7 @@ export function safeRedirect(
  * @returns {JSON|undefined} The router data or undefined if not found
  */
 export function useData<T = AppData>(id: string): SerializeFrom<T> | undefined {
-  return useRouteLoaderData(id) as SerializeFrom<T> | undefined
+  return useRouteLoaderData<T>(id)
 }
 
 function isUser(user: unknown): user is User {
