@@ -707,7 +707,7 @@ model Review {
   id Int @id @default(autoincrement())
 
   // The review title (usually included as the header on their webpage).
-  title String @default("")
+  title String?
 
   // The review subtitle (typically included below the title on their webpage).
   subtitle String?
