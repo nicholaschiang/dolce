@@ -4,6 +4,7 @@ import { ExternalLink } from 'lucide-react'
 import { type PropsWithChildren, useMemo } from 'react'
 
 import { Empty } from 'components/empty'
+import { buttonVariants } from 'components/ui/button'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
@@ -121,7 +122,8 @@ function About({ className }: { className: string }) {
           </Empty>
         )}
       </Section>
-      <Section header='Collection info'>
+      <WhereToBuy />
+      <Section header='Show info'>
         <article>{show.description}</article>
       </Section>
       <Section header={`Critic reviews for ${show.name}`}>
@@ -141,6 +143,63 @@ function About({ className }: { className: string }) {
         </ol>
       </Section>
     </div>
+  )
+}
+
+function WhereToBuy() {
+  const show = useLoaderData<typeof loader>()
+  const links = show.collections.map((collection) => collection.links).flat()
+  const brands = show.brands.filter((brand) => brand.url)
+  return (
+    <Section header='Where to buy'>
+      {links.length === 0 && (
+        <Empty className='mt-2'>
+          <p>
+            There are no direct links to this collection on retailer or brand
+            websites.
+          </p>
+          {brands.length > 0 && (
+            <p>
+              You can try browsing the{' '}
+              {brands.map((brand, index) => (
+                <span>
+                  {index !== 0 && ', '}
+                  <a
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='underline inline-flex items-center gap-0.5'
+                    href={brand.url ?? ''}
+                  >
+                    {brand.name}
+                    <ExternalLink className='h-3 w-3' />
+                  </a>
+                </span>
+              ))}{' '}
+              website to find these items.
+            </p>
+          )}
+        </Empty>
+      )}
+      {links.length > 0 && (
+        <ul className='mt-2 flex gap-2'>
+          {links.map((link) => (
+            <li key={link.id}>
+              <a
+                href={link.url}
+                target='_blank'
+                rel='noopener noreferrer'
+                className={cn(buttonVariants({ variant: 'outline' }), 'h-auto')}
+              >
+                <img
+                  src={(link.brand ?? link.retailer)?.avatar ?? ''}
+                  alt={(link.brand ?? link.retailer ?? show).name}
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
   )
 }
 
