@@ -85,7 +85,7 @@ function Looks({ className }: { className: string }) {
 
 function About({ className }: { className: string }) {
   return (
-    <div className={cn('overflow-auto grid gap-10', className)}>
+    <div className={cn('overflow-auto', className)}>
       <ScoresHeader />
       <WhatToKnow />
       <WhereToBuy />
