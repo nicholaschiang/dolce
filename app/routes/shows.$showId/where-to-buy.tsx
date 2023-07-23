@@ -70,7 +70,7 @@ function BuyLink({
       rel='noopener noreferrer'
       className={cn(buttonVariants({ variant: 'outline' }), 'h-auto')}
     >
-      {avatar != null && <img src={avatar} alt={alt} />}
+      {avatar != null && <img className='dark:invert' src={avatar} alt={alt} />}
       {avatar == null && alt}
     </a>
   )
