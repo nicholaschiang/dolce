@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.16.1](https://github.com/nicholaschiang/site/compare/v1.16.0...v1.16.1) (2023-07-23)
+
+
+### Bug Fixes
+
+* **show/rate-and-review:** go to login on click ([051b6d8](https://github.com/nicholaschiang/site/commit/051b6d837c955a192119ddedf1fadef9a14681b6))
+
 ## [1.16.0](https://github.com/nicholaschiang/site/compare/v1.15.0...v1.16.0) (2023-07-23)
 
 
