@@ -50,99 +50,116 @@ export default function ShowPage() {
   )
 }
 
-function About({ className }: { className: string }) {
+function Looks({ className }: { className: string }) {
   const show = useLoaderData<typeof loader>()
   return (
-    <div className={cn('overflow-auto grid gap-10', className)}>
-      <div className='grid gap-2'>
-        <video
-          className='aspect-video w-full bg-gray-100 dark:bg-gray-800'
-          controls
-          autoPlay
-          playsInline
-          muted
-        >
-          <source src={show.video.url} type={show.video.mimeType} />
-          Download the <a href={show.video.url}>MP4</a> video.
-        </video>
-        <div className='flex gap-2'>
-          <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 h-0 min-h-full'>
-            <img
-              className='object-cover h-full'
-              src={show.looks[0].image.url}
-              alt=''
-            />
-          </div>
-          <article className='flex-1 bg-gray-100 dark:bg-gray-800 text-center px-6 flex flex-col'>
-            <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
-              {show.brands.map((brand) => brand.name).join(', ')}
-            </h1>
-            <h2 className='uppercase mb-6 text-sm'>
-              {show.season.name.replace('_', '-')} {show.season.year}{' '}
-              READY-TO-WEAR
-            </h2>
-            <ul className='grid grid-cols-2 gap-2 mt-auto'>
-              <Score
-                value={show.criticReviewScore}
-                label='Critic Score'
-                count={
-                  show.reviews.filter((review) => review.publication != null)
-                    .length
-                }
+    <div className={cn('overflow-auto', className)}>
+      <ol className='grid grid-cols-2 gap-x-2 gap-y-6'>
+        {show.looks.map((look) => (
+          <li key={look.id}>
+            <div className='bg-gray-100 dark:bg-gray-800 aspect-person'>
+              <img
+                className='object-cover h-full'
+                src={look.image.url}
+                alt=''
               />
-              <Score
-                value={show.consumerReviewScore}
-                label='Consumer Score'
-                count={
-                  show.reviews.filter((review) => review.publication == null)
-                    .length
-                }
-              />
-            </ul>
-          </article>
-        </div>
-      </div>
-      <Section header='What to know'>
-        <Subheader>Critics Consensus</Subheader>
-        {show.criticReviewSummary ? (
-          <p className='mb-2'>{show.criticReviewSummary}</p>
-        ) : (
-          <Empty className='mb-2'>
-            There is no Critics Consensus because there are not enough reviews
-            yet.
-          </Empty>
-        )}
-        <Subheader>Consumers Say</Subheader>
-        {show.consumerReviewSummary ? (
-          <p>{show.consumerReviewSummary}</p>
-        ) : (
-          <Empty>
-            There is no Consumer Summary because there are not enough reviews
-            yet.
-          </Empty>
-        )}
-      </Section>
-      <WhereToBuy />
-      <Section header='Show info'>
-        <article>{show.description}</article>
-      </Section>
-      <Section header={`Critic reviews for ${show.name}`}>
-        <ol className='mt-2 grid gap-4'>
-          {show.reviews
-            .filter((r) => r.publication != null && r.url != null)
-            .map((review) => (
-              <li key={review.id}>
-                <Review
-                  author={review.author}
-                  publication={review.publication?.name as string}
-                  url={review.url as string}
-                  content={review.content}
-                />
-              </li>
-            ))}
-        </ol>
-      </Section>
+            </div>
+            <p className='mt-0.5 text-sm'>Look {look.number}</p>
+          </li>
+        ))}
+      </ol>
     </div>
+  )
+}
+
+function About({ className }: { className: string }) {
+  return (
+    <div className={cn('overflow-auto grid gap-10', className)}>
+      <Header />
+      <WhatToKnow />
+      <WhereToBuy />
+      <ShowInfo />
+      <Reviews />
+    </div>
+  )
+}
+
+function Header() {
+  const show = useLoaderData<typeof loader>()
+  return (
+    <div className='grid gap-2'>
+      <video
+        className='aspect-video w-full bg-gray-100 dark:bg-gray-800'
+        controls
+        autoPlay
+        playsInline
+        muted
+      >
+        <source src={show.video.url} type={show.video.mimeType} />
+        Download the <a href={show.video.url}>MP4</a> video.
+      </video>
+      <div className='flex gap-2'>
+        <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 h-0 min-h-full'>
+          <img
+            className='object-cover h-full'
+            src={show.looks[0].image.url}
+            alt=''
+          />
+        </div>
+        <article className='flex-1 bg-gray-100 dark:bg-gray-800 text-center px-6 flex flex-col'>
+          <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
+            {show.brands.map((brand) => brand.name).join(', ')}
+          </h1>
+          <h2 className='uppercase mb-6 text-sm'>
+            {show.season.name.replace('_', '-')} {show.season.year}{' '}
+            READY-TO-WEAR
+          </h2>
+          <ul className='grid grid-cols-2 gap-2 mt-auto'>
+            <Score
+              value={show.criticReviewScore}
+              label='Critic Score'
+              count={
+                show.reviews.filter((review) => review.publication != null)
+                  .length
+              }
+            />
+            <Score
+              value={show.consumerReviewScore}
+              label='Consumer Score'
+              count={
+                show.reviews.filter((review) => review.publication == null)
+                  .length
+              }
+            />
+          </ul>
+        </article>
+      </div>
+    </div>
+  )
+}
+
+function WhatToKnow() {
+  const show = useLoaderData<typeof loader>()
+  return (
+    <Section header='What to know'>
+      <Subheader>Critics Consensus</Subheader>
+      {show.criticReviewSummary ? (
+        <p className='mb-2'>{show.criticReviewSummary}</p>
+      ) : (
+        <Empty className='mb-2'>
+          There is no Critics Consensus because there are not enough reviews
+          yet.
+        </Empty>
+      )}
+      <Subheader>Consumers Say</Subheader>
+      {show.consumerReviewSummary ? (
+        <p>{show.consumerReviewSummary}</p>
+      ) : (
+        <Empty>
+          There is no Consumer Summary because there are not enough reviews yet.
+        </Empty>
+      )}
+    </Section>
   )
 }
 
@@ -203,25 +220,34 @@ function WhereToBuy() {
   )
 }
 
-function Looks({ className }: { className: string }) {
+function ShowInfo() {
   const show = useLoaderData<typeof loader>()
   return (
-    <div className={cn('overflow-auto', className)}>
-      <ol className='grid grid-cols-2 gap-x-2 gap-y-6'>
-        {show.looks.map((look) => (
-          <li key={look.id}>
-            <div className='bg-gray-100 dark:bg-gray-800 aspect-person'>
-              <img
-                className='object-cover h-full'
-                src={look.image.url}
-                alt=''
+    <Section header='Show info'>
+      <article>{show.description}</article>
+    </Section>
+  )
+}
+
+function Reviews() {
+  const show = useLoaderData<typeof loader>()
+  return (
+    <Section header={`Critic reviews for ${show.name}`}>
+      <ol className='mt-2 grid gap-4'>
+        {show.reviews
+          .filter((r) => r.publication != null && r.url != null)
+          .map((review) => (
+            <li key={review.id}>
+              <Review
+                author={review.author}
+                publication={review.publication?.name as string}
+                url={review.url as string}
+                content={review.content}
               />
-            </div>
-            <p className='mt-0.5 text-sm'>Look {look.number}</p>
-          </li>
-        ))}
+            </li>
+          ))}
       </ol>
-    </div>
+    </Section>
   )
 }
 
