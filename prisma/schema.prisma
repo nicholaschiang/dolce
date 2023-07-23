@@ -10,7 +10,9 @@ generator client {
 
 // A user is a person who has created an account with us.
 model User {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The user's name, as designated by the user.
   // @todo there may be multiple users with the same name...
@@ -54,6 +56,9 @@ model User {
 
 // A user's password, stored in Postgres as an encrypted hash.
 model Password {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
   // The securely encrypted hash of the user's original password text.
   hash String
 
@@ -65,7 +70,9 @@ model Password {
 // A company is a legal corporation. Companies can own many brands.
 // e.g. The LVMH company owns Louis Vuitton, Dior, Givenchy, etc.
 model Company {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The corporations legal name.
   name String @unique
@@ -96,7 +103,9 @@ model Company {
 // this is different than a company to allow companies to own many retailers.
 // e.g. Neiman Marcus, Nordstrom, GOAT, StockX, Ebay, etc.
 model Retailer {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The retailer's most recognizable name, styled in their preferred format.
   name String @unique
@@ -161,7 +170,9 @@ enum Tier {
 // A brand is a recognizable name. Brands with similar names are given tiers.
 // e.g. GUESS is given tier 1 while GBG and GUESS FACTORY are given tier 2.
 model Brand {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The brand's most recognizable name, styled in the brand's preferred format.
   name String @unique
@@ -211,7 +222,9 @@ model Brand {
 
 // A country is a sovereign state. Countries can have many brands and sizes.
 model Country {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The country's full name, as designated by the United Nations.
   name String @unique
@@ -240,7 +253,9 @@ model Country {
 // e.g. the "Neckline" style group contains "Crewneck", "V-Neck", etc (a product
 // can not have a crewneck and a v-neck at the same time).
 model StyleGroup {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The style group's name.
   name String @unique
@@ -253,7 +268,9 @@ model StyleGroup {
 // tad bit reminiscent of the typical issue tracking tool's "labels" feature.
 // e.g. blazer, bomber, cardigan, quilted, raincoat, jeans, tuxedos, etc.
 model Style {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The style category's name, styled in the preferred format.
   name String @unique
@@ -284,7 +301,9 @@ model Style {
 // profile. Our system will automatically suggest sizes to add based on the 
 // user's previous purchases and existing profile sizes.
 model Size {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The size's name, as designated by the brand or country.
   name String @unique
@@ -336,7 +355,9 @@ model Size {
 // A color is a label assigned to products by their designers.
 // @todo perhaps standardize this by associating each color with an RGBA range?
 model Color {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The color's name, as designated by the brand (e.g. "Beige", "Black", etc).
   name String @unique
@@ -359,7 +380,9 @@ enum Sustainability {
 
 // A material is a fabric or other ingrediant used to formulate a product.
 model Material {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The material's name, as designated by industry standard (e.g. "Cotton") or
   // the brand for proprietary fabrics (e.g. "Bombtwill", "City Wool").
@@ -389,7 +412,9 @@ model Material {
 
 // A variant is a specific colorway of a product. Variants are product-specific.
 model Variant {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The variant's name, as designated by the brand (e.g. "Black", "White", etc).
   // @todo don't use the color as the variant name bc there's already colors. 
@@ -437,7 +462,9 @@ enum Market {
 // sizes and color variants of a product (e.g. when being sold at retail value)
 // or specific to a single size and color variant (e.g. GOAT, Ebay, StockX).
 model Price {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The price's value in USD.
   value Decimal
@@ -476,7 +503,9 @@ model Price {
 // An image. Typically of a product being modeled.
 // @todo perhaps we should also store the image's original source?
 model Image {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The URL (either fully qualified or a relative path) to the largest size of
   // the image available (the front-end optimizes images at runtime).
@@ -495,7 +524,9 @@ model Image {
 // A video. Typically of a product being modeled.
 // @todo perhaps we should also store the image's original source?
 model Video {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The video's URL (either fully qualified or a relative path).
   url String @unique
@@ -528,7 +559,9 @@ enum Level {
 
 // A product is an item that can be bought and sold.
 model Product {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The product's name as designated by the brand and designer.
   name String
@@ -585,7 +618,9 @@ model Product {
 // also have multiple collections shown (e.g. Fashion East often showcases
 // three collections from three different designers on the same runway).
 model Collection {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The collection's name, as designated by the brand or designer.
   name String @unique
@@ -621,7 +656,9 @@ model Collection {
 // A link is exactly that. A link to an external website. Currently, this model
 // is just used for collections, but will likely be used more in the future.
 model Link {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The link's URL.
   url String @unique
@@ -658,7 +695,9 @@ enum SeasonName {
 
 // A fashion season is a widely accepted grouping of fashion releases.
 model Season {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The name of the season, as widely accepted and recognized.
   name SeasonName
@@ -678,7 +717,9 @@ model Season {
 
 // A look is an outfit that a model wore during a runway show.
 model Look {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The look's number. Typically, looks are numbered sequentially.
   number Int
@@ -704,7 +745,9 @@ model Look {
 
 // A review is a review for a show from a fashion critic or consumer.
 model Review {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The review title (usually included as the header on their webpage).
   title String?
@@ -748,7 +791,9 @@ model Review {
 
 // A publication is a resource that publishes fashion reviews (e.g. Vogue).
 model Publication {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The publication's name.
   name String @unique
@@ -762,7 +807,9 @@ model Publication {
 
 // A show is a fashion runway show.
 model Show {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   // The name of the show, as designated by the show's organizer.
   // @todo often this will be the same as the collection name; do we need this?

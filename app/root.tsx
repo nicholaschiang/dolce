@@ -14,19 +14,18 @@ import {
 } from '@remix-run/react'
 import { Analytics } from '@vercel/analytics/react'
 import {
+  type SerializeFrom,
   type LinksFunction,
   type LoaderArgs,
   type V2_MetaFunction,
+  json,
 } from '@vercel/remix'
-import { json } from '@vercel/remix'
 import cn from 'classnames'
 import { LogIn, LogOut } from 'lucide-react'
 import { Fragment, type ReactNode } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
 import { buttonVariants } from 'components/ui/button'
-
-import { type User } from 'models/user.server'
 
 import tailwindStylesheetUrl from 'styles/tailwind.css'
 
@@ -173,13 +172,11 @@ declare global {
   }
 }
 
-export type LoaderData = { user: User | null; theme: Theme | null; env: Env }
-
 export async function loader({ request }: LoaderArgs) {
   const session = await getSession(request)
   const theme = session.get('theme') as Theme | null
   const headers = { 'Set-Cookie': await sessionStorage.commitSession(session) }
-  return json<LoaderData>(
+  return json(
     {
       user: await getUser(request),
       theme: isTheme(theme) ? theme : null,
@@ -188,6 +185,8 @@ export async function loader({ request }: LoaderArgs) {
     { headers },
   )
 }
+
+export type LoaderData = SerializeFrom<typeof loader>
 
 function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
   const [theme] = useTheme()
