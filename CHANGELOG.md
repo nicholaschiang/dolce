@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.14.0](https://github.com/nicholaschiang/site/compare/v1.13.0...v1.14.0) (2023-07-23)
+
+
+### Features
+
+* **routes/show:** add metadata to "show info" ([20afa79](https://github.com/nicholaschiang/site/commit/20afa79c3d7e7cb8ffc00f492c2a0a8d842e533c))
+
 ## [1.13.0](https://github.com/nicholaschiang/site/compare/v1.12.2...v1.13.0) (2023-07-23)
 
 
