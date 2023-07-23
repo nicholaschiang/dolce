@@ -107,7 +107,7 @@ function StarSide({
   return (
     <RadioGroup.Item
       className={cn(
-        'overflow-hidden peer text-gray-300 dark:text-gray-600',
+        'overflow-hidden peer text-gray-300 dark:text-gray-600 transition-colors',
         'group-hover:aria-checked:text-gray-300 dark:group-hover:aria-checked:text-gray-600 group-hover:peer-aria-checked:text-gray-300 dark:group-hover:peer-aria-checked:text-gray-600',
         'aria-checked:text-gray-900 dark:aria-checked:text-gray-100 peer-aria-checked:text-gray-900 dark:peer-aria-checked:text-gray-100',
         'hover:!text-gray-900 dark:hover:!text-gray-100 peer-hover:!text-gray-900 dark:peer-hover:!text-gray-100',
