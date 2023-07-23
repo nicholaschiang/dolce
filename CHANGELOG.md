@@ -1,5 +1,16 @@
 # Release Notes
 
+## [1.13.0](https://github.com/nicholaschiang/site/compare/v1.12.2...v1.13.0) (2023-07-23)
+
+
+### Features
+
+* add `show.url` and `retailer.company` ([49670b1](https://github.com/nicholaschiang/site/commit/49670b165ff91ea8c181db733986648f75554cef))
+* **prisma:** add avatar fields for everything ([0c81bdb](https://github.com/nicholaschiang/site/commit/0c81bdb472b75436e4c2aa073344d2d2367dee83))
+* **prisma:** add collection and brand links ([5027445](https://github.com/nicholaschiang/site/commit/5027445173a679eb3e5ebb72068688a4bb4a3f58))
+* **prisma:** add website urls to everything ([6a0f02b](https://github.com/nicholaschiang/site/commit/6a0f02b5b14b70769b857afd1b4a8498070a6eff))
+* **routes/show:** add "where to buy" section ([a909447](https://github.com/nicholaschiang/site/commit/a909447a4583c9d1e37bd1f09169cbe2fdba5e6f))
+
 ## [1.12.2](https://github.com/nicholaschiang/site/compare/v1.12.1...v1.12.2) (2023-07-22)
 
 
