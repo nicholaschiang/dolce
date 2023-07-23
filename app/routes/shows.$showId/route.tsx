@@ -65,7 +65,7 @@ function Looks({ className }: { className: string }) {
       <ol className='grid grid-cols-2 gap-x-2 gap-y-6'>
         {show.looks.map((look) => (
           <li key={look.id}>
-            <div className='bg-gray-100 dark:bg-gray-800 aspect-person'>
+            <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
               <img
                 className='object-cover h-full'
                 src={look.image.url}

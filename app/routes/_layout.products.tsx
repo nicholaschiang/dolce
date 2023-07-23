@@ -306,7 +306,7 @@ function ProductItem({
         >
           {images.length > 1 && (
             <Image
-              className='absolute top-0 z-20 h-full w-full overflow-hidden rounded-md bg-gray-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-gray-800'
+              className='absolute top-0 z-20 h-full w-full overflow-hidden rounded-md bg-gray-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-gray-900'
               loading='lazy'
               decoding='async'
               src={images[1]}
@@ -319,7 +319,7 @@ function ProductItem({
             />
           )}
           <Image
-            className='absolute top-0 z-10 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
+            className='absolute top-0 z-10 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-900'
             loading={index < resultsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
             decoding={
               index < resultsPerRow * rowsToEagerLoad ? 'sync' : 'async'
