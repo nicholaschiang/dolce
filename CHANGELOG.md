@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.16.2](https://github.com/nicholaschiang/site/compare/v1.16.1...v1.16.2) (2023-07-23)
+
+
+### Bug Fixes
+
+* users can only submit one review per show ([2fbbd45](https://github.com/nicholaschiang/site/commit/2fbbd455e5a21249bf0dd1e9860968a297a60ab0))
+
 ## [1.16.1](https://github.com/nicholaschiang/site/compare/v1.16.0...v1.16.1) (2023-07-23)
 
 
