@@ -38,7 +38,10 @@ export async function loader({ params }: LoaderArgs) {
         collections: {
           include: { links: { include: { brand: true, retailer: true } } },
         },
-        reviews: { include: { author: true, publication: true } },
+        reviews: {
+          include: { author: true, publication: true },
+          orderBy: { createdAt: 'desc' },
+        },
         looks: { include: { image: true }, orderBy: { number: 'asc' } },
       },
     }),
