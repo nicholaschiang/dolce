@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.14.1](https://github.com/nicholaschiang/site/compare/v1.14.0...v1.14.1) (2023-07-23)
+
+
+### Bug Fixes
+
+* **routes/show:** style "where to buy" alt text ([9d94e20](https://github.com/nicholaschiang/site/commit/9d94e20d10653f319566587049c3008ad3a3402e))
+* **routes:** use `nodejs` runtime for auth pages ([aff66f3](https://github.com/nicholaschiang/site/commit/aff66f312f92c05c003a40d33ab59a8066afb974))
+
 ## [1.14.0](https://github.com/nicholaschiang/site/compare/v1.13.0...v1.14.0) (2023-07-23)
 
 
