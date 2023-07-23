@@ -28,7 +28,7 @@
 //    - materials
 //    - reviews
 
-import type { Product, Style, StyleGroup } from '@prisma/client'
+import { type Style } from '@prisma/client'
 import invariant from 'tiny-invariant'
 
 type DataMaster = {
@@ -191,6 +191,8 @@ describe('aritzia', () => {
     }).forEach(([category, { ignore }]) => {
       const style: DataStyle = {
         id: styleId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         name: category.charAt(0).toUpperCase() + category.slice(1),
         styleGroupId: null,
         parentId: null,
@@ -209,6 +211,8 @@ describe('aritzia', () => {
           } else {
             const child: DataStyle = {
               id: styleId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
               name: el.text().trim(),
               catid: el.attr('data-cat-id') as string,
               styleGroupId: null,
