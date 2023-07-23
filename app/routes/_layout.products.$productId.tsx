@@ -24,7 +24,7 @@ import { useData } from 'utils'
 export const handle: Handle = {
   breadcrumb: (match) => (
     <Link to={`/products/${match.params.productId as string}`}>
-      {(match.data as SerializeFrom<typeof loader>).name}
+      {(match.data as SerializeFrom<typeof loader>)?.name ?? '404'}
     </Link>
   ),
 }
