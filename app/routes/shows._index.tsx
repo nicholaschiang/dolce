@@ -1,5 +1,4 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import { useMemo } from 'react'
 
 import { Empty } from 'components/empty'
 
@@ -32,16 +31,12 @@ export default function ShowsPage() {
           {shows.map((show) => (
             <li key={show.id}>
               <Link to={`/shows/${show.id}`}>
-                <div className='bg-gray-100 dark:bg-gray-800 aspect-person mb-2 relative'>
+                <div className='bg-gray-100 dark:bg-gray-800 aspect-person mb-2'>
                   <img
                     className='object-cover h-full'
                     src={show.looks[0].image.url}
                     alt=''
                   />
-                  <ul className='absolute bottom-2 inset-x-2 pt-2 flex gap-2 justify-center items-end bg-white dark:bg-gray-900'>
-                    <Score value={show.criticReviewScore} label='Critic' />
-                    <Score value={show.consumerReviewScore} label='Consumer' />
-                  </ul>
                 </div>
                 <h2 className='text-xl font-serif font-semibold text-center'>
                   {show.brands.map((brand) => brand.name).join(', ')}
@@ -96,35 +91,5 @@ function ScoreKey({ className }: { className: string }) {
         </p>
       </article>
     </section>
-  )
-}
-
-type ScoreProps = { value: string | null; label: string }
-
-function Score({ value, label }: ScoreProps) {
-  const img = useMemo(() => {
-    if (value == null) return '70'
-    const num = Number(value)
-    if (num >= 0.9) return '90'
-    if (num >= 0.8) return '80'
-    if (num >= 0.7) return '70'
-    if (num >= 0.6) return '60'
-    if (num >= 0.5) return '50'
-    return '40'
-  }, [value])
-  return (
-    <li className='flex gap-2 items-end'>
-      <img
-        className={cn('flex-none w-8', value == null && 'grayscale')}
-        src={`/flowers/${img}.png`}
-        alt=''
-      />
-      <div className='mb-2'>
-        <h2 className='text-lg font-black font-serif leading-none'>
-          {value == null ? '--' : `${Number(value) * 100}%`}
-        </h2>
-        <p className='text-3xs uppercase'>{label}</p>
-      </div>
-    </li>
   )
 }

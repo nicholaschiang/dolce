@@ -58,6 +58,13 @@ const highs: Prisma.PublicationCreateInput = {
 const fashionotography: Prisma.PublicationCreateInput = {
   name: 'Fashionotography',
 }
+// Scores assigned by gpt-3.5-turbo via the ChatGPT and the following prompt:
+// Assign a sentiment score (on a five-star scale) to the following review. Air 
+// on the side of a lower score (very few reviews should ever receive or come 
+// close to receiving a 5/5). Often, if a review is simply neutral or is vague 
+// in its compliments, it should be assigned a 1/5 or 2/5. If a review seems 
+// energetically positive, assign a 3/5. Only if a review is resoundingly 
+// enthusiastically positive should you assign a 4/5. Never assign a 5/5.
 const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
   {
     author: {
@@ -69,6 +76,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         },
       },
     },
+    score: 3 / 5,
     publication: {
       connectOrCreate: {
         where: { name: fashionotography.name },
@@ -141,6 +149,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.highsnobiety.com/p/hermes-spring-summer-2023/',
+    score: 3 / 5,
     content: `
 <p>
   There isn’t much Véronique Nichanian hasn’t turned her hand to during her
@@ -193,43 +202,32 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.harpersbazaar.com.sg/gallery/all-the-looks-from-the-hermes-spring-summer-2023-mens-collection/',
+    score: 2 / 5,
     content: `
 <p>
-  The living is easy at Hermès, which showed off a collection of summery gelato
-  tones and radiated sunshine on an otherwise gray and drizzly Paris day.
+  Held at <strong>Manufacture des Gobelins</strong> this past weekend, the
+  <strong>Hermès</strong> spring/summer 2023 men’s collection is a masterclass
+  in refined summer dressing. It’s all about rediscovering the joys of being
+  together with loved ones, while enjoying the midsummer breeze. This sense of
+  lightness also underlines the 53 looks that make up this collection, rendered
+  in pastel shades and neutrals.
 </p>
 <p>
-  Véronique Nichanian said she wanted this collection to be “all about holiday —
-  not the city. It’s about lightness and having fun, pop colors and the natural
-  world.”
+  Creative director <strong>Véronique Nichanian</strong> once again reminds the
+  world why Hermès is globally revered for its expert craftsmanship. Apart from
+  extremely wearable separates in fabrics that sway in the wind, the collection
+  also comprises garments such as straight blousons in full-grain suede
+  calfskin; overshirts in Herbier perforated sporty calfskin; trousers with
+  drawstring waist in plume nubuck calfskin; and hooded parkas in light
+  technical satin.
 </p>
 <p>
-  The show, which took place outside, on the grounds of the historic tapestry
-  factory Manufacture des Gobelins, was pure escapism for guests, many of whom
-  were wearing hooded khaki raincoats that Hermès staffers distributed at the
-  entrance to the show.
-</p>
-<p>
-  By contrast, models were dressed for déjeuner at Hotel du Cap-Eden-Roc, or
-  aperitivo hour at Villa d’Este. They wore sunshine yellow twin-sets, and
-  marine-themed tops, including a short-sleeved cashmere sweater with a crayfish
-  on the front, and a roomy white shirt with a big blue seahorse.
-</p>
-<p>
-  Short, cotton jackets came with seaweed patterns and beachy-bright cotton
-  canvas bags had a palm tree print and rope handles. Windbreakers, shiny
-  lightweight parkas and bucket hats came in a rainbow of colors, including
-  lilac, grapefruit and aqua.
-</p>
-<p>
-  These weren’t so much for rainy days, but for the salty spray on the deck of a
-  yacht as it cuts through the Mediterranean.
-</p>
-<p>
-  Nichanian also set out to replicate the ripples of a swimming pool, with
-  crinkly stripes on tailored jackets and the wobbly wave design on a roomy
-  white turtleneck with a big beige sun on the front. Hopefully the real thing
-  will return to Paris soon.
+  Elsewhere in the collection, expect large, collarless shirts in cotton and
+  linen piqué, high-neck pullovers in cashmere with crayfish design and
+  highly-desirable carrot-fit trousers that will surely be your new summer
+  staple. And the Garden Party Voyage bags—in plain, striped or Hermès Pacific
+  printed H canvas and Sombrero calfskin—are perhaps the most covetable
+  accessories in the collection.
 </p>
 `,
   },
@@ -250,6 +248,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://wwd.com/runway/mens-spring-2023/paris/hermes/review/',
+    score: 3 / 5,
     content: `
 <p>
   The living is easy at Hermès, which showed off a collection of summery gelato
@@ -304,9 +303,10 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.lofficielibiza.com/fashion/hermes-man-collection-spring-summer-2023-photo-fashion-show',
+    score: 4 / 5,
     content: `
 <p>
-  Nobody is like <strong>Hermes</strong> . A centenary luxury that continues to
+  Nobody is like <strong>Hermes</strong>. A centenary luxury that continues to
   renew itself without forgetting its values. The
   <strong>men's Spring Summer 2023 collection</strong> presented in Paris during
   Paris Fashion Week at the <span>Manufacture des Gobelins</span> and which the
@@ -355,6 +355,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.lofficielusa.com/fashion/hermes-spring-summer-2024-collection',
+    score: 3 / 5,
     content: `
 <p>
   The
@@ -440,6 +441,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.vogue.com/fashion-shows/spring-2023-menswear/hermes',
+    score: 2 / 5,
     content: `
 <p>
   Asked whether after 33 years in her position as the prime female designer of menswear in luxury she shapes her vision of men through a female gaze, Véronique Nichanian demurred. “Not at all,” she said: “I just try to propose things that make them more charming. I don’t judge the man… c’est une proposition tendre.”
@@ -472,6 +474,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.purseblog.com/hermes/hermes-mens-spring-summer-2023-rtw-review-genre-bending-appeal/',
+    score: 3 / 5,
     content: `
 <p>
   Despite the chatter about the Hermès Men’s Spring-Summer 2023 show being a very literal homage to the season (suns and seahorses and beach critters adorning the clothing), or the lightness and accessibility of the ready-to-wear itself, what I saw last week in the presentation was best exemplified by the runway Haut À Courroies carried down the runway: a large bag, a seemingly-utilitarian man’s bag – a bag which, in fact, has become iconographic of women’s fashion – adorned with wavy, incongruent lines which also somehow did not distort the appearance of the bag but merely enhanced and delineated its dimensions.
@@ -545,9 +548,7 @@ export const show: Prisma.ShowCreateInput = {
     Berlingot canvas, nubuck calfskin, crepe cotton serge, perforated leather, sunset tints... the collection is precise, crafted with the refinement of the hand and the nonchalance of a mind that is free of barriers.
 
     In the open-air enclosure of the Manufacture des Gobelins, Cyril Teste, close partner of Véronique Nichanian, imagined a gesture in the form of a canvas sliding out of the building, swaying slightly in the breeze before disappearing – as if diving – through a workshop window.`,
-  criticReviewScore: 0.92,
   criticReviewSummary: `Hermès Spring-Summer 2023 Mens Ready-to-Wear delights with its innovative fusion of colors, playful marine-themed designs, and luxurious practicality. Véronique Nichanian’s collection blurs the boundaries between menswear and womenswear, offering a tender and harmonious wardrobe that celebrates the joy and lightness of summer.`,
-  consumerReviewScore: null,
   consumerReviewSummary: null,
   date: new Date('June 25, 2022'),
   location: 'Paris, France',

@@ -59,6 +59,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.vogue.com/fashion-shows/fall-2023-ready-to-wear/isabel-marant',
+    score: 4 / 5,
     content: `
           <p>
             God bless Isabel Marant. It was the Thursday night of the Paris
@@ -131,6 +132,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
       },
     },
     url: 'https://www.savoirflair.com/fashion/629428/isabel-marant-fall-winter-2023',
+    score: 4 / 5,
     content: `
           <p>
             Who’s ready to party?! <b>Isabel Marant</b>, that’s who. In
@@ -214,9 +216,7 @@ The graphic cut-outs of the flou shape new cleavages while plays on transparency
 The color palette, first natural and minimal, explores yellow and magenta horizons before diving into black. A sparkling evening mixes textures – embroideries, velvet lurex – and volumes – oversized, fitted, cropped.
 
 Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza and Lulu Van Trapp resonates and intoxicates the crowd. A unique creation composed on the idea of desire and disorder, this season’s mantra.`,
-  criticReviewScore: 0.94,
   criticReviewSummary: `A high-energy party atmosphere and a stunning lineup of veteran supermodels—a much needed refresher from Paris Fashion Week. The designs exude Isabel Marant’s signature style, featuring roomy knitwear, smashing outerwear, and cool-girl attire, all while empowering wearability and desirability. With a focus on desire and disorder, the collection showcases unique graphic cut-outs, metallic zips, and playful contrasts, leaving a lasting impression on the audience.`,
-  consumerReviewScore: null,
   consumerReviewSummary: null,
   date: new Date('March 2, 2023'),
   location: 'Paris, France',
