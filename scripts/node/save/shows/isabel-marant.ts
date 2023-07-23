@@ -178,6 +178,7 @@ const brand: Prisma.BrandCreateInput = {
   name: 'Isabel Marant',
   description:
     'Isabel Marant is a French fashion designer, owner of the eponymous fashion brand. She won the Award de la Mode, the Whirlpool Award for best female designer, Fashion Designer of the Year at British Glamour’s Women of the Year Awards. She was named Contemporary Designer of the Year at the Elle Style Awards in 2014.',
+  url: 'https://www.isabelmarant.com',
   tier: Tier.PREMIUM_CORE,
   country: { connectOrCreate: country },
   company: {
@@ -185,6 +186,7 @@ const brand: Prisma.BrandCreateInput = {
       where: { name: 'Montefiore Investment' },
       create: {
         name: 'Montefiore Investment',
+        url: 'https://montefiore.eu/',
         description: '',
         country: { connectOrCreate: country },
       },
