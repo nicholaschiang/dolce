@@ -787,6 +787,12 @@ model Review {
 
   // The review article URL (if it was posted online e.g. on Vogue).
   url String? @unique
+
+  // Each user can only submit one review per show. This may be different for
+  // critic reviews, but, for now, I've yet to encounter the same journalist
+  // publishing two different reviews for the same show. If that does happen, I
+  // can always just replace their review with whichever is the most recent.
+  @@unique([authorId, showId])
 }
 
 // A publication is a resource that publishes fashion reviews (e.g. Vogue).

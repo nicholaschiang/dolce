@@ -46,7 +46,7 @@ export function ConsumerReviews() {
                     <TimeAgo
                       locale='en_short'
                       className='text-gray-400 dark:text-gray-500 text-3xs'
-                      datetime={review.createdAt}
+                      datetime={review.updatedAt}
                     />
                   </figcaption>
                   <blockquote className='text-sm'>
