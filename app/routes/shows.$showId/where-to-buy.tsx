@@ -14,7 +14,7 @@ export function WhereToBuy() {
   const links = show.collections.map((collection) => collection.links).flat()
   const brands = show.brands.filter((brand) => brand.url)
   return (
-    <Section header='Where to buy'>
+    <Section header='Where to buy' id='where-to-buy'>
       {links.length === 0 && (
         <Empty className='mt-2'>
           <p>

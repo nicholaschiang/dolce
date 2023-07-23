@@ -11,7 +11,7 @@ import { Section } from './section'
 export function ShowInfo() {
   const show = useLoaderData<typeof loader>()
   return (
-    <Section header='Show info'>
+    <Section header='Show info' id='show-info'>
       <article>{show.description}</article>
       <dl className='mt-2'>
         <InfoItem label='Date'>
@@ -27,9 +27,11 @@ export function ShowInfo() {
         >
           {show.brands.map((brand) =>
             brand.url ? (
-              <ExternalLink href={brand.url}>{brand.name}</ExternalLink>
+              <ExternalLink key={brand.id} href={brand.url}>
+                {brand.name}
+              </ExternalLink>
             ) : (
-              <span>{brand.name}</span>
+              <span key={brand.id}>{brand.name}</span>
             ),
           )}
         </InfoItem>

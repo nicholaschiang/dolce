@@ -1,17 +1,26 @@
 import { useLoaderData } from '@remix-run/react'
 import { ExternalLink } from 'lucide-react'
 
+import { Empty } from 'components/empty'
+
 import { type loader } from './route'
 import { Section } from './section'
 
-export function Reviews() {
+export function CriticReviews() {
   const show = useLoaderData<typeof loader>()
+  const reviews = show.reviews.filter(
+    (review) => review.publication != null && review.url != null,
+  )
   return (
-    <Section header={`Critic reviews for ${show.name}`}>
-      <ol className='mt-2 grid gap-4'>
-        {show.reviews
-          .filter((r) => r.publication != null && r.url != null)
-          .map((review) => (
+    <Section header={`Critic reviews for ${show.name}`} id='critic-reviews'>
+      {reviews.length === 0 && (
+        <Empty className='mt-2'>
+          No critic reviews to show yet. Try checking back later.
+        </Empty>
+      )}
+      {reviews.length > 0 && (
+        <ol className='mt-2 grid gap-4'>
+          {reviews.map((review) => (
             <li key={review.id}>
               <Review
                 author={review.author}
@@ -21,7 +30,8 @@ export function Reviews() {
               />
             </li>
           ))}
-      </ol>
+        </ol>
+      )}
     </Section>
   )
 }
@@ -35,7 +45,7 @@ type ReviewProps = {
 
 function Review({ author, publication, url, content }: ReviewProps) {
   return (
-    <figure className='flex-none bg-gray-100 dark:bg-gray-800 overflow-hidden pb-4'>
+    <figure className='overflow-hidden bg-gray-100 dark:bg-gray-800 pb-4'>
       <figcaption className='mt-8 text-center'>
         <cite className='text-lg underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-600'>
           <span className='text-gray-500'>By </span>

@@ -8,7 +8,7 @@ import { Section } from './section'
 export function WhatToKnow() {
   const show = useLoaderData<typeof loader>()
   return (
-    <Section header='What to know'>
+    <Section header='What to know' id='what-to-know'>
       <Subheader>Critics Consensus</Subheader>
       {show.criticReviewSummary ? (
         <p className='mb-2'>{show.criticReviewSummary}</p>
