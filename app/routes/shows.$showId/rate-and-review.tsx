@@ -1,14 +1,13 @@
 import { useForm } from '@conform-to/react'
 import { parse } from '@conform-to/zod'
-import * as RadioGroup from '@radix-ui/react-radio-group'
 import {
+  Link,
   Form as RemixForm,
   useActionData,
   useNavigation,
+  useLocation,
 } from '@remix-run/react'
 import { type ActionArgs, json, redirect } from '@vercel/remix'
-import { StarHalf } from 'lucide-react'
-import * as React from 'react'
 import { z } from 'zod'
 
 import {
@@ -20,16 +19,18 @@ import {
   FormSubmit,
   FormMessage,
 } from 'components/form'
+import { ScoreInput } from 'components/score-input'
 import { Button } from 'components/ui/button'
 import { Textarea } from 'components/ui/textarea'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
-import { cn } from 'utils/cn'
+import { useOptionalUser } from 'utils'
 
 import { Section } from './section'
 
+const id = 'rate-and-review'
 const schema = z.object({
   score: z.preprocess(
     (score) => Number(score),
@@ -52,7 +53,8 @@ export async function action({ request, params }: ActionArgs) {
   if (!submission.value || submission.intent !== 'submit')
     return json(submission, { status: 400 })
   const userId = await getUserId(request)
-  if (userId == null) return redirect(`/login?redirectTo=/shows/${showId}`)
+  if (userId == null)
+    return redirect(`/login?redirectTo=/shows/${showId}%23${id}`)
   log.info('creating review... %o', submission.value)
   const review = await prisma.review.create({
     data: {
@@ -66,69 +68,8 @@ export async function action({ request, params }: ActionArgs) {
   return redirect(`/shows/${showId}`)
 }
 
-const ScoreInput = React.forwardRef<
-  React.ElementRef<typeof RadioGroup.Root>,
-  React.ComponentPropsWithoutRef<typeof RadioGroup.Root>
->(({ className, ...props }, ref) => (
-  <RadioGroup.Root
-    className={cn(
-      'flex items-center flex-row-reverse group justify-end relative w-min',
-      className,
-    )}
-    {...props}
-    orientation='horizontal'
-    ref={ref}
-  >
-    {[5, 4, 3, 2, 1].map((value) => (
-      <Star value={value} key={value} />
-    ))}
-  </RadioGroup.Root>
-))
-ScoreInput.displayName = RadioGroup.Root.displayName
-
-function Star({ value }: { value: number }) {
-  return (
-    <>
-      <StarSide right value={value.toString()} />
-      <StarSide left value={(value - 0.5).toString()} />
-    </>
-  )
-}
-
-function StarSide({
-  left,
-  right,
-  value,
-}: {
-  left?: boolean
-  right?: boolean
-  value: string
-}) {
-  return (
-    <RadioGroup.Item
-      className={cn(
-        'overflow-hidden peer text-gray-300 dark:text-gray-600 transition-colors',
-        'group-hover:aria-checked:text-gray-300 dark:group-hover:aria-checked:text-gray-600 group-hover:peer-aria-checked:text-gray-300 dark:group-hover:peer-aria-checked:text-gray-600',
-        'aria-checked:text-gray-900 dark:aria-checked:text-gray-100 peer-aria-checked:text-gray-900 dark:peer-aria-checked:text-gray-100',
-        'hover:!text-gray-900 dark:hover:!text-gray-100 peer-hover:!text-gray-900 dark:peer-hover:!text-gray-100',
-        right && 'pr-0.5 first-of-type:pr-0',
-        left && 'pl-0.5 last-of-type:pl-0',
-      )}
-      value={value}
-    >
-      <RadioGroup.Indicator />
-      <StarHalf
-        className={cn(
-          'w-6 h-6',
-          right && '-ml-3 -scale-x-100',
-          left && '-mr-3',
-        )}
-      />
-    </RadioGroup.Item>
-  )
-}
-
 export function RateAndReview() {
+  const user = useOptionalUser()
   const lastSubmission = useActionData<typeof action>()
   const [form, { score, content }] = useForm({
     lastSubmission,
@@ -137,13 +78,21 @@ export function RateAndReview() {
     },
   })
   const navigation = useNavigation()
+  const location = useLocation()
   return (
-    <Section header='Rate and review' id='rate-and-review'>
-      <Form
-        asChild
-        className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-700 rounded-md p-4'
-      >
-        <RemixForm method='post' {...form.props}>
+    <Section header='Rate and review' id={id}>
+      <Form asChild>
+        <RemixForm
+          method='post'
+          className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-700 rounded-md p-4 relative'
+          {...form.props}
+        >
+          {user == null && (
+            <Link
+              to={`/login?redirectTo=${location.pathname}%23${id}`}
+              className='absolute inset-0 z-10'
+            />
+          )}
           <FormField name={score.name}>
             <FormLabelWrapper>
               <FormLabel>Review score</FormLabel>
