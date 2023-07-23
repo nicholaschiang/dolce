@@ -3,6 +3,43 @@
 A landing page for everything I love.
 Often used as a sort of guinea pig for testing technologies before I use them in more important enterprise projects.
 
+## Rotten Tomatoes for Fashion
+
+The `/shows` feature of this project is Rotten Tomatoes for fashion.
+
+### What is the Critic Score?
+
+The Critic Score—based on the opinions of hundreds of fashion critics—is a trusted measurement of critical recommendation for millions of consumers.
+
+The Critic Score represents the percentage of professional critic reviews that are positive for a given runway show.
+A Critic Score is calculated for a runway show after it receives at least five reviews.
+
+#### Positive 
+
+When at least 60% of reviews for a runway show are positive, a blossoming rose is displayed to indicate its Positive status.
+
+#### Negative 
+
+When less than 60% of reviews for a runway show are positive, a dead rose is displayed to indicate its Negative status.
+
+
+#### Unknown
+
+When there is no Critic Score available, which could be because the show hasn’t aired yet or there are not enough ratings to generate a score, a gray rose is displayed.
+
+### Curation
+
+I collect runway show pictures, reviews, and related data every week, generating Critic Scores.
+I manually copy-and-paste information into `static` and import that data into Postgres using a sequence of scripts.
+I often use machine learning tools to assist in the curation, summarization, and sentiment analysis process.
+A more advanced web scraping setup is probably appropriate, but doing so would be quite difficult given the anti-bot measures most fashion websites employ.
+
+### What is the Consumer Score?
+
+The Consumer Score represents the percentage of users who have rated a runway show or collection positively.
+Right now, this is open to the public: anyone can create an account and submit their opinion.
+Eventually, I may gate this ability behind a purchase: users must first verify that they have bought a product before they can be counted amongst the "consumers" and submit a review.
+
 ## The Fashion Index
 
 The ultimate goal of this project is to create an interface that I can use to objectively rank and queue up high fashion purchases.

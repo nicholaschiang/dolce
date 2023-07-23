@@ -712,8 +712,17 @@ model Review {
   // The review subtitle (typically included below the title on their webpage).
   subtitle String?
 
-  // The review sentiment score from 0-1 (assigned via OpenAI).
-  score Decimal?
+  // The review sentiment score from 0-1.
+  //
+  // A score of 0.5 is neutral, 0 is negative, and 1 is positive.
+  // 
+  // In the case of consumer reviews, this will always increment by 0.2 (as we 
+  // use a five-star scale to assign these score numbers).
+  // 
+  // Critical reviews will use whatever scale the critic uses (e.g. 0-10) or
+  // will revert back to using a five-star scale if the critic does not assign
+  // a score in their review (it will then be assigned via OpenAI).
+  score Decimal
 
   // The review summary (generated via OpenAI).
   summary String?
@@ -765,14 +774,8 @@ model Show {
   // A description of the collection, typically provided by the brand.
   description String
 
-  // The critic consensus score on the show (a percentage of "rose growth").
-  criticReviewScore Decimal?
-
   // The critic's consensus on the show.
   criticReviewSummary String?
-
-  // The consumer's consensus score on teh show (a percentage of "rose growth").
-  consumerReviewScore Decimal?
 
   // The consumer's consensus on the show.
   consumerReviewSummary String?

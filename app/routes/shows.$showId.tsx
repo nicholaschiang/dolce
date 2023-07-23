@@ -20,26 +20,88 @@ export const handle: Handle = {
   ),
 }
 
+type Score = {
+  positiveCount: number
+  negativeCount: number
+  neutralCount: number
+  totalCount: number
+}
+type Scores = { critic: Score; consumer: Score }
+
+function sanityCheck(score: Score, name: string): void {
+  const sum = score.positiveCount + score.negativeCount + score.neutralCount
+  if (sum !== score.totalCount) {
+    const error =
+      `${name} total (${score.totalCount}) did not match sum ` +
+      `(${score.positiveCount} + ${score.negativeCount} + ` +
+      `${score.neutralCount} = ${sum})`
+    throw new Error(error)
+  }
+}
+
+async function getScores(showId: number): Promise<Scores> {
+  const [total, positive, neutral, negative] = await Promise.all([
+    prisma.review.count({
+      where: { showId },
+      select: { _all: true, publicationId: true },
+    }),
+    prisma.review.count({
+      where: { showId, score: { gt: 0.5 } },
+      select: { _all: true, publicationId: true },
+    }),
+    prisma.review.count({
+      where: { showId, score: { equals: 0.5 } },
+      select: { _all: true, publicationId: true },
+    }),
+    prisma.review.count({
+      where: { showId, score: { lt: 0.5 } },
+      select: { _all: true, publicationId: true },
+    }),
+  ])
+  const scores = {
+    critic: {
+      positiveCount: positive.publicationId,
+      negativeCount: negative.publicationId,
+      neutralCount: neutral.publicationId,
+      totalCount: total.publicationId,
+    },
+    consumer: {
+      /* eslint-disable no-underscore-dangle */
+      positiveCount: positive._all - positive.publicationId,
+      negativeCount: negative._all - negative.publicationId,
+      neutralCount: neutral._all - neutral.publicationId,
+      totalCount: total._all - total.publicationId,
+      /* eslint-enable no-underscore-dangle */
+    },
+  }
+  sanityCheck(scores.critic, 'Critic Score')
+  sanityCheck(scores.consumer, 'Consumer Score')
+  return scores
+}
+
 export async function loader({ params }: LoaderArgs) {
   log.debug('getting show...')
   const showId = Number(params.showId)
   if (Number.isNaN(showId)) throw new Response(null, { status: 404 })
-  const show = await prisma.show.findUnique({
-    where: { id: showId },
-    include: {
-      video: true,
-      season: true,
-      brands: true,
-      collections: {
-        include: { links: { include: { brand: true, retailer: true } } },
+  const [show, scores] = await Promise.all([
+    prisma.show.findUnique({
+      where: { id: showId },
+      include: {
+        video: true,
+        season: true,
+        brands: true,
+        collections: {
+          include: { links: { include: { brand: true, retailer: true } } },
+        },
+        reviews: { include: { author: true, publication: true } },
+        looks: { include: { image: true }, orderBy: { number: 'asc' } },
       },
-      reviews: { include: { author: true, publication: true } },
-      looks: { include: { image: true }, orderBy: { number: 'asc' } },
-    },
-  })
+    }),
+    getScores(showId),
+  ])
   log.debug('got show %o', show)
   if (show == null) throw new Response(null, { status: 404 })
-  return show
+  return { ...show, scores }
 }
 
 export default function ShowPage() {
@@ -116,22 +178,8 @@ function Header() {
             READY-TO-WEAR
           </h2>
           <ul className='grid grid-cols-2 gap-2 mt-auto'>
-            <Score
-              value={show.criticReviewScore}
-              label='Critic Score'
-              count={
-                show.reviews.filter((review) => review.publication != null)
-                  .length
-              }
-            />
-            <Score
-              value={show.consumerReviewScore}
-              label='Consumer Score'
-              count={
-                show.reviews.filter((review) => review.publication == null)
-                  .length
-              }
-            />
+            <ScoreItem score={show.scores.critic} name='Critic Score' />
+            <ScoreItem score={show.scores.consumer} name='Consumer Score' />
           </ul>
         </article>
       </div>
@@ -341,33 +389,38 @@ function Review({ author, publication, url, content }: ReviewProps) {
   )
 }
 
-type ScoreProps = { value: string | null; label: string; count: number }
+type ScoreItemProps = { score: Score; name: string }
 
-function Score({ value, label, count }: ScoreProps) {
+function ScoreItem({ score, name }: ScoreItemProps) {
+  const num = useMemo(
+    () => score.positiveCount / score.totalCount,
+    [score.positiveCount, score.totalCount],
+  )
   const img = useMemo(() => {
-    if (value == null) return '70'
-    const num = Number(value)
+    if (score.totalCount === 0) return '70'
     if (num >= 0.9) return '90'
     if (num >= 0.8) return '80'
     if (num >= 0.7) return '70'
     if (num >= 0.6) return '60'
     if (num >= 0.5) return '50'
     return '40'
-  }, [value])
+  }, [num, score.totalCount])
   return (
     <li className='flex gap-2 justify-center'>
       <img
-        className={cn('flex-none w-20', value == null && 'grayscale')}
+        className={cn('flex-none w-20', score.totalCount === 0 && 'grayscale')}
         src={`/flowers/${img}.png`}
         alt=''
       />
       <div>
         <h2 className='text-5xl font-black font-serif'>
-          {value == null ? '--' : `${Number(value) * 100}%`}
+          {score.totalCount === 0 ? '--' : `${Math.floor(num * 100)}%`}
         </h2>
-        <p className='text-xs font-semibold uppercase'>{label}</p>
+        <p className='text-xs font-semibold uppercase'>{name}</p>
         <p className='text-xs'>
-          {count === 0 ? 'No Reviews' : `${count} Reviews`}
+          {score.totalCount === 0
+            ? 'No Reviews'
+            : `${score.totalCount} Reviews`}
         </p>
       </div>
     </li>
