@@ -70,7 +70,7 @@ export function ScoresHeader() {
   return (
     <div className='grid gap-2'>
       <video
-        className='aspect-video w-full bg-gray-100 dark:bg-gray-800'
+        className='aspect-video w-full bg-gray-100 dark:bg-gray-900'
         controls
         autoPlay
         playsInline
@@ -80,14 +80,14 @@ export function ScoresHeader() {
         Download the <a href={show.video.url}>MP4</a> video.
       </video>
       <div className='flex gap-2'>
-        <div className='flex-none w-40 bg-gray-100 dark:bg-gray-800 h-0 min-h-full'>
+        <div className='flex-none w-40 bg-gray-100 dark:bg-gray-900 h-0 min-h-full'>
           <img
             className='object-cover h-full'
             src={show.looks[0].image.url}
             alt=''
           />
         </div>
-        <article className='flex-1 bg-gray-100 dark:bg-gray-800 text-center px-6 flex flex-col'>
+        <article className='flex-1 bg-gray-100 dark:bg-gray-900 text-center px-6 flex flex-col'>
           <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
             {show.brands.map((brand) => brand.name).join(', ')}
           </h1>

@@ -53,7 +53,7 @@ function Header() {
   const matches = useMatches()
   const user = useOptionalUser()
   return (
-    <header className='sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
+    <header className='sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
       <ol className='flex items-center gap-2'>
         {matches
           .filter((match) => match.handle && match.handle.breadcrumb)
@@ -198,7 +198,7 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <Links />
         <ThemeHead ssrTheme={Boolean(data?.theme)} />
       </head>
-      <body className='bg-white text-gray-900 selection:bg-gray-200 selection:text-black dark:bg-gray-900 dark:text-gray-100 dark:selection:bg-gray-700 dark:selection:text-gray-100'>
+      <body className='bg-white text-gray-900 selection:bg-gray-200 selection:text-gray-900 dark:bg-gray-950 dark:text-gray-50 dark:selection:bg-gray-800 dark:selection:text-gray-50'>
         <Header />
         {children}
         <script

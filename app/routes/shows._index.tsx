@@ -31,7 +31,7 @@ export default function ShowsPage() {
           {shows.map((show) => (
             <li key={show.id}>
               <Link to={`/shows/${show.id}`}>
-                <div className='bg-gray-100 dark:bg-gray-800 aspect-person mb-2'>
+                <div className='bg-gray-100 dark:bg-gray-900 aspect-person mb-2'>
                   <img
                     className='object-cover h-full'
                     src={show.looks[0].image.url}
@@ -62,7 +62,7 @@ function ScoreKey({ className }: { className: string }) {
   return (
     <section
       className={cn(
-        'flex gap-4 bg-gray-100 dark:bg-gray-700 p-4 items-center',
+        'flex gap-4 bg-gray-100 dark:bg-gray-900 p-4 items-center',
         className,
       )}
     >

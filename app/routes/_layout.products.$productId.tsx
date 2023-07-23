@@ -116,7 +116,7 @@ export default function ProductPage() {
       onOpenAutoFocus={(event) => event.preventDefault()}
       className='w-full max-w-screen-lg'
     >
-      <div className='flex items-center gap-2.5 border-b border-gray-200/50 bg-gray-50 p-2 px-6 dark:border-gray-700/50 dark:bg-gray-800'>
+      <div className='flex items-center gap-2.5 border-b border-gray-200/50 bg-gray-50 p-2 px-6 dark:border-gray-700/50 dark:bg-gray-900'>
         <Tooltip tip='close' hotkey='esc'>
           <Dialog.Close className='icon-button square'>
             <Cross2Icon />
@@ -155,7 +155,7 @@ export default function ProductPage() {
             style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
           >
             <Image
-              className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800'
+              className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-900'
               loading='eager'
               decoding='sync'
               src={images[0].url}
@@ -376,7 +376,7 @@ Section.Content = function SectionContent({ children }: PropsWithChildren) {
 
 function Chip({ children }: PropsWithChildren) {
   return (
-    <div className='rounded border border-gray-200 bg-gray-50 px-1 py-0.5 text-2xs dark:border-gray-700 dark:bg-gray-800'>
+    <div className='rounded border border-gray-200 bg-gray-50 px-1 py-0.5 text-2xs dark:border-gray-700 dark:bg-gray-900'>
       {children}
     </div>
   )

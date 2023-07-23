@@ -45,7 +45,7 @@ type ReviewProps = {
 
 function Review({ author, publication, url, content }: ReviewProps) {
   return (
-    <figure className='overflow-hidden bg-gray-100 dark:bg-gray-800 pb-4'>
+    <figure className='overflow-hidden bg-gray-100 dark:bg-gray-900 pb-4'>
       <figcaption className='mt-8 text-center'>
         <cite className='text-lg underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-600'>
           <span className='text-gray-500'>By </span>
