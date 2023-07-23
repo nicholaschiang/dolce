@@ -4,7 +4,6 @@ import { Empty } from 'components/empty'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
-import { cn } from 'utils/cn'
 
 export async function loader() {
   log.debug('getting shows...')
@@ -25,7 +24,6 @@ export default function ShowsPage() {
   return (
     <main className='p-6 mx-auto max-w-screen-xl'>
       <h1 className='text-6xl mb-6'>shows</h1>
-      <ScoreKey className='mb-2' />
       {shows.length > 0 ? (
         <ul className='grid grid-cols-5 gap-x-2 gap-y-10'>
           {shows.map((show) => (
@@ -54,42 +52,5 @@ export default function ShowsPage() {
         </Empty>
       )}
     </main>
-  )
-}
-
-function ScoreKey({ className }: { className: string }) {
-  const scores = [40, 50, 60, 70, 80, 90]
-  return (
-    <section
-      className={cn(
-        'flex gap-4 bg-gray-100 dark:bg-gray-900 p-4 items-center',
-        className,
-      )}
-    >
-      <ol className='flex gap-2 px-2'>
-        {scores.map((score) => (
-          <li key={score} className='flex flex-col gap-0.5 items-center'>
-            <img className='w-12 mt-2' src={`/flowers/${score}.png`} alt='' />
-            <span className='text-xs font-serif font-black'>{`${score}%`}</span>
-          </li>
-        ))}
-      </ol>
-      <article className='text-sm'>
-        <h2 className='font-medium'>What do the roses mean?</h2>
-        <p>Rose growth indicates a more positively reviewed show.</p>
-        <p>
-          <i>
-            Ex: When at least 60% of reviews for a show are positive, a
-            blossoming rose is displayed to indicate its popularity.
-          </i>
-        </p>
-        <p>
-          <i>
-            Ex: When less than 50% of reviews for a show are positive, an
-            unblossomed rose bud is displayed to indicate its unpopularity.
-          </i>
-        </p>
-      </article>
-    </section>
   )
 }
