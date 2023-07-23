@@ -6,11 +6,15 @@ import { log } from 'log.server'
 import { type Handle } from 'root'
 import { cn } from 'utils/cn'
 
-import { Reviews } from './reviews'
+import { ConsumerReviews } from './consumer-reviews'
+import { CriticReviews } from './critic-reviews'
+import { RateAndReview } from './rate-and-review'
 import { ScoresHeader, getScores } from './scores-header'
 import { ShowInfo } from './show-info'
 import { WhatToKnow } from './what-to-know'
 import { WhereToBuy } from './where-to-buy'
+
+export { action } from './rate-and-review'
 
 export const handle: Handle = {
   breadcrumb: (match) => (
@@ -47,9 +51,9 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function ShowPage() {
   return (
-    <main className='fixed inset-0 overflow-hidden max-w-screen-xl mx-auto grid grid-cols-5 gap-6 px-6'>
-      <About className='col-span-3 pb-6 pt-16' />
-      <Looks className='col-span-2 pb-6 pt-16' />
+    <main className='fixed inset-0 overflow-hidden max-w-screen-xl mx-auto grid grid-cols-5 gap-6'>
+      <About className='col-span-3 pl-6 pb-6 pt-16' />
+      <Looks className='col-span-2 pr-6 pb-6 pt-16' />
     </main>
   )
 }
@@ -82,8 +86,10 @@ function About({ className }: { className: string }) {
       <ScoresHeader />
       <WhatToKnow />
       <WhereToBuy />
+      <RateAndReview />
+      <ConsumerReviews />
       <ShowInfo />
-      <Reviews />
+      <CriticReviews />
     </div>
   )
 }
