@@ -1,9 +1,10 @@
 import { Link, useLoaderData } from '@remix-run/react'
 import { type LoaderArgs, type SerializeFrom } from '@vercel/remix'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink as ExternalLinkIcon } from 'lucide-react'
 import { type PropsWithChildren, useMemo } from 'react'
 
 import { Empty } from 'components/empty'
+import { ExternalLink } from 'components/external-link'
 import { buttonVariants } from 'components/ui/button'
 
 import { prisma } from 'db.server'
@@ -181,15 +182,9 @@ function WhereToBuy() {
               {brands.map((brand, index) => (
                 <span>
                   {index !== 0 && ', '}
-                  <a
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='underline inline-flex items-center gap-0.5'
-                    href={brand.url ?? ''}
-                  >
+                  <ExternalLink href={brand.url ?? ''}>
                     {brand.name}
-                    <ExternalLink className='h-3 w-3' />
-                  </a>
+                  </ExternalLink>
                 </span>
               ))}{' '}
               website to find these items.
@@ -225,7 +220,46 @@ function ShowInfo() {
   return (
     <Section header='Show info'>
       <article>{show.description}</article>
+      <dl className='mt-2'>
+        <InfoItem label='Date'>
+          {new Date(show.date).toLocaleDateString(undefined, {
+            dateStyle: 'long',
+          })}
+        </InfoItem>
+        <InfoItem label='Location'>{show.location}</InfoItem>
+        <InfoItem label='Looks'>{show.looks.length}</InfoItem>
+        <InfoItem
+          label={show.brands.length === 1 ? 'Brand' : 'Brands'}
+          className='inline-flex gap-1'
+        >
+          {show.brands.map((brand) =>
+            brand.url ? (
+              <ExternalLink href={brand.url}>{brand.name}</ExternalLink>
+            ) : (
+              <span>{brand.name}</span>
+            ),
+          )}
+        </InfoItem>
+        <InfoItem label='URL'>
+          <ExternalLink href={show.url}>
+            {new URL(show.url).hostname}
+          </ExternalLink>
+        </InfoItem>
+      </dl>
     </Section>
+  )
+}
+
+function InfoItem({
+  label,
+  className,
+  children,
+}: PropsWithChildren<{ label: string; className?: string }>) {
+  return (
+    <div className='flex gap-1 items-center'>
+      <dt className='flex-none font-semibold'>{label}:</dt>
+      <dd className={cn('w-0 flex-1 truncate', className)}>{children}</dd>
+    </div>
   )
 }
 
@@ -278,7 +312,7 @@ function Review({ author, publication, url, content }: ReviewProps) {
             className='inline-flex items-center gap-2'
           >
             {publication}
-            <ExternalLink className='w-4 h-4' />
+            <ExternalLinkIcon className='w-4 h-4' />
           </a>
         </cite>
       </figcaption>
