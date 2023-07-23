@@ -5,7 +5,7 @@ import * as React from 'react'
 import { cn } from 'utils/cn'
 
 const emptyVariants = cva(
-  'flex flex-col items-center justify-center text-center rounded border border-dashed py-6 px-4 text-sm overflow-hidden break-all',
+  'flex flex-col items-center justify-center text-center rounded-md border border-dashed py-6 px-4 text-sm overflow-hidden break-all',
   {
     variants: {
       variant: {
