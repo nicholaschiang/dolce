@@ -7,8 +7,13 @@ import {
   useSearchParams,
   useNavigation,
 } from '@remix-run/react'
-import type { ActionArgs, LoaderArgs, V2_MetaFunction } from '@vercel/remix'
-import { json, redirect } from '@vercel/remix'
+import {
+  type ActionArgs,
+  type LoaderArgs,
+  type V2_MetaFunction,
+  json,
+  redirect,
+} from '@vercel/remix'
 import { z } from 'zod'
 
 import {
@@ -91,7 +96,10 @@ export default function LoginPage() {
           <h1 className='text-2xl font-medium'>Login</h1>
           <p className='text-sm text-gray-500 dark:text-gray-400'>
             Don’t have an account?{' '}
-            <Link className='underline' to='/join'>
+            <Link
+              className='underline'
+              to={redirectTo ? `/join?redirectTo=${redirectTo}` : '/join'}
+            >
               Sign up here.
             </Link>
           </p>
