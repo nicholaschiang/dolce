@@ -1,5 +1,32 @@
 # Release Notes
 
+## [1.16.0](https://github.com/nicholaschiang/site/compare/v1.15.0...v1.16.0) (2023-07-23)
+
+
+### Features
+
+* **components/empty:** increase rounding to `md` ([adcce56](https://github.com/nicholaschiang/site/commit/adcce56531941fe11c13e9eb36ab2b1e9400764d))
+* **components/ui:** add `<Textarea>` from `shadcn-ui` ([125debc](https://github.com/nicholaschiang/site/commit/125debc42727e0d238b7c62a29190c62b7850f9e))
+* **prisma:** add `createdAt` and `updatedAt` fields ([00dda3f](https://github.com/nicholaschiang/site/commit/00dda3f7f23221154b254e69ebee4c95b442e6c5))
+* **routes/show:** add consumer review sections ([a2818b2](https://github.com/nicholaschiang/site/commit/a2818b24cb0924c907450f5c64365f79f45e2afc))
+* **routes/show:** add links to section headers ([58c0c23](https://github.com/nicholaschiang/site/commit/58c0c2381e53789945cfe1ab728075baf7f279bc))
+* **routes/show:** add star-based score input ([df8fdfb](https://github.com/nicholaschiang/site/commit/df8fdfbf7f919bd286e57ad45c9171bf18697be6))
+* **routes/show:** add transition to star input ([e0f82e9](https://github.com/nicholaschiang/site/commit/e0f82e9259b466d734898cb47371bc21a1cf5898))
+* use darker tailwind `dark` theme ([25b9ed6](https://github.com/nicholaschiang/site/commit/25b9ed63e3d3b6b631f80e7aa04b23905a433b2b))
+
+
+### Bug Fixes
+
+* **log.server:** reduce log level to `info` ([80f5d55](https://github.com/nicholaschiang/site/commit/80f5d55ad1b1ca995210bb4a6a8659a7a0fda6fb))
+* pass `redirectTo` between login and sign up ([6f7cc79](https://github.com/nicholaschiang/site/commit/6f7cc79febb30b1cf178daae91bd94730cb4262d))
+* **prisma:** don't require review titles ([3aef447](https://github.com/nicholaschiang/site/commit/3aef4470f4f82e9e5dcc5e1bc457d1636546ab4a))
+* **routes/show:** links to sections show headers ([bd37e47](https://github.com/nicholaschiang/site/commit/bd37e47f92efbce2b232b45ef47a7b498b3a30e5))
+* **routes/shows:** remove flowers rating key ([1fd7d8d](https://github.com/nicholaschiang/site/commit/1fd7d8df7a51342c3231bd1545c405b9dbc99360))
+* **routes:** mark login and sign up fields required ([557649f](https://github.com/nicholaschiang/site/commit/557649f88d2e12f5f97321540bf67d6211519ce5))
+* **routes:** render breadcrumb for 404 pages ([b300f82](https://github.com/nicholaschiang/site/commit/b300f82a8f88e5b32082d264cdb943002d7b4469))
+* **show/where-to-buy:** invert logos in dark mode ([cbd35d6](https://github.com/nicholaschiang/site/commit/cbd35d696f9ed53ee6e65b5e3505c895f96cc94d))
+* **show:** style consumer reviews like insta comments ([b6348ba](https://github.com/nicholaschiang/site/commit/b6348ba70b4f42f0f66133b8b969048177fc30ea))
+
 ## [1.15.0](https://github.com/nicholaschiang/site/compare/v1.14.1...v1.15.0) (2023-07-23)
 
 
