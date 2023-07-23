@@ -8,7 +8,7 @@ import { cn } from 'utils/cn'
 
 import { ConsumerReviews } from './consumer-reviews'
 import { CriticReviews } from './critic-reviews'
-import { RateAndReview } from './rate-and-review'
+import { RateAndReview, getReview } from './rate-and-review'
 import { ScoresHeader, getScores } from './scores-header'
 import { ShowInfo } from './show-info'
 import { WhatToKnow } from './what-to-know'
@@ -24,11 +24,11 @@ export const handle: Handle = {
   ),
 }
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ request, params }: LoaderArgs) {
   log.debug('getting show...')
   const showId = Number(params.showId)
   if (Number.isNaN(showId)) throw new Response(null, { status: 404 })
-  const [show, scores] = await Promise.all([
+  const [show, scores, review] = await Promise.all([
     prisma.show.findUnique({
       where: { id: showId },
       include: {
@@ -40,16 +40,17 @@ export async function loader({ params }: LoaderArgs) {
         },
         reviews: {
           include: { author: true, publication: true },
-          orderBy: { createdAt: 'desc' },
+          orderBy: { updatedAt: 'desc' },
         },
         looks: { include: { image: true }, orderBy: { number: 'asc' } },
       },
     }),
     getScores(showId),
+    getReview(showId, request),
   ])
   log.debug('got show %o', show)
   if (show == null) throw new Response(null, { status: 404 })
-  return { ...show, scores }
+  return { ...show, scores, review }
 }
 
 export default function ShowPage() {

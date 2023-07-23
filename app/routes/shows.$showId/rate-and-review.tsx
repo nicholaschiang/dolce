@@ -6,6 +6,7 @@ import {
   useActionData,
   useNavigation,
   useLocation,
+  useLoaderData,
 } from '@remix-run/react'
 import { type ActionArgs, json, redirect } from '@vercel/remix'
 import { z } from 'zod'
@@ -28,6 +29,7 @@ import { log } from 'log.server'
 import { getUserId } from 'session.server'
 import { useOptionalUser } from 'utils'
 
+import { type loader } from './route'
 import { Section } from './section'
 
 const id = 'rate-and-review'
@@ -45,19 +47,33 @@ const schema = z.object({
   content: z.string().trim().min(1, 'Required').min(10, 'Too short'),
 })
 
+export async function getReview(showId: number, request: Request) {
+  const userId = await getUserId(request)
+  return userId
+    ? prisma.review.findUnique({
+        where: { authorId_showId: { showId, authorId: userId } },
+      })
+    : undefined
+}
+
 export async function action({ request, params }: ActionArgs) {
   const showId = Number(params.showId)
   if (Number.isNaN(showId)) throw new Response(null, { status: 404 })
+  const userId = await getUserId(request)
+  if (userId == null)
+    return redirect(`/login?redirectTo=/shows/${showId}%23${id}`)
   const formData = await request.formData()
   const submission = parse(formData, { schema })
   if (!submission.value || submission.intent !== 'submit')
     return json(submission, { status: 400 })
-  const userId = await getUserId(request)
-  if (userId == null)
-    return redirect(`/login?redirectTo=/shows/${showId}%23${id}`)
   log.info('creating review... %o', submission.value)
-  const review = await prisma.review.create({
-    data: {
+  const review = await prisma.review.upsert({
+    where: { authorId_showId: { showId, authorId: userId } },
+    update: {
+      score: submission.value.score / 5,
+      content: submission.value.content,
+    },
+    create: {
       score: submission.value.score / 5,
       content: submission.value.content,
       author: { connect: { id: userId } },
@@ -79,6 +95,7 @@ export function RateAndReview() {
   })
   const navigation = useNavigation()
   const location = useLocation()
+  const { review } = useLoaderData<typeof loader>()
   return (
     <Section header='Rate and review' id={id}>
       <Form asChild>
@@ -99,7 +116,12 @@ export function RateAndReview() {
               {score.error && <FormMessage>{score.error}</FormMessage>}
             </FormLabelWrapper>
             <FormControl asChild>
-              <ScoreInput required />
+              <ScoreInput
+                required
+                defaultValue={
+                  review ? `${Number(review.score) * 5}` : undefined
+                }
+              />
             </FormControl>
           </FormField>
           <FormField name={content.name}>
@@ -108,11 +130,13 @@ export function RateAndReview() {
               {content.error && <FormMessage>{content.error}</FormMessage>}
             </FormLabelWrapper>
             <FormControl asChild>
-              <Textarea required />
+              <Textarea required defaultValue={review?.content} />
             </FormControl>
           </FormField>
           <FormSubmit asChild>
-            <Button disabled={navigation.state !== 'idle'}>Submit</Button>
+            <Button disabled={navigation.state !== 'idle'}>
+              {review ? 'Edit review' : 'Submit review'}
+            </Button>
           </FormSubmit>
         </RemixForm>
       </Form>
