@@ -111,7 +111,7 @@ export default function LoginPage() {
             {email.error && <FormMessage>{email.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input type='email' placeholder='anna@vogue.com' />
+            <Input type='email' placeholder='anna@vogue.com' required />
           </FormControl>
         </FormField>
         <FormField name={password.name}>
@@ -120,7 +120,7 @@ export default function LoginPage() {
             {password.error && <FormMessage>{password.error}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input type='password' placeholder='••••••••' />
+            <Input type='password' placeholder='••••••••' required />
           </FormControl>
         </FormField>
         <FormSubmit asChild>
