@@ -503,12 +503,16 @@ const brand: Prisma.BrandCreateInput = {
   description:
     'Hermès International S.A. is a French luxury design house established in 1837. It specializes in leather goods, lifestyle accessories, home furnishings, perfumery, jewelry, watches and ready-to-wear. Since the 1950s, its logo has been a depiction of a ducal horse-drawn carriage.',
   tier: Tier.SUPERPREMIUM,
+  avatar:
+    'https://www.hermes.com/sites/all/themes/custom/hermes/img/hermes-logo.svg',
+  url: 'https://www.hermes.com',
   country: { connectOrCreate: country },
   company: {
     connectOrCreate: {
       where: { name: 'Hermès International S.A.' },
       create: {
         name: 'Hermès International S.A.',
+        url: 'https://finance.hermes.com/',
         description: '',
         country: { connectOrCreate: country },
       },
