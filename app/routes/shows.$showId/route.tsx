@@ -15,7 +15,7 @@ import { WhereToBuy } from './where-to-buy'
 export const handle: Handle = {
   breadcrumb: (match) => (
     <Link to={`/shows/${match.params.showId as string}`}>
-      {(match.data as SerializeFrom<typeof loader>).name}
+      {(match.data as SerializeFrom<typeof loader>)?.name ?? '404'}
     </Link>
   ),
 }
