@@ -196,22 +196,38 @@ function WhereToBuy() {
         <ul className='mt-2 flex gap-2'>
           {links.map((link) => (
             <li key={link.id}>
-              <a
-                href={link.url}
-                target='_blank'
-                rel='noopener noreferrer'
-                className={cn(buttonVariants({ variant: 'outline' }), 'h-auto')}
-              >
-                <img
-                  src={(link.brand ?? link.retailer)?.avatar ?? ''}
-                  alt={(link.brand ?? link.retailer ?? show).name}
-                />
-              </a>
+              <BuyLink
+                avatar={(link.brand ?? link.retailer)?.avatar}
+                alt={(link.brand ?? link.retailer ?? show)?.name}
+                url={link.url}
+              />
             </li>
           ))}
         </ul>
       )}
     </Section>
+  )
+}
+
+function BuyLink({
+  avatar,
+  alt,
+  url,
+}: {
+  avatar?: string | null
+  alt: string
+  url: string
+}) {
+  return (
+    <a
+      href={url}
+      target='_blank'
+      rel='noopener noreferrer'
+      className={cn(buttonVariants({ variant: 'outline' }), 'h-auto')}
+    >
+      {avatar != null && <img src={avatar} alt={alt} />}
+      {avatar == null && alt}
+    </a>
   )
 }
 
