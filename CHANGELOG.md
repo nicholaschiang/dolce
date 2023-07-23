@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.15.0](https://github.com/nicholaschiang/site/compare/v1.14.1...v1.15.0) (2023-07-23)
+
+
+### Features
+
+* calculate show scores based on review scores ([9029909](https://github.com/nicholaschiang/site/commit/90299099cecdce627a191355efc6a4d2da61c3ec))
+
 ## [1.14.1](https://github.com/nicholaschiang/site/compare/v1.14.0...v1.14.1) (2023-07-23)
 
 
