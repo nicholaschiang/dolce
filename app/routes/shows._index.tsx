@@ -7,7 +7,10 @@ import { prisma } from 'db.server'
 import { log } from 'log.server'
 
 export const meta: V2_MetaFunction = () => [
-  { title: 'Fashion Shows: Fashion Week, Runway, Designer Collections | Nicholas Chiang' },
+  {
+    title:
+      'Fashion Shows: Fashion Week, Runway, Designer Collections | Nicholas Chiang',
+  },
 ]
 
 export async function loader() {
