@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.19.0](https://github.com/nicholaschiang/site/compare/v1.18.0...v1.19.0) (2023-07-24)
+
+
+### Features
+
+* **public:** add favicon design assets ([9552c4c](https://github.com/nicholaschiang/site/commit/9552c4ca56fdeb7680b50407cb8cfff893f88443))
+
 ## [1.18.0](https://github.com/nicholaschiang/site/compare/v1.17.0...v1.18.0) (2023-07-24)
 
 
