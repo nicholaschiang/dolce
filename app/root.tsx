@@ -158,11 +158,7 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: tailwindStylesheetUrl },
 ]
 
-export const meta: V2_MetaFunction = () => [
-  { charSet: 'utf-8' },
-  { title: 'nicholas engineering' },
-  { name: 'viewport', content: 'width=device-width,initial-scale=1' },
-]
+export const meta: V2_MetaFunction = () => [{ title: 'Nicholas Chiang' }]
 
 type Env = { VERCEL_ANALYTICS_ID?: string }
 
@@ -193,6 +189,8 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
   return (
     <html lang='en' className={cn('h-full', theme)}>
       <head>
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width,initial-scale=1' />
         <Meta />
         <Links />
         <ThemeHead ssrTheme={Boolean(data?.theme)} />

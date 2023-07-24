@@ -6,7 +6,11 @@ import {
 } from '@radix-ui/react-icons'
 import * as Popover from '@radix-ui/react-popover'
 import { Link, useLoaderData, useLocation, useNavigate } from '@remix-run/react'
-import { type LoaderArgs, type SerializeFrom } from '@vercel/remix'
+import {
+  type LoaderArgs,
+  type SerializeFrom,
+  type V2_MetaFunction,
+} from '@vercel/remix'
 import { type PropsWithChildren, type ReactNode } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
@@ -20,6 +24,10 @@ import { Tooltip } from 'components/tooltip'
 import { prisma } from 'db.server'
 import { type Handle } from 'root'
 import { useData } from 'utils'
+
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
+  { title: `${data?.name ?? '404'} | Nicholas Chiang` },
+]
 
 export const handle: Handle = {
   breadcrumb: (match) => (

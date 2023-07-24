@@ -1,5 +1,9 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import { type LoaderArgs, type SerializeFrom } from '@vercel/remix'
+import {
+  type LoaderArgs,
+  type SerializeFrom,
+  type V2_MetaFunction,
+} from '@vercel/remix'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
@@ -16,6 +20,10 @@ import { WhatToKnow } from './what-to-know'
 import { WhereToBuy } from './where-to-buy'
 
 export { action } from './rate-and-review'
+
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
+  { title: `${data?.name ?? '404'} Collection | Nicholas Chiang` },
+]
 
 export const handle: Handle = {
   breadcrumb: (match) => (
