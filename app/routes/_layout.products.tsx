@@ -8,7 +8,7 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react'
-import { type LoaderArgs } from '@vercel/remix'
+import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
 import {
   type Dispatch,
   type SetStateAction,
@@ -35,6 +35,10 @@ import {
 } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
+
+export const meta: V2_MetaFunction = () => [
+  { title: 'Products | Nicholas Chiang' },
+]
 
 export const handle: Handle = {
   breadcrumb: () => <Link to='/products'>products</Link>,
