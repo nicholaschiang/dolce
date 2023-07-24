@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.17.0](https://github.com/nicholaschiang/site/compare/v1.16.2...v1.17.0) (2023-07-24)
+
+
+### Features
+
+* add designer section to show page ([ed19e4f](https://github.com/nicholaschiang/site/commit/ed19e4fc7c65df529a18810030a8ef3dbae13243))
+* **show/designers:** collapse description by default ([46628d3](https://github.com/nicholaschiang/site/commit/46628d30c16160c89870fa2a0a2a9d0ae83d893b))
+
 ## [1.16.2](https://github.com/nicholaschiang/site/compare/v1.16.1...v1.16.2) (2023-07-23)
 
 
