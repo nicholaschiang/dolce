@@ -37,10 +37,10 @@ const designer: Prisma.UserCreateInput = {
   url: 'https://fr.wikipedia.org/wiki/V%C3%A9ronique_Nichanian',
   avatar: 'https://static.nicholas.engineering/designers/veronique-nichanian/avatar.jpg',
   description: `
-<p>Véronique Nichanian was born on May 3, 1954 in Boulogne-Billancourt.</p>
 <p>
-  In 1976, she graduated from the Ecole de la Chambre Syndicale de la Couture
-  Parisienne. She started as
+  Véronique Nichanian was born on May 3, 1954 in Boulogne-Billancourt.In 1976,
+  she graduated from the Ecole de la Chambre Syndicale de la Couture Parisienne.
+  She started as
   <a
     target="_blank"
     rel="noopener noreferrer"
