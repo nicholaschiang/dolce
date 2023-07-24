@@ -32,6 +32,32 @@ const looks = Array(NUM_LOOKS)
     }
     return look
   })
+const designer: Prisma.UserCreateInput = {
+  name: 'Isabel Marant',
+  url: 'https://en.wikipedia.org/wiki/Isabel_Marant',
+  avatar:
+    'https://static.nicholas.engineering/designers/isabel-marant/avatar.jpg',
+  description: `
+<p>
+  Isabel Marant (born 12 April 1967) is a French fashion designer, owner of the
+  eponymous fashion brand.
+</p>
+<p>
+  She won the Award de la Mode (1997), the Whirlpool Award for best female
+  designer (1998), Fashion Designer of the Year at British Glamour's Women of
+  the Year Awards (2012). She was named Contemporary Designer of the Year at the
+  Elle Style Awards in 2014.
+</p>
+<p>
+  Her collaboration with H&M in 2013 was so successful that company's website
+  crashed under the demand and the collection was sold out within 45 minutes.
+</p>
+<p>
+  Celebrities wearing Marant's designs include Alexa Chung, Katie Holmes,
+  Victoria Beckham, Kate Moss, Sienna Miller, Kate Bosworth, and Rachel Weisz.
+</p>
+`,
+}
 const vogue: Prisma.PublicationCreateInput = {
   name: 'Vogue',
   avatar: 'https://www.vogue.com/verso/static/vogue/assets/us/logo.svg',
@@ -202,6 +228,9 @@ const collection: Prisma.CollectionCreateInput = {
       where: { name_year: { name: season.name, year: season.year } },
       create: season,
     },
+  },
+  designers: {
+    connectOrCreate: { where: { name: designer.name }, create: designer },
   },
 }
 export const show: Prisma.ShowCreateInput = {
