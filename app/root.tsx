@@ -10,6 +10,7 @@ import {
   useRouteError,
   isRouteErrorResponse,
   useMatches,
+  useNavigation,
   type RouteMatch,
 } from '@remix-run/react'
 import { Analytics } from '@vercel/analytics/react'
@@ -22,7 +23,8 @@ import {
 } from '@vercel/remix'
 import cn from 'classnames'
 import { LogIn, LogOut } from 'lucide-react'
-import { Fragment, type ReactNode } from 'react'
+import NProgress from 'nprogress'
+import { Fragment, type ReactNode, useEffect } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
 import { buttonVariants } from 'components/ui/button'
@@ -200,6 +202,17 @@ export type LoaderData = SerializeFrom<typeof loader>
 
 function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
   const [theme] = useTheme()
+  const navigation = useNavigation()
+  useEffect(() => {
+    // when the state is idle then we can complete the progress bar
+    if (navigation.state === 'idle') NProgress.done()
+    // and when it's something else it means it's either submitting a form or
+    // waiting for the loaders of the next location so we start it
+    else {
+      const timeoutId = setTimeout(() => NProgress.start(), 100)
+      return () => clearTimeout(timeoutId)
+    }
+  }, [navigation.state])
   return (
     <html lang='en' className={cn('h-full', theme)}>
       <head>
