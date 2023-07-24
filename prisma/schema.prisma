@@ -18,6 +18,9 @@ model User {
   // @todo there may be multiple users with the same name...
   name String @unique
 
+  // The user's description (e.g. a designer biography).
+  description String?
+
   // The user's publicly visible username, as designated by the user.
   username String? @unique
 

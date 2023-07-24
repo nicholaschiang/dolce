@@ -32,6 +32,48 @@ const looks = Array(NUM_LOOKS)
     }
     return look
   })
+const designer: Prisma.UserCreateInput = {
+  name: 'Véronique Nichanian',
+  url: 'https://fr.wikipedia.org/wiki/V%C3%A9ronique_Nichanian',
+  avatar: 'https://static.nicholas.engineering/designers/veronique-nichanian/avatar.jpg',
+  description: `
+<p>Véronique Nichanian was born on May 3, 1954 in Boulogne-Billancourt.</p>
+<p>
+  In 1976, she graduated from the Ecole de la Chambre Syndicale de la Couture
+  Parisienne. She started as
+  <a
+    target="_blank"
+    rel="noopener noreferrer"
+    href="https://en.wikipedia.org/wiki/Nino_Cerruti"
+    >Nino Cerruti</a
+  >'s assistant for men's fashion. At 22, she left to take care of the
+  <a
+    target="_blank"
+    rel="noopener noreferrer"
+    href="https://en.wikipedia.org/wiki/Cerruti_1881"
+    >Cerruti</a
+  >
+  license in Japan. Twelve years later, she was co-responsible for the Cerruti
+  men's collections.
+</p>
+<p>
+  Since 1988, she has been artistic director of menswear at
+  <a
+    target="_blank"
+    rel="noopener noreferrer"
+    href="https://en.wikipedia.org/wiki/Herm%C3%A8s"
+    >Hermès</a
+  >. The former boss of Hermès, Jean-Louis Dumas welcomed her with these words:
+  “Run it like your small business. You have carte blanche”. She is the one who
+  dresses the demanding Jean-Louis Dumas.
+</p>
+<p>
+  From her very first collection, she was awarded the prize for young designer.
+  She has no ambition to open her own house. “It wouldn't change my expression.
+  And I don't have an ego problem.”
+</p>
+`,
+}
 const vogue: Prisma.PublicationCreateInput = {
   name: 'Vogue',
   avatar: 'https://www.vogue.com/verso/static/vogue/assets/us/logo.svg',
@@ -59,11 +101,11 @@ const fashionotography: Prisma.PublicationCreateInput = {
   name: 'Fashionotography',
 }
 // Scores assigned by gpt-3.5-turbo via the ChatGPT and the following prompt:
-// Assign a sentiment score (on a five-star scale) to the following review. Air 
-// on the side of a lower score (very few reviews should ever receive or come 
-// close to receiving a 5/5). Often, if a review is simply neutral or is vague 
-// in its compliments, it should be assigned a 1/5 or 2/5. If a review seems 
-// energetically positive, assign a 3/5. Only if a review is resoundingly 
+// Assign a sentiment score (on a five-star scale) to the following review. Air
+// on the side of a lower score (very few reviews should ever receive or come
+// close to receiving a 5/5). Often, if a review is simply neutral or is vague
+// in its compliments, it should be assigned a 1/5 or 2/5. If a review seems
+// energetically positive, assign a 3/5. Only if a review is resoundingly
 // enthusiastically positive should you assign a 4/5. Never assign a 5/5.
 const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
   {
@@ -533,6 +575,9 @@ const collection: Prisma.CollectionCreateInput = {
       where: { name_year: { name: season.name, year: season.year } },
       create: season,
     },
+  },
+  designers: {
+    connectOrCreate: { where: { name: designer.name }, create: designer },
   },
   links: { connectOrCreate: { where: { url: link.url }, create: link } },
 }

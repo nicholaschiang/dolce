@@ -8,6 +8,7 @@ import { cn } from 'utils/cn'
 
 import { ConsumerReviews } from './consumer-reviews'
 import { CriticReviews } from './critic-reviews'
+import { Designers } from './designers'
 import { RateAndReview, getReview } from './rate-and-review'
 import { ScoresHeader, getScores } from './scores-header'
 import { ShowInfo } from './show-info'
@@ -36,7 +37,10 @@ export async function loader({ request, params }: LoaderArgs) {
         season: true,
         brands: true,
         collections: {
-          include: { links: { include: { brand: true, retailer: true } } },
+          include: {
+            links: { include: { brand: true, retailer: true } },
+            designers: true,
+          },
         },
         reviews: {
           include: { author: true, publication: true },
@@ -89,6 +93,7 @@ function About({ className }: { className: string }) {
     <div className={cn('overflow-auto', className)}>
       <ScoresHeader />
       <WhatToKnow />
+      <Designers />
       <WhereToBuy />
       <RateAndReview />
       <ConsumerReviews />
