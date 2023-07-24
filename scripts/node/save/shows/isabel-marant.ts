@@ -40,13 +40,10 @@ const designer: Prisma.UserCreateInput = {
   description: `
 <p>
   Isabel Marant (born 12 April 1967) is a French fashion designer, owner of the
-  eponymous fashion brand.
-</p>
-<p>
-  She won the Award de la Mode (1997), the Whirlpool Award for best female
-  designer (1998), Fashion Designer of the Year at British Glamour's Women of
-  the Year Awards (2012). She was named Contemporary Designer of the Year at the
-  Elle Style Awards in 2014.
+  eponymous fashion brand. She won the Award de la Mode (1997), the Whirlpool
+  Award for best female designer (1998), Fashion Designer of the Year at British
+  Glamour's Women of the Year Awards (2012). She was named Contemporary Designer
+  of the Year at the Elle Style Awards in 2014.
 </p>
 <p>
   Her collaboration with H&M in 2013 was so successful that company's website
