@@ -1,6 +1,6 @@
+import { Sex } from '@prisma/client'
 import { useLoaderData } from '@remix-run/react'
 import { useMemo } from 'react'
-import { Sex } from '@prisma/client'
 
 import { prisma } from 'db.server'
 import { cn } from 'utils/cn'
@@ -29,7 +29,7 @@ function sanityCheck(score: Score, name: string): void {
 export async function getScores(showId: number): Promise<Scores> {
   const [total, positive, neutral, negative] = await Promise.all([
     prisma.review.count({
-      where: { showId },
+      where: { showId, score: { not: null } },
       select: { _all: true, publicationId: true },
     }),
     prisma.review.count({
@@ -75,16 +75,18 @@ export function ScoresHeader() {
     : ''
   return (
     <div className='grid gap-2'>
-      <video
-        className='aspect-video w-full bg-gray-100 dark:bg-gray-900'
-        controls
-        autoPlay
-        playsInline
-        muted
-      >
-        <source src={show.video.url} type={show.video.mimeType} />
-        Download the <a href={show.video.url}>MP4</a> video.
-      </video>
+      {show.video != null && (
+        <video
+          className='aspect-video w-full bg-gray-100 dark:bg-gray-900'
+          controls
+          autoPlay
+          playsInline
+          muted
+        >
+          <source src={show.video.url} type={show.video.mimeType} />
+          Download the <a href={show.video.url}>MP4</a> video.
+        </video>
+      )}
       <div className='flex gap-2'>
         <div className='flex-none w-40 bg-gray-100 dark:bg-gray-900 h-0 min-h-full'>
           <img
