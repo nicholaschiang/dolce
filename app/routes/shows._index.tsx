@@ -39,7 +39,7 @@ export default function ShowsPage() {
               <Link to={`/shows/${show.id}`}>
                 <div className='bg-gray-100 dark:bg-gray-900 aspect-person mb-2'>
                   <img
-                    className='object-cover h-full'
+                    className='object-cover h-full w-full'
                     src={show.looks[0].image.url}
                     alt=''
                   />
