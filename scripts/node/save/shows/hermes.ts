@@ -35,7 +35,8 @@ const looks = Array(NUM_LOOKS)
 const designer: Prisma.UserCreateInput = {
   name: 'Véronique Nichanian',
   url: 'https://fr.wikipedia.org/wiki/V%C3%A9ronique_Nichanian',
-  avatar: 'https://static.nicholas.engineering/designers/veronique-nichanian/avatar.jpg',
+  avatar:
+    'https://static.nicholas.engineering/designers/veronique-nichanian/avatar.jpg',
   description: `
 <p>
   Véronique Nichanian was born on May 3, 1954 in Boulogne-Billancourt.In 1976,
