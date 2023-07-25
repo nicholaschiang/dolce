@@ -691,6 +691,7 @@ model Link {
 // A widely accepted and used season name.
 // @todo perhaps SPRING_SUMMER should instead be stored as [SPRING, SUMMER]?
 enum SeasonName {
+  RESORT
   SPRING
   SPRING_SUMMER
   SUMMER
