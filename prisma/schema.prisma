@@ -856,7 +856,7 @@ model Show {
 
   // The runway show's location.
   // @todo perhaps this should be a separate model and simply a relation here.
-  location String
+  location String?
 
   // The collections that were presented at the show. Often, there is only one.
   collections Collection[]

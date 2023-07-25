@@ -19,7 +19,7 @@ export function ShowInfo() {
             dateStyle: 'long',
           })}
         </InfoItem>
-        <InfoItem label='Location'>{show.location}</InfoItem>
+        <InfoItem label='Location'>{show.location ?? 'Unknown'}</InfoItem>
         <InfoItem label='Looks'>{show.looks.length}</InfoItem>
         <InfoItem
           label={show.brands.length === 1 ? 'Brand' : 'Brands'}
