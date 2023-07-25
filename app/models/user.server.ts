@@ -1,4 +1,4 @@
-import type { Password, User } from '@prisma/client'
+import { type Prisma, type Password, type User } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 import { prisma } from 'db.server'
@@ -28,17 +28,35 @@ export async function createUser(
   password: string,
 ) {
   const hashedPassword = await bcrypt.hash(password, 10)
-
   return prisma.user.create({
     data: {
       name,
       username,
       email,
-      password: {
-        create: {
-          hash: hashedPassword,
-        },
-      },
+      password: { create: { hash: hashedPassword } },
+    },
+  })
+}
+
+export async function updateUser(
+  id: User['id'],
+  name: User['name'],
+  username: User['username'],
+  email: User['email'],
+  pwd?: string | null,
+) {
+  let password: Prisma.PasswordUpdateOneWithoutUserNestedInput | undefined
+  if (pwd != null) {
+    const hashedPassword = await bcrypt.hash(pwd, 10)
+    password = { update: { hash: hashedPassword } }
+  }
+  return prisma.user.update({
+    where: { id },
+    data: {
+      name,
+      username,
+      email,
+      password,
     },
   })
 }
@@ -53,15 +71,10 @@ export async function verifyLogin(
       password: true,
     },
   })
-
   if (!userWithPassword || !userWithPassword.password) return null
-
   const isValid = await bcrypt.compare(password, userWithPassword.password.hash)
-
   if (!isValid) return null
-
   /* eslint-disable-next-line @typescript-eslint/naming-convention */
   const { password: _password, ...userWithoutPassword } = userWithPassword
-
   return userWithoutPassword
 }
