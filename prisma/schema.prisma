@@ -843,7 +843,7 @@ model Show {
   url String @unique
 
   // A description of the collection, typically provided by the brand.
-  description String
+  description String?
 
   // The critic's consensus on the show.
   criticReviewSummary String?
