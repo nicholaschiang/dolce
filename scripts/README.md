@@ -44,4 +44,13 @@ To import that JSON file into Postgres, simply move it to `public/data/vogue/sho
 ```
 $ tsc -p scripts/node
 $ node scripts/node/out/vogue.js | pino-pretty
-```  
+```
+
+### Aritzia
+
+To import the already scraped Aritzia product data (see `public/data/aritzia`), simply run the save script:
+
+```
+$ tsc -p scripts/node
+$ node scripts/node/out/aritzia.js | pino-pretty
+``` 
