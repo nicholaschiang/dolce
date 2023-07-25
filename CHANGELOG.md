@@ -1,5 +1,27 @@
 # Release Notes
 
+## [1.20.0](https://github.com/nicholaschiang/site/compare/v1.19.0...v1.20.0) (2023-07-25)
+
+
+### Features
+
+* add `collection.sex` field ([66e190f](https://github.com/nicholaschiang/site/commit/66e190f2b9559d65f482e02ed1b845aa717f77df))
+* **prisma:** add "resort" season name ([13e359f](https://github.com/nicholaschiang/site/commit/13e359f1725016d907ebea6fb847a75eddfd0590))
+* **prisma:** add review "written at" date field ([0f4c5e9](https://github.com/nicholaschiang/site/commit/0f4c5e904119785acbea4454acb1613a92793988))
+* **scripts:** scrape and save shows from vogue ([986e27d](https://github.com/nicholaschiang/site/commit/986e27d445b05473c774696740901b5b53b1d1e3))
+
+
+### Bug Fixes
+
+* allow show date to be `NULL` when not known ([e12c12d](https://github.com/nicholaschiang/site/commit/e12c12d3375602691a8742a1526b9828b827bc8d))
+* ensure look images fully cover wrappers ([a11ba75](https://github.com/nicholaschiang/site/commit/a11ba75ac2dd27a4dc81b41cfa4a8dffc0cbaa8a))
+* make show video and review score optional ([852c587](https://github.com/nicholaschiang/site/commit/852c587d90f03267e0fc76e5435501e637b56287))
+* make the show description field optional ([8c59494](https://github.com/nicholaschiang/site/commit/8c594940cf99eb75e875dad69297abfd71d8e6f7))
+* **prisma:** mark most brand fields as optional ([4e67bcd](https://github.com/nicholaschiang/site/commit/4e67bcdce46ce2890eba8ad91f82e3008e0b4232))
+* **routes/show-info:** render description as HTML ([9ed0077](https://github.com/nicholaschiang/site/commit/9ed0077a40a5cafe8015c8984c410c391ad32fa9))
+* set show location to `NULL` if unknown ([a21fdd4](https://github.com/nicholaschiang/site/commit/a21fdd4d71cac2dfaef4425778db74d847b13782))
+* **shows:** add "menswear" part of season name ([631a420](https://github.com/nicholaschiang/site/commit/631a4206161a195f8456b341c32f7c8ee4014909))
+
 ## [1.19.0](https://github.com/nicholaschiang/site/compare/v1.18.0...v1.19.0) (2023-07-24)
 
 
