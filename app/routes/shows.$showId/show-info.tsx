@@ -12,14 +12,19 @@ export function ShowInfo() {
   const show = useLoaderData<typeof loader>()
   return (
     <Section header='Show info' id='show-info'>
-      <article>{show.description}</article>
+      <article
+        className='prose dark:prose-invert max-w-none'
+        dangerouslySetInnerHTML={{ __html: show.description }}
+      />
       <dl className='mt-2'>
         <InfoItem label='Date'>
           {new Date(show.date).toLocaleDateString(undefined, {
             dateStyle: 'long',
           })}
         </InfoItem>
-        <InfoItem label='Location'>{show.location ?? 'Unknown'}</InfoItem>
+        {show.location != null && (
+          <InfoItem label='Location'>{show.location}</InfoItem>
+        )}
         <InfoItem label='Looks'>{show.looks.length}</InfoItem>
         <InfoItem
           label={show.brands.length === 1 ? 'Brand' : 'Brands'}
