@@ -1,5 +1,5 @@
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useFetcher } from '@remix-run/react'
+import { Moon, Sun } from 'lucide-react'
 import { useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -28,8 +28,8 @@ export function ThemeSwitcher({ className }: { className?: string }) {
       <Tooltip tip='Toggle theme' hotkey='t'>
         <Button type='submit' size='icon' variant='ghost' className={className}>
           <Themed
-            dark={<MoonIcon className='h-3 w-3' />}
-            light={<SunIcon className='h-3 w-3' />}
+            dark={<Moon className='h-3 w-3' />}
+            light={<Sun className='h-3 w-3' />}
           />
         </Button>
       </Tooltip>

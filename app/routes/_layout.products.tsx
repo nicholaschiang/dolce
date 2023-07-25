@@ -1,5 +1,4 @@
 import type { Prisma } from '@prisma/client'
-import { ZoomInIcon, ZoomOutIcon } from '@radix-ui/react-icons'
 import {
   Link,
   Outlet,
@@ -9,6 +8,7 @@ import {
   useSearchParams,
 } from '@remix-run/react'
 import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
+import { ZoomIn, ZoomOut } from 'lucide-react'
 import {
   type Dispatch,
   type SetStateAction,
@@ -239,7 +239,7 @@ export default function ProductsPage() {
                 disabled={resultsPerRow === minResultsPerRow}
                 onClick={zoomIn}
               >
-                <ZoomInIcon className='h-3.5 w-3.5' />
+                <ZoomIn className='h-3.5 w-3.5' />
               </button>
             </Tooltip>
             <Tooltip tip='Zoom Out' hotkey='-' onHotkey={zoomOut}>
@@ -250,7 +250,7 @@ export default function ProductsPage() {
                 disabled={resultsPerRow === maxResultsPerRow}
                 onClick={zoomOut}
               >
-                <ZoomOutIcon className='h-3.5 w-3.5' />
+                <ZoomOut className='h-3.5 w-3.5' />
               </button>
             </Tooltip>
           </div>

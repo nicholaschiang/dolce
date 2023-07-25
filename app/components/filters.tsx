@@ -1,10 +1,10 @@
 import type { Level, Prisma } from '@prisma/client'
-import { CaretDownIcon, Cross2Icon, PlusIcon } from '@radix-ui/react-icons'
 import * as Popover from '@radix-ui/react-popover'
 import { useFetcher } from '@remix-run/react'
 import cn from 'classnames'
 import { useCommandState } from 'cmdk'
 import { dequal } from 'dequal/lite'
+import { ChevronDown, X, Plus } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import type {
   Dispatch,
@@ -175,7 +175,7 @@ function GenericItem({ name, condition, value, onClick }: GenericItemProps) {
         className='text-gray-400 hover:text-inherit'
         onClick={onClick}
       >
-        <Cross2Icon />
+        <X className='w-3 h-3' />
       </ItemButton>
     </li>
   )
@@ -284,7 +284,7 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
       <Tooltip tip='Filter' hotkey='f' onHotkey={() => setOpen(true)}>
         <Popover.Trigger asChild>
           <button type='button' className='icon-button square mb-1.5 flex'>
-            <PlusIcon className='h-3.5 w-3.5' />
+            <Plus className='h-3.5 w-3.5' />
           </button>
         </Popover.Trigger>
       </Tooltip>
@@ -549,7 +549,7 @@ function SizeItems({ nested }: Pick<Props, 'nested'>) {
           <Menu.ItemLabel group={nested ? 'sizes' : undefined}>
             <span className='flex items-center truncate text-gray-500'>
               {size.sex}
-              <CaretDownIcon className='mx-2 h-3 w-3 -rotate-90' />
+              <ChevronDown className='mx-2 h-3 w-3 -rotate-90' />
             </span>
             {size.name}
           </Menu.ItemLabel>
