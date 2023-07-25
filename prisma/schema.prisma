@@ -625,8 +625,11 @@ model Collection {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  // The collection's name, as designated by the brand or designer.
+  // The collection's name (e.g. "Hermès Spring-Summer 2023 Menswear").
   name String @unique
+
+  // The collection's intended sex (i.e. "menswear" v.s. "womenswear").
+  sex Sex
 
   // The collection's style category (if limited to a single category).
   style   Style? @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)

@@ -1,4 +1,4 @@
-import { type Prisma, Tier, SeasonName } from '@prisma/client'
+import { type Prisma, Sex, Tier, SeasonName } from '@prisma/client'
 
 const NUM_LOOKS = 59
 
@@ -220,6 +220,7 @@ const brand: Prisma.BrandCreateInput = {
 }
 const collection: Prisma.CollectionCreateInput = {
   name: 'Isabel Marant Fall-Winter 2023',
+  sex: Sex.WOMAN,
   season: {
     connectOrCreate: {
       where: { name_year: { name: season.name, year: season.year } },

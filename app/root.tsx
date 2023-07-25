@@ -59,7 +59,7 @@ function Header() {
         {matches
           .filter((match) => match.handle && match.handle.breadcrumb)
           .map((match, index) => (
-            <Fragment key={index}>
+            <Fragment key={match.id}>
               {index !== 0 && (
                 <span className='text-gray-300 dark:text-gray-600'>/</span>
               )}
