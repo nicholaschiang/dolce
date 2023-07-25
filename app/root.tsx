@@ -22,7 +22,7 @@ import {
   json,
 } from '@vercel/remix'
 import cn from 'classnames'
-import { LogIn, LogOut } from 'lucide-react'
+import { User, LogIn, LogOut } from 'lucide-react'
 import NProgress from 'nprogress'
 import { Fragment, type ReactNode, useEffect } from 'react'
 
@@ -78,6 +78,14 @@ function Header() {
             ) : (
               <LogIn className='w-3 h-3' />
             )}
+          </Link>
+        )}
+        {user && (
+          <Link
+            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
+            to='/profile'
+          >
+            <User className='w-3 h-3' />
           </Link>
         )}
         <ThemeSwitcher />

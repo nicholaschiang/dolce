@@ -38,24 +38,16 @@ import {
 import { type Handle } from 'root'
 import { createUserSession, getUserId } from 'session.server'
 import { safeRedirect } from 'utils'
-import { email as emailSchema, password as passwordSchema } from 'utils/schema'
+import {
+  name as nameSchema,
+  username as usernameSchema,
+  email as emailSchema,
+  password as passwordSchema,
+} from 'utils/schema'
 
 const schema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, 'Name is required')
-    .includes(' ', { message: 'Name must include both first and last' }),
-  username: z
-    .string()
-    .trim()
-    .min(1, 'Username is required')
-    .min(3, 'Username must be at least 3 characters')
-    .max(30, 'Username must be fewer than 30 characters')
-    .regex(
-      /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/,
-      'Username contains invalid characters',
-    ),
+  name: nameSchema,
+  username: usernameSchema,
   email: emailSchema,
   password: passwordSchema,
 })
