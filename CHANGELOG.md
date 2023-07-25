@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.21.0](https://github.com/nicholaschiang/site/compare/v1.20.2...v1.21.0) (2023-07-25)
+
+
+### Features
+
+* **show/scores-header:** keep show video on loop ([f973a2e](https://github.com/nicholaschiang/site/commit/f973a2e3f002d78e47582c5b7c6856cc82f704e3))
+
 ## [1.20.2](https://github.com/nicholaschiang/site/compare/v1.20.1...v1.20.2) (2023-07-25)
 
 
