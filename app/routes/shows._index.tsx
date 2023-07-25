@@ -23,7 +23,11 @@ export async function loader() {
       collections: true,
       looks: { include: { image: true }, orderBy: { number: 'asc' }, take: 1 },
     },
-    orderBy: { name: 'asc' },
+    orderBy: [
+      { season: { year: 'desc' } },
+      { season: { name: 'desc' } },
+      { name: 'asc' },
+    ],
   })
   log.debug('got %d shows', shows.length)
   return shows
