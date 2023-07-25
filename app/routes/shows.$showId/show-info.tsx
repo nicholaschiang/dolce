@@ -17,11 +17,13 @@ export function ShowInfo() {
         dangerouslySetInnerHTML={{ __html: show.description }}
       />
       <dl className='mt-2'>
-        <InfoItem label='Date'>
-          {new Date(show.date).toLocaleDateString(undefined, {
-            dateStyle: 'long',
-          })}
-        </InfoItem>
+        {show.date != null && (
+          <InfoItem label='Date'>
+            {new Date(show.date).toLocaleDateString(undefined, {
+              dateStyle: 'long',
+            })}
+          </InfoItem>
+        )}
         {show.location != null && (
           <InfoItem label='Location'>{show.location}</InfoItem>
         )}

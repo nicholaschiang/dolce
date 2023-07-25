@@ -855,8 +855,8 @@ model Show {
   season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seasonId Int
 
-  // The date when the show started.
-  date DateTime
+  // The date when the show started (if known).
+  date DateTime?
 
   // The runway show's location.
   // @todo perhaps this should be a separate model and simply a relation here.
