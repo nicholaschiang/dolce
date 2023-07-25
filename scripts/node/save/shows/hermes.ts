@@ -1,4 +1,4 @@
-import { type Prisma, Tier, SeasonName } from '@prisma/client'
+import { type Prisma, Sex, Tier, SeasonName } from '@prisma/client'
 
 const NUM_LOOKS = 53
 
@@ -569,7 +569,8 @@ const link: Prisma.LinkCreateInput = {
   brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }
 const collection: Prisma.CollectionCreateInput = {
-  name: 'Hermès Spring-Summer 2023',
+  name: 'Hermès Spring-Summer 2023 Menswear',
+  sex: Sex.MAN,
   season: {
     connectOrCreate: {
       where: { name_year: { name: season.name, year: season.year } },
@@ -582,7 +583,7 @@ const collection: Prisma.CollectionCreateInput = {
   links: { connectOrCreate: { where: { url: link.url }, create: link } },
 }
 export const show: Prisma.ShowCreateInput = {
-  name: 'Hermès Spring-Summer 2023',
+  name: 'Hermès Spring-Summer 2023 Menswear',
   url: 'https://www.hermes.com/us/en/story/302944-men-summer-2023-runway-show/',
   description: `A bright, vibrant summer; the joy of being together. The vacation spirit, a magic destination both joyous and serene, with the breeze imperceptibly ruffling the clothes that enfold you. A feeling of lightness makes you float in the sunlight.
 
