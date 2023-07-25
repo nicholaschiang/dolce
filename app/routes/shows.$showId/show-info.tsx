@@ -12,10 +12,12 @@ export function ShowInfo() {
   const show = useLoaderData<typeof loader>()
   return (
     <Section header='Show info' id='show-info'>
-      <article
-        className='prose dark:prose-invert max-w-none'
-        dangerouslySetInnerHTML={{ __html: show.description }}
-      />
+      {show.description != null && (
+        <article
+          className='prose dark:prose-invert max-w-none'
+          dangerouslySetInnerHTML={{ __html: show.description }}
+        />
+      )}
       <dl className='mt-2'>
         {show.date != null && (
           <InfoItem label='Date'>
