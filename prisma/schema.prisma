@@ -771,7 +771,10 @@ model Review {
   // Critical reviews will use whatever scale the critic uses (e.g. 0-10) or
   // will revert back to using a five-star scale if the critic does not assign
   // a score in their review (it will then be assigned via OpenAI).
-  score Decimal
+  //
+  // This field should only ever be NULL if a critic review has been imported
+  // but no score has been assigned to it yet (e.g. when scraping Vogue).
+  score Decimal?
 
   // The review summary (generated via OpenAI).
   summary String?
@@ -843,8 +846,8 @@ model Show {
   reviews Review[]
 
   // Video of the show (typically just a single shot of runway models walking).
-  video   Video @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  videoId Int   @unique
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId Int?   @unique
 
   // The fashion season in which the show was presented. e.g. Spring 2021
   // @todo collections are already associated with seasons; do we need this?
