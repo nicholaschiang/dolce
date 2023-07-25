@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Show" ALTER COLUMN "date" DROP NOT NULL;
