@@ -187,15 +187,15 @@ model Brand {
   url String? @unique
 
   // A short description of the brand, typically sourced from Wikipedia.
-  description String
+  description String?
 
-  // The brand's tier.
+  // The brand's tier. This will be NULL if it has not been assigned yet.
   // @todo perhaps rename this to "BrandTier" to avoid confusion with "Level"? 
-  tier Tier
+  tier Tier?
 
-  // The company that owns and operates the brand.
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  companyId Int
+  // The company that owns and operates the brand (if known).
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  companyId Int?
 
   // The products designed or otherwise produced by the brand.
   products Product[]
@@ -218,9 +218,9 @@ model Brand {
   // The collections designed by the brand.
   collections Collection[]
 
-  // The country the brand purports to be from.
-  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  countryId Int
+  // The country the brand purports to be from (if known).
+  country   Country? @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  countryId Int?
 }
 
 // A country is a sovereign state. Countries can have many brands and sizes.
