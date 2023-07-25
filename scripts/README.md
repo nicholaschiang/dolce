@@ -27,3 +27,21 @@ $ source .venv/bin/activate
 $ cd scripts
 $ scrapy crawl aritzia -L INFO -O json/aritzia.json
 ```
+
+## Targets
+
+### Vogue
+
+To save show data from Vogue, simply edit the `spiders/vogue.py` spider `start_urls` to point to the latest fashion shows list page.
+Then, (assuming you've already run `poetry install` to install the required Python dependencies) run the spider to download the show data to a `shows.json` file:
+
+```
+$ scrapy crawl vogue -O shows.json
+```
+
+To import that JSON file into Postgres, simply move it to `public/data/vogue/shows.json` (or, alternatively, you can edit the `node/save/vogue.ts` file's `PATH` constant to point to the relative path of `shows.json`) and then run the save script:
+
+```
+$ tsc -p scripts/node
+$ node scripts/node/out/vogue.js | pino-pretty
+```  
