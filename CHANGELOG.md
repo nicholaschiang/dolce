@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.20.2](https://github.com/nicholaschiang/site/compare/v1.20.1...v1.20.2) (2023-07-25)
+
+
+### Bug Fixes
+
+* **routes/show:** hide empty "about" sections ([738a8ef](https://github.com/nicholaschiang/site/commit/738a8ef918740198bcdd597f756511286df1d8c1))
+
 ## [1.20.1](https://github.com/nicholaschiang/site/compare/v1.20.0...v1.20.1) (2023-07-25)
 
 
