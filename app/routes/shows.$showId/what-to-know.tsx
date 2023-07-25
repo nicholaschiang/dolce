@@ -7,6 +7,8 @@ import { Section } from './section'
 
 export function WhatToKnow() {
   const show = useLoaderData<typeof loader>()
+  if (show.criticReviewSummary == null && show.consumerReviewSummary == null)
+    return null
   return (
     <Section header='What to know' id='what-to-know'>
       <Subheader>Critics Consensus</Subheader>

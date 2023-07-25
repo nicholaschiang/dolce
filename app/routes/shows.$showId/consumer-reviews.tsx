@@ -18,7 +18,7 @@ export function ConsumerReviews() {
     <Section header={`Consumer reviews for ${show.name}`} id='consumer-reviews'>
       {reviews.length === 0 && (
         <Empty className='mt-2'>
-          No consumer reviews to show yet. Try submitting one above.
+          There are no consumer reviews yet. Try submitting one above.
         </Empty>
       )}
       {reviews.length > 0 && (

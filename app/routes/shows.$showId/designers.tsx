@@ -15,23 +15,17 @@ import { Section } from './section'
 export function Designers() {
   const show = useLoaderData<typeof loader>()
   const designers = show.collections.flatMap((c) => c.designers)
+  if (designers.length === 0) return null
   return (
     <Section
       header={designers.length === 1 ? 'Designer' : 'Designers'}
       id='designers'
     >
-      {designers.length === 0 && (
-        <Empty className='mt-2'>
-          No designers have claimed this show yet. Please check back later.
-        </Empty>
-      )}
-      {designers.length > 0 && (
-        <ul className='mt-2 grid gap-2'>
-          {designers.map((designer) => (
-            <DesignerItem key={designer.id} designer={designer} />
-          ))}
-        </ul>
-      )}
+      <ul className='mt-2 grid gap-2'>
+        {designers.map((designer) => (
+          <DesignerItem key={designer.id} designer={designer} />
+        ))}
+      </ul>
     </Section>
   )
 }
