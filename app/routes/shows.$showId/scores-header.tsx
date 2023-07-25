@@ -1,9 +1,9 @@
-import { Sex } from '@prisma/client'
 import { useLoaderData } from '@remix-run/react'
 import { useMemo } from 'react'
 
 import { prisma } from 'db.server'
 import { cn } from 'utils/cn'
+import { getShowSeason } from 'utils/show'
 
 import { type loader } from './route'
 
@@ -68,11 +68,6 @@ export async function getScores(showId: number): Promise<Scores> {
 
 export function ScoresHeader() {
   const show = useLoaderData<typeof loader>()
-  const sex = show.collections
-    .map((collection) => collection.sex)
-    .every((value) => value === Sex.MAN)
-    ? 'Menswear'
-    : ''
   return (
     <div className='grid gap-2'>
       {show.video != null && (
@@ -99,9 +94,7 @@ export function ScoresHeader() {
           <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
             {show.brands.map((brand) => brand.name).join(', ')}
           </h1>
-          <h2 className='uppercase mb-6 text-sm'>
-            {show.season.name.replace('_', '-')} {show.season.year} {sex}
-          </h2>
+          <h2 className='uppercase mb-6 text-sm'>{getShowSeason(show)}</h2>
           <ul className='grid grid-cols-2 gap-2 mt-auto'>
             <ScoreItem score={show.scores.critic} name='Critic Score' />
             <ScoreItem score={show.scores.consumer} name='Consumer Score' />

@@ -5,6 +5,7 @@ import { Empty } from 'components/empty'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
+import { getShowSeason } from 'utils/show'
 
 export const meta: V2_MetaFunction = () => [
   {
@@ -19,6 +20,7 @@ export async function loader() {
     include: {
       season: true,
       brands: true,
+      collections: true,
       looks: { include: { image: true }, orderBy: { number: 'asc' }, take: 1 },
     },
     orderBy: { name: 'asc' },
@@ -48,7 +50,7 @@ export default function ShowsPage() {
                   {show.brands.map((brand) => brand.name).join(', ')}
                 </h2>
                 <h3 className='text-xs uppercase text-center'>
-                  {show.season.name.replace('_', '-')} {show.season.year}
+                  {getShowSeason(show)}
                 </h3>
               </Link>
             </li>
