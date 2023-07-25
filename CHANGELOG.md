@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.22.0](https://github.com/nicholaschiang/site/compare/v1.21.0...v1.22.0) (2023-07-25)
+
+
+### Features
+
+* **routes:** add profile settings page ([2caa531](https://github.com/nicholaschiang/site/commit/2caa53186e431a95f32c0a921b1c778eb9eb3acb))
+
+
+### Bug Fixes
+
+* **components/list-layout:** avoid `<main>` nesting ([ee04f6a](https://github.com/nicholaschiang/site/commit/ee04f6a49942b232db381af75f768ddf46dcd106))
+* replace `@remix-run/server-runtime` with `@vercel/remix` ([fcb385b](https://github.com/nicholaschiang/site/commit/fcb385b5495c728e14d8cdee8a3430b2debb65e4))
+
 ## [1.21.0](https://github.com/nicholaschiang/site/compare/v1.20.2...v1.21.0) (2023-07-25)
 
 
