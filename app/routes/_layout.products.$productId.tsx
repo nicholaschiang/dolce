@@ -1,9 +1,3 @@
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  Cross2Icon,
-  InfoCircledIcon,
-} from '@radix-ui/react-icons'
 import * as Popover from '@radix-ui/react-popover'
 import { Link, useLoaderData, useLocation, useNavigate } from '@remix-run/react'
 import {
@@ -11,6 +5,7 @@ import {
   type SerializeFrom,
   type V2_MetaFunction,
 } from '@vercel/remix'
+import { ChevronDown, ChevronUp, X, Info } from 'lucide-react'
 import { type PropsWithChildren, type ReactNode } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
@@ -127,7 +122,7 @@ export default function ProductPage() {
       <div className='flex items-center gap-2.5 border-b border-gray-200/50 bg-gray-50 p-2 px-6 dark:border-gray-700/50 dark:bg-gray-900'>
         <Tooltip tip='close' hotkey='esc'>
           <Dialog.Close className='icon-button square'>
-            <Cross2Icon />
+            <X className='w-3 h-3' />
           </Dialog.Close>
         </Tooltip>
         <div className='flex items-center gap-1'>
@@ -137,7 +132,7 @@ export default function ProductPage() {
             to={`../${productIds[productIndex - 1]}${location.search}`}
             disabled={productIndex <= 0}
           >
-            <ChevronUpIcon />
+            <ChevronUp className='w-3 h-3' />
           </LinkWithHotkey>
           <LinkWithHotkey
             tip='move down'
@@ -145,7 +140,7 @@ export default function ProductPage() {
             to={`../${productIds[productIndex + 1]}${location.search}`}
             disabled={productIndex === productIds.length - 1}
           >
-            <ChevronDownIcon />
+            <ChevronDown className='w-3 h-3' />
           </LinkWithHotkey>
         </div>
         <span className='mt-0.5 text-sm text-gray-600 dark:text-gray-400'>
@@ -352,7 +347,7 @@ Section.Info = function SectionInfo({ children }: PropsWithChildren) {
   return (
     <Popover.Root>
       <Popover.Trigger className='mb-0.5 text-gray-400 aria-expanded:text-gray-600 dark:text-gray-600 aria-expanded:dark:text-gray-400'>
-        <InfoCircledIcon />
+        <Info className='w-3 h-3' />
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content

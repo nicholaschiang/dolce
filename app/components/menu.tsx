@@ -1,7 +1,7 @@
 import * as Checkbox from '@radix-ui/react-checkbox'
-import { CaretDownIcon, CheckIcon } from '@radix-ui/react-icons'
 import cn from 'classnames'
 import { Command, useCommandState } from 'cmdk'
+import { ChevronDown, Check } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { Hotkey } from 'components/hotkey'
@@ -105,7 +105,7 @@ export function Item({
                 checked ? 'opacity-100' : 'opacity-0',
               )}
             >
-              <CheckIcon />
+              <Check className='w-3 h-3' />
             </Checkbox.Indicator>
           </Checkbox.Root>
         )}
@@ -123,7 +123,7 @@ export function ItemLabel({ group, children }: ItemLabelProps) {
       {group && <span className='truncate'>{group}</span>}
       {group && (
         <span className='mr-8 flex flex-1 items-center truncate text-gray-500'>
-          <CaretDownIcon className='mx-2 h-3 w-3 -rotate-90 group-aria-selected:text-gray-900 dark:group-aria-selected:text-gray-100' />
+          <ChevronDown className='mx-2 h-3 w-3 -rotate-90 group-aria-selected:text-gray-900 dark:group-aria-selected:text-gray-100' />
           {children}
         </span>
       )}

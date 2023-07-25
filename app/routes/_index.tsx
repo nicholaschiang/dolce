@@ -1,12 +1,11 @@
-import {
-  CameraIcon,
-  ArrowTopRightIcon,
-  CardStackIcon,
-  PersonIcon,
-} from '@radix-ui/react-icons'
-import type { IconProps } from '@radix-ui/react-icons/dist/types'
 import { Link } from '@remix-run/react'
-import type { FunctionComponent } from 'react'
+import {
+  Projector,
+  ExternalLink,
+  Shirt,
+  CalendarClock,
+  type LucideIcon,
+} from 'lucide-react'
 
 export default function IndexPage() {
   return (
@@ -17,14 +16,14 @@ export default function IndexPage() {
           title='/shows'
           subtitle='rotten tomatoes for fashion'
           url='/shows'
-          icon={CameraIcon}
+          icon={Projector}
         />
         <Milestone
           start={new Date(2023, 3, 18)}
           title='/life'
           subtitle='a graphical depiction'
           url='/life/life.pdf'
-          icon={PersonIcon}
+          icon={CalendarClock}
           openInNew
         />
         <Milestone
@@ -32,7 +31,7 @@ export default function IndexPage() {
           title='/products'
           subtitle='a fashion archive'
           url='/products'
-          icon={CardStackIcon}
+          icon={Shirt}
         />
         <Milestone
           start={new Date(2023, 0, 1)}
@@ -96,7 +95,7 @@ interface MilestoneProps {
   title: string
   subtitle: string
   url?: string
-  icon?: FunctionComponent<IconProps>
+  icon?: LucideIcon
   openInNew?: boolean
 }
 
@@ -109,7 +108,7 @@ function Milestone({
   icon,
   openInNew,
 }: MilestoneProps) {
-  const Icon = icon ?? ArrowTopRightIcon
+  const Icon = icon ?? ExternalLink
   return (
     <article className='before:content-[" "] relative m-12 text-lg leading-none before:absolute before:-left-6.5 before:top-1/2 before:h-1 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-gray-300 after:absolute after:-left-[calc(1.5rem_+_0.5px)] after:top-1/2 after:h-[calc(100%_+_3rem)] after:border-l after:border-gray-300 last:after:hidden dark:before:bg-gray-100 dark:after:border-gray-100'>
       <p className='text-xs lowercase text-gray-900/50 dark:text-gray-100/50'>
