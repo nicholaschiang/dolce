@@ -13,6 +13,7 @@ export function WhereToBuy() {
   const show = useLoaderData<typeof loader>()
   const links = show.collections.flatMap((collection) => collection.links)
   const brands = show.brands.filter((brand) => brand.url)
+  if (links.length === 0) return null
   return (
     <Section header='Where to buy' id='where-to-buy'>
       {links.length === 0 && (
