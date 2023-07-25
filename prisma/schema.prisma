@@ -798,6 +798,14 @@ model Review {
   // The review article URL (if it was posted online e.g. on Vogue).
   url String? @unique
 
+  // The date when the review article was originally written (if known).
+  // 
+  // This will be NULL for consumer reviews (as this would be redundant with the
+  // database createdAt field for consumer reviews). For critic reviews, the
+  // date when the review was originally written and the time when I imported it
+  // will often be different (which is why this field exists separately).
+  date DateTime?
+
   // Each user can only submit one review per show. This may be different for
   // critic reviews, but, for now, I've yet to encounter the same journalist
   // publishing two different reviews for the same show. If that does happen, I
