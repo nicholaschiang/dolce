@@ -58,7 +58,7 @@ module.exports = {
       {
         devDependencies: [
           'cypress/**',
-          'scraper/**',
+          'scripts/**',
           'test/**',
           'tests/**',
           'spec/**',
