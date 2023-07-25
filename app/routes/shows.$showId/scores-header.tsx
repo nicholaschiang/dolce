@@ -77,6 +77,7 @@ export function ScoresHeader() {
           autoPlay
           playsInline
           muted
+          loop
         >
           <source src={show.video.url} type={show.video.mimeType} />
           Download the <a href={show.video.url}>MP4</a> video.
