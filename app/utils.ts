@@ -1,5 +1,5 @@
 import { useRouteLoaderData } from '@remix-run/react'
-import type { AppData, SerializeFrom } from '@remix-run/server-runtime'
+import { type AppData, type SerializeFrom } from '@vercel/remix'
 import rfdc from 'rfdc'
 
 import type { User } from 'models/user.server'
@@ -44,13 +44,13 @@ function isUser(user: unknown): user is User {
   )
 }
 
-export function useOptionalUser(): User | undefined {
+export function useOptionalUser(): SerializeFrom<User> | undefined {
   const data = useData<typeof loader>('root')
   if (!data || !isUser(data.user)) return undefined
   return data.user
 }
 
-export function useUser(): User {
+export function useUser(): SerializeFrom<User> {
   const maybeUser = useOptionalUser()
   if (!maybeUser) {
     const error =
