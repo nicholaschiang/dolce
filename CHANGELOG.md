@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.20.1](https://github.com/nicholaschiang/site/compare/v1.20.0...v1.20.1) (2023-07-25)
+
+
+### Bug Fixes
+
+* **scripts/vogue:** omit duplicate "menswear" in show title ([90fdc4d](https://github.com/nicholaschiang/site/commit/90fdc4d75b09db9a9f04cd2326db706b42fe798c))
+
 ## [1.20.0](https://github.com/nicholaschiang/site/compare/v1.19.0...v1.20.0) (2023-07-25)
 
 
