@@ -83,7 +83,7 @@ function Looks({ className }: { className: string }) {
           <li key={look.id}>
             <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
               <img
-                className='object-cover h-full'
+                className='object-cover h-full w-full'
                 src={look.image.url}
                 alt=''
               />
