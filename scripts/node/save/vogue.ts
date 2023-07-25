@@ -48,7 +48,7 @@ void save()
 function caps(sentence: string): string {
   return sentence
     .split(' ')
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .map((w) => `${w.charAt(0).toUpperCase()}${w.slice(1).toLowerCase()}`)
     .join(' ')
 }
 
@@ -100,8 +100,7 @@ function getData(show: Show) {
         connectOrCreate: { where: { name: vogue.name }, create: vogue },
       },
     }
-  let name = `${show.brand} ${caps(show.season)}`
-  if (show.title.includes('Menswear')) name += ' Menswear'
+  const name = `${show.brand} ${caps(show.season)}`
 
   // TODO Vogue will list the same collection twice (once under "Menswear" and
   // again without "Menswear") if that collection is unisex. I can fix this by
