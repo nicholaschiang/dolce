@@ -12,6 +12,12 @@ export const meta: V2_MetaFunction = () => [
     title:
       'Fashion Shows: Fashion Week, Runway, Designer Collections | Nicholas Chiang',
   },
+  {
+    name: 'description',
+    content:
+      'Get up-to-the-minute fashion show coverage at New York, London, ' +
+      'Milan, and Paris Fashion Weeks. See photos, videos, reviews, and more.',
+  },
 ]
 
 export async function loader() {

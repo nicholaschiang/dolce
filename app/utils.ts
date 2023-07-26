@@ -11,6 +11,19 @@ export const clone = rfdc()
 const DEFAULT_REDIRECT = '/'
 
 /**
+ * Capitalizes the first letter of each word in the given string. Lowercases all
+ * the other letters in each string (e.g. "RESORT 2024" -> "Resort 2024").
+ * @param str The string to capitalize.
+ * @returns The capitalized string.
+ */
+export function caps(sentence: string): string {
+  return sentence
+    .split(' ')
+    .map((w) => `${w.charAt(0).toUpperCase()}${w.slice(1).toLowerCase()}`)
+    .join(' ')
+}
+
+/**
  * This should be used any time the redirect path is user-provided
  * (Like the query string on our login/signup pages). This avoids
  * open-redirect vulnerabilities.

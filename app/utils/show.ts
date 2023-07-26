@@ -1,6 +1,8 @@
 import { Sex, type Collection, type Season } from '@prisma/client'
 import { type SerializeFrom } from '@vercel/remix'
 
+import { getSeasonName } from 'utils/season'
+
 /**
  * Get the show sex header (i.e. "Menswear" or "") based on the collections sex.
  * If every collection in the show has a sex of "MAN", then "Menswear" will be
@@ -23,5 +25,5 @@ export function getShowSeason(
   show: SerializeFrom<{ collections: Collection[]; season: Season }>,
 ) {
   const sex = getShowSex(show)
-  return `${show.season.name.replace('_', '-')} ${show.season.year} ${sex}`
+  return `${getSeasonName(show.season)} ${sex}`
 }

@@ -9,6 +9,7 @@ import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 import { cn } from 'utils/cn'
+import { getShowSeason } from 'utils/show'
 
 import { ConsumerReviews } from './consumer-reviews'
 import { CriticReviews } from './critic-reviews'
@@ -21,9 +22,25 @@ import { WhereToBuy } from './where-to-buy'
 
 export { action } from './rate-and-review'
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
-  { title: `${data?.name ?? '404'} Collection | Nicholas Chiang` },
-]
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  if (data == null) return [{ title: '404 | Nicholas Chiang' }]
+  const keywords = [
+    ...data.brands.map((brand) => brand.name),
+    getShowSeason(data),
+    'runway_review',
+    'runway',
+  ].join(', ')
+  return [
+    { title: `${data.name} Collection | Nicholas Chiang` },
+    {
+      name: 'description',
+      content: `${data.name} collection, runway looks, beauty, models, and reviews.`,
+    },
+    { name: 'keywords', content: keywords },
+    { name: 'news_keywords', content: keywords },
+    { name: 'content-type', content: 'fashionshow' },
+  ]
+}
 
 export const handle: Handle = {
   breadcrumb: (match) => (

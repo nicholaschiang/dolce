@@ -24,9 +24,8 @@ const getPreferredTheme = () =>
 
 export function useTheme() {
   const context = useContext(ThemeContext)
-  if (context === undefined) {
+  if (context === undefined)
     throw new Error('useTheme must be used within a ThemeProvider')
-  }
   return context
 }
 
@@ -50,9 +49,7 @@ export function ThemeProvider({
 
     // there's no way for us to know what the theme should be in this context
     // the client will have to figure it out before hydration.
-    if (typeof window !== 'object') {
-      return null
-    }
+    if (typeof window !== 'object') return null
 
     return getPreferredTheme()
   })
@@ -76,7 +73,7 @@ export function ThemeProvider({
 }
 
 const clientThemeCode = `
-// hi there dear reader üëã
+// hi there dear reader 👋
 // this is how I make certain we avoid a flash of the wrong theme. If you select
 // a theme, then I'll know what you want in the future and you'll not see this
 // script anymore.
