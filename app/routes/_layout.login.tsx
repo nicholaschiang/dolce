@@ -33,9 +33,16 @@ import { verifyLogin } from 'models/user.server'
 import { type Handle } from 'root'
 import { createUserSession, getUserId } from 'session.server'
 import { safeRedirect } from 'utils'
-import { email as emailSchema, password as passwordSchema } from 'utils/schema'
+import {
+  username as usernameSchema,
+  email as emailSchema,
+  password as passwordSchema,
+} from 'utils/schema'
 
-const schema = z.object({ email: emailSchema, password: passwordSchema })
+const schema = z.object({
+  emailOrUsername: emailSchema.or(usernameSchema),
+  password: passwordSchema,
+})
 
 export const handle: Handle = {
   breadcrumb: () => <Link to='/login'>login</Link>,
@@ -59,12 +66,12 @@ export async function action({ request }: ActionArgs) {
     return json(submission, { status: 400 })
 
   const user = await verifyLogin(
-    submission.value.email,
+    submission.value.emailOrUsername,
     submission.value.password,
   )
 
   if (!user) {
-    submission.error.email = 'Incorrect email or password'
+    submission.error.emailOrUsername = 'Incorrect email or password'
     return json(submission, { status: 400 })
   }
 
@@ -82,7 +89,7 @@ export default function LoginPage() {
   const [searchParams] = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') ?? undefined
   const lastSubmission = useActionData<typeof action>()
-  const [form, { email, password }] = useForm({
+  const [form, { emailOrUsername, password }] = useForm({
     lastSubmission,
     onValidate({ formData }) {
       return parse(formData, { schema })
@@ -105,13 +112,15 @@ export default function LoginPage() {
           </p>
         </header>
         <input type='hidden' name='redirectTo' value={redirectTo} />
-        <FormField name={email.name}>
+        <FormField name={emailOrUsername.name}>
           <FormLabelWrapper>
-            <FormLabel>Email</FormLabel>
-            {email.error && <FormMessage>{email.error}</FormMessage>}
+            <FormLabel>Email or username</FormLabel>
+            {emailOrUsername.error && (
+              <FormMessage>{emailOrUsername.error}</FormMessage>
+            )}
           </FormLabelWrapper>
           <FormControl asChild>
-            <Input type='email' placeholder='anna@vogue.com' required />
+            <Input placeholder='anna@vogue.com' required />
           </FormControl>
         </FormField>
         <FormField name={password.name}>

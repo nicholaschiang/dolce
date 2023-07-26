@@ -62,15 +62,14 @@ export async function updateUser(
 }
 
 export async function verifyLogin(
-  email: User['email'],
+  emailOrUsername: User['email'] | User['username'],
   password: Password['hash'],
 ) {
   const userWithPassword = await prisma.user.findFirst({
-    where: { email },
-    include: {
-      password: true,
-    },
+    where: { OR: [{ email: emailOrUsername }, { username: emailOrUsername }] },
+    include: { password: true },
   })
+  console.log('user', userWithPassword)
   if (!userWithPassword || !userWithPassword.password) return null
   const isValid = await bcrypt.compare(password, userWithPassword.password.hash)
   if (!isValid) return null
