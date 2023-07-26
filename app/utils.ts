@@ -1,5 +1,5 @@
 import { useRouteLoaderData } from '@remix-run/react'
-import { type AppData, type SerializeFrom } from '@vercel/remix'
+import type { AppData, SerializeFrom } from '@remix-run/server-runtime'
 import rfdc from 'rfdc'
 
 import type { User } from 'models/user.server'
