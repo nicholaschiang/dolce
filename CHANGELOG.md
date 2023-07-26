@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.23.0](https://github.com/nicholaschiang/site/compare/v1.22.1...v1.23.0) (2023-07-26)
+
+
+### Features
+
+* **login:** authenticate with email or username ([421f888](https://github.com/nicholaschiang/site/commit/421f888c273ad8239e0217fd0b0b779535674ab5))
+
 ## [1.22.1](https://github.com/nicholaschiang/site/compare/v1.22.0...v1.22.1) (2023-07-26)
 
 
