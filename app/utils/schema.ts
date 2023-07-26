@@ -1,10 +1,6 @@
 import { z } from 'zod'
 
-export const name = z
-  .string()
-  .trim()
-  .min(1, 'Name is required')
-  .includes(' ', { message: 'Name must include both first and last' })
+export const name = z.string().trim().min(1, 'Name is required')
 
 export const username = z
   .string()
