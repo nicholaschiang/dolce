@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.23.1](https://github.com/nicholaschiang/site/compare/v1.23.0...v1.23.1) (2023-07-26)
+
+
+### Bug Fixes
+
+* **utils/schema:** allow single word names ([3e004f4](https://github.com/nicholaschiang/site/commit/3e004f428dc7636b410816cb608f26858b144eda))
+
 ## [1.23.0](https://github.com/nicholaschiang/site/compare/v1.22.1...v1.23.0) (2023-07-26)
 
 
