@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+overrides:
+  '@remix-run/server-runtime': ^1.19.1
+  '@remix-run/node': ^1.19.1
+
 dependencies:
   '@conform-to/react':
     specifier: ^0.7.4

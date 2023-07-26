@@ -181,5 +181,9 @@
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"
   },
+  "resolutions": {
+    "@remix-run/server-runtime": "^1.19.1",
+    "@remix-run/node": "^1.19.1"
+  },
   "packageManager": "pnpm@8.1.1"
 }
