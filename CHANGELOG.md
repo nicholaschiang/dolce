@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.22.1](https://github.com/nicholaschiang/site/compare/v1.22.0...v1.22.1) (2023-07-26)
+
+
+### Bug Fixes
+
+* replace `@radix-ui/react-icons` with `lucide-react` ([045cb35](https://github.com/nicholaschiang/site/commit/045cb35e7cb8cc38a694378d7abb706307d6b8db))
+
 ## [1.22.0](https://github.com/nicholaschiang/site/compare/v1.21.0...v1.22.0) (2023-07-25)
 
 
