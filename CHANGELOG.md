@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.24.0](https://github.com/nicholaschiang/site/compare/v1.23.1...v1.24.0) (2023-07-27)
+
+
+### Features
+
+* **root:** add author, copyright, and referrer meta ([ebfbc2f](https://github.com/nicholaschiang/site/commit/ebfbc2f59a08db54192e0c4846f4ec23f972a135))
+* **routes:** add meta descriptions to show pages ([4680561](https://github.com/nicholaschiang/site/commit/468056153efe88829ba7c412ca315a8f3a25c4e7))
+
 ## [1.23.1](https://github.com/nicholaschiang/site/compare/v1.23.0...v1.23.1) (2023-07-26)
 
 
