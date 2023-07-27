@@ -50,50 +50,6 @@ export const handle: Handle = {
 
 export const config = { runtime: 'edge' }
 
-function Header() {
-  const matches = useMatches()
-  const user = useOptionalUser()
-  return (
-    <header className='sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
-      <ol className='flex items-center gap-2'>
-        {matches
-          .filter((match) => match.handle && match.handle.breadcrumb)
-          .map((match, index) => (
-            <Fragment key={match.id}>
-              {index !== 0 && (
-                <span className='text-gray-300 dark:text-gray-600'>/</span>
-              )}
-              <li>{(match.handle as Handle).breadcrumb(match)}</li>
-            </Fragment>
-          ))}
-      </ol>
-      <div className='flex items-center'>
-        {!matches.some((match) => match.id.includes('login')) && (
-          <Link
-            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
-            to={user ? '/logout' : '/login'}
-          >
-            {user ? (
-              <LogOut className='w-3 h-3' />
-            ) : (
-              <LogIn className='w-3 h-3' />
-            )}
-          </Link>
-        )}
-        {user && (
-          <Link
-            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
-            to='/profile'
-          >
-            <User className='w-3 h-3' />
-          </Link>
-        )}
-        <ThemeSwitcher />
-      </div>
-    </header>
-  )
-}
-
 export const links: LinksFunction = () => [
   {
     rel: 'preload',
@@ -208,6 +164,51 @@ export async function loader({ request }: LoaderArgs) {
 
 export type LoaderData = SerializeFrom<typeof loader>
 
+export function ErrorBoundary() {
+  const error = useRouteError()
+  if (isRouteErrorResponse(error))
+    return (
+      <ErrorDisplay>
+        <code>
+          <a
+            href={`https://httpstatuses.io/${error.status}`}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='underline'
+          >
+            {error.status} {error.statusText}
+          </a>
+        </code>
+        <br />
+        <code dangerouslySetInnerHTML={{ __html: String(error.data) }} />
+      </ErrorDisplay>
+    )
+  if (error instanceof Error)
+    return (
+      <ErrorDisplay>
+        <code>{error.message}</code>
+        <br />
+        <code dangerouslySetInnerHTML={{ __html: error.stack ?? '' }} />
+      </ErrorDisplay>
+    )
+  return (
+    <ErrorDisplay>
+      <code>An unexpected runtime error ocurred</code>
+    </ErrorDisplay>
+  )
+}
+
+export default function AppWithProviders() {
+  const data = useLoaderData<typeof loader>()
+  return (
+    <ThemeProvider specifiedTheme={data.theme}>
+      <App data={data}>
+        <Outlet />
+      </App>
+    </ThemeProvider>
+  )
+}
+
 function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
   const [theme] = useTheme()
   const navigation = useNavigation()
@@ -251,6 +252,50 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
   )
 }
 
+function Header() {
+  const matches = useMatches()
+  const user = useOptionalUser()
+  return (
+    <header className='sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
+      <ol className='flex items-center gap-2'>
+        {matches
+          .filter((match) => match.handle && match.handle.breadcrumb)
+          .map((match, index) => (
+            <Fragment key={match.id}>
+              {index !== 0 && (
+                <span className='text-gray-300 dark:text-gray-600'>/</span>
+              )}
+              <li>{(match.handle as Handle).breadcrumb(match)}</li>
+            </Fragment>
+          ))}
+      </ol>
+      <div className='flex items-center'>
+        {!matches.some((match) => match.id.includes('login')) && (
+          <Link
+            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
+            to={user ? '/logout' : '/login'}
+          >
+            {user ? (
+              <LogOut className='w-3 h-3' />
+            ) : (
+              <LogIn className='w-3 h-3' />
+            )}
+          </Link>
+        )}
+        {user && (
+          <Link
+            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
+            to='/profile'
+          >
+            <User className='w-3 h-3' />
+          </Link>
+        )}
+        <ThemeSwitcher />
+      </div>
+    </header>
+  )
+}
+
 function ErrorDisplay({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider specifiedTheme={null}>
@@ -278,51 +323,6 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
             </div>
           </article>
         </div>
-      </App>
-    </ThemeProvider>
-  )
-}
-
-export function ErrorBoundary() {
-  const error = useRouteError()
-  if (isRouteErrorResponse(error))
-    return (
-      <ErrorDisplay>
-        <code>
-          <a
-            href={`https://httpstatuses.io/${error.status}`}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='underline'
-          >
-            {error.status} {error.statusText}
-          </a>
-        </code>
-        <br />
-        <code dangerouslySetInnerHTML={{ __html: String(error.data) }} />
-      </ErrorDisplay>
-    )
-  if (error instanceof Error)
-    return (
-      <ErrorDisplay>
-        <code>{error.message}</code>
-        <br />
-        <code dangerouslySetInnerHTML={{ __html: error.stack ?? '' }} />
-      </ErrorDisplay>
-    )
-  return (
-    <ErrorDisplay>
-      <code>An unexpected runtime error ocurred</code>
-    </ErrorDisplay>
-  )
-}
-
-export default function AppWithProviders() {
-  const data = useLoaderData<typeof loader>()
-  return (
-    <ThemeProvider specifiedTheme={data.theme}>
-      <App data={data}>
-        <Outlet />
       </App>
     </ThemeProvider>
   )

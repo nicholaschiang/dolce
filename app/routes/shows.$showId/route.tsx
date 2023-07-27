@@ -22,6 +22,12 @@ import { WhereToBuy } from './where-to-buy'
 
 export { action } from './rate-and-review'
 
+// Eagerly load images for the first three rows of looks (above the fold).
+const rowsToEagerLoad = 3
+
+// How many looks are shown in each row of results.
+const looksPerRow = 2
+
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: '404 | Nicholas Chiang' }]
   const keywords = [
@@ -95,12 +101,23 @@ function Looks({ className }: { className: string }) {
   const show = useLoaderData<typeof loader>()
   return (
     <div className={cn('overflow-auto', className)}>
-      <ol className='grid grid-cols-2 gap-x-2 gap-y-6'>
-        {show.looks.map((look) => (
+      <ol
+        className='grid gap-x-2 gap-y-6'
+        style={{
+          gridTemplateColumns: `repeat(${looksPerRow}, minmax(0, 1fr))`,
+        }}
+      >
+        {show.looks.map((look, index) => (
           <li key={look.id}>
             <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
               <img
                 className='object-cover h-full w-full'
+                loading={
+                  index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
+                }
+                decoding={
+                  index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'
+                }
                 src={look.image.url}
                 alt=''
               />
