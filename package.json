@@ -34,6 +34,7 @@
     "typecheck:cypress": "tsc -b cypress",
     "validate": "run-p \"test --run\" lint typecheck test:e2e:run",
     "scripts": "run-s 'scripts:*'",
+    "scripts:prisma": "prisma generate",
     "scripts:build": "tsc -p scripts/node",
     "scripts:run": "node scripts/node/out/vogue.js | pino-pretty"
   },
