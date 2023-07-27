@@ -214,6 +214,12 @@ module.exports = {
     // @see {@link https://robinpokorny.medium.com/index-as-a-key-is-an-anti-pattern-e0349aece318}
     'react/no-array-index-key': 'warn',
 
+    // Allow `tw` properties when using Tailwind with `@vercel/og`.
+    // @see {@link https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unknown-property.md}
+    // @see {@link https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation}
+    // @see {@link http://bit.ly/3Kfwovz}
+    'react/no-unknown-property': ['error', { ignore: ['tw'] }],
+
     // Configure `jsx-a11y` to recognize RMWC input components as controls.
     // {@link https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/master/docs/rules/label-has-associated-control.md#case-my-label-and-input-components-are-custom-components}
     'jsx-a11y/label-has-associated-control': [
