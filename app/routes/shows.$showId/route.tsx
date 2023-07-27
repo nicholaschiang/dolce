@@ -31,7 +31,7 @@ const looksPerRow = 2
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: '404 | Nicholas Chiang' }]
   const keywords = [
-    ...data.brands.map((brand) => brand.name),
+    data.brand.name,
     getShowSeason(data),
     'runway_review',
     'runway',
@@ -66,7 +66,7 @@ export async function loader({ request, params }: LoaderArgs) {
       include: {
         video: true,
         season: true,
-        brands: true,
+        brand: true,
         collections: {
           include: {
             links: { include: { brand: true, retailer: true } },

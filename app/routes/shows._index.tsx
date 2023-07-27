@@ -26,7 +26,7 @@ export async function loader() {
   const shows = await prisma.show.findMany({
     include: {
       season: true,
-      brands: true,
+      brand: true,
       collections: true,
       looks: { include: { image: true }, orderBy: { number: 'asc' }, take: 1 },
     },
@@ -76,7 +76,7 @@ export default function ShowsPage() {
                   />
                 </div>
                 <h2 className='text-xl font-serif font-semibold text-center'>
-                  {show.brands.map((brand) => brand.name).join(', ')}
+                  {show.brand.name}
                 </h2>
                 <h3 className='text-xs uppercase text-center'>
                   {getShowSeason(show)}

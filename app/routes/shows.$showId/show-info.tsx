@@ -30,18 +30,13 @@ export function ShowInfo() {
           <InfoItem label='Location'>{show.location}</InfoItem>
         )}
         <InfoItem label='Looks'>{show.looks.length}</InfoItem>
-        <InfoItem
-          label={show.brands.length === 1 ? 'Brand' : 'Brands'}
-          className='inline-flex gap-1'
-        >
-          {show.brands.map((brand) =>
-            brand.url ? (
-              <ExternalLink key={brand.id} href={brand.url}>
-                {brand.name}
-              </ExternalLink>
-            ) : (
-              <span key={brand.id}>{brand.name}</span>
-            ),
+        <InfoItem label='Brand' className='inline-flex gap-1'>
+          {show.brand.url ? (
+            <ExternalLink key={show.brand.id} href={show.brand.url}>
+              {show.brand.name}
+            </ExternalLink>
+          ) : (
+            <span key={show.brand.id}>{show.brand.name}</span>
           )}
         </InfoItem>
         <InfoItem label='URL'>

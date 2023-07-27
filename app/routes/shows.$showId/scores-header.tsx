@@ -104,7 +104,7 @@ export function ScoresHeader() {
         </div>
         <article className='flex-1 bg-gray-100 dark:bg-gray-900 text-center px-6 flex flex-col'>
           <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
-            {show.brands.map((brand) => brand.name).join(', ')}
+            {show.brand.name}
           </h1>
           <h2 className='uppercase mb-6 text-sm'>{getShowSeason(show)}</h2>
           <ul className='grid grid-cols-2 gap-2 mt-auto'>

@@ -4,6 +4,8 @@ import { Level, Market, PrismaClient, Tier } from '@prisma/client'
 import type { Prisma } from '@prisma/client'
 import ProgressBar from 'progress'
 
+import { slug } from './utils'
+
 type Product = {
   image: {
     alt: string
@@ -104,6 +106,7 @@ async function save(dir = 'public/data/aritzia') {
       where: { name: product.master.brand.toLowerCase() },
       create: {
         name: product.master.brand.toLowerCase(),
+        slug: slug(product.master.brand),
         description: '',
         tier: Tier.AFFORDABLE_LUXURY,
         company: {
