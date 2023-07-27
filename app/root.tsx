@@ -45,7 +45,11 @@ import { useOptionalUser } from 'utils'
 export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
 
 export const handle: Handle = {
-  breadcrumb: () => <Link to='/'>nicholas.engineering</Link>,
+  breadcrumb: () => (
+    <Link prefetch='intent' to='/'>
+      nicholas.engineering
+    </Link>
+  ),
 }
 
 export const config = { runtime: 'edge' }

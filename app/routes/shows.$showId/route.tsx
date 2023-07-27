@@ -50,7 +50,7 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
 
 export const handle: Handle = {
   breadcrumb: (match) => (
-    <Link to={`/shows/${match.params.showId as string}`}>
+    <Link prefetch='intent' to={`/shows/${match.params.showId as string}`}>
       {(match.data as SerializeFrom<typeof loader>)?.name ?? '404'}
     </Link>
   ),
