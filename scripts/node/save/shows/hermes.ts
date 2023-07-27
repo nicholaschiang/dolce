@@ -1,4 +1,6 @@
-import { type Prisma, Sex, Tier, SeasonName } from '@prisma/client'
+import { type Prisma, Sex, Level, Tier, SeasonName } from '@prisma/client'
+
+import { slug } from '../utils'
 
 const NUM_LOOKS = 53
 
@@ -546,6 +548,7 @@ const country = {
 }
 const brand: Prisma.BrandCreateInput = {
   name: 'Hermès',
+  slug: slug('Hermès'), 
   description:
     'Hermès International S.A. is a French luxury design house established in 1837. It specializes in leather goods, lifestyle accessories, home furnishings, perfumery, jewelry, watches and ready-to-wear. Since the 1950s, its logo has been a depiction of a ducal horse-drawn carriage.',
   tier: Tier.SUPERPREMIUM,
@@ -571,7 +574,6 @@ const link: Prisma.LinkCreateInput = {
 }
 const collection: Prisma.CollectionCreateInput = {
   name: 'Hermès Spring-Summer 2023 Menswear',
-  sex: Sex.MAN,
   season: {
     connectOrCreate: {
       where: { name_year: { name: season.name, year: season.year } },
@@ -585,6 +587,8 @@ const collection: Prisma.CollectionCreateInput = {
 }
 export const show: Prisma.ShowCreateInput = {
   name: 'Hermès Spring-Summer 2023 Menswear',
+  level: Level.RTW,
+  sex: Sex.MAN,
   url: 'https://www.hermes.com/us/en/story/302944-men-summer-2023-runway-show/',
   description: `A bright, vibrant summer; the joy of being together. The vacation spirit, a magic destination both joyous and serene, with the breeze imperceptibly ruffling the clothes that enfold you. A feeling of lightness makes you float in the sunlight.
 
@@ -611,5 +615,5 @@ export const show: Prisma.ShowCreateInput = {
   collections: {
     connectOrCreate: { where: { name: collection.name }, create: collection },
   },
-  brands: { connectOrCreate: { where: { name: brand.name }, create: brand } },
+  brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }

@@ -172,6 +172,11 @@ enum Tier {
 
 // A brand is a recognizable name. Brands with similar names are given tiers.
 // e.g. GUESS is given tier 1 while GBG and GUESS FACTORY are given tier 2.
+//
+// Typically, a brand will be the name that appears on that tags of products.
+// Occasionally, a brand will not have its own products (e.g. "Fashion East" is
+// considered a brand even though they do not create their own products; they
+// simply showcase other designer's brand's clothing at their runway shows).
 model Brand {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -179,6 +184,12 @@ model Brand {
 
   // The brand's most recognizable name, styled in the brand's preferred format.
   name String @unique
+
+  // The URL friendly slug identifier for the brand. This is different than the
+  // integer ID column as I want to have a user-friendly URL for each brand.
+  // Ex: /shows/resort-2024/hermes is better than /shows/356 for SEO.
+  // @see {@link https://linear.app/nicholaschiang/issue/NC-673}
+  slug String @unique
 
   // The brand's avatar URL (i.e. logo).
   avatar String? @unique
@@ -628,9 +639,6 @@ model Collection {
   // The collection's name (e.g. "Hermès Spring-Summer 2023 Menswear").
   name String @unique
 
-  // The collection's intended sex (i.e. "menswear" v.s. "womenswear").
-  sex Sex
-
   // The collection's style category (if limited to a single category).
   style   Style? @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   styleId Int?
@@ -654,7 +662,15 @@ model Collection {
   // @todo products are already associated with designers; do we need this?
   designers User[]
 
-  // The brands that created the collection.
+  // The brands that created the collection. Generally, we will only have one 
+  // brand, but—according to ChatGPT—there have been runway collections that 
+  // have been operated by multiple brands and showcased pieces from both of the 
+  // brands. One example is the "Fashion East" show in London, which provides a 
+  // platform for emerging designers to showcase their collections. The show 
+  // often features a combination of individual designers and collaborative 
+  // collections. Another example is the "Designer Collaborations" show at New 
+  // York Fashion Week, which features collaborations between established 
+  // designers and brands.
   // @todo products are already associated with brands; do we need this?
   brands Brand[]
 }
@@ -837,10 +853,21 @@ model Show {
 
   // The name of the show, as designated by the show's organizer.
   // @todo often this will be the same as the collection name; do we need this?
+  // @todo often this is just a function of the brand + season names...
   name String @unique
 
   // The link to the show on the brand website (where the description is from).
   url String @unique
+
+  // The show's sex (i.e. "womenswear", "menswear", or both).
+  // @todo remove this once we have full show > collection > product data, as
+  // the product object already has the sex field attached to it.
+  sex Sex
+
+  // The show's level (i.e. "ready-to-wear", "couture", etc).
+  // @todo remove this once we have full show > collection > product data, as
+  // the product object already has the level field attached to it.
+  level Level
 
   // A description of the collection, typically provided by the brand.
   description String?
@@ -876,16 +903,17 @@ model Show {
   // The looks that were presented at the show.
   looks Look[]
 
-  // The brands that were showcased by the show. Typically, these will also be 
-  // the brands that produced the show. Generally, a show will only have one 
-  // brand, but—according to ChatGPT—there have been runway fashion shows that 
-  // have been operated by multiple brands and showcased pieces from both of the 
-  // brands. One example is the "Fashion East" show in London, which provides a 
-  // platform for emerging designers to showcase their collections. The show 
-  // often features a combination of individual designers and collaborative 
-  // collections. Another example is the "Designer Collaborations" show at New 
-  // York Fashion Week, which features collaborations between established 
-  // designers and brands.
-  // @todo collections are already associated with brands; do we need this?
-  brands Brand[]
+  // The brand that hosted the show. This is different than the collection(s)
+  // brand(s) that were presented at the show. Often, they will be the same.
+  // Occasionally, however, the brand that hosts the show (e.g. "Fashion East")
+  // will not be the brand(s) that presented their products at the show.
+  brand   Brand @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  brandId Int
+
+  // A brand can only have a single show per season per sex (i.e. "menswear",
+  // "womenswear", or both) per level (i.e. "couture", "ready-to-wear", etc). 
+  // This constraint was inspired by Vogue's URLs (e.g. /resort-2024/hermes). It 
+  // may need adjustment in the future if there is ever a brand that presents 
+  // twice during a single season (but that probably means I need more seasons).
+  @@unique([brandId, seasonId, sex, level])
 }

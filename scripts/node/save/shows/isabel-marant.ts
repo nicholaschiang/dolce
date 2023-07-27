@@ -1,4 +1,6 @@
-import { type Prisma, Sex, Tier, SeasonName } from '@prisma/client'
+import { type Prisma, Sex, Level, Tier, SeasonName } from '@prisma/client'
+
+import { slug } from '../utils'
 
 const NUM_LOOKS = 59
 
@@ -201,6 +203,7 @@ const country = {
 }
 const brand: Prisma.BrandCreateInput = {
   name: 'Isabel Marant',
+  slug: slug('Isabel Marant'),
   description:
     'Isabel Marant is a French fashion designer, owner of the eponymous fashion brand. She won the Award de la Mode, the Whirlpool Award for best female designer, Fashion Designer of the Year at British Glamour’s Women of the Year Awards. She was named Contemporary Designer of the Year at the Elle Style Awards in 2014.',
   url: 'https://www.isabelmarant.com',
@@ -220,7 +223,6 @@ const brand: Prisma.BrandCreateInput = {
 }
 const collection: Prisma.CollectionCreateInput = {
   name: 'Isabel Marant Fall-Winter 2023',
-  sex: Sex.WOMAN,
   season: {
     connectOrCreate: {
       where: { name_year: { name: season.name, year: season.year } },
@@ -233,6 +235,8 @@ const collection: Prisma.CollectionCreateInput = {
 }
 export const show: Prisma.ShowCreateInput = {
   name: 'Isabel Marant Fall-Winter 2023',
+  level: Level.RTW,
+  sex: Sex.WOMAN,
   url: 'https://www.isabelmarant.com/us/lookbooks/isabel-marant/isabel-marant-fall-winter-2023/',
   description: `A desire to cuddle up in comfy knitwear and swaddling coats. The disorder of some kind of irreverence and a sexy unconventional attitude.
 
@@ -259,5 +263,5 @@ Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza a
   collections: {
     connectOrCreate: { where: { name: collection.name }, create: collection },
   },
-  brands: { connectOrCreate: { where: { name: brand.name }, create: brand } },
+  brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }

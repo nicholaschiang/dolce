@@ -1,4 +1,4 @@
-import { Sex, type Collection, type Season } from '@prisma/client'
+import { Sex, type Show, type Collection, type Season } from '@prisma/client'
 import { type SerializeFrom } from '@vercel/remix'
 
 import { getSeasonName } from 'utils/season'
@@ -8,13 +8,8 @@ import { getSeasonName } from 'utils/season'
  * If every collection in the show has a sex of "MAN", then "Menswear" will be
  * appended to the header. Otherwise, nothing will be appended.
  */
-function getShowSex(show: SerializeFrom<{ collections: Collection[] }>) {
-  const sex = show.collections
-    .map((collection) => collection.sex)
-    .every((value) => value === Sex.MAN)
-    ? 'Menswear'
-    : ''
-  return sex
+function getShowSex(show: SerializeFrom<Show>) {
+  return show.sex === Sex.MAN ? 'Menswear' : ''
 }
 
 /**
@@ -22,8 +17,7 @@ function getShowSex(show: SerializeFrom<{ collections: Collection[] }>) {
  * This is more convoluted than normal due to the weirdness with "Menswear".
  */
 export function getShowSeason(
-  show: SerializeFrom<{ collections: Collection[]; season: Season }>,
+  show: SerializeFrom<Show & { collections: Collection[]; season: Season }>,
 ) {
-  const sex = getShowSex(show)
-  return `${getSeasonName(show.season)} ${sex}`
+  return `${getSeasonName(show.season)} ${getShowSex(show)}`
 }

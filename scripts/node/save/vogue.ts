@@ -4,9 +4,16 @@
 import fs from 'fs'
 import path from 'path'
 
-import { type Prisma, Sex, SeasonName, PrismaClient } from '@prisma/client'
+import {
+  type Prisma,
+  Sex,
+  Level,
+  SeasonName,
+  PrismaClient,
+} from '@prisma/client'
 import ProgressBar from 'progress'
 
+import { slug } from './utils'
 import example from './vogue/resort-2024.json'
 
 const PATH = '../../../public/data/vogue/shows.json'
@@ -108,7 +115,6 @@ function getData(show: Show) {
   // and then merge those collections under the same unisex name.
   const collection: Prisma.CollectionCreateInput = {
     name,
-    sex: show.title.includes('Menswear') ? Sex.MAN : Sex.WOMAN,
     season: {
       connectOrCreate: {
         where: { name_year: { name: season.name, year: season.year } },
@@ -125,6 +131,7 @@ function getData(show: Show) {
   })
   const brand: Prisma.BrandCreateInput = {
     name: show.brand,
+    slug: slug(show.brand),
     description: null,
     tier: null,
     avatar: null,
@@ -136,6 +143,8 @@ function getData(show: Show) {
     description: null,
     criticReviewSummary: null,
     consumerReviewSummary: null,
+    sex: show.title.includes('Menswear') ? Sex.MAN : Sex.WOMAN,
+    level: show.title.includes('Couture') ? Level.COUTURE : Level.RTW,
     date: show.date ? new Date(show.date) : null,
     location: null,
     reviews: review ? { create: review } : undefined,
@@ -147,7 +156,7 @@ function getData(show: Show) {
     },
     collections: { connectOrCreate: { where: { name }, create: collection } },
     looks: { create: looks },
-    brands: { connectOrCreate: { where: { name: brand.name }, create: brand } },
+    brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
   }
   return data
 }

@@ -12,7 +12,6 @@ import { Section } from './section'
 export function WhereToBuy() {
   const show = useLoaderData<typeof loader>()
   const links = show.collections.flatMap((collection) => collection.links)
-  const brands = show.brands.filter((brand) => brand.url)
   if (links.length === 0) return null
   return (
     <Section header='Where to buy' id='where-to-buy'>
@@ -22,17 +21,14 @@ export function WhereToBuy() {
             There are no direct links to this collection on retailer or brand
             websites.
           </p>
-          {brands.length > 0 && (
+          {show.brand.url != null && (
             <p>
               You can try browsing the{' '}
-              {brands.map((brand, index) => (
-                <span>
-                  {index !== 0 && ', '}
-                  <ExternalLink href={brand.url ?? ''}>
-                    {brand.name}
-                  </ExternalLink>
-                </span>
-              ))}{' '}
+              <span>
+                <ExternalLink href={show.brand.url}>
+                  {show.brand.name}
+                </ExternalLink>
+              </span>{' '}
               website to find these items.
             </p>
           )}
