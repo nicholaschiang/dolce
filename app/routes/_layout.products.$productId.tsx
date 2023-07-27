@@ -26,7 +26,10 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
 
 export const handle: Handle = {
   breadcrumb: (match) => (
-    <Link to={`/products/${match.params.productId as string}`}>
+    <Link
+      prefetch='intent'
+      to={`/products/${match.params.productId as string}`}
+    >
       {(match.data as SerializeFrom<typeof loader>)?.name ?? '404'}
     </Link>
   ),

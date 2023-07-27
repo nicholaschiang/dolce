@@ -126,6 +126,7 @@ export default function Join() {
           <p className='text-sm text-gray-500 dark:text-gray-400'>
             Already have an account?{' '}
             <Link
+              prefetch='intent'
               className='underline'
               to={redirectTo ? `/login?redirectTo=${redirectTo}` : '/login'}
             >

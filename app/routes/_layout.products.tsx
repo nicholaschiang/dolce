@@ -41,7 +41,11 @@ export const meta: V2_MetaFunction = () => [
 ]
 
 export const handle: Handle = {
-  breadcrumb: () => <Link to='/products'>products</Link>,
+  breadcrumb: () => (
+    <Link prefetch='intent' to='/products'>
+      products
+    </Link>
+  ),
 }
 
 enum Join {

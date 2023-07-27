@@ -106,6 +106,7 @@ export function RateAndReview() {
         >
           {user == null && (
             <Link
+              prefetch='intent'
               to={`/login?redirectTo=${location.pathname}%23${id}`}
               className='absolute inset-0 z-10'
             />

@@ -104,6 +104,7 @@ export default function LoginPage() {
           <p className='text-sm text-gray-500 dark:text-gray-400'>
             Don’t have an account?{' '}
             <Link
+              prefetch='intent'
               className='underline'
               to={redirectTo ? `/join?redirectTo=${redirectTo}` : '/join'}
             >
