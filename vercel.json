@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "images": {
-    "sizes": [200, 300, 400, 500, 600, 700, 800, 900, 1000],
-    "domains": ["aritzia.scene7.com"],
+    "sizes": [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+    "domains": ["assets.vogue.com", "aritzia.scene7.com"],
     "minimumCacheTTL": 60,
     "formats": ["image/webp", "image/avif"]
   },

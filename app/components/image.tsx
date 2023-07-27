@@ -5,11 +5,13 @@ export function Image({
   responsive,
   src,
   alt,
+  preload,
   ...rest
 }: ComponentPropsWithoutRef<'img'> & {
   src: string
   optimizerUrl?: string
-  responsive?: { maxWidth?: number; size: { width: number } }[]
+  responsive?: { maxWidth: number; size: { width: number } }[]
+  preload?: boolean
 }) {
   const url = `${optimizerUrl}?url=${encodeURIComponent(src)}`
   const props: ComponentPropsWithoutRef<'img'> = {
@@ -21,25 +23,27 @@ export function Image({
   if (responsive && responsive.length) {
     let srcSet = ''
     let sizes = ''
-    responsive.forEach(({ maxWidth, size }) => {
-      if (srcSet) {
-        srcSet += ', '
-      }
-      const srcSetUrl = `${url}&w=${size.width}&q=75 ${size.width}w`
-      srcSet += srcSetUrl
+    responsive
+      .sort((a, b) => a.maxWidth - b.maxWidth)
+      .forEach(({ maxWidth, size }, index) => {
+        // TODO perhaps add double the width to the `srcSet` for displays that
+        // have double the pixel density (e.g. Apple retina displays).
+        if (srcSet) srcSet += ', '
+        const srcSetUrl = `${url}&w=${size.width}&q=75 ${size.width}w`
+        srcSet += srcSetUrl
 
-      if (maxWidth) {
-        if (sizes) {
-          sizes += ', '
+        if (sizes) sizes += ', '
+        if (index === 0) sizes += `(max-width: ${maxWidth}px) ${size.width}px`
+        else {
+          const minWidth = responsive[index - 1].maxWidth
+          sizes += `((min-width: ${minWidth}px) and (max-width: ${maxWidth}px)) ${size.width}px`
         }
-        sizes += `(max-width: ${maxWidth}px) ${size.width}px`
-      }
 
-      if (size.width > largestImageWidth) {
-        largestImageWidth = size.width
-        largestImageSrc = srcSetUrl
-      }
-    })
+        if (size.width > largestImageWidth) {
+          largestImageWidth = size.width
+          largestImageSrc = srcSetUrl
+        }
+      })
     props.srcSet = srcSet
     props.sizes = sizes || '100vw'
     props.src = ''
@@ -48,5 +52,18 @@ export function Image({
   if (largestImageSrc && (!rest.width || largestImageWidth > rest.width))
     props.src = largestImageSrc
 
-  return <img alt={alt ?? ''} {...rest} {...props} />
+  return (
+    <>
+      <img alt={alt ?? ''} {...rest} {...props} />
+      {preload && (
+        <link
+          rel='preload'
+          as='image'
+          href={props.src}
+          imageSrcSet={props.srcSet}
+          imageSizes={props.sizes}
+        />
+      )}
+    </>
+  )
 }

@@ -2,6 +2,7 @@ import { Link, useLoaderData } from '@remix-run/react'
 import { type V2_MetaFunction } from '@vercel/remix'
 
 import { Empty } from 'components/empty'
+import { Image } from 'components/image'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
@@ -35,21 +36,43 @@ export async function loader() {
   return shows
 }
 
+// Eagerly load images for the first two rows of shows (above the fold).
+const rowsToEagerLoad = 2
+
+// How many shows are shown in each row of results.
+const showsPerRow = 5
+
 export default function ShowsPage() {
   const shows = useLoaderData<typeof loader>()
   return (
     <main className='p-6 mx-auto max-w-screen-xl'>
       <h1 className='text-6xl mb-6'>shows</h1>
       {shows.length > 0 ? (
-        <ul className='grid grid-cols-5 gap-x-2 gap-y-10'>
-          {shows.map((show) => (
+        <ul
+          className='grid gap-x-2 gap-y-10'
+          style={{
+            gridTemplateColumns: `repeat(${showsPerRow}, minmax(0, 1fr))`,
+          }}
+        >
+          {shows.map((show, index) => (
             <li key={show.id}>
               <Link to={`/shows/${show.id}`}>
                 <div className='bg-gray-100 dark:bg-gray-900 aspect-person mb-2'>
-                  <img
+                  <Image
                     className='object-cover h-full w-full'
+                    loading={
+                      index < showsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
+                    }
+                    decoding={
+                      index < showsPerRow * rowsToEagerLoad ? 'sync' : 'async'
+                    }
                     src={show.looks[0].image.url}
-                    alt=''
+                    responsive={[
+                      100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+                    ].map((width) => ({
+                      size: { width },
+                      maxWidth: width * showsPerRow,
+                    }))}
                   />
                 </div>
                 <h2 className='text-xl font-serif font-semibold text-center'>
