@@ -10,6 +10,8 @@ export const clone = rfdc()
 
 const DEFAULT_REDIRECT = '/'
 
+export type Serialize<T extends AppData> = SerializeFrom<T> | T
+
 /**
  * Swaps the keys and values of an object.
  * @param obj The object to swap.

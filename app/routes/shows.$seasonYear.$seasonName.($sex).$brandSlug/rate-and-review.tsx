@@ -27,7 +27,10 @@ import { Textarea } from 'components/ui/textarea'
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
-import { useOptionalUser } from 'utils'
+import { invert, useOptionalUser } from 'utils'
+import { SEASON_NAME_TO_SLUG } from 'utils/season'
+import { SEX_TO_SLUG } from 'utils/sex'
+import { getShowPath } from 'utils/show'
 
 import { type loader } from './route'
 import { Section } from './section'
@@ -57,18 +60,32 @@ export async function getReview(showId: number, request: Request) {
 }
 
 export async function action({ request, params }: ActionArgs) {
-  const showId = Number(params.showId)
-  if (Number.isNaN(showId)) throw new Response(null, { status: 404 })
+  const seasonYear = Number(params.seasonYear)
+  const miss = new Response(null, { status: 404, statusText: 'Not Found' })
+  if (Number.isNaN(seasonYear) || !params.seasonName || !params.brandSlug)
+    throw miss
+  const seasonName = invert(SEASON_NAME_TO_SLUG)[params.seasonName]
+  const sex = invert(SEX_TO_SLUG)[params.sex ?? '']
+  if (!sex || !seasonName) throw miss
+  const show = await prisma.show.findFirst({
+    where: {
+      brand: { slug: params.brandSlug },
+      season: { year: seasonYear, name: seasonName },
+      sex,
+    },
+    include: { season: true, brand: true },
+  })
+  if (show == null) throw miss
   const userId = await getUserId(request)
   if (userId == null)
-    return redirect(`/login?redirectTo=/shows/${showId}%23${id}`)
+    return redirect(`/login?redirectTo=${getShowPath(show)}%23${id}`)
   const formData = await request.formData()
   const submission = parse(formData, { schema })
   if (!submission.value || submission.intent !== 'submit')
     return json(submission, { status: 400 })
   log.info('creating review... %o', submission.value)
   const review = await prisma.review.upsert({
-    where: { authorId_showId: { showId, authorId: userId } },
+    where: { authorId_showId: { showId: show.id, authorId: userId } },
     update: {
       score: submission.value.score / 5,
       content: submission.value.content,
@@ -77,11 +94,11 @@ export async function action({ request, params }: ActionArgs) {
       score: submission.value.score / 5,
       content: submission.value.content,
       author: { connect: { id: userId } },
-      show: { connect: { id: showId } },
+      show: { connect: { id: show.id } },
     },
   })
   log.info('created review: %o', review)
-  return redirect(`/shows/${showId}`)
+  return redirect('.')
 }
 
 export function RateAndReview() {
