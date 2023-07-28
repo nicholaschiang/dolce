@@ -1,14 +1,17 @@
 // Use this to create a new user and login with that user
 // Simply call this with:
-// npx ts-node --require tsconfig-paths/register ./cypress/support/create-user.ts username@example.com
+// pnpm exec ts-node --require tsconfig-paths/register ./cypress/support/create-user.ts username@example.com
 // and it will log out the cookie value you can use to interact with the server
 // as that new user.
 
+import { installGlobals } from '@remix-run/node'
 import { parse } from 'cookie'
 
 import { createUser } from 'models/user.server'
 
 import { createUserSession } from 'session.server'
+
+void installGlobals()
 
 async function createAndLogin(email: string) {
   if (!email) {
@@ -18,13 +21,7 @@ async function createAndLogin(email: string) {
     throw new Error('All test emails must end in @example.com')
   }
 
-  // TODO: perhaps name and username should be params to this function?
-  const user = await createUser(
-    'John Doe',
-    'john.doe',
-    email,
-    'myreallystrongpassword',
-  )
+  const user = await createUser('', null, email, 'myreallystrongpassword')
 
   const response = await createUserSession({
     request: new Request('test://test'),
@@ -49,4 +46,4 @@ async function createAndLogin(email: string) {
   )
 }
 
-createAndLogin(process.argv[2])
+void createAndLogin(process.argv[2])

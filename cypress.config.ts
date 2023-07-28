@@ -7,7 +7,7 @@ export default defineConfig({
     viewportWidth: 1500,
     setupNodeEvents: (on, config) => {
       const isDev = config.watchForFileChanges
-      const port = process.env.PORT ?? (isDev ? '3000' : '8811')
+      const port = process.env.PORT ?? (isDev ? '6969' : '8811')
       const configOverrides: Partial<Cypress.PluginConfigOptions> = {
         baseUrl: `http://localhost:${port}`,
         video: !process.env.CI,
