@@ -28,6 +28,13 @@ describe('smoke tests', () => {
     cy.findByRole('button', { name: /create account/i }).click()
 
     cy.findByRole('link', { name: /profile/i }).click()
+    cy.findByRole('figure').find('cite').should('have.text', loginForm.username)
+
+    const newUserName = faker.internet.userName()
+    cy.findByLabelText('Username').type(`{selectAll}{backspace}${newUserName}`)
+    cy.findByRole('button', { name: /update profile/i }).click()
+    cy.findByRole('figure').find('cite').should('have.text', newUserName)
+
     cy.findByRole('link', { name: /log out/i }).click()
     cy.findByRole('link', { name: /log in/i })
   })
