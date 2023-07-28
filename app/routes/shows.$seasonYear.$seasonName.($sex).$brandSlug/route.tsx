@@ -12,7 +12,7 @@ import { invert } from 'utils'
 import { cn } from 'utils/cn'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
-import { getShowSeason } from 'utils/show'
+import { getShowSeason, getShowPath } from 'utils/show'
 
 import { ConsumerReviews } from './consumer-reviews'
 import { CriticReviews } from './critic-reviews'
@@ -52,11 +52,14 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
 }
 
 export const handle: Handle = {
-  breadcrumb: (match) => (
-    <Link prefetch='intent' to={`/shows/${match.params.showId as string}`}>
-      {(match.data as SerializeFrom<typeof loader>)?.name ?? '404'}
-    </Link>
-  ),
+  breadcrumb: (match) => {
+    const data = match.data as SerializeFrom<typeof loader> | undefined
+    return (
+      <Link prefetch='intent' to={data ? getShowPath(data) : '.'}>
+        {data?.name ?? '404'}
+      </Link>
+    )
+  },
 }
 
 export async function loader({ request, params }: LoaderArgs) {

@@ -4,8 +4,8 @@ import {
   type Collection,
   type Season,
 } from '@prisma/client'
-import { type SerializeFrom } from '@vercel/remix'
 
+import { type Serialize } from 'utils'
 import { SEASON_NAME_TO_SLUG, getSeasonName } from 'utils/season'
 import { SEX_TO_SLUG, getSexName } from 'utils/sex'
 
@@ -14,13 +14,13 @@ import { SEX_TO_SLUG, getSexName } from 'utils/sex'
  * This is more convoluted than normal due to the weirdness with "Menswear".
  */
 export function getShowSeason(
-  show: SerializeFrom<Show & { collections: Collection[]; season: Season }>,
+  show: Serialize<Show & { collections: Collection[]; season: Season }>,
 ) {
   return `${getSeasonName(show.season)} ${getSexName(show.sex)}`
 }
 
 export function getShowPath(
-  show: SerializeFrom<Show & { season: Season; brand: Brand }>,
+  show: Serialize<Show & { season: Season; brand: Brand }>,
 ) {
   const path = [
     show.season.year,

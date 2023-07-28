@@ -1,14 +1,13 @@
 import { type Season, SeasonName } from '@prisma/client'
-import { type SerializeFrom } from '@vercel/remix'
 
-import { caps } from 'utils'
+import { type Serialize, caps } from 'utils'
 
 /**
  * Get the user-friendly season name from a season object (e.g. "Resort 2024").
  * @param season The season object.
  * @returns The user-friendly season name.
  */
-export function getSeasonName(season: SerializeFrom<Season>): string {
+export function getSeasonName(season: Serialize<Season>): string {
   return `${caps(season.name.replace('_', '-'))} ${season.year}`
 }
 
