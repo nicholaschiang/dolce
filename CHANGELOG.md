@@ -1,5 +1,21 @@
 # Release Notes
 
+## [1.26.0](https://github.com/nicholaschiang/site/compare/v1.25.1...v1.26.0) (2023-07-28)
+
+
+### Features
+
+* **prisma/seed:** create fashion show after reset ([9e0271d](https://github.com/nicholaschiang/site/commit/9e0271d8727dd1551fa100fd8bd92bbeebb0af17))
+
+
+### Bug Fixes
+
+* **app:** add `aria-label` to icon button links ([e5c06f3](https://github.com/nicholaschiang/site/commit/e5c06f3539d90130fff715ae16762e8a3fba1792))
+* **env.example:** do not use cache during tests ([eb09e0c](https://github.com/nicholaschiang/site/commit/eb09e0ce94ae6a5ee7c4e598a49198052cadf71d)), closes [/github.com/prisma/prisma/issues/7678#issuecomment-864967237](https://github.com/nicholaschiang//github.com/prisma/prisma/issues/7678/issues/issuecomment-864967237)
+* **routes:** replace "login" with "log in" ([59baaa9](https://github.com/nicholaschiang/site/commit/59baaa990c0b64ddf7c5068acc79583d747be620))
+* **scripts/node/save/shows:** use `gh` media links ([4ca9498](https://github.com/nicholaschiang/site/commit/4ca9498dd5becd7b69c7a0f4930c60b7337120ca))
+* **show/rate-and-review:** set `aria-labelledby` ([ecea55d](https://github.com/nicholaschiang/site/commit/ecea55d2b1fa4226c8686336f94abc56629f7dd2))
+
 ## [1.25.1](https://github.com/nicholaschiang/site/compare/v1.25.0...v1.25.1) (2023-07-28)
 
 
