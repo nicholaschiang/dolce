@@ -100,7 +100,7 @@ export default function LoginPage() {
     <Form asChild className='max-w-sm w-full mx-auto mt-6 p-6'>
       <RemixForm method='post' {...form.props}>
         <header className='mb-2'>
-          <h1 className='text-2xl font-medium'>Login</h1>
+          <h1 className='text-2xl font-medium'>Log in</h1>
           <p className='text-sm text-gray-500 dark:text-gray-400'>
             Don’t have an account?{' '}
             <Link
@@ -134,7 +134,7 @@ export default function LoginPage() {
           </FormControl>
         </FormField>
         <FormSubmit asChild>
-          <Button disabled={navigation.state !== 'idle'}>Login</Button>
+          <Button disabled={navigation.state !== 'idle'}>Log in</Button>
         </FormSubmit>
       </RemixForm>
     </Form>

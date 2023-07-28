@@ -276,6 +276,7 @@ function Header() {
       <div className='flex items-center'>
         {!matches.some((match) => match.id.includes('login')) && (
           <Link
+            aria-label={user ? 'Log out' : 'Log in'}
             className={buttonVariants({ size: 'icon', variant: 'ghost' })}
             to={user ? '/logout' : '/login'}
           >
