@@ -26,7 +26,13 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   return (
     <fetcher.Form action='/theme' method='post'>
       <Tooltip tip='Toggle theme' hotkey='t'>
-        <Button type='submit' size='icon' variant='ghost' className={className}>
+        <Button
+          aria-label='Toggle theme'
+          type='submit'
+          size='icon'
+          variant='ghost'
+          className={className}
+        >
           <Themed
             dark={<Moon className='h-3 w-3' />}
             light={<Sun className='h-3 w-3' />}
