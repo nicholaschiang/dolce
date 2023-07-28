@@ -1,10 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
+import { show } from '../scripts/node/save/shows/hermes'
+
 const prisma = new PrismaClient()
 
 async function seed() {
-  const email = 'design@nicholaschiang.com'
+  const email = 'site@nicholaschiang.com'
 
   // cleanup the existing database
   await prisma.user.delete({ where: { email } }).catch(() => {
@@ -16,15 +18,13 @@ async function seed() {
   await prisma.user.create({
     data: {
       email,
-      name: 'Nicholas Chiang',
-      username: 'nicholaschiang',
-      password: {
-        create: {
-          hash: hashedPassword,
-        },
-      },
+      name: 'Nicholas',
+      username: 'nicholas',
+      password: { create: { hash: hashedPassword } },
     },
   })
+
+  await prisma.show.create({ data: show })
 
   console.log(`Database has been seeded. 🌱`)
 }
