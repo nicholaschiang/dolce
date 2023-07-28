@@ -289,6 +289,7 @@ function Header() {
         )}
         {user && (
           <Link
+            aria-label='Edit profile'
             className={buttonVariants({ size: 'icon', variant: 'ghost' })}
             to='/profile'
           >
