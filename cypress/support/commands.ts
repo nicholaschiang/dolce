@@ -24,8 +24,19 @@ declare global {
        *    cy.cleanupUser()
        * @example
        *    cy.cleanupUser({ email: 'whatever@example.com' })
+       * @deprecated Use `cy.resetDatabase()` instead
        */
       cleanupUser: typeof cleanupUser
+
+      /**
+       * Clears and seeds the database
+       *
+       * @returns {typeof resetDatabase}
+       * @memberof Chainable
+       * @example
+       *    cy.resetDatabase()
+       */
+      resetDatabase: typeof resetDatabase
 
       /**
        * Extends the standard visit command to wait for the page to load
@@ -64,8 +75,8 @@ function cleanupUser({ email }: { email?: string } = {}) {
     deleteUserByEmail(email)
   } else {
     cy.get('@user').then((user) => {
-      const person = user as { email?: string }
-      if (person.email) deleteUserByEmail(person.email)
+      const person = user as { email?: string } | undefined
+      if (person?.email) deleteUserByEmail(person.email)
     })
   }
   cy.clearCookie('__session')
@@ -76,6 +87,10 @@ function deleteUserByEmail(email: string) {
     `pnpm exec ts-node --require tsconfig-paths/register ./cypress/support/delete-user.ts "${email}"`,
   )
   cy.clearCookie('__session')
+}
+
+function resetDatabase() {
+  cy.exec('pnpm prisma migrate reset --force')
 }
 
 // We're waiting a second because of this issue happen randomly
@@ -89,5 +104,6 @@ function visitAndCheck(url: string, waitTime: number = 1000) {
 }
 
 Cypress.Commands.add('login', login)
+Cypress.Commands.add('resetDatabase', resetDatabase)
 Cypress.Commands.add('cleanupUser', cleanupUser)
 Cypress.Commands.add('visitAndCheck', visitAndCheck)

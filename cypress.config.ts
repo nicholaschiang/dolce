@@ -3,8 +3,6 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   e2e: {
     projectId: '9dj6b9',
-    viewportHeight: 1500,
-    viewportWidth: 1500,
     setupNodeEvents: (on, config) => {
       const isDev = config.watchForFileChanges
       const port = process.env.PORT ?? (isDev ? '6969' : '8811')
