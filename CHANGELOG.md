@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.24.1](https://github.com/nicholaschiang/site/compare/v1.24.0...v1.24.1) (2023-07-28)
+
+
+### Performance Improvements
+
+* **routes:** add intent-based link prefetching ([4ae6ee8](https://github.com/nicholaschiang/site/commit/4ae6ee899704ca83b16c3c24ddf69480cb04985d))
+* **routes:** lazy load show and look images ([296cc9e](https://github.com/nicholaschiang/site/commit/296cc9ed7db56414dc5589aba116e9bf09962947))
+
 ## [1.24.0](https://github.com/nicholaschiang/site/compare/v1.23.1...v1.24.0) (2023-07-27)
 
 
