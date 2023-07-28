@@ -6,13 +6,13 @@ const NUM_LOOKS = 53
 
 function getLookImage(number: number) {
   const url =
-    `https://static.nicholas.engineering/shows/hermes/SS23/` +
+    `https://media.githubusercontent.com/media/nicholaschiang/static/main/shows/hermes/SS23/` +
     `${number.toLocaleString(undefined, { minimumIntegerDigits: 2 })}.webp`
   return url
 }
 
 const video: Prisma.VideoCreateInput = {
-  url: 'https://static.nicholas.engineering/shows/hermes/SS23/show.mp4',
+  url: 'https://media.githubusercontent.com/media/nicholaschiang/static/main/shows/hermes/SS23/show.mp4',
   mimeType: 'video/mp4',
 }
 const season: Prisma.SeasonCreateInput = {
@@ -38,7 +38,7 @@ const designer: Prisma.UserCreateInput = {
   name: 'Véronique Nichanian',
   url: 'https://fr.wikipedia.org/wiki/V%C3%A9ronique_Nichanian',
   avatar:
-    'https://static.nicholas.engineering/designers/veronique-nichanian/avatar.jpg',
+    'https://media.githubusercontent.com/media/nicholaschiang/static/main/designers/veronique-nichanian/avatar.jpg',
   description: `
 <p>
   Véronique Nichanian was born on May 3, 1954 in Boulogne-Billancourt.In 1976,
