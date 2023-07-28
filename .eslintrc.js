@@ -57,11 +57,11 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          'cypress/**',
-          'scripts/**',
-          'test/**',
-          'tests/**',
-          'spec/**',
+          '**/cypress/**',
+          '**/scripts/**',
+          '**/test/**',
+          '**/tests/**',
+          '**/spec/**',
           '**/__tests__/**',
           '**/__mocks__/**',
           'test.{js,jsx}',
