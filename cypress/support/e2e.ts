@@ -12,4 +12,9 @@ Cypress.on('uncaught:exception', (err) => {
   ) {
     return false
   }
+
+  // TODO remove this once we fix the issue upstream in the Radix <Form>
+  // primitive. Right now, we expect to see some control errors.
+  // @see {@link https://linear.app/nicholaschiang/issue/NC-683}
+  if (/setCustomValidity is not a function/.test(err.message)) return false
 })
