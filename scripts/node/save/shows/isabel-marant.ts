@@ -6,13 +6,13 @@ const NUM_LOOKS = 59
 
 function getLookImage(number: number) {
   const url =
-    `https://static.nicholas.engineering/shows/isabel-marant/FW23/` +
+    `https://media.githubusercontent.com/media/nicholaschiang/static/main/shows/isabel-marant/FW23/` +
     `${number.toLocaleString(undefined, { minimumIntegerDigits: 2 })}.jpg`
   return url
 }
 
 const video: Prisma.VideoCreateInput = {
-  url: 'https://static.nicholas.engineering/shows/isabel-marant/FW23/show.mp4',
+  url: 'https://media.githubusercontent.com/media/nicholaschiang/static/main/shows/isabel-marant/FW23/show.mp4',
   mimeType: 'video/mp4',
 }
 const season: Prisma.SeasonCreateInput = {
@@ -38,7 +38,7 @@ const designer: Prisma.UserCreateInput = {
   name: 'Isabel Marant',
   url: 'https://en.wikipedia.org/wiki/Isabel_Marant',
   avatar:
-    'https://static.nicholas.engineering/designers/isabel-marant/avatar.jpg',
+    'https://media.githubusercontent.com/media/nicholaschiang/static/main/designers/isabel-marant/avatar.jpg',
   description: `
 <p>
   Isabel Marant (born 12 April 1967) is a French fashion designer, owner of the
