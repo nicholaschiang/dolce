@@ -1,16 +1,13 @@
-import { Sex, type Show, type Collection, type Season } from '@prisma/client'
+import {
+  type Show,
+  type Brand,
+  type Collection,
+  type Season,
+} from '@prisma/client'
 import { type SerializeFrom } from '@vercel/remix'
 
-import { getSeasonName } from 'utils/season'
-
-/**
- * Get the show sex header (i.e. "Menswear" or "") based on the collections sex.
- * If every collection in the show has a sex of "MAN", then "Menswear" will be
- * appended to the header. Otherwise, nothing will be appended.
- */
-function getShowSex(show: SerializeFrom<Show>) {
-  return show.sex === Sex.MAN ? 'Menswear' : ''
-}
+import { SEASON_NAME_TO_SLUG, getSeasonName } from 'utils/season'
+import { SEX_TO_SLUG, getSexName } from 'utils/sex'
 
 /**
  * Get the show season header (i.e. "SPRING 2021 MENSWEAR" or "RESORT 2024").
@@ -19,5 +16,17 @@ function getShowSex(show: SerializeFrom<Show>) {
 export function getShowSeason(
   show: SerializeFrom<Show & { collections: Collection[]; season: Season }>,
 ) {
-  return `${getSeasonName(show.season)} ${getShowSex(show)}`
+  return `${getSeasonName(show.season)} ${getSexName(show.sex)}`
+}
+
+export function getShowPath(
+  show: SerializeFrom<Show & { season: Season; brand: Brand }>,
+) {
+  const path = [
+    show.season.year,
+    SEASON_NAME_TO_SLUG[show.season.name],
+    SEX_TO_SLUG[show.sex],
+    show.brand.slug,
+  ]
+  return `/shows/${path.filter((p) => p !== '').join('/')}`
 }

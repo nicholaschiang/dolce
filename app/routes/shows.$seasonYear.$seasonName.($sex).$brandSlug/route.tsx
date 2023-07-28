@@ -8,7 +8,10 @@ import {
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { type Handle } from 'root'
+import { invert } from 'utils'
 import { cn } from 'utils/cn'
+import { SEASON_NAME_TO_SLUG } from 'utils/season'
+import { SEX_TO_SLUG } from 'utils/sex'
 import { getShowSeason } from 'utils/show'
 
 import { ConsumerReviews } from './consumer-reviews'
@@ -58,33 +61,42 @@ export const handle: Handle = {
 
 export async function loader({ request, params }: LoaderArgs) {
   log.debug('getting show...')
-  const showId = Number(params.showId)
-  if (Number.isNaN(showId)) throw new Response(null, { status: 404 })
-  const [show, scores, review] = await Promise.all([
-    prisma.show.findUnique({
-      where: { id: showId },
-      include: {
-        video: true,
-        season: true,
-        brand: true,
-        collections: {
-          include: {
-            links: { include: { brand: true, retailer: true } },
-            designers: true,
-          },
+  const seasonYear = Number(params.seasonYear)
+  const miss = new Response(null, { status: 404, statusText: 'Not Found' })
+  if (Number.isNaN(seasonYear) || !params.seasonName || !params.brandSlug)
+    throw miss
+  const seasonName = invert(SEASON_NAME_TO_SLUG)[params.seasonName]
+  const sex = invert(SEX_TO_SLUG)[params.sex ?? '']
+  if (!sex || !seasonName) throw miss
+  const show = await prisma.show.findFirst({
+    where: {
+      brand: { slug: params.brandSlug },
+      season: { year: seasonYear, name: seasonName },
+      sex,
+    },
+    include: {
+      video: true,
+      season: true,
+      brand: true,
+      collections: {
+        include: {
+          links: { include: { brand: true, retailer: true } },
+          designers: true,
         },
-        reviews: {
-          include: { author: true, publication: true },
-          orderBy: { updatedAt: 'desc' },
-        },
-        looks: { include: { image: true }, orderBy: { number: 'asc' } },
       },
-    }),
-    getScores(showId),
-    getReview(showId, request),
-  ])
+      reviews: {
+        include: { author: true, publication: true },
+        orderBy: { updatedAt: 'desc' },
+      },
+      looks: { include: { image: true }, orderBy: { number: 'asc' } },
+    },
+  })
+  if (show == null) throw miss
   log.debug('got show %o', show)
-  if (show == null) throw new Response(null, { status: 404 })
+  const [scores, review] = await Promise.all([
+    getScores(show.id),
+    getReview(show.id, request),
+  ])
   return { ...show, scores, review }
 }
 
