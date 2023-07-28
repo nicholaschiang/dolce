@@ -9,6 +9,7 @@ import {
   useLoaderData,
 } from '@remix-run/react'
 import { type ActionArgs, json, redirect } from '@vercel/remix'
+import { useId } from 'react'
 import { z } from 'zod'
 
 import {
@@ -113,6 +114,7 @@ export function RateAndReview() {
   const navigation = useNavigation()
   const location = useLocation()
   const { review } = useLoaderData<typeof loader>()
+  const labelId = useId()
   return (
     <Section header='Rate and review' id={id}>
       <Form asChild>
@@ -130,11 +132,12 @@ export function RateAndReview() {
           )}
           <FormField name={score.name}>
             <FormLabelWrapper>
-              <FormLabel>Review score</FormLabel>
+              <FormLabel id={labelId}>Review score</FormLabel>
               {score.error && <FormMessage>{score.error}</FormMessage>}
             </FormLabelWrapper>
             <FormControl asChild>
               <ScoreInput
+                aria-labelledby={labelId}
                 required
                 defaultValue={
                   review ? `${Number(review.score) * 5}` : undefined
