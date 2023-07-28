@@ -6,7 +6,7 @@ import { Image } from 'components/image'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
-import { getShowSeason } from 'utils/show'
+import { getShowSeason, getShowPath } from 'utils/show'
 
 export const meta: V2_MetaFunction = () => [
   {
@@ -56,7 +56,7 @@ export default function ShowsPage() {
         >
           {shows.map((show, index) => (
             <li key={show.id}>
-              <Link prefetch='intent' to={`/shows/${show.id}`}>
+              <Link prefetch='intent' to={getShowPath(show)}>
                 <div className='bg-gray-100 dark:bg-gray-900 aspect-person mb-2'>
                   <Image
                     className='object-cover h-full w-full'

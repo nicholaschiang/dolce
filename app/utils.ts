@@ -11,6 +11,22 @@ export const clone = rfdc()
 const DEFAULT_REDIRECT = '/'
 
 /**
+ * Swaps the keys and values of an object.
+ * @param obj The object to swap.
+ * @returns The swapped object.
+ * @see {@link https://stackoverflow.com/a/23013726}
+ */
+export function invert<T extends string, U extends string>(
+  obj: Record<T, U>,
+): Record<U, T> {
+  const ret: Partial<Record<U, T>> = {}
+  Object.keys(obj).forEach((key) => {
+    ret[obj[key as T]] = key as T
+  })
+  return ret as Record<U, T>
+}
+
+/**
  * Capitalizes the first letter of each word in the given string. Lowercases all
  * the other letters in each string (e.g. "RESORT 2024" -> "Resort 2024").
  * @param str The string to capitalize.
