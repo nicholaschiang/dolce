@@ -117,6 +117,10 @@ module.exports = {
       },
     ],
 
+    // Sometimes a nested ternary is just better. Use your best judgement.
+    // @see {@link https://eslint.org/docs/latest/rules/no-nested-ternary}
+    'no-nested-ternary': 'off',
+
     // Use `void` operator to deal with dangling promises.
     // @see {@link https://eslint.org/docs/rules/no-void}
     // @example
@@ -147,7 +151,7 @@ module.exports = {
     // Remix encourages throwing response literals in loader functions.
     // @see {@link https://remix.run/docs/en/v1/guides/not-found#how-to-send-a-404}
     // @see {@link https://typescript-eslint.io/rules/no-throw-literal}
-    '@typescript-eslint/no-throw-literal': 'warn',
+    '@typescript-eslint/no-throw-literal': 'off',
 
     // Disallow unused variables (variables that are declared and not used
     // anywhere in our code).
