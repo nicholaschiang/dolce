@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.25.0](https://github.com/nicholaschiang/site/compare/v1.24.1...v1.25.0) (2023-07-28)
+
+
+### Features
+
+* add unique brand slugs and show sex cols ([0c561df](https://github.com/nicholaschiang/site/commit/0c561df03095b956dd9f5aa150b5718a1716c621))
+* **routes:** add user friendly show paths ([fbbef08](https://github.com/nicholaschiang/site/commit/fbbef0873cf9d3f2c83428e5e3b43e80f2f69b95))
+
 ## [1.24.1](https://github.com/nicholaschiang/site/compare/v1.24.0...v1.24.1) (2023-07-28)
 
 
