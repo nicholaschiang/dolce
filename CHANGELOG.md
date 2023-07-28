@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.25.1](https://github.com/nicholaschiang/site/compare/v1.25.0...v1.25.1) (2023-07-28)
+
+
+### Bug Fixes
+
+* **routes/show:** submit reviews to correct path ([a5a66c2](https://github.com/nicholaschiang/site/commit/a5a66c2ee5d478018106deccfeef6b8262d3ed73))
+
 ## [1.25.0](https://github.com/nicholaschiang/site/compare/v1.24.1...v1.25.0) (2023-07-28)
 
 
