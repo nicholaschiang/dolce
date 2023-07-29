@@ -6,8 +6,8 @@ import type { User } from 'models/user.server'
 
 import type { loader } from 'root'
 
-const DEFAULT_REDIRECT = '/'
-const BASE_URL = 'https://nicholas.engineering'
+export const DEFAULT_REDIRECT = '/'
+export const BASE_URL = 'https://nicholas.engineering'
 
 export const clone = rfdc()
 
