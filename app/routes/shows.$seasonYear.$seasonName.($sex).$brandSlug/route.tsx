@@ -4,6 +4,7 @@ import {
   type SerializeFrom,
   type V2_MetaFunction,
 } from '@vercel/remix'
+import { type SitemapFunction } from 'remix-sitemap'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
@@ -46,6 +47,17 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
     { name: 'content-type', content: 'fashionshow' },
     { 'script:ld+json': getShowSchema(data) },
   ]
+}
+
+export const sitemap: SitemapFunction = async () => {
+  const shows = await prisma.show.findMany({
+    include: { season: true, brand: true },
+    orderBy: { name: 'asc' },
+  })
+  return shows.map((show) => ({
+    loc: getShowPath(show),
+    lastmod: show.updatedAt.toISOString(),
+  }))
 }
 
 export const handle: Handle = {
