@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.27.0](https://github.com/nicholaschiang/site/compare/v1.26.0...v1.27.0) (2023-07-29)
+
+
+### Features
+
+* **routes/show:** add `Event` structured data ([5db4b4f](https://github.com/nicholaschiang/site/commit/5db4b4f8390286e6734b090f5e7ac3e8cd3cb0c2))
+
 ## [1.26.0](https://github.com/nicholaschiang/site/compare/v1.25.1...v1.26.0) (2023-07-28)
 
 
