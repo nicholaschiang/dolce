@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.28.0](https://github.com/nicholaschiang/site/compare/v1.27.0...v1.28.0) (2023-07-29)
+
+
+### Features
+
+* add sitemap and all show routes to map ([c881173](https://github.com/nicholaschiang/site/commit/c88117373819fdd08894b1980b37123b9eeea10d))
+
 ## [1.27.0](https://github.com/nicholaschiang/site/compare/v1.26.0...v1.27.0) (2023-07-29)
 
 
