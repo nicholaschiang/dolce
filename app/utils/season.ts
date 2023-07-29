@@ -8,7 +8,8 @@ import { type Serialize, caps } from 'utils'
  * @returns The user-friendly season name.
  */
 export function getSeasonName(season: Serialize<Season>): string {
-  return `${caps(season.name.replace('_', '-'))} ${season.year}`
+  const name = caps(season.name.replace('_', ' ')).replace(' ', '-')
+  return `${name} ${season.year}`
 }
 
 export const SEASON_NAME_TO_SLUG: Record<SeasonName, string> = {
