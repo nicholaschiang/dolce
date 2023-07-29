@@ -2,7 +2,7 @@ import { type Prisma, Sex, Level, Tier, SeasonName } from '@prisma/client'
 
 import { slug } from '../utils'
 
-const NUM_LOOKS = 53
+export const NUM_LOOKS = 53
 
 function getLookImage(number: number) {
   const url =
@@ -11,15 +11,15 @@ function getLookImage(number: number) {
   return url
 }
 
-const video: Prisma.VideoCreateInput = {
+export const video: Prisma.VideoCreateInput = {
   url: 'https://media.githubusercontent.com/media/nicholaschiang/static/main/shows/hermes/SS23/show.mp4',
   mimeType: 'video/mp4',
 }
-const season: Prisma.SeasonCreateInput = {
+export const season: Prisma.SeasonCreateInput = {
   name: SeasonName.SPRING_SUMMER,
   year: 2023,
 }
-const looks = Array(NUM_LOOKS)
+export const looks = Array(NUM_LOOKS)
   .fill(null)
   .map((_, index) => {
     const number = index + 1
@@ -34,7 +34,7 @@ const looks = Array(NUM_LOOKS)
     }
     return look
   })
-const designer: Prisma.UserCreateInput = {
+export const designer: Prisma.UserCreateInput = {
   name: 'Véronique Nichanian',
   url: 'https://fr.wikipedia.org/wiki/V%C3%A9ronique_Nichanian',
   avatar:
@@ -77,30 +77,30 @@ const designer: Prisma.UserCreateInput = {
 </p>
 `,
 }
-const vogue: Prisma.PublicationCreateInput = {
+export const vogue: Prisma.PublicationCreateInput = {
   name: 'Vogue',
   avatar: 'https://www.vogue.com/verso/static/vogue/assets/us/logo.svg',
 }
-const purse: Prisma.PublicationCreateInput = {
+export const purse: Prisma.PublicationCreateInput = {
   name: 'Purse Blog',
   avatar: 'https://www.purseblog.com/wp-content/themes/pb18/images/pb-logo.svg',
 }
-const lofficiel: Prisma.PublicationCreateInput = {
+export const lofficiel: Prisma.PublicationCreateInput = {
   name: 'L’Officiel',
   avatar: 'https://www.lofficielusa.com/images/logo-lofficiel-amtd.svg',
 }
-const wwd: Prisma.PublicationCreateInput = {
+export const wwd: Prisma.PublicationCreateInput = {
   name: 'Women’s Wear Daily',
 }
-const bazaar: Prisma.PublicationCreateInput = {
+export const bazaar: Prisma.PublicationCreateInput = {
   name: 'Harper’s Bazaar',
   avatar:
     'https://media.harpersbazaar.com.sg/2020/08/logo-homepage.svg?compress=true&quality=80&w=320&dpr=2.0',
 }
-const highs: Prisma.PublicationCreateInput = {
+export const highs: Prisma.PublicationCreateInput = {
   name: 'Highsnobiety',
 }
-const fashionotography: Prisma.PublicationCreateInput = {
+export const fashionotography: Prisma.PublicationCreateInput = {
   name: 'Fashionotography',
 }
 // Scores assigned by gpt-3.5-turbo via the ChatGPT and the following prompt:
@@ -110,7 +110,7 @@ const fashionotography: Prisma.PublicationCreateInput = {
 // in its compliments, it should be assigned a 1/5 or 2/5. If a review seems
 // energetically positive, assign a 3/5. Only if a review is resoundingly
 // enthusiastically positive should you assign a 4/5. Never assign a 5/5.
-const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
+export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
   {
     author: {
       connectOrCreate: {
@@ -542,11 +542,11 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
 `,
   },
 ]
-const country = {
+export const country = {
   where: { code: 'fr' },
   create: { name: 'france', code: 'fr' },
 }
-const brand: Prisma.BrandCreateInput = {
+export const brand: Prisma.BrandCreateInput = {
   name: 'Hermès',
   slug: slug('Hermès'), 
   description:
@@ -568,11 +568,11 @@ const brand: Prisma.BrandCreateInput = {
     },
   },
 }
-const link: Prisma.LinkCreateInput = {
+export const link: Prisma.LinkCreateInput = {
   url: 'https://www.hermes.com/us/en/category/men/ready-wear/spring-summer-collection/#|',
   brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }
-const collection: Prisma.CollectionCreateInput = {
+export const collection: Prisma.CollectionCreateInput = {
   name: 'Hermès Spring-Summer 2023 Menswear',
   season: {
     connectOrCreate: {
