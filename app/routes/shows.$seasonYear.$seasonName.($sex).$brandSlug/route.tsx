@@ -10,15 +10,16 @@ import { log } from 'log.server'
 import { type Handle } from 'root'
 import { invert } from 'utils'
 import { cn } from 'utils/cn'
+import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
-import { getShowSeason, getShowPath } from 'utils/show'
+import { getShowKeywords, getShowPath, getShowSchema } from 'utils/show'
 
 import { ConsumerReviews } from './consumer-reviews'
 import { CriticReviews } from './critic-reviews'
 import { Designers } from './designers'
 import { RateAndReview, getReview } from './rate-and-review'
-import { ScoresHeader, getScores } from './scores-header'
+import { ScoresHeader } from './scores-header'
 import { ShowInfo } from './show-info'
 import { WhatToKnow } from './what-to-know'
 import { WhereToBuy } from './where-to-buy'
@@ -33,12 +34,7 @@ const looksPerRow = 2
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: '404 | Nicholas Chiang' }]
-  const keywords = [
-    data.brand.name,
-    getShowSeason(data),
-    'runway_review',
-    'runway',
-  ].join(', ')
+  const keywords = getShowKeywords(data).join(', ')
   return [
     { title: `${data.name} Collection | Nicholas Chiang` },
     {
@@ -48,6 +44,7 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
     { name: 'keywords', content: keywords },
     { name: 'news_keywords', content: keywords },
     { name: 'content-type', content: 'fashionshow' },
+    { 'script:ld+json': getShowSchema(data) },
   ]
 }
 
@@ -91,7 +88,10 @@ export async function loader({ request, params }: LoaderArgs) {
         include: { author: true, publication: true },
         orderBy: { updatedAt: 'desc' },
       },
-      looks: { include: { image: true }, orderBy: { number: 'asc' } },
+      looks: {
+        include: { image: true, model: true },
+        orderBy: { number: 'asc' },
+      },
     },
   })
   if (show == null) throw miss

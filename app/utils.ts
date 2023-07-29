@@ -6,9 +6,10 @@ import type { User } from 'models/user.server'
 
 import type { loader } from 'root'
 
-export const clone = rfdc()
-
 const DEFAULT_REDIRECT = '/'
+const BASE_URL = 'https://nicholas.engineering'
+
+export const clone = rfdc()
 
 export type Serialize<T extends AppData> = SerializeFrom<T> | T
 
@@ -39,6 +40,29 @@ export function caps(sentence: string): string {
     .split(' ')
     .map((w) => `${w.charAt(0).toUpperCase()}${w.slice(1).toLowerCase()}`)
     .join(' ')
+}
+
+/**
+ * Resolve the given path to a fully qualified URL. If no path is provided, this
+ * will return undefined. If the path is an empty string, this will return the
+ * base URL of the site. This behavior is useful when resolving potentially
+ * missing paths.
+ * @example
+ * ```ts
+ * return {
+ *   '@type': 'CreativeWork',
+ *   '@id': look.id.toString(),
+ *   'image': url(look.image?.url ?? undefined),
+ * }
+ * ```
+ * @param path The path to resolve.
+ * @returns The fully qualified URL.
+ */
+export function url(path: string): string
+export function url(path: undefined | null): undefined
+export function url(path: string | undefined | null): string | undefined
+export function url(path: string | undefined | null): string | undefined {
+  return path != null ? new URL(path, BASE_URL).toString() : undefined
 }
 
 /**
