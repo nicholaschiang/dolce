@@ -8,6 +8,7 @@ import {
   type Prisma,
   Sex,
   Level,
+  Location,
   SeasonName,
   PrismaClient,
 } from '@prisma/client'
@@ -43,8 +44,15 @@ export async function save() {
   )
   /* eslint-disable-next-line no-restricted-syntax */
   for await (const show of shows) {
-    await prisma.show.create({ data: getData(show) })
-    bar.tick()
+    const data = getData(show)
+    try {
+      await prisma.show.create({ data })
+      bar.tick()
+    } catch (error) {
+      console.error(`Error while saving show:`, show)
+      console.error(`Error while saving data:`, data)
+      throw error
+    }
   }
 }
 
@@ -59,30 +67,85 @@ function caps(sentence: string): string {
     .join(' ')
 }
 
-function getSeason(show: Show) {
-  // e.g. "SPRING 2023 READY-TO-WEAR", "RESORT 2024"
-  const [season, yr] = show.season.split(' ')
-  let name: SeasonName
-  switch (season) {
-    case 'SPRING':
-      name = SeasonName.SPRING
-      break
-    case 'RESORT':
-      name = SeasonName.RESORT
-      break
-    case 'FALL':
-      name = SeasonName.FALL
-      break
-    default:
-      throw new Error(`Unknown season: ${season}`)
+type ParsedSeason = {
+  season: { name: SeasonName; year: number }
+  level: Level
+  sex: Sex
+  location?: Location
+}
+
+function parseSeason(season: string): ParsedSeason {
+  // e.g. "SPRING 2023 READY-TO-WEAR", "RESORT 2024", "TOKYO SPRING 2024"
+  const sex = season.includes('MENSWEAR') ? Sex.MAN : Sex.WOMAN
+  const level = season.includes('COUTURE') ? Level.COUTURE : Level.RTW
+  const name = season.includes('RESORT')
+    ? SeasonName.RESORT
+    : season.includes('SPRING')
+    ? SeasonName.SPRING
+    : season.includes('PRE-FALL')
+    ? SeasonName.PRE_FALL
+    : season.includes('FALL')
+    ? SeasonName.FALL
+    : undefined
+  if (name == null) throw new Error(`Could not find season name: ${season}`)
+  const year = Number(/(\d{4})/.exec(season)?.[1])
+  if (Number.isNaN(year)) throw new Error(`Could not find year: ${season}`)
+  const location = season.includes('NEW YORK')
+    ? Location.NEW_YORK
+    : season.includes('LONDON')
+    ? Location.LONDON
+    : season.includes('MILAN')
+    ? Location.MILAN
+    : season.includes('PARIS')
+    ? Location.PARIS
+    : season.includes('TOKYO')
+    ? Location.TOKYO
+    : season.includes('BERLIN')
+    ? Location.BERLIN
+    : season.includes('FLORENCE')
+    ? Location.FLORENCE
+    : season.includes('LOS ANGELES')
+    ? Location.LOS_ANGELES
+    : season.includes('MADRID')
+    ? Location.MADRID
+    : season.includes('COPENHAGEN')
+    ? Location.COPENHAGEN
+    : season.includes('SHANGAI')
+    ? Location.SHANGAI
+    : season.includes('AUSTRALIA')
+    ? Location.AUSTRALIA
+    : season.includes('STOCKHOLM')
+    ? Location.STOCKHOLM
+    : season.includes('MEXICO')
+    ? Location.MEXICO
+    : season.includes('MEXICO CITY')
+    ? Location.MEXICO_CITY
+    : season.includes('KIEV')
+    ? Location.KIEV
+    : season.includes('TBILISI')
+    ? Location.TBILISI
+    : season.includes('SEOUL')
+    ? Location.SEOUL
+    : season.includes('RUSSIA')
+    ? Location.RUSSIA
+    : season.includes('UKRAINE')
+    ? Location.UKRAINE
+    : season.includes('SÃO PAULO')
+    ? Location.SAO_PAOLO
+    : season.includes('BRIDAL')
+    ? Location.BRIDAL
+    : undefined
+  if (location == null) console.warn(`\nCould not find location: ${season}\n`)
+  return {
+    season: { name, year },
+    level,
+    sex,
+    location,
   }
-  const year = Number(yr)
-  if (Number.isNaN(year)) throw new Error(`Invalid year: ${year}`)
-  return { name, year }
 }
 
 function getData(show: Show) {
-  const season: Prisma.SeasonCreateInput = getSeason(show)
+  const { season, ...etc } = parseSeason(show.season)
   let review: Prisma.ReviewCreateWithoutShowInput | undefined
   if (show.author_name && show.author_url)
     review = {
@@ -137,16 +200,15 @@ function getData(show: Show) {
     avatar: null,
     url: null,
   }
+
   const data: Prisma.ShowCreateInput = {
+    ...etc,
     name,
     url: show.url,
     description: null,
     criticReviewSummary: null,
     consumerReviewSummary: null,
-    sex: show.title.includes('Menswear') ? Sex.MAN : Sex.WOMAN,
-    level: show.title.includes('Couture') ? Level.COUTURE : Level.RTW,
     date: show.date ? new Date(show.date) : null,
-    location: null,
     reviews: review ? { create: review } : undefined,
     season: {
       connectOrCreate: {

@@ -10,18 +10,18 @@ class VogueSpider(scrapy.Spider):
     """Spider for extracting show information from Vogue."""
 
     name = "vogue"
-    start_urls = [
-        "https://www.vogue.com/fashion-shows/spring-2024-ready-to-wear",
-        "https://www.vogue.com/fashion-shows/spring-2024-menswear",
-        "https://www.vogue.com/fashion-shows/fall-2023-ready-to-wear",
-        "https://www.vogue.com/fashion-shows/fall-2023-menswear",
-        "https://www.vogue.com/fashion-shows/spring-2023-ready-to-wear",
-        "https://www.vogue.com/fashion-shows/spring-2023-menswear",
-        "https://www.vogue.com/fashion-shows/resort-2023",
-        "https://www.vogue.com/fashion-shows/resort-2023-menswear",
-    ]
+    start_urls = ["https://www.vogue.com/fashion-shows/seasons"]
 
     def parse(self, response):
+        """Extract the season links from the seasons list."""
+        season_page_links = response.css(
+            "[data-testid=GroupedNavigationWrapper] "
+            + "[data-testid=navigation__list-item] "
+            + "a[data-testid=navigation__internal-link]"
+        )
+        yield from response.follow_all(season_page_links, self.parse_season)
+
+    def parse_season(self, response):
         """Extract the show links from the main shows list."""
         show_page_links = response.css(
             "[data-testid=GroupedNavigationWrapper] "
