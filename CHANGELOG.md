@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.28.1](https://github.com/nicholaschiang/site/compare/v1.28.0...v1.28.1) (2023-07-30)
+
+
+### Bug Fixes
+
+* **shows:** sort by brand name and then by year ([e3addd1](https://github.com/nicholaschiang/site/commit/e3addd109a05db11e87e7639afab9ab8faa2cf8b))
+
+
+### Performance Improvements
+
+* **app:** disable image optimization for now ([9f3ef87](https://github.com/nicholaschiang/site/commit/9f3ef8789ee4378d8208e2d268350364e8e56f1f))
+
 ## [1.28.0](https://github.com/nicholaschiang/site/compare/v1.27.0...v1.28.0) (2023-07-29)
 
 
