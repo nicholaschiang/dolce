@@ -30,7 +30,7 @@ export async function loader() {
       collections: true,
       looks: { include: { image: true }, orderBy: { number: 'asc' }, take: 1 },
     },
-    orderBy: { name: 'asc' },
+    orderBy: [{ brand: { name: 'asc' } }, { season: { year: 'desc' } }],
   })
   log.debug('got %d shows', shows.length)
   return shows
@@ -58,22 +58,24 @@ export default function ShowsPage() {
             <li key={show.id}>
               <Link prefetch='intent' to={getShowPath(show)}>
                 <div className='bg-gray-100 dark:bg-gray-900 aspect-person mb-2'>
-                  <Image
-                    className='object-cover h-full w-full'
-                    loading={
-                      index < showsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
-                    }
-                    decoding={
-                      index < showsPerRow * rowsToEagerLoad ? 'sync' : 'async'
-                    }
-                    src={show.looks[0].image.url}
-                    responsive={[
-                      100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-                    ].map((width) => ({
-                      size: { width },
-                      maxWidth: width * showsPerRow,
-                    }))}
-                  />
+                  {show.looks.length > 0 && (
+                    <Image
+                      className='object-cover h-full w-full'
+                      loading={
+                        index < showsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
+                      }
+                      decoding={
+                        index < showsPerRow * rowsToEagerLoad ? 'sync' : 'async'
+                      }
+                      src={show.looks[0].image.url}
+                      responsive={[
+                        100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+                      ].map((width) => ({
+                        size: { width },
+                        maxWidth: width * showsPerRow,
+                      }))}
+                    />
+                  )}
                 </div>
                 <h2 className='text-xl font-serif font-semibold text-center'>
                   {show.brand.name}
