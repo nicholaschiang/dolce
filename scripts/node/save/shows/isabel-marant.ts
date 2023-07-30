@@ -1,4 +1,11 @@
-import { type Prisma, Sex, Level, Tier, SeasonName } from '@prisma/client'
+import {
+  type Prisma,
+  Sex,
+  Level,
+  Location,
+  Tier,
+  SeasonName,
+} from '@prisma/client'
 
 import { slug } from '../utils'
 
@@ -16,7 +23,7 @@ const video: Prisma.VideoCreateInput = {
   mimeType: 'video/mp4',
 }
 const season: Prisma.SeasonCreateInput = {
-  name: SeasonName.FALL_WINTER,
+  name: SeasonName.FALL,
   year: 2023,
 }
 const looks = Array(NUM_LOOKS)
@@ -250,7 +257,7 @@ Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza a
   criticReviewSummary: `A high-energy party atmosphere and a stunning lineup of veteran supermodels—a much needed refresher from Paris Fashion Week. The designs exude Isabel Marant’s signature style, featuring roomy knitwear, smashing outerwear, and cool-girl attire, all while empowering wearability and desirability. With a focus on desire and disorder, the collection showcases unique graphic cut-outs, metallic zips, and playful contrasts, leaving a lasting impression on the audience.`,
   consumerReviewSummary: null,
   date: new Date('March 2, 2023'),
-  location: 'Paris, France',
+  location: Location.PARIS,
   video: { connectOrCreate: { where: { url: video.url }, create: video } },
   season: {
     connectOrCreate: {

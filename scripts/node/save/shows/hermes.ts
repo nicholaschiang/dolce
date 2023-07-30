@@ -1,4 +1,11 @@
-import { type Prisma, Sex, Level, Tier, SeasonName } from '@prisma/client'
+import {
+  type Prisma,
+  Sex,
+  Location,
+  Level,
+  Tier,
+  SeasonName,
+} from '@prisma/client'
 
 import { slug } from '../utils'
 
@@ -16,7 +23,7 @@ export const video: Prisma.VideoCreateInput = {
   mimeType: 'video/mp4',
 }
 export const season: Prisma.SeasonCreateInput = {
-  name: SeasonName.SPRING_SUMMER,
+  name: SeasonName.SPRING,
   year: 2023,
 }
 export const looks = Array(NUM_LOOKS)
@@ -548,7 +555,7 @@ export const country = {
 }
 export const brand: Prisma.BrandCreateInput = {
   name: 'Hermès',
-  slug: slug('Hermès'), 
+  slug: slug('Hermès'),
   description:
     'Hermès International S.A. is a French luxury design house established in 1837. It specializes in leather goods, lifestyle accessories, home furnishings, perfumery, jewelry, watches and ready-to-wear. Since the 1950s, its logo has been a depiction of a ducal horse-drawn carriage.',
   tier: Tier.SUPERPREMIUM,
@@ -602,7 +609,7 @@ export const show: Prisma.ShowCreateInput = {
   criticReviewSummary: `Hermès Spring-Summer 2023 Mens Ready-to-Wear delights with its innovative fusion of colors, playful marine-themed designs, and luxurious practicality. Véronique Nichanian’s collection blurs the boundaries between menswear and womenswear, offering a tender and harmonious wardrobe that celebrates the joy and lightness of summer.`,
   consumerReviewSummary: null,
   date: new Date('June 25, 2022'),
-  location: 'Paris, France',
+  location: Location.PARIS,
   video: { connectOrCreate: { where: { url: video.url }, create: video } },
   season: {
     connectOrCreate: {

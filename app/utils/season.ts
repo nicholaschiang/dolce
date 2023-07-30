@@ -14,10 +14,7 @@ export function getSeasonName(season: Serialize<Season>): string {
 
 export const SEASON_NAME_TO_SLUG: Record<SeasonName, string> = {
   [SeasonName.FALL]: 'fall',
-  [SeasonName.WINTER]: 'winter',
+  [SeasonName.PRE_FALL]: 'pre-fall',
   [SeasonName.SPRING]: 'spring',
-  [SeasonName.SUMMER]: 'summer',
   [SeasonName.RESORT]: 'resort',
-  [SeasonName.SPRING_SUMMER]: 'ss',
-  [SeasonName.FALL_WINTER]: 'fw',
 }
