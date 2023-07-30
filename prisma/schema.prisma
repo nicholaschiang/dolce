@@ -705,15 +705,14 @@ model Link {
 }
 
 // A widely accepted and used season name.
-// @todo perhaps SPRING_SUMMER should instead be stored as [SPRING, SUMMER]?
+//
+// While brands may use different season names, these are the ones used by Vogue 
+// and/or WWD (where I'm scraping data from), and thus these are the ones I use.
 enum SeasonName {
   RESORT
   SPRING
-  SPRING_SUMMER
-  SUMMER
-  FALL_WINTER
+  PRE_FALL
   FALL
-  WINTER
 }
 
 // A fashion season is a widely accepted grouping of fashion releases.
@@ -851,6 +850,9 @@ model Publication {
 //
 // This field was inspired by the Vogue season names (e.g. "Tokyo Spring 2023")
 // and the drop-down included on the WWD website (e.g. "New York", "Paris").
+//
+// @todo replace the "BRIDAL" location with some other show flag.
+// @todo this really should probably be its own model instead of an enum.
 enum Location {
   NEW_YORK
   LONDON
@@ -860,6 +862,22 @@ enum Location {
   BERLIN
   FLORENCE
   LOS_ANGELES
+
+  MADRID
+  COPENHAGEN
+  SHANGAI
+  AUSTRALIA
+  STOCKHOLM
+  MEXICO
+  MEXICO_CITY
+  KIEV
+  TBILISI
+  SEOUL
+  RUSSIA
+  UKRAINE
+  SAO_PAOLO
+
+  BRIDAL
 }
 
 // A show is a fashion runway show.
