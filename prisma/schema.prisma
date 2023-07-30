@@ -945,9 +945,14 @@ model Show {
   brandId Int
 
   // A brand can only have a single show per season per sex (i.e. "menswear",
-  // "womenswear", or both) per level (i.e. "couture", "ready-to-wear", etc). 
+  // "womenswear", or both) per level (i.e. "couture", "ready-to-wear", etc) per
+  // location (e.g. an "Australia" collection alongside a "Paris" collection).
+  //
+  // Ex: https://www.vogue.com/fashion-shows/australia-spring-2015/maticevski
+  // Ex: https://www.vogue.com/fashion-shows/spring-2015-ready-to-wear/maticevski
+  //
   // This constraint was inspired by Vogue's URLs (e.g. /resort-2024/hermes). It 
   // may need adjustment in the future if there is ever a brand that presents 
   // twice during a single season (but that probably means I need more seasons).
-  @@unique([brandId, seasonId, sex, level])
+  @@unique([brandId, seasonId, sex, level, location])
 }
