@@ -845,6 +845,23 @@ model Publication {
   reviews Review[]
 }
 
+// There are only a few locations where fashion shows are held. While these may
+// not always be entirely accurate, they are more of a category of shows (e.g.
+// "Spring Tokyo 2023") than a specific location.
+//
+// This field was inspired by the Vogue season names (e.g. "Tokyo Spring 2023")
+// and the drop-down included on the WWD website (e.g. "New York", "Paris").
+enum Location {
+  NEW_YORK
+  LONDON
+  MILAN
+  PARIS
+  TOKYO
+  BERLIN
+  FLORENCE
+  LOS_ANGELES
+}
+
 // A show is a fashion runway show.
 model Show {
   id        Int      @id @default(autoincrement())
@@ -894,8 +911,7 @@ model Show {
   date DateTime?
 
   // The runway show's location.
-  // @todo perhaps this should be a separate model and simply a relation here.
-  location String?
+  location Location?
 
   // The collections that were presented at the show. Often, there is only one.
   collections Collection[]
