@@ -1,0 +1,474 @@
+nchiang@rowlet ~/repos/site (nicholas/wwd) $ pnpm scripts
+
+> nicholas-eng@1.28.0 scripts /Users/nchiang/repos/site
+> run-s 'scripts:*'
+
+
+> nicholas-eng@1.28.0 scripts:prisma /Users/nchiang/repos/site
+> prisma generate
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+? Generated Prisma Client (4.16.2 | library) to ./node_modules/.pnpm/@prisma+client@4.16.2_prisma@4.16.2/node_modules/@prisma/client in 206ms
+You can now start using Prisma Client in your code. Reference: https://pris.ly/d/client
+```
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+```
+
+> nicholas-eng@1.28.0 scripts:build /Users/nchiang/repos/site
+> tsc -p scripts/node
+
+
+> nicholas-eng@1.28.0 scripts:run /Users/nchiang/repos/site
+> node scripts/node/out/vogue.js | pino-pretty
+
+Filtering 20546 shows by content...
+Filtered out 929 duplicate shows.
+Filtering 19617 shows by look image...
+Filtered out 1 duplicate shows.
+Parsing 19616 shows...
+Could not find location: SPRING 2019 COUTURE
+Could not find location: SPRING 2019 MENSWEAR
+Could not find location: PRE-FALL 2019
+Could not find location: SPRING 2019 READY-TO-WEAR
+Could not find location: RESORT 2019
+Could not find location: FALL 1988 READY-TO-WEAR
+Could not find location: FALL 1992 READY-TO-WEAR
+Could not find location: FALL 1989 READY-TO-WEAR
+Could not find location: SPRING 1988 COUTURE
+Could not find location: SPRING 1993 READY-TO-WEAR
+Could not find location: FALL 1990 READY-TO-WEAR
+Could not find location: FALL 1994 READY-TO-WEAR
+Could not find location: SPRING 1992 READY-TO-WEAR
+Could not find location: SPRING 1991 READY-TO-WEAR
+Could not find location: FALL 1991 READY-TO-WEAR
+Could not find location: SPRING 1995 READY-TO-WEAR
+Could not find location: SPRING 1994 READY-TO-WEAR
+Could not find location: SPRING 1990 READY-TO-WEAR
+Could not find location: FALL 1993 READY-TO-WEAR
+Could not find location: FALL 1988 COUTURE
+Could not find location: FALL 1995 READY-TO-WEAR
+Could not find location: FALL 1997 READY-TO-WEAR
+Could not find location: FALL 1995 COUTURE
+Could not find location: FALL 1999 READY-TO-WEAR
+Could not find location: SPRING 1998 READY-TO-WEAR
+Could not find location: SPRING 1997 COUTURE
+Could not find location: SPRING 1999 COUTURE
+Could not find location: SPRING 1998 COUTURE
+Could not find location: FALL 1999 COUTURE
+Could not find location: FALL 1998 READY-TO-WEAR
+Could not find location: FALL 1996 COUTURE
+Could not find location: SPRING 1996 COUTURE
+Could not find location: FALL 1997 COUTURE
+Could not find location: SPRING 1998 MENSWEAR
+Could not find location: SPRING 1997 READY-TO-WEAR
+Could not find location: FALL 1996 READY-TO-WEAR
+Could not find location: SPRING 1996 READY-TO-WEAR
+Could not find location: SPRING 2000 READY-TO-WEAR
+Could not find location: FALL 2001 MENSWEAR
+Could not find location: SPRING 1999 READY-TO-WEAR
+Could not find location: SPRING 2000 MENSWEAR
+Could not find location: SPRING 2001 COUTURE
+Could not find location: FALL 2000 COUTURE
+Could not find location: FALL 2001 COUTURE
+Could not find location: SPRING 2001 READY-TO-WEAR
+Could not find location: FALL 1999 MENSWEAR
+Could not find location: FALL 2000 READY-TO-WEAR
+Could not find location: SPRING 2002 COUTURE
+Could not find location: SPRING 2002 MENSWEAR
+Could not find location: FALL 2002 MENSWEAR
+Could not find location: SPRING 2003 COUTURE
+Could not find location: FALL 2002 COUTURE
+Could not find location: SPRING 2003 MENSWEAR
+Could not find location: SPRING 2002 READY-TO-WEAR
+Could not find location: SPRING 2003 READY-TO-WEAR
+Could not find location: FALL 2002 READY-TO-WEAR
+Could not find location: FALL 2003 READY-TO-WEAR
+Could not find location: FALL 2003 COUTURE
+Could not find location: FALL 2003 MENSWEAR
+Could not find location: FALL 2004 COUTURE
+Could not find location: SPRING 2005 COUTURE
+Could not find location: FALL 2005 COUTURE
+Could not find location: FALL 2005 MENSWEAR
+Could not find location: SPRING 2005 MENSWEAR
+Could not find location: SPRING 2005 READY-TO-WEAR
+Could not find location: SPRING 2006 COUTURE
+Could not find location: FALL 2006 READY-TO-WEAR
+Could not find location: SPRING 2006 MENSWEAR
+Could not find location: FALL 2004 READY-TO-WEAR
+Could not find location: FALL 2006 COUTURE
+Could not find location: FALL 2005 READY-TO-WEAR
+Could not find location: SPRING 2004 READY-TO-WEAR
+Could not find location: FALL 2006 MENSWEAR
+Could not find location: SPRING 2004 COUTURE
+Could not find location: SPRING 2007 COUTURE
+Could not find location: SPRING 2007 MENSWEAR
+Could not find location: SPRING 2008 COUTURE
+Could not find location: SPRING 2008 MENSWEAR
+Could not find location: PRE-FALL 2008
+Could not find location: FALL 2008 COUTURE
+Could not find location: FALL 2008 READY-TO-WEAR
+Could not find location: FALL 2008 MENSWEAR
+Could not find location: RESORT 2009
+Could not find location: SPRING 2008 READY-TO-WEAR
+Could not find location: FALL 2007 READY-TO-WEAR
+Could not find location: SPRING 2007 READY-TO-WEAR
+Could not find location: FALL 2007 COUTURE
+Could not find location: RESORT 2008
+Could not find location: RESORT 2007
+Could not find location: SPRING 2009 MENSWEAR
+Could not find location: FALL 2009 COUTURE
+Could not find location: FALL 2009 MENSWEAR
+Could not find location: SPRING 2009 COUTURE
+Could not find location: SPRING 2009 READY-TO-WEAR
+Could not find location: FALL 2009 READY-TO-WEAR
+Could not find location: RESORT 2010
+Could not find location: PRE-FALL 2009
+Could not find location: PRE-FALL 2010
+Could not find location: SPRING 2010 READY-TO-WEAR
+Could not find location: FALL 2010 COUTURE
+Could not find location: PRE-FALL 2011
+Could not find location: SPRING 2011 COUTURE
+Could not find location: FALL 2011 COUTURE
+Could not find location: FALL 2010 MENSWEAR
+Could not find location: FALL 2010 READY-TO-WEAR
+Could not find location: FALL 2011 READY-TO-WEAR
+Could not find location: SPRING 2011 READY-TO-WEAR
+Could not find location: RESORT 2012
+Could not find location: SPRING 2012 MENSWEAR
+Could not find location: SPRING 2012 READY-TO-WEAR
+Could not find location: PRE-FALL 2012
+Could not find location: SPRING 2011 MENSWEAR
+Could not find location: RESORT 2011
+Could not find location: SPRING 2010 COUTURE
+Could not find location: FALL 2012 COUTURE
+Could not find location: SPRING 2013 COUTURE
+Could not find location: SPRING 2012 COUTURE
+Could not find location: FALL 2013 MENSWEAR
+Could not find location: FALL 2012 MENSWEAR
+Could not find location: SPRING 2013 MENSWEAR
+Could not find location: SPRING 2014 MENSWEAR
+Could not find location: PRE-FALL 2013
+Could not find location: FALL 2012 READY-TO-WEAR
+Could not find location: FALL 2014 MENSWEAR
+Could not find location: SPRING 2014 READY-TO-WEAR
+Could not find location: RESORT 2014
+Could not find location: PRE-FALL 2014
+Could not find location: FALL 2013 READY-TO-WEAR
+Could not find location: SPRING 2013 READY-TO-WEAR
+Could not find location: FALL 2013 COUTURE
+Could not find location: RESORT 2013
+Could not find location: FALL 2014 READY-TO-WEAR
+Could not find location: ISTANBUL FALL 2015
+Could not find location: SPRING 2015 READY-TO-WEAR
+Could not find location: FALL 2015 COUTURE
+Could not find location: FALL 2014 COUTURE
+Could not find location: SPRING 2014 COUTURE
+Could not find location: SPRING 2015 COUTURE
+Could not find location: PRE-FALL 2015
+Could not find location: RESORT 2015
+Could not find location: FALL 2015 READY-TO-WEAR
+Could not find location: FALL 2015 MENSWEAR
+Could not find location: SPRING 2015 MENSWEAR
+Could not find location: SÃO PAOLO SPRING 2017
+Could not find location: PRE-FALL 2016
+Could not find location: SPRING 2016 MENSWEAR
+Could not find location: SPRING 2016 READY-TO-WEAR
+Could not find location: RESORT 2016
+Could not find location: FALL 2016 COUTURE
+Could not find location: SPRING 2016 COUTURE
+Could not find location: SPRING 2017 MENSWEAR
+Could not find location: FALL 2016 READY-TO-WEAR
+Could not find location: PRE-FALL 2017
+Could not find location: SPRING 2017 READY-TO-WEAR
+Could not find location: RESORT 2017
+Could not find location: FALL 2016 MENSWEAR
+Could not find location: SPRING 2017 COUTURE
+Could not find location: FALL 2017 MENSWEAR
+Could not find location: FALL 2017 READY-TO-WEAR
+Could not find location: SPRING 2018 MENSWEAR
+Could not find location: FALL 2017 COUTURE
+Could not find location: RESORT 2018
+Could not find location: PRE-FALL 2018
+Could not find location: SPRING 2018 READY-TO-WEAR
+Could not find location: FALL 2018 MENSWEAR
+Could not find location: FALL 2019 MENSWEAR
+Could not find location: FALL 2019 READY-TO-WEAR
+Could not find location: FALL 2018 COUTURE
+Could not find location: SPRING 2018 COUTURE
+Could not find location: FALL 2018 READY-TO-WEAR
+Could not find location: PRE-FALL 2020 MENSWEAR
+Could not find location: FALL 2020 COUTURE
+Could not find location: PRE-FALL 2020
+Could not find location: RESORT 2020
+Could not find location: FALL 2020 MENSWEAR
+Could not find location: SPRING 2020 READY-TO-WEAR
+Could not find location: FALL 2020 READY-TO-WEAR
+Could not find location: SPRING 2020 COUTURE
+Could not find location: SPRING 2020 MENSWEAR
+Could not find location: SPRING 2021 COUTURE
+Could not find location: SPRING 2021 MENSWEAR
+Could not find location: FALL 2021 COUTURE
+Could not find location: RESORT 2021
+Could not find location: FALL 2021 READY-TO-WEAR
+Could not find location: RESORT 2021 MENSWEAR
+Could not find location: PRE-FALL 2021
+Could not find location: SPRING 2021 READY-TO-WEAR
+Could not find location: FALL 2021 MENSWEAR
+Could not find location: RESORT 2022 MENSWEAR
+Could not find location: RESORT 2022
+Could not find location: SPRING 2022 READY-TO-WEAR
+Could not find location: SPRING 2022 MENSWEAR
+Could not find location: PRE-FALL 2022
+Could not find location: PRE-FALL 2022 MENSWEAR
+Could not find location: SPRING 2022 COUTURE
+Could not find location: FALL 2022 MENSWEAR
+Could not find location: FALL 2022 READY-TO-WEAR
+Could not find location: FALL 2022 COUTURE
+Could not find location: SPRING 2024 READY-TO-WEAR
+Could not find location: RESORT 2023
+Could not find location: PRE-FALL 2023
+Could not find location: SPRING 2023 MENSWEAR
+Could not find location: SPRING 2023 READY-TO-WEAR
+Could not find location: RESORT 2023 MENSWEAR
+Could not find location: PRE-FALL 2023 MENSWEAR
+Could not find location: SPRING 2023 COUTURE
+Could not find location: FALL 2023 READY-TO-WEAR
+Could not find location: SPRING 2024 MENSWEAR
+Could not find location: FALL 2023 COUTURE
+Could not find location: RESORT 2024
+Could not find location: FALL 2023 MENSWEAR
+Could not find location: RESORT 2024 MENSWEAR
+Could not find location: FALL 2019 COUTURE
+Could not find location: SPRING 2010 MENSWEAR
+Could not find location: FALL 2011 MENSWEAR
+Could not find location: FALL 2007 MENSWEAR
+Could not find location: SPRING 2006 READY-TO-WEAR
+Could not find location: SPRING 2000 COUTURE
+Could not find location: SPRING 1993 COUTURE
+Could not find location: SPRING 1994 COUTURE
+Could not find location: FALL 2001 READY-TO-WEAR
+Could not find location: SPRING 1999 MENSWEAR
+Parsed 19616 shows.
+Starting at index 0, saving 19616 shows...
+Saving Vogue shows... [============        ] 20/sps 11577/19616 59% 392.9sError while saving show: {
+  "level": "RTW",
+  "sex": "MAN",
+  "name": "Faith Connexion Spring 2017 Menswear",
+  "url": "https://www.vogue.com/fashion-shows/spring-2017-menswear/faith-connexion",
+  "description": null,
+  "criticReviewSummary": null,
+  "consumerReviewSummary": null,
+  "date": "2016-06-26T06:00:00.000Z",
+  "reviews": {
+    "create": {
+      "title": "Faith Connexion Spring 2017 Menswear Collection | Vogue",
+      "subtitle": null,
+      "score": null,
+      "summary": null,
+      "content": "<p>Before attending to this ironically prescient Union Jack tabard, a point of order. This menswear collection is released simultaneously with women’s Resort; most of the items here are available in gender specific sizing and are intended to apply to the <a href=\"http://www.vogue.com/tag/designer/faith-connexion/\">Faith Connexion</a> faithful of whatever chromosomal combination. Pre and He are One.</p>\n<p>Perhaps, it’s true, <em>les hommes</em> will be less inclined to pick up the frayed olive shirt with caresses of lace detailing that is in fact a bodysuit. And equally, maybe their eyes might be less interested in getting hold of the lace boob tube than the ladies. Equally, <em>les femmes</em> might be less interested in the very butchest and biggest and to-their-eyes possibly reclaimed, but not, suppressed camouflage outwear and cargo pants. And yet there is no apartness at Faith Connexion: Wear what you want, if you want it, whatever you are.</p>\n<p>So to the tabard. It was painted by Pisco, a street artist, and is one of a series of hand-painted contributions he has made to the collection. It was delivered before the Brexit result. Others included a jacket that demanded, “God Love the Queen” on its back and quivered with hand-cut velvet fringing at its shoulder. Never Too Much Basics, a Neapolitan collective, contributed handwritten detailing on some denim pieces.</p>\n<p>This rail is as dense with intense-ingredient pieces as any you’ll see in Paris, and there are 400 buying teams that have made appointments to do so, so just a few more highlights include: a Dalmatian-print velvet trailing waistcoat, a gold and peppered trucker gilet, a pulled-apart submariner’s rib knit with tattering and embroidery details at the shoulder, a huge white tweed field jacket with more hand-applied embroidery, and a purple and black tweed “shirt skirt” that made me note: “Chanel for aspirant anarchists.” Which isn’t a terrible summation.</p>",
+      "url": "https://www.vogue.com/fashion-shows/spring-2017-menswear/faith-connexion",
+      "date": "2016-06-26T06:00:00.000Z",
+      "author": {
+        "connectOrCreate": {
+          "where": {
+            "name": "Luke Leitch"
+          },
+          "create": {
+            "name": "Luke Leitch",
+            "url": "https://www.vogue.com/contributor/luke-leitch",
+            "avatar": "https://assets.vogue.com/photos/6490363ce1122c2ab0dcad3a/1:1/w_90%2Cc_limit/undefined"
+          }
+        }
+      },
+      "publication": {
+        "connectOrCreate": {
+          "where": {
+            "name": "Vogue"
+          },
+          "create": {
+            "name": "Vogue",
+            "avatar": "https://www.vogue.com/verso/static/vogue/assets/us/logo.svg"
+          }
+        }
+      }
+    }
+  },
+  "season": {
+    "connectOrCreate": {
+      "where": {
+        "name_year": {
+          "name": "SPRING",
+          "year": 2017
+        }
+      },
+      "create": {
+        "name": "SPRING",
+        "year": 2017
+      }
+    }
+  },
+  "collections": {
+    "connectOrCreate": {
+      "where": {
+        "name": "Faith Connexion Spring 2017 Menswear"
+      },
+      "create": {
+        "name": "Faith Connexion Spring 2017 Menswear",
+        "season": {
+          "connectOrCreate": {
+            "where": {
+              "name_year": {
+                "name": "SPRING",
+                "year": 2017
+              }
+            },
+            "create": {
+              "name": "SPRING",
+              "year": 2017
+            }
+          }
+        }
+      }
+    }
+  },
+  "looks": {
+    "create": [
+      {
+        "number": 1,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee285d222f925967bb6/master/w_2560%2Cc_limit/01-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee285d222f925967bb6/master/w_2560%2Cc_limit/01-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 2,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee221c6175d2896a1ff/master/w_2560%2Cc_limit/02-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee221c6175d2896a1ff/master/w_2560%2Cc_limit/02-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 3,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee5d7b4aeda348f5c6f/master/w_2560%2Cc_limit/03-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee5d7b4aeda348f5c6f/master/w_2560%2Cc_limit/03-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 4,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee55124fe572829c811/master/w_2560%2Cc_limit/04-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee55124fe572829c811/master/w_2560%2Cc_limit/04-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 5,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee63b2b98273965d234/master/w_2560%2Cc_limit/05-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee63b2b98273965d234/master/w_2560%2Cc_limit/05-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 6,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee621c6175d2896a201/master/w_2560%2Cc_limit/06-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee621c6175d2896a201/master/w_2560%2Cc_limit/06-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 7,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee9127111771c6ea55c/master/w_2560%2Cc_limit/07-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee9127111771c6ea55c/master/w_2560%2Cc_limit/07-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 8,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efee8127111771c6ea55b/master/w_2560%2Cc_limit/08-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efee8127111771c6ea55b/master/w_2560%2Cc_limit/08-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      },
+      {
+        "number": 9,
+        "image": {
+          "connectOrCreate": {
+            "where": {
+              "url": "https://assets.vogue.com/photos/576efeead7b4aeda348f5c71/master/w_2560%2Cc_limit/09-faith-connexion-2017.jpg"
+            },
+            "create": {
+              "url": "https://assets.vogue.com/photos/576efeead7b4aeda348f5c71/master/w_2560%2Cc_limit/09-faith-connexion-2017.jpg"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "brand": {
+    "connectOrCreate": {
+      "where": {
+        "name": "Faith Connexion"
+      },
+      "create": {
+        "name": "Faith Connexion",
+        "slug": "faith-connexion",
+        "description": null,
+        "tier": null,
+        "avatar": null,
+        "url": null
+      }
+    }
+  }
+}
+Saving Vogue shows... [====================] 21/sps 19615/19616 99% 0.0s
