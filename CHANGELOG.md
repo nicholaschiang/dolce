@@ -1,5 +1,22 @@
 # Release Notes
 
+## [1.29.0](https://github.com/nicholaschiang/site/compare/v1.28.1...v1.29.0) (2023-07-30)
+
+
+### Features
+
+* **prisma:** replace show location string with enum ([769f085](https://github.com/nicholaschiang/site/commit/769f085000fb5bd1e7b26f3ead8fcbc7aba46a32))
+* **scripts/vogue:** import all vogue show data ([3ec6fce](https://github.com/nicholaschiang/site/commit/3ec6fce2be5f33ca1d87ebcb2623f78bd69b728e))
+* update database enums to match vogue ([862769a](https://github.com/nicholaschiang/site/commit/862769a7dbd17d102a2a50be5e32abebee331f05))
+
+
+### Bug Fixes
+
+* **prisma:** add `location` to show unique constraint ([dc6c058](https://github.com/nicholaschiang/site/commit/dc6c058eefd3f89e5dbbb3714608217ea718f049))
+* **prisma:** address typo in shanghai enum value ([fd9f2b3](https://github.com/nicholaschiang/site/commit/fd9f2b35d3a85708af63e4185c57516f76066adb))
+* **public/data/vogue:** move shows to `static` ([366549c](https://github.com/nicholaschiang/site/commit/366549c5344792264f3db1fa48f56a5d4fa2c8eb))
+* **scripts/vogue:** filter out duplicate shows ([1f7a9df](https://github.com/nicholaschiang/site/commit/1f7a9df1fdc041c40f14dfcf1f0a886a5d2bd5f3))
+
 ## [1.28.1](https://github.com/nicholaschiang/site/compare/v1.28.0...v1.28.1) (2023-07-30)
 
 
