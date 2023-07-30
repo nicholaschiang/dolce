@@ -21,6 +21,8 @@ const PATH = '../../../public/data/vogue/shows.json'
 
 type Show = (typeof example)[number]
 
+const seasonsWithParseWarnings = new Set<string>()
+
 const vogue: Prisma.PublicationCreateInput = {
   name: 'Vogue',
   avatar: 'https://www.vogue.com/verso/static/vogue/assets/us/logo.svg',
@@ -32,26 +34,36 @@ const prisma = new PrismaClient({
 
 export async function save() {
   const json = fs.readFileSync(path.resolve(__dirname, PATH), 'utf8')
-  const shows = JSON.parse(json) as Show[]
+  const all = JSON.parse(json) as Show[]
+  console.log(`Filtering ${all.length} shows by content...`)
+  const shows = uniqBy(all, (show) => show.content.join())
+  console.log(`Filtered out ${all.length - shows.length} duplicate shows.`)
+  console.log(`Filtering ${shows.length} shows by look image...`)
+  const filtered = uniqBy(shows, (show) => show.looks[0]?.src ?? show.title)
+  console.log(`Filtered out ${shows.length - filtered.length} duplicate shows.`)
+  console.log(`Parsing ${filtered.length} shows...`)
+  const data = filtered.map(getData)
+  console.log(`Parsed ${data.length} shows.`)
+  let index = Number(process.argv[2])
+  if (Number.isNaN(index)) index = 0
+  const final = data.slice(index)
+  console.log(`Starting at index ${index}, saving ${final.length} shows...`)
   const bar = new ProgressBar(
-    'saving vogue shows [:bar] :rate/sps :current/:total :percent :etas',
+    'Saving Vogue shows... [:bar] :rate/sps :current/:total :percent :etas',
     {
       complete: '=',
       incomplete: ' ',
       width: 20,
-      total: shows.length,
+      total: final.length,
     },
   )
   /* eslint-disable-next-line no-restricted-syntax */
-  for await (const show of shows) {
-    const data = getData(show)
+  for await (const show of final) {
     try {
-      await prisma.show.create({ data })
+      await prisma.show.create({ data: show })
       bar.tick()
     } catch (error) {
-      console.error(`Error while saving show:`, show)
-      console.error(`Error while saving data:`, data)
-      throw error
+      console.error(`Error while saving show:`, JSON.stringify(show, null, 2))
     }
   }
 }
@@ -59,6 +71,24 @@ export async function save() {
 void save()
 
 //////////////////////////////////////////////////////////////////
+
+/**
+ * Sometimes it's desired to uniquify a list based on some criteria other than
+ * just equality, for example, to filter out objects that are different, but
+ * share some property. This can be done elegantly by passing a callback. This
+ * "key" callback is applied to each element, and elements with equal "keys" are
+ * removed. Since key is expected to return a primitive, hash table will work
+ * fine here.
+ * @see {@link https://stackoverflow.com/a/9229821}
+ */
+function uniqBy<T>(a: T[], key: (t: T) => PropertyKey): T[] {
+  const seen: Record<PropertyKey, boolean> = {}
+  return a.filter((item) => {
+    const k = key(item)
+    /* eslint-disable-next-line no-prototype-builtins, no-return-assign */
+    return seen.hasOwnProperty(k) ? false : (seen[k] = true)
+  })
+}
 
 function caps(sentence: string): string {
   return sentence
@@ -110,8 +140,8 @@ function parseSeason(season: string): ParsedSeason {
     ? Location.MADRID
     : season.includes('COPENHAGEN')
     ? Location.COPENHAGEN
-    : season.includes('SHANGAI')
-    ? Location.SHANGAI
+    : season.includes('SHANGHAI')
+    ? Location.SHANGHAI
     : season.includes('AUSTRALIA')
     ? Location.AUSTRALIA
     : season.includes('STOCKHOLM')
@@ -135,7 +165,10 @@ function parseSeason(season: string): ParsedSeason {
     : season.includes('BRIDAL')
     ? Location.BRIDAL
     : undefined
-  if (location == null) console.warn(`\nCould not find location: ${season}\n`)
+  if (location == null && seasonsWithParseWarnings.has(season) === false) {
+    console.warn(`Could not find location: ${season}`)
+    seasonsWithParseWarnings.add(season)
+  }
   return {
     season: { name, year },
     level,
@@ -200,7 +233,6 @@ function getData(show: Show) {
     avatar: null,
     url: null,
   }
-
   const data: Prisma.ShowCreateInput = {
     ...etc,
     name,
