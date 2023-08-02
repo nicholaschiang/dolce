@@ -1,5 +1,19 @@
 # Release Notes
 
+## [1.30.0](https://github.com/nicholaschiang/site/compare/v1.29.0...v1.30.0) (2023-08-02)
+
+
+### Features
+
+* **scripts/wwd:** add import script and migrations ([5d3e9b5](https://github.com/nicholaschiang/site/commit/5d3e9b59b8edc4a4f4b3c801a6496c5fe1faf0e9))
+* **spiders/wwd:** add scrapy script for wwd shows ([2ae542c](https://github.com/nicholaschiang/site/commit/2ae542c2846aa6c4c98c6cf34563dab9e96ed71d))
+
+
+### Bug Fixes
+
+* combine duplicate show looks and images ([cd23a98](https://github.com/nicholaschiang/site/commit/cd23a98581e9d353af5e4373c7457184f6085423))
+* **utils/show:** include show level in subtitle ([da2a89c](https://github.com/nicholaschiang/site/commit/da2a89c2df906533d248c83fc1cd39378eef2f4d))
+
 ## [1.29.0](https://github.com/nicholaschiang/site/compare/v1.28.1...v1.29.0) (2023-07-30)
 
 
