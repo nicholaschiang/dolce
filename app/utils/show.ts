@@ -6,6 +6,7 @@ import {
   type Look,
   type Image,
   type User,
+  Level,
 } from '@prisma/client'
 import { type Event, type Person, type WithContext } from 'schema-dts'
 
@@ -17,12 +18,33 @@ import { SEASON_NAME_TO_SLUG, getSeasonName } from 'utils/season'
 import { SEX_TO_SLUG, getSexName } from 'utils/sex'
 import { getUserSchema } from 'utils/user'
 
+export function getLevelName(level: Level): string {
+  switch (level) {
+    case Level.BESPOKE:
+      return 'Bespoke'
+    case Level.COUTURE:
+      return 'Couture'
+    case Level.HANDMADE:
+      return 'Handmade'
+    case Level.RTW:
+      return 'RTW'
+    default:
+      throw new Error(`Unknown level: ${level}`)
+  }
+}
+
 /**
  * Get the show season header (i.e. "SPRING 2021 MENSWEAR" or "RESORT 2024").
  * This is more convoluted than normal due to the weirdness with "Menswear".
  */
 export function getShowSeason(show: Serialize<Show & { season: Season }>) {
-  return `${getSeasonName(show.season)} ${getSexName(show.sex)}`
+  return [
+    getSeasonName(show.season),
+    getLevelName(show.level),
+    getSexName(show.sex),
+  ]
+    .filter((s) => s)
+    .join(' ')
 }
 
 /**
