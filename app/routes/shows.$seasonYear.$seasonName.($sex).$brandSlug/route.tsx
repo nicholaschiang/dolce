@@ -101,7 +101,7 @@ export async function loader({ request, params }: LoaderArgs) {
         orderBy: { updatedAt: 'desc' },
       },
       looks: {
-        include: { image: true, model: true },
+        include: { images: true, model: true },
         orderBy: { number: 'asc' },
       },
     },
@@ -145,7 +145,7 @@ function Looks({ className }: { className: string }) {
                 decoding={
                   index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'
                 }
-                src={look.image.url}
+                src={look.images[0]?.url}
                 alt=''
               />
             </div>
