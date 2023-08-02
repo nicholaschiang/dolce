@@ -17,7 +17,7 @@ import ProgressBar from 'progress'
 import { slug } from './utils'
 import example from './vogue/resort-2024.json'
 
-const PATH = '../../../public/data/vogue/shows.json'
+const PATH = '../../../../static/data/vogue.json'
 
 type Show = (typeof example)[number]
 
