@@ -35,9 +35,7 @@ export const looks = Array(NUM_LOOKS)
     }
     const look: Prisma.LookCreateWithoutShowInput = {
       number,
-      image: {
-        connectOrCreate: { where: { url: image.url }, create: image },
-      },
+      images: { connectOrCreate: { where: { url: image.url }, create: image } },
     }
     return look
   })

@@ -530,9 +530,8 @@ model Image {
   variantId Int?
 
   // The runway look the image is of.
-  // look   Look? @relation(fields: [lookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  // lookId Int?
-  look Look?
+  look   Look? @relation(fields: [lookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lookId Int?
 
   // @todo store information on the models in the image (e.g. insta, etc).
 }
@@ -760,12 +759,10 @@ model Look {
   products Product[]
 
   // The look's picture (if known).
-  // images Image[]
-  image   Image @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  imageId Int   @unique
+  images Image[]
 
   // Each look must have a unique number in the show.
-  // @@unique([number, showId])
+  @@unique([number, showId])
 }
 
 // A review is a review for a show from a fashion critic or consumer.

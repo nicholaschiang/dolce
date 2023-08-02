@@ -28,7 +28,11 @@ export async function loader() {
       season: true,
       brand: true,
       collections: true,
-      looks: { include: { image: true }, orderBy: { number: 'asc' }, take: 1 },
+      looks: {
+        include: { images: { take: 1 } },
+        orderBy: { number: 'asc' },
+        take: 1,
+      },
     },
     orderBy: [{ brand: { name: 'asc' } }, { season: { year: 'desc' } }],
   })
@@ -67,7 +71,7 @@ export default function ShowsPage() {
                       decoding={
                         index < showsPerRow * rowsToEagerLoad ? 'sync' : 'async'
                       }
-                      src={show.looks[0].image.url}
+                      src={show.looks[0].images[0]?.url}
                       responsive={[
                         100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
                       ].map((width) => ({

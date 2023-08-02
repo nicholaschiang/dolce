@@ -69,7 +69,7 @@ export function getShowKeywords(
 export function getShowSchema(
   show: Serialize<
     Show & {
-      looks: (Look & { image: Image; model: User | null })[]
+      looks: (Look & { images: Image[]; model: User | null })[]
       collections: (Collection & { designers: User[] })[]
       season: Season
       brand: Brand
@@ -82,7 +82,7 @@ export function getShowSchema(
     '@type': 'ExhibitionEvent',
     '@id': show.id.toString(),
     'name': show.name,
-    'image': url(show.looks[0]?.image?.url),
+    'image': url(show.looks[0]?.images[0]?.url),
     'startDate': show.date?.toString() ?? undefined,
     'location': show.location ?? undefined,
     'description': show.description ?? undefined,
