@@ -11,6 +11,7 @@ import {
   isRouteErrorResponse,
   useMatches,
   useNavigation,
+  useNavigationType,
   type RouteMatch,
 } from '@remix-run/react'
 import { Analytics } from '@vercel/analytics/react'
@@ -215,17 +216,18 @@ export default function AppWithProviders() {
 
 function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
   const [theme] = useTheme()
+  const type = useNavigationType()
   const navigation = useNavigation()
   useEffect(() => {
     // when the state is idle then we can complete the progress bar
     if (navigation.state === 'idle') NProgress.done()
     // and when it's something else it means it's either submitting a form or
     // waiting for the loaders of the next location so we start it
-    else {
+    else if (type !== 'REPLACE') {
       const timeoutId = setTimeout(() => NProgress.start(), 100)
       return () => clearTimeout(timeoutId)
     }
-  }, [navigation.state])
+  }, [navigation.state, type])
   return (
     <html lang='en' className={cn('h-full', theme)}>
       <head>
