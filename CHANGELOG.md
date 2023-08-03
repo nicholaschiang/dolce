@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.30.1](https://github.com/nicholaschiang/site/compare/v1.30.0...v1.30.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* **root:** hide `nprogress` for page replacements ([f2cab2d](https://github.com/nicholaschiang/site/commit/f2cab2d8736b126e8950922e5bfc3b50632010b5))
+
+
+### Performance Improvements
+
+* **shows:** virtualize and add infinite scrolling ([223cea4](https://github.com/nicholaschiang/site/commit/223cea4add69a9b745b2a10b5914cd1cd5666d4f))
+
 ## [1.30.0](https://github.com/nicholaschiang/site/compare/v1.29.0...v1.30.0) (2023-08-02)
 
 
