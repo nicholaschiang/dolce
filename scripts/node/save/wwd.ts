@@ -238,14 +238,29 @@ function getData(show: Show & { looks: Look[] }) {
       url: null,
     }
 
-    // The purpose of this `name` field is to match existing records imported from
-    // other news sources (i.e. Vogue). Vogue does not include the season location
-    // if that location is PARIS, so I will omit that from the name when matching.
+    // The purpose of this `name` field is to match existing records imported
+    // from other news sources (i.e. Vogue). The only shows where both Vogue and
+    // WWD included location information were the Hyke Toyko shows.
+    //
+    // -- Gets the shows that were originally imported from Vogue with locations, and
+    // -- had the same locations in WWD and thus the records merged as expected.
+    // --
+    // -- This query only returned 3 rows, meaning that I should probably simply omit
+    // -- the location from the show name when merging from WWD (as there were more records
+    // -- that were alike besides the location) and then manually merge those three.
+    // --
+    // -- Hyke FALL 2023 WOMAN RTW TOKYO, Hyke SPRING 2022 WOMAN RTW TOKYO, Hyke SPRING 2023 WOMAN RTW TOKYO
+    // SELECT * FROM (
+    //   SELECT "Show"."name", "Show"."location", COUNT("Review"."id") as "review_count"
+    //   FROM "Show"
+    //   LEFT OUTER JOIN "Review" ON "Review"."showId" = "Show"."id"
+    //   GROUP BY "Show"."name", "Show"."location"
+    // ) "Shows" WHERE "review_count" > 1 AND "location" != 'PARIS' AND "location" IS NOT NULL
     //
     // This does not lead to any loss of information as the show location is still
     // saved to our database even while the name doesn't include it.
-    const loc = location === Location.PARIS ? '' : location ?? ''
-    const derived = `${season.name} ${season.year} ${sex} ${level} ${loc}`
+    const loc = brandName === 'Hyke' ? location : ''
+    const derived = `${season.name} ${season.year} ${sex} ${level} ${loc ?? ''}`
     const name = `${brandName} ${derived}`.trim()
     log('Name:', name)
 
