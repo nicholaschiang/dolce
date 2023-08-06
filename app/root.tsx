@@ -263,16 +263,7 @@ function ErrorDisplay({ children }: { children: ReactNode }) {
               <Link className='underline' to='/login'>
                 authenticating
               </Link>
-              . Or smash your keyboard—that can help. You can also{' '}
-              <a
-                className='underline'
-                href='https://github.com/nicholaschiang/site/issues/new'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                file an issue
-              </a>
-              .
+              . Or smash your keyboard—that can help.
             </p>
             <div className='mt-4 w-0 min-w-full max-w-full overflow-auto bg-gray-100 dark:bg-gray-800'>
               <pre className='w-fit p-6 text-xs leading-4'>{children}</pre>
