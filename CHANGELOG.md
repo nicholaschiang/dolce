@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.30.2](https://github.com/nicholaschiang/site/compare/v1.30.1...v1.30.2) (2023-08-06)
+
+
+### Bug Fixes
+
+* **scripts/wwd:** do not include location in name ([b847754](https://github.com/nicholaschiang/site/commit/b847754b9cc91d111d219bd0412af5988552d1ed))
+
 ## [1.30.1](https://github.com/nicholaschiang/site/compare/v1.30.0...v1.30.1) (2023-08-03)
 
 
