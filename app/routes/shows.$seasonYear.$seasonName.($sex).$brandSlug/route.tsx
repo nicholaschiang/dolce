@@ -6,6 +6,8 @@ import {
 } from '@vercel/remix'
 import { type SitemapFunction } from 'remix-sitemap'
 
+import { Breadcrumbs } from 'components/breadcrumbs'
+
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { type Handle } from 'root'
@@ -160,6 +162,7 @@ function Looks({ className }: { className: string }) {
 function About({ className }: { className: string }) {
   return (
     <div className={cn('overflow-auto', className)}>
+      <Breadcrumbs className='mb-4' />
       <ScoresHeader />
       <WhatToKnow />
       <Designers />

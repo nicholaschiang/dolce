@@ -25,7 +25,7 @@ import {
 import cn from 'classnames'
 import { User, LogIn, LogOut } from 'lucide-react'
 import NProgress from 'nprogress'
-import { Fragment, type ReactNode, useEffect } from 'react'
+import { type ReactNode, useEffect } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
 import { buttonVariants } from 'components/ui/button'
@@ -44,14 +44,6 @@ import {
 import { useOptionalUser } from 'utils'
 
 export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
-
-export const handle: Handle = {
-  breadcrumb: () => (
-    <Link prefetch='intent' to='/'>
-      nicholas.engineering
-    </Link>
-  ),
-}
 
 export const config = { runtime: 'edge' }
 
@@ -263,18 +255,9 @@ function Header() {
   const user = useOptionalUser()
   return (
     <header className='sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
-      <ol className='flex items-center gap-2'>
-        {matches
-          .filter((match) => match.handle && match.handle.breadcrumb)
-          .map((match, index) => (
-            <Fragment key={match.id}>
-              {index !== 0 && (
-                <span className='text-gray-300 dark:text-gray-600'>/</span>
-              )}
-              <li>{(match.handle as Handle).breadcrumb(match)}</li>
-            </Fragment>
-          ))}
-      </ol>
+      <Link to='/' prefetch='intent'>
+        <h1 className='tracking-tigher text-xl uppercase'>Dolce</h1>
+      </Link>
       <div className='flex items-center'>
         {!matches.some((match) => match.id.includes('login')) && (
           <Link

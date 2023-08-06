@@ -4,7 +4,7 @@ import { type Handle } from 'root'
 
 export const handle: Handle = {
   breadcrumb: () => (
-    <Link prefetch='intent' to='/shows'>
+    <Link prefetch='intent' to='/shows' className='uppercase'>
       shows
     </Link>
   ),
