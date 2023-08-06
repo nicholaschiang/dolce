@@ -18,10 +18,10 @@ import { Tooltip } from 'components/tooltip'
 
 import { prisma } from 'db.server'
 import { type Handle } from 'root'
-import { useData } from 'utils'
+import { NAME, useData } from 'utils'
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
-  { title: `${data?.name ?? '404'} | Nicholas Chiang` },
+  { title: `${data?.name ?? '404'} | ${NAME}` },
 ]
 
 export const handle: Handle = {

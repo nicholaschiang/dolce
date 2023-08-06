@@ -9,7 +9,7 @@ import { type SitemapFunction } from 'remix-sitemap'
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { type Handle } from 'root'
-import { invert } from 'utils'
+import { NAME, invert } from 'utils'
 import { cn } from 'utils/cn'
 import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
@@ -34,10 +34,10 @@ const rowsToEagerLoad = 3
 const looksPerRow = 2
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
-  if (data == null) return [{ title: '404 | Nicholas Chiang' }]
+  if (data == null) return [{ title: `404 | ${NAME}` }]
   const keywords = getShowKeywords(data).join(', ')
   return [
-    { title: `${data.name} Collection | Nicholas Chiang` },
+    { title: `${data.name} Collection | ${NAME}` },
     {
       name: 'description',
       content: `${data.name} collection, runway looks, beauty, models, and reviews.`,

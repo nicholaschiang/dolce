@@ -14,13 +14,13 @@ import { Image } from 'components/image'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
+import { NAME } from 'utils'
 import { cn } from 'utils/cn'
 import { getShowSeason, getShowPath } from 'utils/show'
 
 export const meta: V2_MetaFunction = () => [
   {
-    title:
-      'Fashion Shows: Fashion Week, Runway, Designer Collections | Nicholas Chiang',
+    title: `Fashion Shows: Fashion Week, Runway, Designer Collections | ${NAME}`,
   },
   {
     name: 'description',
