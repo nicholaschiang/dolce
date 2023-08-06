@@ -9,7 +9,6 @@ import {
   useLoaderData,
   useRouteError,
   isRouteErrorResponse,
-  useMatches,
   useNavigation,
   useNavigationType,
   type RouteMatch,
@@ -23,12 +22,8 @@ import {
   json,
 } from '@vercel/remix'
 import cn from 'classnames'
-import { User, LogIn, LogOut, ChevronRight } from 'lucide-react'
 import NProgress from 'nprogress'
-import { Fragment, type ReactNode, useEffect } from 'react'
-
-import { ThemeSwitcher } from 'components/theme-switcher'
-import { buttonVariants } from 'components/ui/button'
+import { type ReactNode, useEffect } from 'react'
 
 import tailwindStylesheetUrl from 'styles/tailwind.css'
 
@@ -41,7 +36,6 @@ import {
   isTheme,
   useTheme,
 } from 'theme'
-import { useOptionalUser } from 'utils'
 
 export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
 
@@ -241,7 +235,6 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <ThemeHead ssrTheme={Boolean(data?.theme)} />
       </head>
       <body className='bg-white text-gray-900 selection:bg-gray-200 selection:text-gray-900 dark:bg-gray-950 dark:text-gray-50 dark:selection:bg-gray-800 dark:selection:text-gray-50'>
-        <Header />
         {children}
         <script
           dangerouslySetInnerHTML={{
@@ -255,52 +248,6 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <LiveReload />
       </body>
     </html>
-  )
-}
-
-function Header() {
-  const matches = useMatches()
-  const user = useOptionalUser()
-  return (
-    <header className='sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
-      <ol className='flex items-center gap-2 text-lg tracking-tighter lowercase'>
-        {matches
-          .filter((match) => match.handle && match.handle.breadcrumb)
-          .map((match, index) => (
-            <Fragment key={match.id}>
-              {index !== 0 && (
-                <ChevronRight className='text-gray-300 dark:text-gray-600 h-4 w-4 mt-0.5' />
-              )}
-              <li>{(match.handle as Handle).breadcrumb(match)}</li>
-            </Fragment>
-          ))}
-      </ol>
-      <div className='flex items-center'>
-        {!matches.some((match) => match.id.includes('login')) && (
-          <Link
-            aria-label={user ? 'Log out' : 'Log in'}
-            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
-            to={user ? '/logout' : '/login'}
-          >
-            {user ? (
-              <LogOut className='w-3 h-3' />
-            ) : (
-              <LogIn className='w-3 h-3' />
-            )}
-          </Link>
-        )}
-        {user && (
-          <Link
-            aria-label='Edit profile'
-            className={buttonVariants({ size: 'icon', variant: 'ghost' })}
-            to='/profile'
-          >
-            <User className='w-3 h-3' />
-          </Link>
-        )}
-        <ThemeSwitcher />
-      </div>
-    </header>
   )
 }
 
