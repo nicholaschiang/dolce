@@ -181,7 +181,7 @@ export default function ShowsPage() {
       className='fixed inset-x-0 top-10 bottom-0 overflow-auto'
     >
       <div className='p-6 mx-auto max-w-screen-xl'>
-        <h1 className='text-6xl mb-6'>shows</h1>
+        <h1 className='text-6xl mb-6 lowercase tracking-tighter'>shows</h1>
         {shows.length > 0 ? (
           <ol
             className='-m-1'
