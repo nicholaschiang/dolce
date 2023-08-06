@@ -35,13 +35,15 @@ export function ScoresHeader() {
       )}
       <div className='flex gap-2'>
         <div className='flex-none w-40 bg-gray-100 dark:bg-gray-900 h-0 min-h-full'>
-          <img
-            className='object-cover h-full w-full'
-            src={show.looks[0]?.images[0]?.url}
-            loading='eager'
-            decoding='sync'
-            alt=''
-          />
+          {show.looks.length > 0 && show.looks[0].images.length > 0 && (
+            <img
+              className='object-cover h-full w-full'
+              src={show.looks[0].images[0].url}
+              loading='eager'
+              decoding='sync'
+              alt=''
+            />
+          )}
         </div>
         <article className='flex-1 bg-gray-100 dark:bg-gray-900 text-center px-6 flex flex-col'>
           <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>

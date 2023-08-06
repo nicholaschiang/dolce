@@ -218,28 +218,30 @@ export default function ShowsPage() {
                         show == null && 'animate-pulse',
                       )}
                     >
-                      {show != null && show.looks.length > 0 && (
-                        <Image
-                          className='object-cover h-full w-full'
-                          loading={
-                            virtualRow.index < showsPerRow * rowsToEagerLoad
-                              ? 'eager'
-                              : 'lazy'
-                          }
-                          decoding={
-                            virtualRow.index < showsPerRow * rowsToEagerLoad
-                              ? 'sync'
-                              : 'async'
-                          }
-                          src={show.looks[0].images[0]?.url}
-                          responsive={[
-                            100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-                          ].map((width) => ({
-                            size: { width },
-                            maxWidth: width * showsPerRow,
-                          }))}
-                        />
-                      )}
+                      {show != null &&
+                        show.looks.length > 0 &&
+                        show.looks[0].images.length > 0 && (
+                          <Image
+                            className='object-cover h-full w-full'
+                            loading={
+                              virtualRow.index < showsPerRow * rowsToEagerLoad
+                                ? 'eager'
+                                : 'lazy'
+                            }
+                            decoding={
+                              virtualRow.index < showsPerRow * rowsToEagerLoad
+                                ? 'sync'
+                                : 'async'
+                            }
+                            src={show.looks[0].images[0].url}
+                            responsive={[
+                              100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+                            ].map((width) => ({
+                              size: { width },
+                              maxWidth: width * showsPerRow,
+                            }))}
+                          />
+                        )}
                     </div>
                     <h2 className='text-xl font-serif font-semibold text-center'>
                       {show?.brand.name}
