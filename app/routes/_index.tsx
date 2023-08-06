@@ -1,145 +1,39 @@
-import { Link } from '@remix-run/react'
-import {
-  Projector,
-  ExternalLink,
-  Shirt,
-  CalendarClock,
-  type LucideIcon,
-} from 'lucide-react'
+import { FGIt as Italy } from '@icongo/fg'
+import { type PropsWithChildren } from 'react'
 
 export default function IndexPage() {
   return (
-    <main className='flex w-screen items-center justify-center'>
-      <section>
-        <Milestone
-          start={new Date(2023, 7, 20)}
-          title='/shows'
-          subtitle='rotten tomatoes for fashion'
-          url='/shows'
-          icon={Projector}
-        />
-        <Milestone
-          start={new Date(2023, 3, 18)}
-          title='/life'
-          subtitle='a graphical depiction'
-          url='/life/life.pdf'
-          icon={CalendarClock}
-          openInNew
-        />
-        <Milestone
-          start={new Date(2023, 0, 2)}
-          title='/products'
-          subtitle='a fashion archive'
-          url='/products'
-          icon={Shirt}
-        />
-        <Milestone
-          start={new Date(2023, 0, 1)}
-          title='nicholas.engineering'
-          subtitle='yet another portfolio'
-          url='https://github.com/nicholaschiang/site'
-          openInNew
-        />
-        <Milestone
-          start={new Date(2022, 5, 1)}
-          title='numbersstation.ai'
-          subtitle='a dbt generator'
-          url='https://numbersstation.ai'
-          openInNew
-        />
-        <Milestone
-          start={new Date(2022, 2, 1)}
-          end={new Date(2022, 7, 1)}
-          title='tweetscape.co'
-          subtitle='a twitter client'
-          url='https://github.com/rooteco/tweetscape'
-          openInNew
-        />
-        <Milestone
-          start={new Date(2021, 3, 1)}
-          end={new Date(2021, 11, 1)}
-          title='readhammock.com'
-          subtitle='a newsletter reader'
-          url='https://github.com/nicholaschiang/hammock'
-          openInNew
-        />
-        <Milestone
-          start={new Date(2019, 1, 1)}
-          end={new Date(2022, 6, 1)}
-          title='tutorbook.org'
-          subtitle='a booking platform'
-          url='https://github.com/tutorbookapp/tutorbook'
-          openInNew
-        />
-        <Milestone
-          start={new Date(2018, 8, 1)}
-          end={new Date(2019, 4, 1)}
-          title='sing.stanford.edu'
-          subtitle='some ml research'
-          url='https://dl.acm.org/doi/10.1145/3391906?cid=99659274049'
-          openInNew
-        />
-      </section>
+    <main className='flex flex-col sm:flex-row sm:items-center justify-center mt-6 p-6 gap-6'>
+      <div className='aspect-square w-full sm:w-72 sm:h-72 bg-gray-100 dark:bg-gray-900'>
+        <img src='/brands.jpg' className='object-cover h-full w-full' alt='' />
+      </div>
+      <article>
+        <h1 className='text-2xl font-medium mb-4 tracking-tighter flex items-center gap-0.5'>
+          <span>dol</span>
+          <span>·</span>
+          <span>ce</span>
+        </h1>
+        <dl>
+          <Definition label='adverb'>
+            (especially as a direction) sweetly and softly.
+          </Definition>
+          <Definition label='adjective'>
+            performed in a sweet and soft manner.
+          </Definition>
+          <Definition label='origin'>
+            <Italy className='border border-gray-900 dark:border-white rounded-full mt-0.5' />
+          </Definition>
+        </dl>
+      </article>
     </main>
   )
 }
 
-const DATE_FORMAT: Intl.DateTimeFormatOptions = {
-  month: 'numeric',
-  year: 'numeric',
-}
-
-interface MilestoneProps {
-  start: Date
-  end?: Date
-  title: string
-  subtitle: string
-  url?: string
-  icon?: LucideIcon
-  openInNew?: boolean
-}
-
-function Milestone({
-  start,
-  end,
-  title,
-  subtitle,
-  url,
-  icon,
-  openInNew,
-}: MilestoneProps) {
-  const Icon = icon ?? ExternalLink
+function Definition({ label, children }: PropsWithChildren<{ label: string }>) {
   return (
-    <article className='before:content-[" "] relative m-12 text-lg leading-none before:absolute before:-left-6.5 before:top-1/2 before:h-1 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-gray-300 after:absolute after:-left-[calc(1.5rem_+_0.5px)] after:top-1/2 after:h-[calc(100%_+_3rem)] after:border-l after:border-gray-300 last:after:hidden dark:before:bg-gray-100 dark:after:border-gray-100'>
-      <p className='text-xs lowercase text-gray-900/50 dark:text-gray-100/50'>
-        {start.toLocaleString(undefined, DATE_FORMAT)}
-        {end ? `–${end.toLocaleString(undefined, DATE_FORMAT)}` : ''}
-      </p>
-      <h1 className='my-2 font-semibold'>
-        {!url && title}
-        {url && !openInNew && (
-          <Link
-            to={url}
-            prefetch='intent'
-            className='items-top link group flex underline items-end'
-          >
-            {title}
-            <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
-          </Link>
-        )}
-        {url && openInNew && (
-          <a
-            href={url}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='items-top link group flex underline items-end'
-          >
-            {title}
-            <Icon className='ml-1 inline-block h-4 w-4 text-gray-400 dark:text-gray-500' />
-          </a>
-        )}
-      </h1>
-      <h2>{subtitle}</h2>
-    </article>
+    <>
+      <dt className='italic text-gray-400 dark:text-gray-600'>{label}</dt>
+      <dd className='mb-4'>{children}</dd>
+    </>
   )
 }

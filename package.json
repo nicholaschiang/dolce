@@ -47,6 +47,7 @@
   "dependencies": {
     "@conform-to/react": "^0.7.4",
     "@conform-to/zod": "^0.7.4",
+    "@icongo/fg": "^1.2.0",
     "@prisma/client": "^4.16.2",
     "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-checkbox": "^1.0.4",
