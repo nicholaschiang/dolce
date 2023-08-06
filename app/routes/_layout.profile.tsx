@@ -34,7 +34,7 @@ import { updateUser } from 'models/user.server'
 import { prisma } from 'db.server'
 import { type Handle } from 'root'
 import { getUserId } from 'session.server'
-import { useUser } from 'utils'
+import { NAME, useUser } from 'utils'
 import {
   name as nameSchema,
   username as usernameSchema,
@@ -106,9 +106,7 @@ export async function action({ request }: ActionArgs) {
   return json(submission)
 }
 
-export const meta: V2_MetaFunction = () => [
-  { title: 'Profile | Nicholas Chiang' },
-]
+export const meta: V2_MetaFunction = () => [{ title: `Profile | ${NAME}` }]
 
 export default function ProfilePage() {
   const user = useUser()

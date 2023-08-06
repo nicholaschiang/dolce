@@ -35,10 +35,9 @@ import {
 } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
+import { NAME } from 'utils'
 
-export const meta: V2_MetaFunction = () => [
-  { title: 'Products | Nicholas Chiang' },
-]
+export const meta: V2_MetaFunction = () => [{ title: `Products | ${NAME}` }]
 
 export const handle: Handle = {
   breadcrumb: () => (

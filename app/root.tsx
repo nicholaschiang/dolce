@@ -36,6 +36,7 @@ import {
   isTheme,
   useTheme,
 } from 'theme'
+import { NAME } from 'utils'
 
 export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
 
@@ -137,7 +138,7 @@ export const links: LinksFunction = () => [
   { rel: 'manifest', href: '/site.webmanifest' },
 ]
 
-export const meta: V2_MetaFunction = () => [{ title: 'Nicholas Chiang' }]
+export const meta: V2_MetaFunction = () => [{ title: NAME }]
 
 type Env = { VERCEL_ANALYTICS_ID?: string }
 
@@ -228,8 +229,8 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width,initial-scale=1' />
         <meta name='referrer' content='no-referrer' />
-        <meta name='author' content='Nicholas Chiang' />
-        <meta name='copyright' content='Copyright (c) Nicholas Chiang 2023' />
+        <meta name='author' content={NAME} />
+        <meta name='copyright' content={`Copyright (c) ${NAME} 2023`} />
         <Meta />
         <Links />
         <ThemeHead ssrTheme={Boolean(data?.theme)} />

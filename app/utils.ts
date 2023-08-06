@@ -6,6 +6,7 @@ import type { User } from 'models/user.server'
 
 import type { loader } from 'root'
 
+export const NAME = 'DOLCE'
 export const DEFAULT_REDIRECT = '/'
 export const BASE_URL = 'https://nicholas.engineering'
 export const OPTIMIZE_IMAGES = false
