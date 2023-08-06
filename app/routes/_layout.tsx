@@ -1,6 +1,8 @@
 import { Prisma } from '@prisma/client'
 import { Outlet } from '@remix-run/react'
 
+import { Header } from 'components/header'
+
 import { log } from 'log.server'
 
 export function loader() {
@@ -46,7 +48,8 @@ export function loader() {
 
 export default function LayoutPage() {
   return (
-    <main className='fixed inset-0 pt-10 flex flex-col overflow-hidden'>
+    <main className='fixed inset-0 flex flex-col overflow-hidden'>
+      <Header className='flex-none' />
       <Outlet />
     </main>
   )
