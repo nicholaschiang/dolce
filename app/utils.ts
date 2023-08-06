@@ -8,7 +8,7 @@ import type { loader } from 'root'
 
 export const NAME = 'DOLCE'
 export const DEFAULT_REDIRECT = '/'
-export const BASE_URL = 'https://nicholas.engineering'
+export const BASE_URL = 'https://dolce.so'
 export const OPTIMIZE_IMAGES = false
 
 export const clone = rfdc()
