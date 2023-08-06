@@ -23,7 +23,7 @@ import {
   json,
 } from '@vercel/remix'
 import cn from 'classnames'
-import { User, LogIn, LogOut } from 'lucide-react'
+import { User, LogIn, LogOut, ChevronRight } from 'lucide-react'
 import NProgress from 'nprogress'
 import { Fragment, type ReactNode, useEffect } from 'react'
 
@@ -48,7 +48,7 @@ export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
 export const handle: Handle = {
   breadcrumb: () => (
     <Link prefetch='intent' to='/'>
-      nicholas.engineering
+      dolce
     </Link>
   ),
 }
@@ -263,13 +263,13 @@ function Header() {
   const user = useOptionalUser()
   return (
     <header className='sticky top-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10'>
-      <ol className='flex items-center gap-2'>
+      <ol className='flex items-center gap-2 text-lg tracking-tighter lowercase'>
         {matches
           .filter((match) => match.handle && match.handle.breadcrumb)
           .map((match, index) => (
             <Fragment key={match.id}>
               {index !== 0 && (
-                <span className='text-gray-300 dark:text-gray-600'>/</span>
+                <ChevronRight className='text-gray-300 dark:text-gray-600 h-4 w-4 mt-0.5' />
               )}
               <li>{(match.handle as Handle).breadcrumb(match)}</li>
             </Fragment>
