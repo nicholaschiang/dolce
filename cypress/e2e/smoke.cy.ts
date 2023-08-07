@@ -32,7 +32,7 @@ describe('smoke tests', () => {
     cy.get('@create-button').click()
     cy.get('@create-button').should('not.exist')
 
-    cy.findByRole('link', { name: /profile/i }).click()
+    cy.findByRole('link', { name: /edit profile/i }).click()
     cy.findByRole('figure').find('cite').should('have.text', loginForm.username)
 
     // update profile
@@ -57,7 +57,7 @@ describe('smoke tests', () => {
     cy.get('@login-button').should('not.exist')
 
     cy.findByRole('link', { name: /log in/i }).should('not.exist')
-    cy.findByRole('link', { name: /profile/i }).should('be.visible')
+    cy.findByRole('link', { name: /edit profile/i }).should('be.visible')
     cy.findByRole('link', { name: /log out/i }).click()
   })
 
