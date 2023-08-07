@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "site"
-version = "1.30.3"
+version = "1.31.0"
 description = ""
 authors = ["Nicholas Chiang <nicholas.h.chiang@gmail.com>"]
 license = "MIT"

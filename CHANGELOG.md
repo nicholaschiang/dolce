@@ -1,5 +1,23 @@
 # Release Notes
 
+## [1.31.0](https://github.com/nicholaschiang/site/compare/v1.30.3...v1.31.0) (2023-08-07)
+
+
+### Features
+
+* add golden kissing laurels favicon ([5452fff](https://github.com/nicholaschiang/site/commit/5452fff55d3b6f83c83241225ad2f334e116ff3a))
+* **app:** replace "Nicholas Chiang" with "DOLCE" ([c227321](https://github.com/nicholaschiang/site/commit/c227321cb398a7de7d57fcb36c80523ad4c944c6))
+* **index:** add custom header to index page ([5996d84](https://github.com/nicholaschiang/site/commit/5996d84d854ccf4c446cb94c153d53b34b63e189))
+* **index:** replace timeline with "dolce" definition ([601cc5a](https://github.com/nicholaschiang/site/commit/601cc5acaf0420f1b375703a68a6647a3accf36e))
+* **root:** update header to read "dolce" ([4202649](https://github.com/nicholaschiang/site/commit/4202649f4e4b39b2732eff4697a80f0518c86291))
+
+
+### Bug Fixes
+
+* **root:** remove link to private repository ([54abb85](https://github.com/nicholaschiang/site/commit/54abb8545ce7fa675f7599337aac35ac35f9d01f))
+* **shows:** update header styling to match nav ([fc0dd36](https://github.com/nicholaschiang/site/commit/fc0dd36d2a7305d8daba0c5b5c63b1375c6eda1b))
+* **utils:** update `BASE_URL` to `dolce.so` ([0d778bd](https://github.com/nicholaschiang/site/commit/0d778bdd5b5fc275cf3c97c4e085705a80fa89bd))
+
 ## [1.30.3](https://github.com/nicholaschiang/site/compare/v1.30.2...v1.30.3) (2023-08-06)
 
 
