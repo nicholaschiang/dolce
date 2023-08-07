@@ -1,4 +1,3 @@
-import { useLoaderData } from '@remix-run/react'
 import {
   type LoaderArgs,
   type SerializeFrom,
@@ -10,28 +9,16 @@ import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 import { NAME, invert } from 'utils'
-import { cn } from 'utils/cn'
 import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
 import { getShowKeywords, getShowPath, getShowSchema } from 'utils/show'
 
-import { ConsumerReviews } from './consumer-reviews'
-import { CriticReviews } from './critic-reviews'
-import { Designers } from './designers'
-import { RateAndReview, getReview } from './rate-and-review'
-import { ScoresHeader } from './scores-header'
-import { ShowInfo } from './show-info'
-import { WhatToKnow } from './what-to-know'
-import { WhereToBuy } from './where-to-buy'
+import { About } from './about'
+import { Looks } from './looks'
+import { getReview } from './rate-and-review'
 
 export { action } from './rate-and-review'
-
-// Eagerly load images for the first three rows of looks (above the fold).
-const rowsToEagerLoad = 3
-
-// How many looks are shown in each row of results.
-const looksPerRow = 2
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: `404 | ${NAME}` }]
@@ -117,53 +104,5 @@ export default function ShowPage() {
       <About className='col-span-3 pl-6 pb-6 pt-16' />
       <Looks className='col-span-2 pr-6 pb-6 pt-16' />
     </main>
-  )
-}
-
-function Looks({ className }: { className: string }) {
-  const show = useLoaderData<typeof loader>()
-  return (
-    <div className={cn('overflow-auto', className)}>
-      <ol
-        className='grid gap-x-2 gap-y-6'
-        style={{
-          gridTemplateColumns: `repeat(${looksPerRow}, minmax(0, 1fr))`,
-        }}
-      >
-        {show.looks.map((look, index) => (
-          <li key={look.id}>
-            <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
-              <img
-                className='object-cover h-full w-full'
-                loading={
-                  index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
-                }
-                decoding={
-                  index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'
-                }
-                src={look.images[0]?.url}
-                alt=''
-              />
-            </div>
-            <p className='mt-0.5 text-sm'>Look {look.number}</p>
-          </li>
-        ))}
-      </ol>
-    </div>
-  )
-}
-
-function About({ className }: { className: string }) {
-  return (
-    <div className={cn('overflow-auto', className)}>
-      <ScoresHeader />
-      <WhatToKnow />
-      <Designers />
-      <WhereToBuy />
-      <RateAndReview />
-      <ConsumerReviews />
-      <ShowInfo />
-      <CriticReviews />
-    </div>
   )
 }
