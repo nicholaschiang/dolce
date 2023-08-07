@@ -1,4 +1,5 @@
 import { type User } from '@prisma/client'
+import { Link } from '@remix-run/react'
 import { type SerializeFrom } from '@vercel/remix'
 
 import { Avatar } from 'components/avatar'
@@ -21,12 +22,13 @@ export function ConsumerReview({
       <div>
         <figcaption className='flex items-center gap-1'>
           <cite className='text-2xs not-italic font-semibold'>
-            {author.url != null && (
-              <a href={author.url} target='_blank' rel='noopener noreferrer'>
+            {author.username ? (
+              <Link to={`/${author.username}`} prefetch='intent'>
                 {author.username}
-              </a>
+              </Link>
+            ) : (
+              <span>{author.name}</span>
             )}
-            {author.url == null && <span>{author.username}</span>}
           </cite>
           <TimeAgo
             locale='en_short'
