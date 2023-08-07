@@ -2,7 +2,6 @@ import { useForm } from '@conform-to/react'
 import { parse } from '@conform-to/zod'
 import {
   Form as RemixForm,
-  Link,
   useActionData,
   useNavigation,
 } from '@remix-run/react'
@@ -50,7 +49,7 @@ const schema = z.object({
 })
 
 export const handle: Handle = {
-  breadcrumb: () => <Link to='/profile'>profile</Link>,
+  breadcrumb: () => ({ to: '/profile', children: 'profile' }),
 }
 
 export const config = { runtime: 'nodejs' }

@@ -40,11 +40,7 @@ import { NAME } from 'utils'
 export const meta: V2_MetaFunction = () => [{ title: `Products | ${NAME}` }]
 
 export const handle: Handle = {
-  breadcrumb: () => (
-    <Link prefetch='intent' to='/products'>
-      products
-    </Link>
-  ),
+  breadcrumb: () => ({ to: '/products', children: 'products' }),
 }
 
 enum Join {

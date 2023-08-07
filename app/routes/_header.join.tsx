@@ -53,7 +53,7 @@ const schema = z.object({
 })
 
 export const handle: Handle = {
-  breadcrumb: () => <Link to='/join'>sign up</Link>,
+  breadcrumb: () => ({ to: '/join', children: 'sign up' }),
 }
 
 export const config = { runtime: 'nodejs' }
