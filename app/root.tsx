@@ -12,6 +12,7 @@ import {
   useNavigation,
   useNavigationType,
   type RouteMatch,
+  type LinkProps,
 } from '@remix-run/react'
 import { Analytics } from '@vercel/analytics/react'
 import {
@@ -38,14 +39,10 @@ import {
 } from 'theme'
 import { NAME } from 'utils'
 
-export type Handle = { breadcrumb: (match: RouteMatch) => ReactNode }
+export type Handle = { breadcrumb: (match: RouteMatch) => LinkProps }
 
 export const handle: Handle = {
-  breadcrumb: () => (
-    <Link prefetch='intent' to='/'>
-      dolce
-    </Link>
-  ),
+  breadcrumb: () => ({ to: '/', children: 'dolce' }),
 }
 
 export const config = { runtime: 'edge' }

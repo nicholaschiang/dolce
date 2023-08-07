@@ -1,4 +1,4 @@
-import { Link, useMatches } from '@remix-run/react'
+import { Link, type LinkProps, useMatches } from '@remix-run/react'
 import { User, LogIn, LogOut, ChevronRight } from 'lucide-react'
 import { type PropsWithChildren, Fragment } from 'react'
 
@@ -37,7 +37,7 @@ export function HeaderWrapper({
 export function HeaderBreadcrumbs() {
   const matches = useMatches()
   return (
-    <ol className='flex items-center gap-2 text-lg tracking-tighter lowercase'>
+    <ol className='flex items-center gap-2'>
       {matches
         .filter((match) => match.handle && match.handle.breadcrumb)
         .map((match, index) => (
@@ -45,10 +45,21 @@ export function HeaderBreadcrumbs() {
             {index !== 0 && (
               <ChevronRight className='text-gray-300 dark:text-gray-600 h-4 w-4 mt-0.5' />
             )}
-            <li>{(match.handle as Handle).breadcrumb(match)}</li>
+            <li>
+              <HeaderLink {...(match.handle as Handle).breadcrumb(match)} />
+            </li>
           </Fragment>
         ))}
     </ol>
+  )
+}
+
+export function HeaderLink({ className, ...etc }: LinkProps) {
+  return (
+    <Link
+      className={cn('text-lg tracking-tighter lowercase', className)}
+      {...etc}
+    />
   )
 }
 

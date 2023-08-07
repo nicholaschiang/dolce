@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import {
   type LoaderArgs,
   type SerializeFrom,
@@ -63,11 +63,7 @@ export const sitemap: SitemapFunction = async () => {
 export const handle: Handle = {
   breadcrumb: (match) => {
     const data = match.data as SerializeFrom<typeof loader> | undefined
-    return (
-      <Link prefetch='intent' to={data ? getShowPath(data) : '.'}>
-        {data?.name ?? '404'}
-      </Link>
-    )
+    return { to: data ? getShowPath(data) : '.', children: data?.name ?? '404' }
   },
 }
 

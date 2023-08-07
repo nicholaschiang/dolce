@@ -25,14 +25,10 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
 ]
 
 export const handle: Handle = {
-  breadcrumb: (match) => (
-    <Link
-      prefetch='intent'
-      to={`/products/${match.params.productId as string}`}
-    >
-      {(match.data as SerializeFrom<typeof loader>)?.name ?? '404'}
-    </Link>
-  ),
+  breadcrumb: (match) => ({
+    to: `/products/${match.params.productId as string}`,
+    children: (match.data as SerializeFrom<typeof loader>)?.name ?? '404',
+  }),
 }
 
 export async function loader({ params }: LoaderArgs) {

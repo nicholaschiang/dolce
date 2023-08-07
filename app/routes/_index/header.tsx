@@ -1,8 +1,7 @@
-import { Link } from '@remix-run/react'
 import { ChevronRight, Plus } from 'lucide-react'
 import { Fragment } from 'react'
 
-import { HeaderWrapper, HeaderActions } from 'components/header'
+import { HeaderWrapper, HeaderActions, HeaderLink } from 'components/header'
 
 const links = [
   { to: '/shows', label: 'Shows' },
@@ -23,9 +22,9 @@ export function Header() {
               <Plus className='text-gray-300 dark:text-gray-600 h-4 w-4 mt-0.5' />
             )}
             <li className='text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors'>
-              <Link prefetch='intent' to={link.to}>
+              <HeaderLink prefetch='intent' to={link.to}>
                 {link.label}
-              </Link>
+              </HeaderLink>
             </li>
           </Fragment>
         ))}
