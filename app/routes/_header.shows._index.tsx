@@ -144,11 +144,11 @@ export default function ShowsPage() {
       Math.ceil((lastVirtualItem.index - middleCount) / overscan) * overscan
   }
 
-  // Can't go below zero.
-  if (neededSkip < 0) neededSkip = 0
-
   // Can't go above our data count.
   if (neededSkip + take > count) neededSkip = count - take
+
+  // Can't go below zero.
+  if (neededSkip < 0) neededSkip = 0
 
   const isMountedRef = useRef(false)
   useEffect(() => {
