@@ -1,5 +1,24 @@
 # Release Notes
 
+## [1.32.0](https://github.com/nicholaschiang/dolce/compare/v1.31.0...v1.32.0) (2023-08-07)
+
+
+### Features
+
+* **components/consumer-review:** link to user page ([1a84b0c](https://github.com/nicholaschiang/dolce/commit/1a84b0c7ce53f68cc1aae418d5b4e8849ed0599e))
+* **prisma:** users can save looks to a `Set` ([f7a8307](https://github.com/nicholaschiang/dolce/commit/f7a8307452da94c3a2895b43558031ca05cfcd45))
+* **profile:** add user description text area field ([4be88be](https://github.com/nicholaschiang/dolce/commit/4be88bea9f48f9149b459fb5eae3307172846ec1))
+* **routes/show:** add convenience redirect route ([c203cfe](https://github.com/nicholaschiang/dolce/commit/c203cfe883621fd8b4d0cd67f5cf031f4e1e574f))
+* **routes/user:** add public user profile page ([79da409](https://github.com/nicholaschiang/dolce/commit/79da409fd75497214f4dd600a228aaac6d12ad03))
+* **show/looks:** add "save" icon button toggle ([4705207](https://github.com/nicholaschiang/dolce/commit/4705207e62dfdbe00110ebf720fdb08c190f48d5))
+
+
+### Bug Fixes
+
+* **app/app.css:** make scroll bars more apparent ([6311272](https://github.com/nicholaschiang/dolce/commit/6311272a12209930d3a6f6dc7de410aa7630f055))
+* **components/ui/button:** shrink icon button size ([056f5cd](https://github.com/nicholaschiang/dolce/commit/056f5cdbdee47503ed0538770e4006797c9b7803))
+* **shows:** ensure `neededSkip` is not negative ([7525980](https://github.com/nicholaschiang/dolce/commit/75259805f4967c537c3a8df22c685266c00c4ea2))
+
 ## [1.31.0](https://github.com/nicholaschiang/site/compare/v1.30.3...v1.31.0) (2023-08-07)
 
 
