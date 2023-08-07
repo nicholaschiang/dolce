@@ -1,7 +1,6 @@
-# `site`
+# `dolce`
 
-A landing page for everything I love.
-Often used as a sort of guinea pig for testing technologies before I use them in more important enterprise projects.
+The landing page for fashion—shows, products, designers, and more.
 
 ## Rotten Tomatoes for Fashion
 
