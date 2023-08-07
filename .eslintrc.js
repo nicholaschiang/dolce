@@ -36,6 +36,11 @@ module.exports = {
     // @see {@link https://eslint.org/docs/latest/rules/eqeqeq}
     'eqeqeq': ['error', 'always', { null: 'ignore' }],
 
+    // Allow underscore dangle when accessing the Prisma `_count` property.
+    // @see {@link https://eslint.org/docs/latest/rules/no-underscore-dangle}
+    // @see {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing#count-relations}
+    'no-underscore-dangle': ['error', { allow: ['_count'] }],
+
     // Allow using functions before they are defined. This lets us better
     // organize component definitions so the main API is at the top and smaller
     // components are defined in sections below.
