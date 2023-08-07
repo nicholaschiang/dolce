@@ -42,6 +42,7 @@ export async function updateUser(
   id: User['id'],
   name: User['name'],
   username: User['username'],
+  description: User['description'],
   email: User['email'],
   pwd?: string | null,
 ) {
@@ -55,6 +56,7 @@ export async function updateUser(
     data: {
       name,
       username,
+      description,
       email,
       password,
     },
