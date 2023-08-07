@@ -116,17 +116,17 @@
 @supports (scrollbar-width: thin) {
   * {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.gray.100') theme('colors.white');
+    scrollbar-color: theme('colors.gray.200') theme('colors.gray.50');
   }
 
   .light,
   .light * {
-    scrollbar-color: theme('colors.gray.100') theme('colors.white');
+    scrollbar-color: theme('colors.gray.200') theme('colors.gray.50');
   }
 
   .dark,
   .dark * {
-    scrollbar-color: theme('colors.gray.800') theme('colors.gray.900');
+    scrollbar-color: theme('colors.gray.700') theme('colors.gray.900');
   }
 }
 
