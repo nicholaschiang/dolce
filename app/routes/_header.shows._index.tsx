@@ -211,7 +211,11 @@ export default function ShowsPage() {
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
                 >
-                  <Link prefetch='intent' to={show ? getShowPath(show) : ''}>
+                  <Link
+                    to={show ? getShowPath(show) : ''}
+                    prefetch='intent'
+                    className='block'
+                  >
                     <div
                       className={cn(
                         'bg-gray-100 dark:bg-gray-900 aspect-person mb-2',
