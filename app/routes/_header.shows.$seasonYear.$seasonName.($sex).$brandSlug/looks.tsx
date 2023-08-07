@@ -1,4 +1,5 @@
 import { useLoaderData } from '@remix-run/react'
+import { type SerializeFrom } from '@vercel/remix'
 
 import { cn } from 'utils/cn'
 
@@ -20,25 +21,30 @@ export function Looks({ className }: { className: string }) {
           gridTemplateColumns: `repeat(${looksPerRow}, minmax(0, 1fr))`,
         }}
       >
-        {show.looks.map((look, index) => (
-          <li key={look.id}>
-            <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
-              <img
-                className='object-cover h-full w-full'
-                loading={
-                  index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'
-                }
-                decoding={
-                  index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'
-                }
-                src={look.images[0]?.url}
-                alt=''
-              />
-            </div>
-            <p className='mt-0.5 text-sm'>Look {look.number}</p>
-          </li>
+        {show.looks.map((look) => (
+          <LookItem key={look.id} look={look} />
         ))}
       </ol>
     </div>
+  )
+}
+
+type Look = SerializeFrom<typeof loader>['looks'][number]
+
+function LookItem({ look }: { look: Look }) {
+  const index = look.number - 1
+  return (
+    <li>
+      <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
+        <img
+          className='object-cover h-full w-full'
+          loading={index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
+          decoding={index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'}
+          src={look.images[0]?.url}
+          alt=''
+        />
+      </div>
+      <p className='mt-0.5 text-sm'>Look {look.number}</p>
+    </li>
   )
 }
