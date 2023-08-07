@@ -1,5 +1,5 @@
 import { Link, type LinkProps, useMatches } from '@remix-run/react'
-import { User, LogIn, LogOut, ChevronRight } from 'lucide-react'
+import { Settings, User, LogIn, LogOut, ChevronRight } from 'lucide-react'
 import { type PropsWithChildren, Fragment } from 'react'
 
 import { ThemeSwitcher } from 'components/theme-switcher'
@@ -81,13 +81,22 @@ export function HeaderActions() {
           )}
         </Link>
       )}
-      {user && (
+      {user?.username != null && (
+        <Link
+          aria-label='View profile'
+          className={buttonVariants({ size: 'icon', variant: 'ghost' })}
+          to={`/${user.username}`}
+        >
+          <User className='w-3 h-3' />
+        </Link>
+      )}
+      {user != null && (
         <Link
           aria-label='Edit profile'
           className={buttonVariants({ size: 'icon', variant: 'ghost' })}
           to='/profile'
         >
-          <User className='w-3 h-3' />
+          <Settings className='w-3 h-3' />
         </Link>
       )}
       <ThemeSwitcher />
