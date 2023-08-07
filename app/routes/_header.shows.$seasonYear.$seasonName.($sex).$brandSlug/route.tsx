@@ -8,6 +8,7 @@ import { type SitemapFunction } from 'remix-sitemap'
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { type Handle } from 'root'
+import { getUserId } from 'session.server'
 import { NAME, invert } from 'utils'
 import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
@@ -63,6 +64,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const seasonName = invert(SEASON_NAME_TO_SLUG)[params.seasonName]
   const sex = invert(SEX_TO_SLUG)[params.sex ?? '']
   if (!sex || !seasonName) throw miss
+  const userId = await getUserId(request)
   const show = await prisma.show.findFirst({
     where: {
       brand: { slug: params.brandSlug },
@@ -84,7 +86,11 @@ export async function loader({ request, params }: LoaderArgs) {
         orderBy: { updatedAt: 'desc' },
       },
       looks: {
-        include: { images: true, model: true },
+        include: {
+          images: true,
+          model: true,
+          sets: userId ? { where: { authorId: userId } } : false,
+        },
         orderBy: { number: 'asc' },
       },
     },
