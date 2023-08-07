@@ -27,6 +27,7 @@ import {
 } from 'components/form'
 import { Button } from 'components/ui/button'
 import { Input } from 'components/ui/input'
+import { Textarea } from 'components/ui/textarea'
 
 import { updateUser } from 'models/user.server'
 
@@ -44,6 +45,7 @@ import {
 const schema = z.object({
   name: nameSchema,
   username: usernameSchema,
+  description: z.string().min(0).max(150).optional(),
   email: emailSchema,
   password: passwordSchema.optional(),
 })
@@ -98,6 +100,7 @@ export async function action({ request }: ActionArgs) {
     userId,
     submission.value.name,
     submission.value.username,
+    submission.value.description ?? null,
     submission.value.email,
     submission.value.password,
   )
@@ -111,7 +114,7 @@ export default function ProfilePage() {
   const user = useUser()
   const navigation = useNavigation()
   const lastSubmission = useActionData<typeof action>()
-  const [form, { name, username, email, password }] = useForm({
+  const [form, { name, username, description, email, password }] = useForm({
     lastSubmission,
     onValidate({ formData }) {
       return parse(formData, { schema, stripEmptyValue: true })
@@ -165,6 +168,24 @@ export default function ProfilePage() {
                     setState((p) => ({ ...p, username: next }))
                   }}
                   required
+                />
+              </FormControl>
+            </FormField>
+            <FormField name={description.name}>
+              <FormLabelWrapper>
+                <FormLabel>Bio</FormLabel>
+                {description.error && (
+                  <FormMessage>{description.error}</FormMessage>
+                )}
+              </FormLabelWrapper>
+              <FormControl asChild>
+                <Textarea
+                  autoComplete='off'
+                  value={state.description ?? ''}
+                  onChange={(e) => {
+                    const next = e.currentTarget.value
+                    setState((p) => ({ ...p, description: next }))
+                  }}
                 />
               </FormControl>
             </FormField>
