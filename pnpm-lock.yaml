@@ -7,9 +7,6 @@ dependencies:
   '@conform-to/zod':
     specifier: ^0.7.4
     version: 0.7.4(@conform-to/dom@0.7.4)(zod@3.21.4)
-  '@icongo/fg':
-    specifier: ^1.2.0
-    version: 1.2.0
   '@prisma/client':
     specifier: ^4.16.2
     version: 4.16.2(prisma@4.16.2)
@@ -2779,10 +2776,6 @@ packages:
   /@humanwhocodes/object-schema@1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
-
-  /@icongo/fg@1.2.0:
-    resolution: {integrity: sha512-wS/f2KCKPBYgPJzUWSmBk8hRhyqmGNraa08NY1jePWp3gKulfqscPpo3O2NxTDnoUWnngjlrllS7+2kiscZkVA==}
-    dev: false
 
   /@istanbuljs/schema@0.1.3:
     resolution: {integrity: sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==}
