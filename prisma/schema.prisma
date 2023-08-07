@@ -39,6 +39,9 @@ model User {
   // The user's reviews.
   reviews Review[]
 
+  // The user's sets (i.e. arbitrary groupings of saved looks).
+  sets Set[]
+
   // DESIGNER FIELDS - only applicable to fashion designers.
 
   // Where the designer purports to be from.
@@ -625,6 +628,44 @@ model Product {
   // @todo products must have a unique name per brand(s).
 }
 
+// A set is an arbitrary grouping of looks created by a user to act as a sort of
+// mood board. Users can "save" looks that they like to a "set" that can then be 
+// shared with other users. Users can discover sets by other users (e.g. I see a
+// look that I like and then expore all the sets that include that look to find
+// similar looks).
+//
+// Sets are separate from collections for simplicity. Collections are officially
+// curated by a brand while sets are simple groupings of looks created by users.
+// I may opt to combine these two data models in the future, but for now, simply
+// adding an additional data model was easiest.
+//
+// The name "set" was inspired by the website "Polyvore" which allowed users to
+// add products to a shared index called a "set".
+// @see {@link https://en.wikipedia.org/wiki/Polyvore}
+model Set {
+  id       Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // The set's name (e.g. "Summer Essentials").
+  name String
+
+  // The set's description.
+  description String?
+
+  // The set's author (i.e. the user who created the set).
+  // @todo I should support multiple author(s) for a set (i.e. shared "sets") or
+  // perhaps advanced access control (i.e. users who can view, can edit, etc).
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId Int
+
+  // The set's looks.
+  looks Look[]
+
+  // A user can only have one set with a given name.
+  @@unique([name, authorId])
+}
+
 // A collection is an arbitrary grouping of products, typically done by a brand
 // or a designer. Often, collections are created entirely by a single designer.
 // Collections are separate from shows as every show has a collection but not
@@ -760,6 +801,9 @@ model Look {
 
   // The look's picture (if known).
   images Image[]
+
+  // The user-curated sets that the look is a part of.
+  sets Set[]
 
   // Each look must have a unique number in the show.
   @@unique([number, showId])
