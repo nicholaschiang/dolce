@@ -5,7 +5,6 @@ import {
   Form as RemixForm,
   useActionData,
   useNavigation,
-  useLocation,
   useLoaderData,
 } from '@remix-run/react'
 import { type ActionArgs, json, redirect } from '@vercel/remix'
@@ -28,7 +27,7 @@ import { Textarea } from 'components/ui/textarea'
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
-import { invert, useOptionalUser } from 'utils'
+import { invert, useOptionalUser, useRedirectTo } from 'utils'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
 import { getShowPath } from 'utils/show'
@@ -112,9 +111,9 @@ export function RateAndReview() {
     },
   })
   const navigation = useNavigation()
-  const location = useLocation()
   const { review } = useLoaderData<typeof loader>()
   const labelId = useId()
+  const redirectTo = useRedirectTo({ hash: `#${id}` })
   return (
     <Section header='Rate and review' id={id}>
       <Form asChild>
@@ -126,7 +125,7 @@ export function RateAndReview() {
           {user == null && (
             <Link
               prefetch='intent'
-              to={`/login?redirectTo=${location.pathname}%23${id}`}
+              to={`/login?redirectTo=${redirectTo}`}
               className='absolute inset-0 z-10'
             />
           )}
