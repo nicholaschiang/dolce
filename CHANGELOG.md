@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.37.0](https://github.com/nicholaschiang/dolce/compare/v1.36.0...v1.37.0) (2023-08-08)
+
+
+### Features
+
+* **routes/username:** add set folders to profile ([8bf647e](https://github.com/nicholaschiang/dolce/commit/8bf647e02e880f629ead0e19e3044a4007a3b193))
+* **routes/username:** clicking stats opens tab ([5357eba](https://github.com/nicholaschiang/dolce/commit/5357ebaf835fc7ffc671c121b72cc8747e9d8c9c))
+
+
+### Bug Fixes
+
+* **app.css:** reduce `nprogress` height to `1.5px` ([98c37d3](https://github.com/nicholaschiang/dolce/commit/98c37d3c855d3837929495967b4fcecd1edae33f))
+
 ## [1.36.0](https://github.com/nicholaschiang/dolce/compare/v1.35.3...v1.36.0) (2023-08-08)
 
 
