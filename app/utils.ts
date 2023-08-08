@@ -1,4 +1,4 @@
-import { useRouteLoaderData } from '@remix-run/react'
+import { useLocation, useRouteLoaderData } from '@remix-run/react'
 import { type AppData, type SerializeFrom } from '@vercel/remix'
 import rfdc from 'rfdc'
 
@@ -14,6 +14,19 @@ export const OPTIMIZE_IMAGES = false
 export const clone = rfdc()
 
 export type Serialize<T extends AppData> = SerializeFrom<T> | T
+
+/**
+ * Get the `redirectTo` query parameter that will send the user back to their
+ * current location. Added for convenience (to avoid having to type this out
+ * each time I add a login link).
+ * @returns The `redirectTo` query parameter.
+ */
+export function useRedirectTo(options?: { hash?: string }): string {
+  const location = useLocation()
+  const hash = options?.hash ?? location.hash
+  const path = `${location.pathname}${location.search}${hash}`
+  return encodeURIComponent(path)
+}
 
 /**
  * Filter out duplicate elements in the array by some unique key.
@@ -83,9 +96,9 @@ export function url(path: string | undefined | null): string | undefined {
 }
 
 /**
- * This should be used any time the redirect path is user-provided
- * (Like the query string on our login/signup pages). This avoids
- * open-redirect vulnerabilities.
+ * This should be used any time the redirect path is user-provided (like the
+ * query string on our login/signup pages). This avoids open-redirect
+ * vulnerabilities.
  * @param {string} to The redirect destination
  * @param {string} defaultRedirect The redirect to use if the to is unsafe.
  */
