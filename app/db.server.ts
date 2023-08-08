@@ -1,11 +1,19 @@
 import { PrismaClient } from '@prisma/client'
+import { createClient } from '@supabase/supabase-js'
 import invariant from 'tiny-invariant'
 
 import { log } from 'log.server'
 
+const { SUPABASE_URL, SUPABASE_KEY, DATABASE_URL } = process.env
+invariant(SUPABASE_URL, 'SUPABASE_URL env var not set')
+invariant(SUPABASE_KEY, 'SUPABASE_KEY env var not set')
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: false },
+})
+
 function getClient() {
-  const { DATABASE_URL } = process.env
-  invariant(typeof DATABASE_URL === 'string', 'DATABASE_URL env var not set')
+  invariant(DATABASE_URL, 'DATABASE_URL env var not set')
 
   const databaseUrl = new URL(DATABASE_URL)
 
@@ -60,4 +68,4 @@ if (process.env.NODE_ENV === 'production') {
   prisma = global.db
 }
 
-export { prisma }
+export { prisma, supabase }

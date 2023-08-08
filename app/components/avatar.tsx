@@ -8,22 +8,25 @@ import {
 
 type Source = { name: string; avatar?: string | null }
 
+function getFallback(src?: Source | null) {
+  return src?.name
+    .split(' ')
+    .slice(0, 2)
+    .map((s) => s.substring(0, 1))
+    .join('')
+    .toUpperCase()
+}
+
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarRoot>,
   React.ComponentPropsWithoutRef<typeof AvatarRoot> & { src?: Source | null }
->(({ src, ...props }, ref) => (
+>(({ src, children, ...props }, ref) => (
   <AvatarRoot ref={ref} {...props}>
     <AvatarImage src={src?.avatar ?? undefined} alt={src?.name} />
-    <AvatarFallback>
-      {src?.name
-        .split(' ')
-        .slice(0, 2)
-        .map((s) => s.substring(0, 1))
-        .join('')
-        .toUpperCase()}
-    </AvatarFallback>
+    <AvatarFallback>{getFallback(src)}</AvatarFallback>
+    {children}
   </AvatarRoot>
 ))
 Avatar.displayName = AvatarRoot.displayName
 
-export { Avatar }
+export { Avatar, getFallback }
