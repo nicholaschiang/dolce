@@ -1,4 +1,4 @@
-import { useFetchers, useFetcher, useLoaderData } from '@remix-run/react'
+import { Link, useFetchers, useFetcher, useLoaderData } from '@remix-run/react'
 import { type SerializeFrom } from '@vercel/remix'
 import { Check, Bookmark, Plus } from 'lucide-react'
 import {
@@ -13,7 +13,7 @@ import { type action as saveAPI } from 'routes/api.looks.$lookId.save'
 import { type action as createAPI } from 'routes/api.looks.$lookId.save.create'
 import { type loader as setsAPI } from 'routes/api.sets'
 
-import { Button } from 'components/ui/button'
+import { Button, buttonVariants } from 'components/ui/button'
 import {
   Command,
   CommandGroup,
@@ -24,7 +24,7 @@ import {
 } from 'components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover'
 
-import { uniq } from 'utils'
+import { useOptionalUser, useRedirectTo, uniq } from 'utils'
 import { cn } from 'utils/cn'
 import { commandScore } from 'utils/command-score'
 
@@ -59,6 +59,42 @@ type Set = Look['sets'][number]
 
 function LookItem({ look }: { look: Look }) {
   const index = look.number - 1
+  return (
+    <li>
+      <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
+        <img
+          className='object-cover h-full w-full'
+          loading={index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
+          decoding={index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'}
+          src={look.images[0]?.url}
+          alt=''
+        />
+      </div>
+      <div className='flex justify-between items-center mt-1'>
+        <p className='text-sm'>Look {look.number}</p>
+        <SaveButton look={look} />
+      </div>
+    </li>
+  )
+}
+
+function SaveButton({ look }: { look: Look }) {
+  const user = useOptionalUser()
+  const redirectTo = useRedirectTo()
+  return user ? (
+    <SaveMenu look={look} />
+  ) : (
+    <Link
+      className={buttonVariants({ variant: 'ghost', size: 'icon' })}
+      to={`/login?redirectTo=${redirectTo}`}
+      prefetch='intent'
+    >
+      <Bookmark className='w-3 h-3' />
+    </Link>
+  )
+}
+
+function SaveMenu({ look }: { look: Look }) {
   const fetchers = useFetchers()
   const action = `/api/looks/${look.id}/save`
   const create = `/api/looks/${look.id}/save/create`
@@ -116,69 +152,51 @@ function LookItem({ look }: { look: Look }) {
     .sort((a, b) => b.score - a.score)
 
   return (
-    <li>
-      <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
-        <img
-          className='object-cover h-full w-full'
-          loading={index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
-          decoding={index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'}
-          src={look.images[0]?.url}
-          alt=''
-        />
-      </div>
-      <div className='flex justify-between items-center mt-1'>
-        <p className='text-sm'>Look {look.number}</p>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              size='icon'
-              variant='ghost'
-              onMouseOver={() => fetcher.load(endpoint)}
-            >
-              <Bookmark
-                className={cn(
-                  'w-3 h-3',
-                  isSaved && 'fill-gray-900 dark:fill-gray-100',
-                )}
-              />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            className='w-60 p-0'
-            align='start'
-            collisionPadding={24}
-          >
-            <Command shouldFilter={false}>
-              <CommandInput
-                value={search}
-                onValueChange={setSearch}
-                placeholder='Search sets...'
-              />
-              {fetcher.state !== 'idle' && <CommandLoading />}
-              <CommandList>
-                <CommandGroup>
-                  {results.map((set) => (
-                    <SelectItem
-                      key={set.id}
-                      set={set}
-                      look={look}
-                      action={action}
-                    />
-                  ))}
-                  {results.length === 0 && (
-                    <CreateItem
-                      name={search.trim()}
-                      action={create}
-                      setOpen={setOpen}
-                    />
-                  )}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </li>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          size='icon'
+          variant='ghost'
+          onMouseOver={() => fetcher.load(endpoint)}
+        >
+          <Bookmark
+            className={cn(
+              'w-3 h-3',
+              isSaved && 'fill-gray-900 dark:fill-gray-100',
+            )}
+          />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className='w-60 p-0' align='start' collisionPadding={24}>
+        <Command shouldFilter={false}>
+          <CommandInput
+            value={search}
+            onValueChange={setSearch}
+            placeholder='Search sets...'
+          />
+          {fetcher.state !== 'idle' && <CommandLoading />}
+          <CommandList>
+            <CommandGroup>
+              {results.map((set) => (
+                <SelectItem
+                  key={set.id}
+                  set={set}
+                  look={look}
+                  action={action}
+                />
+              ))}
+              {results.length === 0 && (
+                <CreateItem
+                  name={search.trim()}
+                  action={create}
+                  setOpen={setOpen}
+                />
+              )}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   )
 }
 
