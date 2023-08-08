@@ -38,6 +38,10 @@ import {
   useTheme,
 } from 'theme'
 import { NAME } from 'utils'
+import {
+  useRevalidateOnFocus,
+  useRevalidateOnReconnect,
+} from 'utils/revalidate'
 
 export type Handle = { breadcrumb: (match: RouteMatch) => LinkProps }
 
@@ -220,6 +224,10 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
       return () => clearTimeout(timeoutId)
     }
   }, [navigation.state, type])
+
+  useRevalidateOnFocus()
+  useRevalidateOnReconnect()
+
   return (
     <html lang='en' className={cn('h-full', theme)}>
       <head>
