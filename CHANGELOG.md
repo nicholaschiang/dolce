@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.33.0](https://github.com/nicholaschiang/dolce/compare/v1.32.0...v1.33.0) (2023-08-08)
+
+
+### Features
+
+* users can upload avatar images from profile ([fe1ab82](https://github.com/nicholaschiang/dolce/commit/fe1ab82947e865c82d2f9e3bbe6f609354276800))
+
+
+### Bug Fixes
+
+* **components/theme-switcher:** hotkey toggles cookie ([d44c674](https://github.com/nicholaschiang/dolce/commit/d44c674911a6d57a125f66b9f7a6aa77239665b6))
+* **components/ui/avatar:** add `object-cover` ([7575ba5](https://github.com/nicholaschiang/dolce/commit/7575ba5e69c11fd7e3f45dbb3ff89a4c89698356))
+
 ## [1.32.0](https://github.com/nicholaschiang/dolce/compare/v1.31.0...v1.32.0) (2023-08-07)
 
 
