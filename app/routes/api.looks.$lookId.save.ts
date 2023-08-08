@@ -10,23 +10,24 @@ export async function action({ request, params }: ActionArgs) {
   if (look == null) throw new Response('Not Found', { status: 404 })
   const userId = await getUserId(request)
   if (userId == null) return redirect(`/login?redirectTo=/shows/${look.showId}`)
-  const set = { name: 'DEFAULT', authorId: userId }
+  const formData = await request.formData()
+  const setId = Number(formData.get('setId'))
+  if (Number.isNaN(setId)) throw new Response('Bad Request', { status: 400 })
+  const set = await prisma.set.findUnique({ where: { id: setId } })
+  if (set == null) throw new Response('Not Found', { status: 404 })
+  if (set.authorId !== userId) throw new Response('Forbidden', { status: 403 })
   switch (request.method) {
     case 'POST': {
       await prisma.look.update({
         where: { id: lookId },
-        data: {
-          sets: {
-            connectOrCreate: { where: { name_authorId: set }, create: set },
-          },
-        },
+        data: { sets: { connect: { id: setId } } },
       })
       break
     }
     case 'DELETE': {
       await prisma.look.update({
         where: { id: lookId },
-        data: { sets: { disconnect: { name_authorId: set } } },
+        data: { sets: { disconnect: { id: setId } } },
       })
       break
     }
