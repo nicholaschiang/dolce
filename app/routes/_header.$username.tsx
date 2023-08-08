@@ -18,7 +18,7 @@ import {
   type SerializeFrom,
   json,
 } from '@vercel/remix'
-import { Bookmark, MessageCircle } from 'lucide-react'
+import { Bookmark, Folder, MessageCircle } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import { type PropsWithChildren, useRef } from 'react'
 import { z } from 'zod'
@@ -49,7 +49,7 @@ export async function loader({ params }: LoaderArgs) {
   const [user, lookCount] = await Promise.all([
     prisma.user.findUnique({
       where: { username: params.username },
-      include: { _count: { select: { reviews: true } } },
+      include: { _count: { select: { reviews: true, sets: true } } },
     }),
     prisma.look.count({
       where: { sets: { some: { author: { username: params.username } } } },
@@ -100,14 +100,18 @@ export const useUser = () => useOutletContext<SerializeFrom<typeof loader>>()
 
 export default function UserPage() {
   return (
-    <main className='grid max-w-screen-lg mx-auto p-6'>
+    <main className='grid max-w-screen-xl mx-auto p-6'>
       <Header />
       <Tabs>
         <Tab to='.' end>
           <Bookmark className='w-3 h-3' />
           Saved
         </Tab>
-        <Tab to='reviews' end>
+        <Tab to='sets'>
+          <Folder className='w-3 h-3' />
+          Sets
+        </Tab>
+        <Tab to='reviews'>
           <MessageCircle className='w-3 h-3' />
           Reviews
         </Tab>
@@ -188,8 +192,9 @@ function Header() {
           )}
         </div>
         <div className='flex items-center gap-10 font-semibold text-sm'>
-          <span>{user._count.reviews} reviews</span>
           <span>{user.lookCount} saved</span>
+          <span>{user._count.sets} sets</span>
+          <span>{user._count.reviews} reviews</span>
         </div>
         <article className='text-sm max-w-xl'>
           <h3 className='font-semibold'>{user.name}</h3>
