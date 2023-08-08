@@ -127,17 +127,9 @@ export function useData<T = AppData>(id: string): SerializeFrom<T> | undefined {
   return useRouteLoaderData<T>(id)
 }
 
-function isUser(user: unknown): user is User {
-  return (
-    !!user &&
-    typeof user === 'object' &&
-    typeof (user as User).email === 'string'
-  )
-}
-
 export function useOptionalUser(): SerializeFrom<User> | undefined {
   const data = useData<typeof loader>('root')
-  return !data || !isUser(data.user) ? undefined : data.user
+  return data?.user ?? undefined
 }
 
 export function useUser(): SerializeFrom<User> {
