@@ -31,16 +31,17 @@ import { Textarea } from 'components/ui/textarea'
 
 import { updateUser } from 'models/user.server'
 
-import { prisma } from 'db.server'
-import { type Handle } from 'root'
-import { getUserId } from 'session.server'
-import { NAME, useUser } from 'utils'
+import { NAME, useUser } from 'utils/general'
 import {
   name as nameSchema,
   username as usernameSchema,
   email as emailSchema,
   password as passwordSchema,
 } from 'utils/schema'
+
+import { prisma } from 'db.server'
+import { type Handle } from 'root'
+import { getUserId } from 'session.server'
 
 const schema = z.object({
   name: nameSchema,

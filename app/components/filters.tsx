@@ -35,9 +35,10 @@ import { Dialog } from 'components/dialog'
 import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
+import { clone, useData } from 'utils/general'
+
 import type { Filter, FilterName, FilterValue } from 'filters'
 import { filterToStrings } from 'filters'
-import { clone, useData } from 'utils'
 
 // we need a way to load menu options when filtering based on a model; this
 // constant aims to map models to the routes that have loaders to get their

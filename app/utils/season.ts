@@ -1,6 +1,6 @@
 import { type Season, SeasonName } from '@prisma/client'
 
-import { type Serialize, caps } from 'utils'
+import { type Serialize, caps } from 'utils/general'
 
 /**
  * Get the user-friendly season name from a season object (e.g. "Resort 2024").

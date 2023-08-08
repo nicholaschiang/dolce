@@ -35,15 +35,16 @@ import {
   getUserByEmail,
 } from 'models/user.server'
 
-import { type Handle } from 'root'
-import { createUserSession, getUserId } from 'session.server'
-import { safeRedirect } from 'utils'
+import { safeRedirect } from 'utils/general'
 import {
   name as nameSchema,
   username as usernameSchema,
   email as emailSchema,
   password as passwordSchema,
 } from 'utils/schema'
+
+import { type Handle } from 'root'
+import { createUserSession, getUserId } from 'session.server'
 
 const schema = z.object({
   name: nameSchema,

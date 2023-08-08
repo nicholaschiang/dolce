@@ -1,7 +1,7 @@
 import { type User } from '@prisma/client'
 import { type Person } from 'schema-dts'
 
-import { type Serialize, url } from 'utils'
+import { type Serialize, url } from 'utils/general'
 
 /**
  * Get the user Schema.org `application/ld+json` compatible representation.

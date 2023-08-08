@@ -1,7 +1,8 @@
 import { type LoaderArgs, redirect } from '@vercel/remix'
 
-import { prisma } from 'db.server'
 import { getShowPath } from 'utils/show'
+
+import { prisma } from 'db.server'
 
 export async function loader({ request, params }: LoaderArgs) {
   const showId = Number(params.showId)

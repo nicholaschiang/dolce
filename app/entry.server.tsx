@@ -3,7 +3,7 @@ import type { EntryContext } from '@vercel/remix'
 import { handleRequest } from '@vercel/remix'
 import { createSitemapGenerator } from 'remix-sitemap'
 
-import { BASE_URL } from 'utils'
+import { BASE_URL } from 'utils/general'
 
 const { isSitemapUrl, sitemap } = createSitemapGenerator({
   siteUrl: BASE_URL,

@@ -23,6 +23,8 @@ import { Filters } from 'components/filters'
 import { Image } from 'components/image'
 import { Tooltip } from 'components/tooltip'
 
+import { NAME } from 'utils/general'
+
 import { prisma } from 'db.server'
 import {
   type Filter,
@@ -35,7 +37,6 @@ import {
 } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
-import { NAME } from 'utils'
 
 export const meta: V2_MetaFunction = () => [{ title: `Products | ${NAME}` }]
 

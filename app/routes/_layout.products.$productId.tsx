@@ -16,9 +16,10 @@ import { Dialog } from 'components/dialog'
 import { Image } from 'components/image'
 import { Tooltip } from 'components/tooltip'
 
+import { NAME, useData } from 'utils/general'
+
 import { prisma } from 'db.server'
 import { type Handle } from 'root'
-import { NAME, useData } from 'utils'
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
   { title: `${data?.name ?? '404'} | ${NAME}` },

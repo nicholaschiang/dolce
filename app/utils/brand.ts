@@ -1,7 +1,7 @@
 import { type Brand } from '@prisma/client'
 import { type Organization } from 'schema-dts'
 
-import { type Serialize, url } from 'utils'
+import { type Serialize, url } from 'utils/general'
 
 export function getBrandSchema(brand: Serialize<Brand>): Organization {
   return {
