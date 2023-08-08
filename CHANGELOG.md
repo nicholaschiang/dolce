@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.35.1](https://github.com/nicholaschiang/dolce/compare/v1.35.0...v1.35.1) (2023-08-08)
+
+
+### Bug Fixes
+
+* **app.css:** update `frosted` utility for dark theme ([941ef8b](https://github.com/nicholaschiang/dolce/commit/941ef8bf6d235dd2bffdd3dfdb9d47bc3f1276a1))
+* replace `border-gray-700` with `border-gray-800` ([91a3f20](https://github.com/nicholaschiang/dolce/commit/91a3f202df5c52cb68a479a14e1bea5a9fc12a6e))
+
 ## [1.35.0](https://github.com/nicholaschiang/dolce/compare/v1.34.0...v1.35.0) (2023-08-08)
 
 
