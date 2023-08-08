@@ -218,7 +218,7 @@ export default function ShowsPage() {
                   >
                     <div
                       className={cn(
-                        'bg-gray-100 dark:bg-gray-900 aspect-person mb-2',
+                        'bg-gray-100 dark:bg-gray-900 aspect-person mb-3',
                         show == null && 'animate-pulse',
                       )}
                     >
@@ -247,7 +247,7 @@ export default function ShowsPage() {
                           />
                         )}
                     </div>
-                    <h2 className='text-xl font-serif font-semibold text-center'>
+                    <h2 className='text-xl font-serif font-semibold text-center leading-none mb-1'>
                       {show?.brand.name}
                     </h2>
                     <h3 className='text-xs uppercase text-center'>
