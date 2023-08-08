@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.36.0](https://github.com/nicholaschiang/dolce/compare/v1.35.3...v1.36.0) (2023-08-08)
+
+
+### Features
+
+* automatically revalidate on focus or reconnect ([0cf4304](https://github.com/nicholaschiang/dolce/commit/0cf43042ad0becc60fb0979a99ae1723afaf71c1))
+
 ## [1.35.3](https://github.com/nicholaschiang/dolce/compare/v1.35.2...v1.35.3) (2023-08-08)
 
 
