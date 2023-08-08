@@ -7,8 +7,6 @@ import { Dialog, DialogContent } from 'components/ui/dialog'
 
 import { cn } from 'utils/cn'
 
-const CommandLoading = CommandPrimitive.Loading
-
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive>
@@ -81,7 +79,7 @@ const CommandEmpty = React.forwardRef<
 >((props, ref) => (
   <CommandPrimitive.Empty
     ref={ref}
-    className='py-6 text-center text-sm'
+    className='py-6 text-center text-sm text-gray-500 dark:text-gray-600'
     {...props}
   />
 ))
@@ -146,6 +144,17 @@ function CommandShortcut({
   )
 }
 CommandShortcut.displayName = 'CommandShortcut'
+
+const CommandLoading = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Loading>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Loading>
+>(({ children, ...props }, ref) => (
+  <CommandPrimitive.Loading ref={ref} {...props}>
+    <hr className='-mt-px h-px border-0 relative w-full bg-gray-200 dark:bg-gray-800 after:w-1/2 after:h-px after:absolute after:opacity-0 after:bg-gradient-to-r after:from-transparent after:via-gray-400 after:dark:via-gray-600 after:to-transparent after:animate-loading' />
+    {children}
+  </CommandPrimitive.Loading>
+))
+CommandLoading.displayName = CommandPrimitive.Loading.displayName
 
 export {
   Command,

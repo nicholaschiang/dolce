@@ -87,6 +87,13 @@ module.exports = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: 0 },
         },
+        // Loading (cmdk)
+        // @see {@link https://github.com/pacocoursey/cmdk/blob/main/website/styles/cmdk/raycast.scss#L348}
+        'loading': {
+          '0%': { opacity: 0, transform: 'translateX(0)' },
+          '50%': { opacity: 1, transform: 'translateX(100%)' },
+          '100%': { opacity: 0, transform: 'translateX(0)' },
+        },
       },
       animation: {
         // Tooltip (tailwindcss-radix)
@@ -98,6 +105,8 @@ module.exports = {
         // Accordion (shadcn-ui)
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        // Loading (cmdk)
+        'loading': 'loading 1.5s ease infinite',
       },
     },
   },
