@@ -79,7 +79,9 @@ export function HeaderLink({ className, ...etc }: LinkProps) {
 export function HeaderActions() {
   const matches = useMatches()
   const user = useOptionalUser()
-  const isLoginPage = matches.some((match) => match.id.includes('login'))
+  const isLoginPage = matches.some(
+    (match) => match.id.includes('login') || match.id.includes('join'),
+  )
   return (
     <div className='flex items-center'>
       {!isLoginPage && user == null && <LogInButton />}
