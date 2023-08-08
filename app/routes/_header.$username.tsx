@@ -192,9 +192,9 @@ function Header() {
           )}
         </div>
         <div className='flex items-center gap-10 font-semibold text-sm'>
-          <span>{user.lookCount} saved</span>
-          <span>{user._count.sets} sets</span>
-          <span>{user._count.reviews} reviews</span>
+          <Link to='.'>{user.lookCount} saved</Link>
+          <Link to='sets'>{user._count.sets} sets</Link>
+          <Link to='reviews'>{user._count.reviews} reviews</Link>
         </div>
         <article className='text-sm max-w-xl'>
           <h3 className='font-semibold'>{user.name}</h3>
