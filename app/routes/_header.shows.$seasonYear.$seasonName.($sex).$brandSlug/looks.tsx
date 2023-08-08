@@ -19,6 +19,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
   CommandLoading,
 } from 'components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover'
@@ -154,23 +155,25 @@ function LookItem({ look }: { look: Look }) {
                 placeholder='Search sets...'
               />
               {fetcher.state !== 'idle' && <CommandLoading />}
-              <CommandGroup>
-                {results.map((set) => (
-                  <SelectItem
-                    key={set.id}
-                    set={set}
-                    look={look}
-                    action={action}
-                  />
-                ))}
-                {results.length === 0 && (
-                  <CreateItem
-                    name={search.trim()}
-                    action={create}
-                    setOpen={setOpen}
-                  />
-                )}
-              </CommandGroup>
+              <CommandList>
+                <CommandGroup>
+                  {results.map((set) => (
+                    <SelectItem
+                      key={set.id}
+                      set={set}
+                      look={look}
+                      action={action}
+                    />
+                  ))}
+                  {results.length === 0 && (
+                    <CreateItem
+                      name={search.trim()}
+                      action={create}
+                      setOpen={setOpen}
+                    />
+                  )}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>
