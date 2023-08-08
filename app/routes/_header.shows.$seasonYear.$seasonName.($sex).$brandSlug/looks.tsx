@@ -1,14 +1,7 @@
 import { Link, useFetchers, useFetcher, useLoaderData } from '@remix-run/react'
 import { type SerializeFrom } from '@vercel/remix'
 import { Check, Bookmark, Plus } from 'lucide-react'
-import {
-  type Dispatch,
-  type SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 import { type action as saveAPI } from 'routes/api.looks.$lookId.save'
 import { type action as createAPI } from 'routes/api.looks.$lookId.save.create'
@@ -184,11 +177,7 @@ function SaveMenu({ look }: { look: Look }) {
                 />
               ))}
               {results.length === 0 && (
-                <CreateItem
-                  name={search.trim()}
-                  action={create}
-                  setOpen={setOpen}
-                />
+                <CreateItem name={search.trim()} action={create} />
               )}
             </CommandGroup>
           </CommandList>
@@ -198,23 +187,13 @@ function SaveMenu({ look }: { look: Look }) {
   )
 }
 
-function CreateItem({
-  name,
-  action,
-  setOpen,
-}: {
-  name: string
-  action: string
-  setOpen: Dispatch<SetStateAction<boolean>>
-}) {
+function CreateItem({ name, action }: { name: string; action: string }) {
   const fetcher = useFetcher<typeof createAPI>()
   return (
     <CommandItem
       value={name}
-      onSelect={() => {
-        fetcher.submit({ name }, { action, method: 'POST' })
-        setOpen(false)
-      }}
+      disabled={fetcher.state !== 'idle'}
+      onSelect={() => fetcher.submit({ name }, { action, method: 'POST' })}
     >
       <Plus className='mr-2 h-4 w-4 flex-none' />
       <span className='flex gap-1 truncate'>
