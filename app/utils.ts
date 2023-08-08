@@ -1,4 +1,4 @@
-import { useLocation, useRouteLoaderData } from '@remix-run/react'
+import { useLocation, useRouteLoaderData, useNavigate } from '@remix-run/react'
 import { type AppData, type SerializeFrom } from '@vercel/remix'
 import rfdc from 'rfdc'
 
@@ -99,6 +99,11 @@ export function url(path: string | undefined | null): string | undefined {
  * This should be used any time the redirect path is user-provided (like the
  * query string on our login/signup pages). This avoids open-redirect
  * vulnerabilities.
+ *
+ * This function will also try to `decodeURIComponent` (for redirect paths that
+ * came from the `useRedirectTo` hook). AFAIK this shouldn't cause any problems,
+ * but in case it does, I should add an encode boolean flag on `useRedirectTo`.
+ *
  * @param {string} to The redirect destination
  * @param {string} defaultRedirect The redirect to use if the to is unsafe.
  */
@@ -107,8 +112,9 @@ export function safeRedirect(
   defaultRedirect: string = DEFAULT_REDIRECT,
 ) {
   if (!to || typeof to !== 'string') return defaultRedirect
-  if (!to.startsWith('/') || to.startsWith('//')) return defaultRedirect
-  return to
+  const parsed = to ? decodeURIComponent(to) : to
+  if (!parsed.startsWith('/') || parsed.startsWith('//')) return defaultRedirect
+  return parsed
 }
 
 /**
@@ -131,17 +137,16 @@ function isUser(user: unknown): user is User {
 
 export function useOptionalUser(): SerializeFrom<User> | undefined {
   const data = useData<typeof loader>('root')
-  if (!data || !isUser(data.user)) return undefined
-  return data.user
+  return !data || !isUser(data.user) ? undefined : data.user
 }
 
 export function useUser(): SerializeFrom<User> {
   const maybeUser = useOptionalUser()
-  if (!maybeUser) {
-    const error =
-      'No user found in root loader, but user is required by useUser. If ' +
-      'user is optional, try useOptionalUser instead.'
-    throw new Error(error)
+  const nav = useNavigate()
+  const redirectTo = useRedirectTo()
+  if (maybeUser == null) {
+    nav(`/login?redirectTo=${redirectTo}`)
+    throw new Error('User is not logged in; redirecting to login page...')
   }
   return maybeUser
 }

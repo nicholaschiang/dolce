@@ -44,8 +44,7 @@ describe('smoke tests', () => {
     cy.get('@update-button').should('not.be.disabled')
     cy.findByRole('figure').find('cite').should('have.text', newUserName)
 
-    cy.findByRole('link', { name: /log out/i }).click()
-    cy.findByRole('link', { name: /log in/i }).click()
+    cy.findByRole('button', { name: /log out/i }).click()
 
     // login
     cy.findByRole('heading', { name: /log in/i }).should('be.visible')
@@ -58,7 +57,7 @@ describe('smoke tests', () => {
 
     cy.findByRole('link', { name: /log in/i }).should('not.exist')
     cy.findByRole('link', { name: /edit profile/i }).should('be.visible')
-    cy.findByRole('link', { name: /log out/i }).click()
+    cy.findByRole('button', { name: /log out/i }).click()
   })
 
   it('should allow you to review a show', () => {

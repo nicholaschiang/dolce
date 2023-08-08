@@ -24,12 +24,16 @@ export async function getSession(request: Request) {
   return sessionStorage.getSession(cookie)
 }
 
-export async function logout(request: Request) {
+export async function logout({
+  request,
+  redirectTo,
+}: {
+  request: Request
+  redirectTo: string
+}) {
   const session = await getSession(request)
-  return redirect('/', {
-    headers: {
-      'Set-Cookie': await sessionStorage.destroySession(session),
-    },
+  return redirect(redirectTo, {
+    headers: { 'Set-Cookie': await sessionStorage.destroySession(session) },
   })
 }
 
@@ -48,7 +52,7 @@ export async function getUser(request: Request): Promise<User | null> {
   const user = await getUserById(userId)
   if (user) return user
 
-  throw await logout(request)
+  throw await logout({ request, redirectTo: '/login' })
 }
 
 export async function requireUserId(
@@ -69,7 +73,7 @@ export async function requireUser(request: Request) {
   const user = await getUserById(userId)
   if (user) return user
 
-  throw await logout(request)
+  throw await logout({ request, redirectTo: '/login' })
 }
 
 export async function createUserSession({

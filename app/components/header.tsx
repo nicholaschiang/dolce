@@ -1,12 +1,14 @@
-import { Link, type LinkProps, useMatches } from '@remix-run/react'
+import { Link, type LinkProps, useFetcher, useMatches } from '@remix-run/react'
 import { Settings, User, LogIn, LogOut, ChevronRight } from 'lucide-react'
 import { type PropsWithChildren, Fragment } from 'react'
 
+import { type action as logoutAPI } from 'routes/api.logout'
+
 import { ThemeSwitcher } from 'components/theme-switcher'
-import { buttonVariants } from 'components/ui/button'
+import { Button, buttonVariants } from 'components/ui/button'
 
 import { type Handle } from 'root'
-import { useOptionalUser } from 'utils'
+import { useOptionalUser, useRedirectTo } from 'utils'
 import { cn } from 'utils/cn'
 
 export function Header({ className }: { className?: string }) {
@@ -66,21 +68,11 @@ export function HeaderLink({ className, ...etc }: LinkProps) {
 export function HeaderActions() {
   const matches = useMatches()
   const user = useOptionalUser()
+  const isLoginPage = matches.some((match) => match.id.includes('login'))
   return (
     <div className='flex items-center'>
-      {!matches.some((match) => match.id.includes('login')) && (
-        <Link
-          aria-label={user ? 'Log out' : 'Log in'}
-          className={buttonVariants({ size: 'icon', variant: 'ghost' })}
-          to={user ? '/logout' : '/login'}
-        >
-          {user ? (
-            <LogOut className='w-3 h-3' />
-          ) : (
-            <LogIn className='w-3 h-3' />
-          )}
-        </Link>
-      )}
+      {!isLoginPage && user == null && <LogInButton />}
+      {!isLoginPage && user != null && <LogOutButton />}
       {user?.username != null && (
         <Link
           aria-label='View profile'
@@ -101,5 +93,29 @@ export function HeaderActions() {
       )}
       <ThemeSwitcher />
     </div>
+  )
+}
+
+function LogInButton() {
+  return (
+    <Link
+      aria-label='Log in'
+      className={buttonVariants({ size: 'icon', variant: 'ghost' })}
+      to={`/login?redirectTo=${useRedirectTo()}`}
+    >
+      <LogIn className='w-3 h-3' />
+    </Link>
+  )
+}
+
+function LogOutButton() {
+  const fetcher = useFetcher<typeof logoutAPI>()
+  return (
+    <fetcher.Form method='post' action='/api/logout'>
+      <input type='hidden' name='redirectTo' value={useRedirectTo()} />
+      <Button type='submit' size='icon' variant='ghost' aria-label='Log out'>
+        <LogOut className='w-3 h-3' />
+      </Button>
+    </fetcher.Form>
   )
 }
