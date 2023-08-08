@@ -4,20 +4,26 @@ import { type LoaderArgs } from '@vercel/remix'
 import { prisma } from 'db.server'
 
 export async function loader({ params }: LoaderArgs) {
-  if (params.username == null) throw new Response('Not Found', { status: 404 })
-  const looks = await prisma.look.findMany({
-    where: { sets: { some: { author: { username: params.username } } } },
-    include: { images: { take: 1 } },
-    orderBy: { updatedAt: 'desc' },
+  const setId = Number(params.setId)
+  if (Number.isNaN(setId)) throw new Response('Not Found', { status: 404 })
+  const set = await prisma.set.findUnique({
+    where: { id: setId },
+    include: {
+      looks: {
+        orderBy: { updatedAt: 'desc' },
+        include: { images: { take: 1 } },
+      },
+    },
   })
-  return looks
+  if (set == null) throw new Response('Not Found', { status: 404 })
+  return set
 }
 
 export default function UserSetsPage() {
-  const looks = useLoaderData<typeof loader>()
+  const set = useLoaderData<typeof loader>()
   return (
-    <ol className='grid grid-cols-6 gap-1'>
-      {looks.map((look) => (
+    <ol className='grid grid-cols-5 gap-1'>
+      {set.looks.map((look) => (
         <li key={look.id}>
           <Link
             to={`/shows/${look.showId}`}
