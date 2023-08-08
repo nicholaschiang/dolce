@@ -1,22 +1,49 @@
+import { useForm } from '@conform-to/react'
+import { parse } from '@conform-to/zod'
 import {
   Outlet,
   Link,
   NavLink,
+  Form,
   type NavLinkProps,
   useLoaderData,
   useLocation,
+  useNavigation,
   useOutletContext,
+  useActionData,
+  useSubmit,
 } from '@remix-run/react'
-import { type LoaderArgs, type SerializeFrom } from '@vercel/remix'
+import {
+  type ActionArgs,
+  type LoaderArgs,
+  type SerializeFrom,
+  json,
+} from '@vercel/remix'
 import { Bookmark, MessageCircle } from 'lucide-react'
-import { type PropsWithChildren } from 'react'
+import { nanoid } from 'nanoid/non-secure'
+import { type PropsWithChildren, useRef } from 'react'
+import { z } from 'zod'
 
-import { Avatar } from 'components/avatar'
+import { Avatar, getFallback } from 'components/avatar'
+import {
+  Avatar as AvatarRoot,
+  AvatarImage,
+  AvatarFallback,
+} from 'components/ui/avatar'
 import { buttonVariants } from 'components/ui/button'
 
-import { prisma } from 'db.server'
+import { prisma, supabase } from 'db.server'
+import { log } from 'log.server'
+import { getUserId } from 'session.server'
 import { useOptionalUser } from 'utils'
 import { cn } from 'utils/cn'
+
+const schema = z.object({
+  avatar: z
+    .instanceof(File)
+    .refine((file) => file.name !== '' && file.size > 0, 'Avatar is required')
+    .refine((file) => file.size < 5e6, 'Avatar cannot be larger than 5 MB'),
+})
 
 export async function loader({ params }: LoaderArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
@@ -31,6 +58,43 @@ export async function loader({ params }: LoaderArgs) {
   ])
   if (user == null) throw new Response('Not Found', { status: 404 })
   return { ...user, lookCount }
+}
+
+export async function action({ request, params }: ActionArgs) {
+  log.info('Updating avatar for @%s...', params.username)
+  if (params.username == null) throw new Response('Not Found', { status: 404 })
+  const userId = await getUserId(request)
+  if (userId == null) throw new Response('Unauthorized', { status: 401 })
+  const user = await prisma.user.findUnique({
+    where: { username: params.username },
+  })
+  if (user == null) throw new Response('Not Found', { status: 404 })
+  if (user.id !== userId) throw new Response('Forbidden', { status: 403 })
+
+  const formData = await request.formData()
+  const submission = parse(formData, { schema, stripEmptyValue: true })
+
+  if (!submission.value || submission.intent !== 'submit')
+    return json(submission, { status: 400 })
+
+  const { data, error } = await supabase.storage
+    .from('avatars')
+    .upload(`users/${user.id}/${nanoid()}`, submission.value.avatar)
+
+  if (error) {
+    log.error('Error updating avatar for @%s: %s', params.username, error.stack)
+    submission.error.avatar = 'Failed to upload avatar; try again later'
+    return json(submission, { status: 500 })
+  }
+
+  const avatar = supabase.storage.from('avatars').getPublicUrl(data.path)
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { avatar: avatar.data.publicUrl },
+  })
+
+  log.info('Updated avatar for @%s: %s', params.username, avatar.data.publicUrl)
+  return json(submission)
 }
 
 export const useUser = () => useOutletContext<SerializeFrom<typeof loader>>()
@@ -87,7 +151,11 @@ function Header() {
   return (
     <header className='flex items-center gap-2 mb-11'>
       <div className='grow flex items-center justify-center'>
-        <Avatar src={user} className='w-36 h-36 text-3xl' />
+        {currentUser?.id === user.id ? (
+          <AvatarForm />
+        ) : (
+          <Avatar src={user} className='w-36 h-36 text-3xl' />
+        )}
       </div>
       <div className='grow-[2] grid gap-5'>
         <div className='flex items-center gap-2'>
@@ -130,5 +198,69 @@ function Header() {
         </article>
       </div>
     </header>
+  )
+}
+
+function AvatarForm() {
+  const lastSubmission = useActionData<typeof action>()
+  const [form, { avatar }] = useForm({
+    lastSubmission,
+    onValidate({ formData }) {
+      return parse(formData, { schema, stripEmptyValue: true })
+    },
+  })
+  const user = useLoaderData<typeof loader>()
+  const submit = useSubmit()
+  const navigation = useNavigation()
+  const inputRef = useRef<HTMLInputElement>(null)
+  return (
+    <Form
+      method='post'
+      encType='multipart/form-data'
+      onChange={(event) => submit(event.currentTarget)}
+      {...form.props}
+    >
+      <AvatarRoot className='w-36 h-36'>
+        {navigation.state !== 'idle' && navigation.formData ? (
+          <>
+            <AvatarImage />
+            <AvatarFallback className='animate-pulse' />
+          </>
+        ) : avatar.error ? (
+          <>
+            <AvatarImage />
+            <AvatarFallback className='text-center p-4 text-2xs'>
+              {avatar.error}
+            </AvatarFallback>
+          </>
+        ) : (
+          <>
+            <AvatarImage src={user?.avatar ?? undefined} alt={user?.name} />
+            {lastSubmission ? (
+              <AvatarFallback className='animate-pulse' />
+            ) : (
+              <AvatarFallback className='text-3xl'>
+                {getFallback(user)}
+              </AvatarFallback>
+            )}
+          </>
+        )}
+        <button
+          type='button'
+          aria-label='Edit avatar'
+          className='absolute inset-0 w-full h-full'
+          disabled={navigation.state !== 'idle'}
+          onClick={() => inputRef.current?.click()}
+        />
+        <input
+          ref={inputRef}
+          name={avatar.name}
+          className='hidden'
+          accept='image/*'
+          type='file'
+          required
+        />
+      </AvatarRoot>
+    </Form>
   )
 }
