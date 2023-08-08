@@ -1,5 +1,14 @@
 # Release Notes
 
+## [1.35.2](https://github.com/nicholaschiang/dolce/compare/v1.35.1...v1.35.2) (2023-08-08)
+
+
+### Bug Fixes
+
+* **components/header:** hide login button on join page ([356bfd4](https://github.com/nicholaschiang/dolce/commit/356bfd412ab5fca6c257c720bba81e792a9dfac9))
+* **shows:** reduce brand name line height ([fb6df72](https://github.com/nicholaschiang/dolce/commit/fb6df72ae839d483e882d1409e0b5a191bd57964))
+* **utils:** don't check user type in `useUser` ([9bcef8d](https://github.com/nicholaschiang/dolce/commit/9bcef8d1a2b93192d73ebd09741227eef8c83852))
+
 ## [1.35.1](https://github.com/nicholaschiang/dolce/compare/v1.35.0...v1.35.1) (2023-08-08)
 
 
