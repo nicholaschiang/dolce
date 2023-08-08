@@ -7,7 +7,6 @@ import {
   Form,
   type NavLinkProps,
   useLoaderData,
-  useLocation,
   useNavigation,
   useOutletContext,
   useActionData,
@@ -35,7 +34,7 @@ import { buttonVariants } from 'components/ui/button'
 import { prisma, supabase } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
-import { useOptionalUser } from 'utils'
+import { useOptionalUser, useRedirectTo } from 'utils'
 import { cn } from 'utils/cn'
 
 const schema = z.object({
@@ -147,7 +146,7 @@ function Tab({ className, prefetch, ...etc }: NavLinkProps) {
 function Header() {
   const user = useLoaderData<typeof loader>()
   const currentUser = useOptionalUser()
-  const location = useLocation()
+  const redirectTo = useRedirectTo()
   return (
     <header className='flex items-center gap-2 mb-11'>
       <div className='grow flex items-center justify-center'>
@@ -172,14 +171,14 @@ function Header() {
           {currentUser == null && (
             <>
               <Link
-                to={`/join?redirectTo=${location.pathname}`}
+                to={`/join?redirectTo=${redirectTo}`}
                 prefetch='intent'
                 className={buttonVariants({ variant: 'secondary' })}
               >
                 Follow
               </Link>
               <Link
-                to={`/join?redirectTo=${location.pathname}`}
+                to={`/join?redirectTo=${redirectTo}`}
                 prefetch='intent'
                 className={buttonVariants({ variant: 'secondary' })}
               >
