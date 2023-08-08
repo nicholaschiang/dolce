@@ -124,8 +124,8 @@ export default function ProfilePage() {
   useEffect(() => setState(user), [user])
   return (
     <div className='flex h-full flex-1 items-center justify-center overflow-hidden'>
-      <header className='flex-1 px-6 border-r border-gray-200 dark:border-gray-700 h-full flex items-center justify-end bg-gray-50 dark:bg-gray-900'>
-        <div className='border border-gray-200 dark:border-gray-700 shadow-sm rounded-md p-4 bg-white dark:bg-gray-950 max-w-sm'>
+      <header className='flex-1 px-6 border-r border-gray-200 dark:border-gray-800 h-full flex items-center justify-end bg-gray-50 dark:bg-gray-900'>
+        <div className='border border-gray-200 dark:border-gray-800 shadow-sm rounded-md p-4 bg-white dark:bg-gray-950 max-w-sm'>
           <ConsumerReview
             author={state}
             content='Your profile is looking fantastic—the fashion is a bit lacking though... glad you’re here! 😮‍💨'

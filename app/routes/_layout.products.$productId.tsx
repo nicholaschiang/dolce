@@ -118,7 +118,7 @@ export default function ProductPage() {
       onOpenAutoFocus={(event) => event.preventDefault()}
       className='w-full max-w-screen-lg'
     >
-      <div className='flex items-center gap-2.5 border-b border-gray-200/50 bg-gray-50 p-2 px-6 dark:border-gray-700/50 dark:bg-gray-900'>
+      <div className='flex items-center gap-2.5 border-b border-gray-200/50 bg-gray-50 p-2 px-6 dark:border-gray-800/50 dark:bg-gray-900'>
         <Tooltip tip='close' hotkey='esc'>
           <Dialog.Close className='icon-button square'>
             <X className='w-3 h-3' />
@@ -355,7 +355,7 @@ Section.Info = function SectionInfo({ children }: PropsWithChildren) {
           sideOffset={4}
           asChild
         >
-          <article className='frosted max-w-sm rounded border border-gray-200 p-3 text-2xs shadow-lg dark:border-gray-700'>
+          <article className='frosted max-w-sm rounded border border-gray-200 p-3 text-2xs shadow-lg dark:border-gray-800'>
             {children}
           </article>
         </Popover.Content>
@@ -378,7 +378,7 @@ Section.Content = function SectionContent({ children }: PropsWithChildren) {
 
 function Chip({ children }: PropsWithChildren) {
   return (
-    <div className='rounded border border-gray-200 bg-gray-50 px-1 py-0.5 text-2xs dark:border-gray-700 dark:bg-gray-900'>
+    <div className='rounded border border-gray-200 bg-gray-50 px-1 py-0.5 text-2xs dark:border-gray-800 dark:bg-gray-900'>
       {children}
     </div>
   )

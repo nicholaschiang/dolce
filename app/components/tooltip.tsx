@@ -39,7 +39,7 @@ export function Tooltip({ children, tip, hotkey, onHotkey }: TooltipProps) {
               'radix-side-bottom:animate-slide-up-fade',
               'radix-side-left:animate-slide-right-fade',
               'inline-flex items-center rounded px-2 py-1.25',
-              'border border-gray-200 dark:border-gray-700',
+              'border border-gray-200 dark:border-gray-800',
               'frosted z-50 gap-2 lowercase shadow-sm',
             )}
           >

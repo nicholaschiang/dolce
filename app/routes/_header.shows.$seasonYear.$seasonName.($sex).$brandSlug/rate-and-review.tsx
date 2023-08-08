@@ -119,7 +119,7 @@ export function RateAndReview() {
       <Form asChild>
         <RemixForm
           method='post'
-          className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-700 rounded-md p-4 relative'
+          className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded-md p-4 relative'
           {...form.props}
         >
           {user == null && (
