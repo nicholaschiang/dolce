@@ -3,6 +3,7 @@ import { Command as CommandPrimitive } from 'cmdk'
 import { Search } from 'lucide-react'
 import * as React from 'react'
 
+import { LoadingLine } from 'components/loading-line'
 import { Dialog, DialogContent } from 'components/ui/dialog'
 
 import { cn } from 'utils/cn'
@@ -150,7 +151,7 @@ const CommandLoading = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Loading>
 >(({ children, ...props }, ref) => (
   <CommandPrimitive.Loading ref={ref} {...props}>
-    <hr className='-mt-px h-px border-0 relative w-full bg-gray-200 dark:bg-gray-800 after:w-1/2 after:h-px after:absolute after:opacity-0 after:bg-gradient-to-r after:from-transparent after:via-gray-400 after:dark:via-gray-600 after:to-transparent after:animate-loading' />
+    <LoadingLine className='-mt-px' />
     {children}
   </CommandPrimitive.Loading>
 ))
