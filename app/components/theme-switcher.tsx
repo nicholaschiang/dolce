@@ -1,6 +1,6 @@
 import { useFetcher } from '@remix-run/react'
 import { Moon, Sun } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Tooltip } from 'components/tooltip'
@@ -18,13 +18,10 @@ export function ThemeSwitcher({ className }: { className?: string }) {
         return isTheme(themeValue) ? themeValue : prev
       })
   }, [fetcher.formData, setTheme])
-  useHotkeys(
-    't',
-    () => setTheme((prev) => (prev === Theme.Light ? Theme.Dark : Theme.Light)),
-    [setTheme],
-  )
+  const ref = useRef<HTMLFormElement>(null)
+  useHotkeys('t', () => fetcher.submit(ref.current), [setTheme])
   return (
-    <fetcher.Form action='/theme' method='post'>
+    <fetcher.Form ref={ref} action='/theme' method='post'>
       <Tooltip tip='Toggle theme' hotkey='t'>
         <Button
           aria-label='Toggle theme'
