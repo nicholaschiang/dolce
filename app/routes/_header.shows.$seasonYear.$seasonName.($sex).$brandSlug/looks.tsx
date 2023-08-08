@@ -1,15 +1,21 @@
 import { useFetchers, useFetcher, useLoaderData } from '@remix-run/react'
 import { type SerializeFrom } from '@vercel/remix'
-import { Check, Bookmark } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { Check, Bookmark, Plus } from 'lucide-react'
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import { type action as saveAPI } from 'routes/api.looks.$lookId.save'
+import { type action as createAPI } from 'routes/api.looks.$lookId.save.create'
 import { type loader as setsAPI } from 'routes/api.sets'
 
 import { Button } from 'components/ui/button'
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -19,6 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover'
 
 import { uniq } from 'utils'
 import { cn } from 'utils/cn'
+import { commandScore } from 'utils/command-score'
 
 import { type loader } from './route'
 
@@ -53,10 +60,12 @@ function LookItem({ look }: { look: Look }) {
   const index = look.number - 1
   const fetchers = useFetchers()
   const action = `/api/looks/${look.id}/save`
+  const create = `/api/looks/${look.id}/save/create`
 
   // If you look at the loader function for this page, you'll notice that I
   // query for the sets that this look is included in that were authored by the
   // current user. If this length is greater than zero, then it is bookmarked.
+  const creating = fetchers.filter((f) => f.formAction === create)
   const removing = fetchers
     .filter((f) => f.formAction === action && f.formMethod === 'DELETE')
     .map((f) => Number(f.formData?.get('setId')))
@@ -66,7 +75,7 @@ function LookItem({ look }: { look: Look }) {
   const current = new Set(look.sets ? look.sets.map((s) => s.id) : [])
   removing.forEach((id) => current.delete(id))
   adding.forEach((id) => current.add(id))
-  const isSaved = current.size > 0
+  const isSaved = current.size > 0 || creating.length > 0
 
   // Load additional items based on the search query but don't remove any of the
   // older items. CMD-K will handle the text-based filtering for me. I just have
@@ -97,6 +106,13 @@ function LookItem({ look }: { look: Look }) {
     }, 50)
     return () => clearTimeout(timeoutId)
   }, [open, fetcher, endpoint])
+
+  // I cannot rely on the CMD-K filtering and sorting as I want to show a
+  // "create new set" item when there are no results.
+  const results = sets
+    .map((set) => ({ ...set, score: commandScore(set.name, search) }))
+    .filter((set) => set.score > 0)
+    .sort((a, b) => b.score - a.score)
 
   return (
     <li>
@@ -131,18 +147,29 @@ function LookItem({ look }: { look: Look }) {
             align='start'
             collisionPadding={24}
           >
-            <Command>
+            <Command shouldFilter={false}>
               <CommandInput
                 value={search}
                 onValueChange={setSearch}
                 placeholder='Search sets...'
               />
               {fetcher.state !== 'idle' && <CommandLoading />}
-              <CommandEmpty>No sets found.</CommandEmpty>
               <CommandGroup>
-                {sets.map((set) => (
-                  <SetItem key={set.id} set={set} look={look} action={action} />
+                {results.map((set) => (
+                  <SelectItem
+                    key={set.id}
+                    set={set}
+                    look={look}
+                    action={action}
+                  />
                 ))}
+                {results.length === 0 && (
+                  <CreateItem
+                    name={search.trim()}
+                    action={create}
+                    setOpen={setOpen}
+                  />
+                )}
               </CommandGroup>
             </Command>
           </PopoverContent>
@@ -152,7 +179,36 @@ function LookItem({ look }: { look: Look }) {
   )
 }
 
-function SetItem({
+function CreateItem({
+  name,
+  action,
+  setOpen,
+}: {
+  name: string
+  action: string
+  setOpen: Dispatch<SetStateAction<boolean>>
+}) {
+  const fetcher = useFetcher<typeof createAPI>()
+  return (
+    <CommandItem
+      value={name}
+      onSelect={() => {
+        fetcher.submit({ name }, { action, method: 'POST' })
+        setOpen(false)
+      }}
+    >
+      <Plus className='mr-2 h-4 w-4 flex-none' />
+      <span className='flex gap-1 truncate'>
+        <span className='flex-none'>Create new set:</span>
+        <span className='text-gray-400 dark:text-gray-600 truncate'>
+          “{name}”
+        </span>
+      </span>
+    </CommandItem>
+  )
+}
+
+function SelectItem({
   set,
   look,
   action,
