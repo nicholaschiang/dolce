@@ -1,5 +1,28 @@
 # Release Notes
 
+## [1.34.0](https://github.com/nicholaschiang/dolce/compare/v1.33.0...v1.34.0) (2023-08-08)
+
+
+### Features
+
+* add "sets" multi-select when saving a look ([d240238](https://github.com/nicholaschiang/dolce/commit/d2402381861ffa81e9e907eed8eec84857063bdd))
+* **components/ui/command:** add subtle loader ([c8e105c](https://github.com/nicholaschiang/dolce/commit/c8e105c1bc9db961320b42dac19228d0090bc075)), closes [/github.com/pacocoursey/cmdk/blob/main/website/styles/cmdk/raycast.scss#L348](https://github.com/nicholaschiang//github.com/pacocoursey/cmdk/blob/main/website/styles/cmdk/raycast.scss/issues/L348) [/github.com/pacocoursey/cmdk/blob/main/website/styles/cmdk/raycast.scss#L105](https://github.com/nicholaschiang//github.com/pacocoursey/cmdk/blob/main/website/styles/cmdk/raycast.scss/issues/L105)
+* **routes/sets:** add new "sets" index list page ([c7dde11](https://github.com/nicholaschiang/dolce/commit/c7dde11f4645fef855a674a023cbab7a4e62cfc6))
+* **show/looks:** add "create new set" option ([bf19ec4](https://github.com/nicholaschiang/dolce/commit/bf19ec4a9bd95b3f3a416fcf13668d74bbe1bd29))
+* **utils:** add `uniq` function for filtering arrays ([8d4cb58](https://github.com/nicholaschiang/dolce/commit/8d4cb58ec861373b7f5600d5a21538e0850c1588))
+
+
+### Bug Fixes
+
+* **components/ui/button:** show background when active ([40d361c](https://github.com/nicholaschiang/dolce/commit/40d361c200172676c0d80f2e15ffa5b95ee37cf6))
+* **routes/show:** always load the latest look image ([078d51a](https://github.com/nicholaschiang/dolce/commit/078d51a54ad830ceee84b2802519fa47327c41b8))
+* **show/looks:** add `max-height` to sets select ([dd73f0c](https://github.com/nicholaschiang/dolce/commit/dd73f0cd436ae8c8e0152f9575db0eded015741f))
+
+
+### Performance Improvements
+
+* **show/looks:** preload sets on save button hover ([d09c281](https://github.com/nicholaschiang/dolce/commit/d09c281c33d66b26f07dbb09f7286e3e8bc04de1))
+
 ## [1.33.0](https://github.com/nicholaschiang/dolce/compare/v1.32.0...v1.33.0) (2023-08-08)
 
 
