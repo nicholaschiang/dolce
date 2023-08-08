@@ -1,5 +1,21 @@
 # Release Notes
 
+## [1.35.0](https://github.com/nicholaschiang/dolce/compare/v1.34.0...v1.35.0) (2023-08-08)
+
+
+### Features
+
+* add `<LoadingLine>` to header when navigating ([99b7bad](https://github.com/nicholaschiang/dolce/commit/99b7bad33dd3210bf6eeef3dbf6bddf38109f67c))
+
+
+### Bug Fixes
+
+* **app/app.css:** reduce `nprogress` contrast ([7db1b61](https://github.com/nicholaschiang/dolce/commit/7db1b6128c4d8d390e0b062866d4d79e47fa1bf8))
+* redirect to current page on login or logout ([a7f60ef](https://github.com/nicholaschiang/dolce/commit/a7f60ef460429bbf3653cbaf88c9ec1bea114c10))
+* **save:** don't duplicate preload request ([a714a0b](https://github.com/nicholaschiang/dolce/commit/a714a0bf6312bb5edf012d1d47574c48db9fcc20))
+* **save:** redirect unauthenticated users to login ([df6af63](https://github.com/nicholaschiang/dolce/commit/df6af63e6c45fdcd24d914699fd8907da3c473d7))
+* **show/rate-and-review:** disable button on submit only ([37ce177](https://github.com/nicholaschiang/dolce/commit/37ce177d67e9d04decb0e42c030e89c240e19cb3))
+
 ## [1.34.0](https://github.com/nicholaschiang/dolce/compare/v1.33.0...v1.34.0) (2023-08-08)
 
 
