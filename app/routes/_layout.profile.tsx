@@ -109,7 +109,7 @@ export async function action({ request }: ActionArgs) {
   return json(submission)
 }
 
-export const meta: V2_MetaFunction = () => [{ title: `Profile | ${NAME}` }]
+export const meta: V2_MetaFunction = () => [{ title: `Edit Profile | ${NAME}` }]
 
 export default function ProfilePage() {
   const user = useUser()
@@ -222,7 +222,7 @@ export default function ProfilePage() {
               </FormControl>
             </FormField>
             <FormSubmit asChild>
-              <Button disabled={navigation.state !== 'idle'}>
+              <Button disabled={navigation.formAction != null}>
                 Update profile
               </Button>
             </FormSubmit>
