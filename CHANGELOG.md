@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.35.3](https://github.com/nicholaschiang/dolce/compare/v1.35.2...v1.35.3) (2023-08-08)
+
+
+### Bug Fixes
+
+* **routes:** use `redirectTo` when already logged in ([f978909](https://github.com/nicholaschiang/dolce/commit/f97890910857a0694692bba2ae65a3695ab33b60))
+* **show/looks:** do not close set select on create ([b8219b8](https://github.com/nicholaschiang/dolce/commit/b8219b8f6f5ec84f281fcb7490ced173ad72dc22))
+
 ## [1.35.2](https://github.com/nicholaschiang/dolce/compare/v1.35.1...v1.35.2) (2023-08-08)
 
 
