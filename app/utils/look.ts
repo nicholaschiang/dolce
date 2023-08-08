@@ -1,7 +1,7 @@
 import { type Look, type Image } from '@prisma/client'
 import { type CreativeWork } from 'schema-dts'
 
-import { type Serialize, url } from 'utils'
+import { type Serialize, url } from 'utils/general'
 
 export function getLookSchema(
   look: Serialize<Look & { images: Image[] }>,

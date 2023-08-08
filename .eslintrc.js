@@ -290,6 +290,11 @@ module.exports = {
             position: 'before',
           },
           {
+            pattern: 'utils/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
             pattern: 'styles/**',
             group: 'internal',
             position: 'before',

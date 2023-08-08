@@ -16,7 +16,7 @@ export async function loader() {
   })
   log.debug('got %d designers', designers.length)
   // TODO apply this filter at the database level instead of in JS.
-  // eslint-disable-next-line no-underscore-dangle
+
   return designers.filter((designer) => designer._count.products > 0)
 }
 

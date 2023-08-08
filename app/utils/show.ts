@@ -10,8 +10,8 @@ import {
 } from '@prisma/client'
 import { type Event, type Person, type WithContext } from 'schema-dts'
 
-import { type Serialize, url } from 'utils'
 import { getBrandSchema } from 'utils/brand'
+import { type Serialize, url } from 'utils/general'
 import { getLookSchema } from 'utils/look'
 import { type Scores, getScoresSchema } from 'utils/scores'
 import { SEASON_NAME_TO_SLUG, getSeasonName } from 'utils/season'

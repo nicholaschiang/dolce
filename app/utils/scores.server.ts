@@ -1,5 +1,6 @@
-import { prisma } from 'db.server'
 import { type Score, type Scores } from 'utils/scores'
+
+import { prisma } from 'db.server'
 
 function sanityCheck(score: Score, name: string): void {
   const sum = score.positiveCount + score.negativeCount + score.neutralCount

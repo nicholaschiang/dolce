@@ -4,8 +4,9 @@ import { FolderClosed, FolderOpen } from 'lucide-react'
 
 import { buttonVariants } from 'components/ui/button'
 
-import { prisma } from 'db.server'
 import { cn } from 'utils/cn'
+
+import { prisma } from 'db.server'
 
 export async function loader({ params }: LoaderArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })

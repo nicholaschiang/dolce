@@ -30,14 +30,15 @@ import { Input } from 'components/ui/input'
 
 import { verifyLogin } from 'models/user.server'
 
-import { type Handle } from 'root'
-import { createUserSession, getUserId } from 'session.server'
-import { safeRedirect } from 'utils'
+import { safeRedirect } from 'utils/general'
 import {
   username as usernameSchema,
   email as emailSchema,
   password as passwordSchema,
 } from 'utils/schema'
+
+import { type Handle } from 'root'
+import { createUserSession, getUserId } from 'session.server'
 
 const schema = z.object({
   emailOrUsername: emailSchema.or(usernameSchema),

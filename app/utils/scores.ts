@@ -1,6 +1,6 @@
 import { type AggregateRating } from 'schema-dts'
 
-import { type Serialize } from 'utils'
+import { type Serialize } from 'utils/general'
 
 /**
  * The show "scores" are calculate based on the number of positive and negative

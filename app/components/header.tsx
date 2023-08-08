@@ -14,9 +14,10 @@ import { LoadingLine } from 'components/loading-line'
 import { ThemeSwitcher } from 'components/theme-switcher'
 import { Button, buttonVariants } from 'components/ui/button'
 
-import { type Handle } from 'root'
-import { useOptionalUser, useRedirectTo } from 'utils'
 import { cn } from 'utils/cn'
+import { useOptionalUser, useRedirectTo } from 'utils/general'
+
+import { type Handle } from 'root'
 
 export function Header({ className }: { className?: string }) {
   return (

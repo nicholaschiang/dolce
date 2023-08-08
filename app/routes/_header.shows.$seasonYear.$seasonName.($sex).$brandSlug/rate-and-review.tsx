@@ -24,13 +24,14 @@ import { ScoreInput } from 'components/score-input'
 import { Button } from 'components/ui/button'
 import { Textarea } from 'components/ui/textarea'
 
-import { prisma } from 'db.server'
-import { log } from 'log.server'
-import { getUserId } from 'session.server'
-import { invert, useOptionalUser, useRedirectTo } from 'utils'
+import { invert, useOptionalUser, useRedirectTo } from 'utils/general'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
 import { getShowPath } from 'utils/show'
+
+import { prisma } from 'db.server'
+import { log } from 'log.server'
+import { getUserId } from 'session.server'
 
 import { type loader } from './route'
 import { Section } from './section'

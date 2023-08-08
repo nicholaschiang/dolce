@@ -5,15 +5,16 @@ import {
 } from '@vercel/remix'
 import { type SitemapFunction } from 'remix-sitemap'
 
-import { prisma } from 'db.server'
-import { log } from 'log.server'
-import { type Handle } from 'root'
-import { getUserId } from 'session.server'
-import { NAME, invert } from 'utils'
+import { NAME, invert } from 'utils/general'
 import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
 import { getShowKeywords, getShowPath, getShowSchema } from 'utils/show'
+
+import { prisma } from 'db.server'
+import { log } from 'log.server'
+import { type Handle } from 'root'
+import { getUserId } from 'session.server'
 
 import { About } from './about'
 import { Looks } from './looks'

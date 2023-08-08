@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from 'react'
 
-import { OPTIMIZE_IMAGES } from 'utils'
+import { OPTIMIZE_IMAGES } from 'utils/general'
 
 export function Image({
   optimizerUrl = '/image',

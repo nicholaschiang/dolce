@@ -31,11 +31,12 @@ import {
 } from 'components/ui/avatar'
 import { buttonVariants } from 'components/ui/button'
 
+import { cn } from 'utils/cn'
+import { useOptionalUser, useRedirectTo } from 'utils/general'
+
 import { prisma, supabase } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
-import { useOptionalUser, useRedirectTo } from 'utils'
-import { cn } from 'utils/cn'
 
 const schema = z.object({
   avatar: z

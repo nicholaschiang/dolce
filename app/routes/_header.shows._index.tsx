@@ -12,11 +12,12 @@ import { useEffect, useRef, useCallback, useLayoutEffect } from 'react'
 import { Empty } from 'components/empty'
 import { Image } from 'components/image'
 
+import { cn } from 'utils/cn'
+import { NAME } from 'utils/general'
+import { getShowSeason, getShowPath } from 'utils/show'
+
 import { prisma } from 'db.server'
 import { log } from 'log.server'
-import { NAME } from 'utils'
-import { cn } from 'utils/cn'
-import { getShowSeason, getShowPath } from 'utils/show'
 
 export const meta: V2_MetaFunction = () => [
   {

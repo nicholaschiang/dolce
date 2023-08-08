@@ -26,6 +26,12 @@ import cn from 'classnames'
 import NProgress from 'nprogress'
 import { type ReactNode, useEffect } from 'react'
 
+import { NAME } from 'utils/general'
+import {
+  useRevalidateOnFocus,
+  useRevalidateOnReconnect,
+} from 'utils/revalidate'
+
 import tailwindStylesheetUrl from 'styles/tailwind.css'
 
 import { getSession, getUser, sessionStorage } from 'session.server'
@@ -37,11 +43,6 @@ import {
   isTheme,
   useTheme,
 } from 'theme'
-import { NAME } from 'utils'
-import {
-  useRevalidateOnFocus,
-  useRevalidateOnReconnect,
-} from 'utils/revalidate'
 
 export type Handle = { breadcrumb: (match: RouteMatch) => LinkProps }
 
