@@ -16,6 +16,7 @@ import {
   type ActionArgs,
   type LoaderArgs,
   type SerializeFrom,
+  type V2_MetaFunction,
   json,
 } from '@vercel/remix'
 import { Bookmark, Folder, MessageCircle } from 'lucide-react'
@@ -33,7 +34,7 @@ import {
 import { buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
-import { useOptionalUser, useRedirectTo } from 'utils/general'
+import { NAME, useOptionalUser, useRedirectTo } from 'utils/general'
 
 import { prisma, supabase } from 'db.server'
 import { log } from 'log.server'
@@ -45,6 +46,14 @@ const schema = z.object({
     .refine((file) => file.name !== '' && file.size > 0, 'Avatar is required')
     .refine((file) => file.size < 5e6, 'Avatar cannot be larger than 5 MB'),
 })
+
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+  if (data == null) return [{ title: `404 | ${NAME}` }]
+  let title = data.name
+  if (data.username) title += ` (@${data.username})`
+  title += ` | ${NAME}`
+  return [{ title }]
+}
 
 export const sitemap: SitemapFunction = async () => {
   const users = await prisma.user.findMany({
