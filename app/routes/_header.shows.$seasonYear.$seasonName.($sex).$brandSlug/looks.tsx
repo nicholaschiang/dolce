@@ -87,16 +87,16 @@ function LookItem({ look }: { look: Look }) {
   // Refresh the search results after every keystroke (every few ms).
   const [search, setSearch] = useState('')
   const loaded = useRef('')
+  const endpoint = `/api/sets?search=${encodeURIComponent(search)}`
   useEffect(() => {
-    const endpoint = `/api/sets?search=${encodeURIComponent(search)}`
     const timeoutId = setTimeout(() => {
-      if (loaded.current !== endpoint) {
+      if (open && loaded.current !== endpoint) {
         fetcher.load(endpoint)
         loaded.current = endpoint
       }
     }, 50)
     return () => clearTimeout(timeoutId)
-  }, [fetcher, search])
+  }, [open, fetcher, endpoint])
 
   return (
     <li>
@@ -113,7 +113,11 @@ function LookItem({ look }: { look: Look }) {
         <p className='text-sm'>Look {look.number}</p>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button size='icon' variant='ghost'>
+            <Button
+              size='icon'
+              variant='ghost'
+              onMouseOver={() => fetcher.load(endpoint)}
+            >
               <Bookmark
                 className={cn(
                   'w-3 h-3',
@@ -133,6 +137,7 @@ function LookItem({ look }: { look: Look }) {
                 onValueChange={setSearch}
                 placeholder='Search sets...'
               />
+              {fetcher.state !== 'idle' && <CommandLoading />}
               <CommandEmpty>No sets found.</CommandEmpty>
               <CommandGroup>
                 {sets.map((set) => (
