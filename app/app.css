@@ -55,13 +55,13 @@
       @apply rounded-full;
     }
     &.outlined {
-      @apply border border-gray-200 bg-gray-100/50 text-gray-900/40 shadow-sm dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100/50;
+      @apply border border-gray-200 bg-gray-100/50 text-gray-900/40 shadow-sm dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-100/50;
       &:not(:disabled):hover,
       &:not(:disabled):focus {
         @apply border-gray-300 bg-gray-200/50 dark:border-gray-600 dark:bg-gray-700/50;
       }
       &:disabled {
-        @apply cursor-not-allowed border-gray-200/50 text-gray-900/20 shadow-none dark:border-gray-700/50 dark:text-gray-100/20;
+        @apply cursor-not-allowed border-gray-200/50 text-gray-900/20 shadow-none dark:border-gray-800/50 dark:text-gray-100/20;
       }
     }
     &:not(.outlined) {
@@ -85,7 +85,7 @@
       }
     }
     &.outlined {
-      @apply border-gray-200 bg-gray-100/50 text-gray-900 shadow-sm dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100;
+      @apply border-gray-200 bg-gray-100/50 text-gray-900 shadow-sm dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-100;
       &:not(:disabled):hover,
       &:not(:disabled):focus {
         @apply border-gray-300 bg-gray-200/50 dark:border-gray-600 dark:bg-gray-700/50;
@@ -94,7 +94,7 @@
   }
 
   .input {
-    @apply h-8 w-full appearance-none rounded border border-gray-200 bg-white px-3 outline-none transition-colors dark:border-gray-700 dark:bg-gray-900;
+    @apply h-8 w-full appearance-none rounded border border-gray-200 bg-white px-3 outline-none transition-colors dark:border-gray-800 dark:bg-gray-900;
     &:not(:disabled):hover,
     &:not(:disabled):focus {
       @apply border-gray-300 dark:border-gray-600;

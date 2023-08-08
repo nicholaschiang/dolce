@@ -33,7 +33,7 @@ export function Designers() {
 function DesignerItem({ designer }: { designer: SerializeFrom<User> }) {
   const [expanded, setExpanded] = useState(false)
   return (
-    <li className='rounded-md shadow-sm p-4 flex gap-4 border border-gray-200 dark:border-gray-700'>
+    <li className='rounded-md shadow-sm p-4 flex gap-4 border border-gray-200 dark:border-gray-800'>
       <Avatar src={designer} className='h-20 w-20' />
       <div className={cn(!expanded && 'flex flex-1 flex-col h-0 min-h-full')}>
         <h3 className='flex items-center group gap-1 font-medium'>

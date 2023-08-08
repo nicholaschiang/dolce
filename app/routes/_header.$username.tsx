@@ -119,7 +119,7 @@ export default function UserPage() {
 
 function Tabs({ children }: PropsWithChildren) {
   return (
-    <nav className='border-t border-gray-200 dark:border-gray-700 flex justify-center gap-14'>
+    <nav className='border-t border-gray-200 dark:border-gray-800 flex justify-center gap-14'>
       {children}
     </nav>
   )
