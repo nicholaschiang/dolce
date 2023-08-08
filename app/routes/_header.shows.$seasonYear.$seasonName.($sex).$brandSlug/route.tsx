@@ -87,7 +87,7 @@ export async function loader({ request, params }: LoaderArgs) {
       },
       looks: {
         include: {
-          images: true,
+          images: { orderBy: { createdAt: 'desc' }, take: 1 },
           model: true,
           sets: userId ? { where: { authorId: userId } } : false,
         },
