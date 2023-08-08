@@ -59,8 +59,10 @@ export const handle: Handle = {
 export const config = { runtime: 'nodejs' }
 
 export async function loader({ request }: LoaderArgs) {
+  const url = new URL(request.url)
+  const redirectTo = safeRedirect(url.searchParams.get('redirectTo'), '/')
   const userId = await getUserId(request)
-  if (userId) return redirect('/')
+  if (userId) return redirect(redirectTo)
   return json({})
 }
 
