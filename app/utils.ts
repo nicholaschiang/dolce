@@ -16,6 +16,21 @@ export const clone = rfdc()
 export type Serialize<T extends AppData> = SerializeFrom<T> | T
 
 /**
+ * Filter out duplicate elements in the array by some unique key.
+ * @param array Array to filter
+ * @param key Unique key to filter by
+ * @returns Filtered array
+ * @see {@link https://stackoverflow.com/a/9229821}
+ */
+export function uniq<T>(a: T[], key: (item: T) => string | number): T[] {
+  const seen = new Set()
+  return a.filter((item) => {
+    const k = key(item)
+    return seen.has(k) ? false : seen.add(k)
+  })
+}
+
+/**
  * Swaps the keys and values of an object.
  * @param obj The object to swap.
  * @returns The swapped object.
