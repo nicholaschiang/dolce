@@ -154,7 +154,7 @@ export function RateAndReview() {
             </FormControl>
           </FormField>
           <FormSubmit asChild>
-            <Button disabled={navigation.state !== 'idle'}>
+            <Button disabled={navigation.formAction != null}>
               {review ? 'Edit review' : 'Submit review'}
             </Button>
           </FormSubmit>
