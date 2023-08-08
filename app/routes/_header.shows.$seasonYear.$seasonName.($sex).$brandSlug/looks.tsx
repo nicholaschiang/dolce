@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useCallback,
 } from 'react'
 
 import { type action as saveAPI } from 'routes/api.looks.$lookId.save'
@@ -134,15 +135,16 @@ function SaveMenu({ look }: { look: Look }) {
   const [search, setSearch] = useState('')
   const loaded = useRef('')
   const endpoint = `/api/sets?search=${encodeURIComponent(search)}`
+  const load = useCallback(() => {
+    if (loaded.current !== endpoint) {
+      fetcher.load(endpoint)
+      loaded.current = endpoint
+    }
+  }, [fetcher, endpoint])
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (open && loaded.current !== endpoint) {
-        fetcher.load(endpoint)
-        loaded.current = endpoint
-      }
-    }, 50)
+    const timeoutId = setTimeout(open ? load : () => {}, 50)
     return () => clearTimeout(timeoutId)
-  }, [open, fetcher, endpoint])
+  }, [open, load])
 
   // I cannot rely on the CMD-K filtering and sorting as I want to show a
   // "create new set" item when there are no results.
@@ -154,11 +156,7 @@ function SaveMenu({ look }: { look: Look }) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          size='icon'
-          variant='ghost'
-          onMouseOver={() => fetcher.load(endpoint)}
-        >
+        <Button size='icon' variant='ghost' onMouseOver={load}>
           <Bookmark
             className={cn(
               'w-3 h-3',
