@@ -89,7 +89,7 @@ module.exports = {
         },
         // Loading (cmdk)
         // @see {@link https://github.com/pacocoursey/cmdk/blob/main/website/styles/cmdk/raycast.scss#L348}
-        'loading': {
+        'load': {
           '0%': { opacity: 0, transform: 'translateX(0)' },
           '50%': { opacity: 1, transform: 'translateX(100%)' },
           '100%': { opacity: 0, transform: 'translateX(0)' },
@@ -106,7 +106,8 @@ module.exports = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         // Loading (cmdk)
-        'loading': 'loading 1.5s ease infinite',
+        'load': 'load 1.5s ease infinite',
+        'shine': 'load 1.5s ease',
       },
     },
   },

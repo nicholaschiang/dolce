@@ -1,9 +1,16 @@
-import { Link, type LinkProps, useFetcher, useMatches } from '@remix-run/react'
+import {
+  Link,
+  type LinkProps,
+  useFetcher,
+  useMatches,
+  useNavigation,
+} from '@remix-run/react'
 import { Settings, User, LogIn, LogOut, ChevronRight } from 'lucide-react'
 import { type PropsWithChildren, Fragment } from 'react'
 
 import { type action as logoutAPI } from 'routes/api.logout'
 
+import { LoadingLine } from 'components/loading-line'
 import { ThemeSwitcher } from 'components/theme-switcher'
 import { Button, buttonVariants } from 'components/ui/button'
 
@@ -24,14 +31,18 @@ export function HeaderWrapper({
   className,
   children,
 }: PropsWithChildren<{ className?: string }>) {
+  const navigation = useNavigation()
   return (
     <header
       className={cn(
-        'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between h-10 z-10',
+        'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 px-6 flex items-center justify-between h-10 z-10 relative',
         className,
       )}
     >
       {children}
+      {navigation.state !== 'idle' && (
+        <LoadingLine className='absolute -bottom-px inset-x-0' />
+      )}
     </header>
   )
 }
