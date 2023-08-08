@@ -102,7 +102,7 @@
   }
 
   .frosted {
-    @apply backdrop-order dark:backdrop-order bg-white/75 backdrop-blur-md backdrop-brightness-150 backdrop-contrast-50 backdrop-saturate-200 dark:bg-gray-900/75 dark:backdrop-brightness-75 dark:backdrop-contrast-75;
+    @apply backdrop-order dark:backdrop-order bg-white/75 backdrop-blur-md backdrop-brightness-150 backdrop-contrast-50 backdrop-saturate-200 dark:bg-gray-950/75 dark:backdrop-brightness-75 dark:backdrop-contrast-75;
   }
 
   .underline {
