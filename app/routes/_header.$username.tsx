@@ -21,6 +21,7 @@ import {
 import { Bookmark, Folder, MessageCircle } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import { type PropsWithChildren, useRef } from 'react'
+import { type SitemapFunction } from 'remix-sitemap'
 import { z } from 'zod'
 
 import { Avatar, getFallback } from 'components/avatar'
@@ -44,6 +45,17 @@ const schema = z.object({
     .refine((file) => file.name !== '' && file.size > 0, 'Avatar is required')
     .refine((file) => file.size < 5e6, 'Avatar cannot be larger than 5 MB'),
 })
+
+export const sitemap: SitemapFunction = async () => {
+  const users = await prisma.user.findMany({
+    orderBy: { username: 'asc' },
+    where: { username: { not: null } },
+  })
+  return users.map((user) => ({
+    loc: `/${user.username as string}`,
+    lastmod: user.updatedAt.toISOString(),
+  }))
+}
 
 export async function loader({ params }: LoaderArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
