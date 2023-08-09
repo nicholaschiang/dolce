@@ -66,17 +66,17 @@ export async function loader() {
 
 export default function HomePage() {
   return (
-    <main className='flex flex-col w-screen h-screen overflow-hidden'>
-      <Header className='flex-none' />
-      <section className='h-0 grow flex flex-col items-center justify-center p-6 mx-auto max-w-screen-xl w-full'>
-        <header className='flex items-center gap-1.5 text-lg tracking-tighter'>
+    <>
+      <Header />
+      <section className='p-6 mt-6 mx-auto max-w-screen-xl w-full'>
+        <header className='flex items-center justify-center gap-1.5 sm:gap-2 text-xl sm:text-2xl tracking-tighter'>
           <h1>dolce</h1>
           <span aria-hidden>·</span>
           <h2>the worldwide fashion database</h2>
         </header>
         <Map className='w-full' />
       </section>
-    </main>
+    </>
   )
 }
 
