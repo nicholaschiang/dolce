@@ -99,7 +99,7 @@ function Map({ className }: { className?: string }) {
     <div className={cn('flex justify-center items-center', className)}>
       <ComposableMap
         className='object-scale-down max-w-full max-h-full'
-        projectionConfig={{ rotate: [-10, 0, 0], scale: 147 }}
+        projectionConfig={{ scale: 147 }}
         width={800}
         height={400}
       >
