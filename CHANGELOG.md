@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.39.0](https://github.com/nicholaschiang/dolce/compare/v1.38.0...v1.39.0) (2023-08-09)
+
+
+### Features
+
+* **routes/index:** update hero image to lake como ([c11e37e](https://github.com/nicholaschiang/dolce/commit/c11e37e4654ec8714d354f7de88c048122026f88))
+
+
+### Bug Fixes
+
+* **products:** reduce filters navigation bar height ([21915ec](https://github.com/nicholaschiang/dolce/commit/21915ec9ee97fa71c99726c0638ddfda5c36a1e2))
+
 ## [1.38.0](https://github.com/nicholaschiang/dolce/compare/v1.37.0...v1.38.0) (2023-08-09)
 
 
