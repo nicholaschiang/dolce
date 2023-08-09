@@ -124,6 +124,9 @@ jobs:
         # the sleep is just there to give time for postgres to get started
         run: docker-compose --env-file .env up -d && sleep 3
 
+      - name: Setup database
+        run: pnpm prisma migrate reset --force --skip-seed
+
       - name: Build
         run: pnpm build
 
