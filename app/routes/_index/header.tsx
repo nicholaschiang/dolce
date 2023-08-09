@@ -10,9 +10,9 @@ const links = [
   { to: '/designers', label: 'Designers' },
 ]
 
-export function Header() {
+export function Header({ className }: { className?: string }) {
   return (
-    <HeaderWrapper>
+    <HeaderWrapper className={className}>
       <ol className='flex items-center gap-2 text-lg tracking-tighter lowercase'>
         <h1>dolce</h1>
         <ChevronRight className='text-gray-300 dark:text-gray-600 h-4 w-4 mt-0.5' />
