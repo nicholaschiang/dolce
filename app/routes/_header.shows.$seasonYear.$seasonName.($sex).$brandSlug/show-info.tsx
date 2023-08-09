@@ -4,6 +4,7 @@ import { type PropsWithChildren } from 'react'
 import { ExternalLink } from 'components/external-link'
 
 import { cn } from 'utils/cn'
+import { LOCATION_TO_NAME } from 'utils/location'
 
 import { type loader } from './route'
 import { Section } from './section'
@@ -27,7 +28,9 @@ export function ShowInfo() {
           </InfoItem>
         )}
         {show.location != null && (
-          <InfoItem label='Location'>{show.location}</InfoItem>
+          <InfoItem label='Location'>
+            {LOCATION_TO_NAME[show.location]}
+          </InfoItem>
         )}
         <InfoItem label='Looks'>{show.looks.length}</InfoItem>
         <InfoItem label='Brand' className='inline-flex gap-1'>
