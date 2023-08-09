@@ -140,7 +140,7 @@ export function Filters({
         [filters, addOrUpdateFilter, removeFilter],
       )}
     >
-      <nav className='frosted flex items-center justify-between border-b border-gray-200 px-6 py-3 dark:border-gray-800'>
+      <nav className='frosted flex items-center justify-between border-b border-gray-200 px-6 py-2 dark:border-gray-800'>
         <ul className='-mb-1.5 flex flex-wrap'>
           {filters.map((f) => (
             <>
