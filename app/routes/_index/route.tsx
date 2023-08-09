@@ -117,11 +117,13 @@ function Map({ className }: { className?: string }) {
         <Geographies geography={geography}>
           {({ geographies }) =>
             geographies.map((geo) => (
+              /* eslint-disable @typescript-eslint/no-unsafe-assignment */
               <Geography
-                key={geo.rsmKey}
+                key={(geo as { rsmKey: string }).rsmKey}
                 geography={geo}
                 className='fill-gray-900 dark:fill-gray-100'
               />
+              /* eslint-enable @typescript-eslint/no-unsafe-assignment */
             ))
           }
         </Geographies>
