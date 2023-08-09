@@ -22,6 +22,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import { Filters } from 'components/filters'
 import { Image } from 'components/image'
 import { Tooltip } from 'components/tooltip'
+import { Button } from 'components/ui/button'
 
 import { NAME } from 'utils/general'
 
@@ -201,12 +202,12 @@ export default function ProductsPage() {
         <div className='flex items-center gap-2 text-xs'>
           {filters.length > 1 && (
             <div className='whitespace-nowrap'>
-              <span className='mt-1 text-gray-400 dark:text-gray-600'>
+              <span className='text-gray-400 dark:text-gray-600'>
                 include products that match
               </span>
               <button
                 type='button'
-                className='rounded px-1 pt-1 hover:bg-gray-50 hover:dark:bg-gray-800'
+                className='rounded px-1 hover:bg-gray-50 hover:dark:bg-gray-800'
                 onClick={() =>
                   setJoin((prev) => {
                     const joins = Object.values(Join)
@@ -222,7 +223,7 @@ export default function ProductsPage() {
             </div>
           )}
           {filters.length > 0 && (
-            <div className='mt-1 whitespace-nowrap text-gray-600 dark:text-gray-400'>
+            <div className='whitespace-nowrap text-gray-600 dark:text-gray-400'>
               {products.length}
               <span className='text-gray-400 dark:text-gray-600'>
                 {' / '}
@@ -232,26 +233,28 @@ export default function ProductsPage() {
           )}
           <div className='flex items-center'>
             <Tooltip tip='Zoom In' hotkey='=' onHotkey={zoomIn}>
-              <button
+              <Button
                 type='button'
+                size='icon'
+                variant='ghost'
                 aria-label='Zoom In'
-                className='icon-button'
                 disabled={resultsPerRow === minResultsPerRow}
                 onClick={zoomIn}
               >
-                <ZoomIn className='h-3.5 w-3.5' />
-              </button>
+                <ZoomIn className='h-3 w-3' />
+              </Button>
             </Tooltip>
             <Tooltip tip='Zoom Out' hotkey='-' onHotkey={zoomOut}>
-              <button
+              <Button
                 type='button'
+                size='icon'
+                variant='ghost'
                 aria-label='Zoom Out'
-                className='icon-button'
                 disabled={resultsPerRow === maxResultsPerRow}
                 onClick={zoomOut}
               >
-                <ZoomOut className='h-3.5 w-3.5' />
-              </button>
+                <ZoomOut className='h-3 w-3' />
+              </Button>
             </Tooltip>
           </div>
         </div>
