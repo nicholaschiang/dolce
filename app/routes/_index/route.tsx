@@ -66,10 +66,17 @@ export async function loader() {
 
 export default function HomePage() {
   return (
-    <>
-      <Header />
-      <Map />
-    </>
+    <main className='flex flex-col w-screen h-screen overflow-hidden'>
+      <Header className='flex-none' />
+      <section className='h-0 grow flex flex-col items-center justify-center p-6 mx-auto max-w-screen-xl w-full'>
+        <header className='flex items-center gap-1.5 text-lg tracking-tighter'>
+          <h1>dolce</h1>
+          <span aria-hidden>·</span>
+          <h2>the worldwide fashion database</h2>
+        </header>
+        <Map className='w-full' />
+      </section>
+    </main>
   )
 }
 
@@ -79,7 +86,7 @@ function hasLocation(stats: Stats): stats is Stats & { location: Location } {
   return stats.location != null
 }
 
-function Map() {
+function Map({ className }: { className?: string }) {
   const counts = useLoaderData<typeof loader>()
   const max = counts
     .filter((c) => c.location != null)
@@ -89,10 +96,12 @@ function Map() {
     [max],
   )
   return (
-    <div className='fixed inset-0 flex justify-center items-center p-6'>
+    <div className={cn('flex justify-center items-center', className)}>
       <ComposableMap
         className='object-scale-down max-w-full max-h-full'
         projectionConfig={{ rotate: [-10, 0, 0], scale: 147 }}
+        width={800}
+        height={400}
       >
         <Sphere
           id='sphere'
@@ -182,7 +191,10 @@ function LocationMarker({
             ))}
         </Marker>
       </PopoverTrigger>
-      <PopoverContent className='w-auto text-sm p-0 overflow-hidden'>
+      <PopoverContent
+        collisionPadding={12}
+        className='w-auto text-sm p-0 overflow-hidden'
+      >
         <div className='relative group'>
           <ul
             className={cn(
