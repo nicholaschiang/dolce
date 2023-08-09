@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.38.0](https://github.com/nicholaschiang/dolce/compare/v1.37.0...v1.38.0) (2023-08-09)
+
+
+### Features
+
+* **routes/username:** add user profiles to sitemap ([f8cbd01](https://github.com/nicholaschiang/dolce/commit/f8cbd01fb0d0139b6c8dcaf115d83cb2711b8a93))
+* **routes/username:** add username to meta title ([ff64fd3](https://github.com/nicholaschiang/dolce/commit/ff64fd3631f3ce684b66370aacd1ef3400822a21))
+
+
+### Bug Fixes
+
+* **routes/profile:** disable button when submitting ([bbbd829](https://github.com/nicholaschiang/dolce/commit/bbbd829afbfd1cd5e0471d293efa3e89e8c102fa))
+
 ## [1.37.0](https://github.com/nicholaschiang/dolce/compare/v1.36.0...v1.37.0) (2023-08-08)
 
 
