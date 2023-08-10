@@ -1,5 +1,25 @@
 # Release Notes
 
+## [1.40.0](https://github.com/nicholaschiang/dolce/compare/v1.39.0...v1.40.0) (2023-08-10)
+
+
+### Features
+
+* **components/ui/button:** add `transparent` variant ([930066d](https://github.com/nicholaschiang/dolce/commit/930066de952a6254ec194481f53eb314f1a73937))
+* **index:** add basic map of fashion show locations ([5903765](https://github.com/nicholaschiang/dolce/commit/59037657b46bc0bcee08f0daabc30d8496a6cf97))
+* **routes/index:** add homepage header tag line ([35a39b5](https://github.com/nicholaschiang/dolce/commit/35a39b50f3467ea10915eb8bc1b040ee6ea122ca))
+* **routes/index:** add location popovers to map ([2226302](https://github.com/nicholaschiang/dolce/commit/2226302ba1ff0668ce994eef6c95606e7c5a5f8e))
+* **routes/shows:** add the shows count to header ([d0e20d0](https://github.com/nicholaschiang/dolce/commit/d0e20d0f95d047ade837bd51e0bfaf230cbc5c18))
+
+
+### Bug Fixes
+
+* **components/ui/popover:** export `<PopoverClose>` ([7026d7d](https://github.com/nicholaschiang/dolce/commit/7026d7d792cfe43102ff1c254b3dde24f3020143))
+* **routes/index:** address some eslint errors ([a23d2cb](https://github.com/nicholaschiang/dolce/commit/a23d2cb3d4d1f2c3bb4a7d0513ffb6dba27d518a))
+* **routes/index:** do not center map to viewport ([45392d4](https://github.com/nicholaschiang/dolce/commit/45392d4a922a3d178a67c0e7cc367fb0cf6687c0))
+* **routes/index:** remove map projection skew ([a24b7ed](https://github.com/nicholaschiang/dolce/commit/a24b7ed42a7a5aea4a73712d9350942d9b0b25aa))
+* **show/show-info:** show user friendly location name ([b8bec3c](https://github.com/nicholaschiang/dolce/commit/b8bec3c91e4c20df77e3a5d7328e399a81c879f1))
+
 ## [1.39.0](https://github.com/nicholaschiang/dolce/compare/v1.38.0...v1.39.0) (2023-08-09)
 
 
