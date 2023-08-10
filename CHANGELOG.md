@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.40.1](https://github.com/nicholaschiang/dolce/compare/v1.40.0...v1.40.1) (2023-08-10)
+
+
+### Bug Fixes
+
+* **deps:** replace `[@vercel](https://github.com/vercel)` with `[@remix-run](https://github.com/remix-run)` ([07675e2](https://github.com/nicholaschiang/dolce/commit/07675e2b92783f4774e126252c7d44e150d6336a))
+
 ## [1.40.0](https://github.com/nicholaschiang/dolce/compare/v1.39.0...v1.40.0) (2023-08-10)
 
 
