@@ -1,5 +1,19 @@
 # Release Notes
 
+## [1.42.0](https://github.com/nicholaschiang/dolce/compare/v1.41.0...v1.42.0) (2023-08-10)
+
+
+### Features
+
+* **routes/shows:** show results load time ([37238cd](https://github.com/nicholaschiang/dolce/commit/37238cdb2b0a0e371748d5fd5f6e91ec771d2ca8))
+
+
+### Bug Fixes
+
+* **routes/index:** size map correctly in safari ([236a05d](https://github.com/nicholaschiang/dolce/commit/236a05d540315e24f8f40d00df2fa801d0435405))
+* **routes/show:** allow scrolling on padding areas ([e89cbb6](https://github.com/nicholaschiang/dolce/commit/e89cbb6ed3233b5f8a5a1fa2397d36dbcca9b36f))
+* **routes/show:** ensure content is centered ([1686312](https://github.com/nicholaschiang/dolce/commit/1686312acc0da6387a11226377dff498cf373d6b))
+
 ## [1.41.0](https://github.com/nicholaschiang/dolce/compare/v1.40.1...v1.41.0) (2023-08-10)
 
 
