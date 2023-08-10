@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react'
 import { type SitemapFunction } from 'remix-sitemap'
 
 import { NAME, invert } from 'utils/general'
+import { LEVEL_TO_SLUG } from 'utils/level'
+import { LOCATION_TO_SLUG } from 'utils/location'
 import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
@@ -58,19 +60,32 @@ export const handle: Handle = {
 }
 
 export async function loader({ request, params }: LoaderArgs) {
-  log.debug('getting show...')
-  const seasonYear = Number(params.seasonYear)
+  log.info('getting show... %o', params)
   const miss = new Response(null, { status: 404, statusText: 'Not Found' })
-  if (Number.isNaN(seasonYear) || !params.seasonName || !params.brandSlug)
+  if (!params.season || !params.sex || !params.level || !params.brand)
     throw miss
-  const seasonName = invert(SEASON_NAME_TO_SLUG)[params.seasonName]
-  const sex = invert(SEX_TO_SLUG)[params.sex ?? '']
-  if (!sex || !seasonName) throw miss
+  const seasonYear = Number(params.year)
+  const seasonName = invert(SEASON_NAME_TO_SLUG)[params.season]
+  const sex = invert(SEX_TO_SLUG)[params.sex]
+  const level = invert(LEVEL_TO_SLUG)[params.level]
+  const location = params.location
+    ? invert(LOCATION_TO_SLUG)[params.location]
+    : null
+  if (
+    Number.isNaN(seasonYear) ||
+    !seasonName ||
+    !sex ||
+    !level ||
+    location === undefined
+  )
+    throw miss
   const userId = await getUserId(request)
   const show = await prisma.show.findFirst({
     where: {
-      brand: { slug: params.brandSlug },
+      brand: { slug: params.brand },
       season: { year: seasonYear, name: seasonName },
+      location,
+      level,
       sex,
     },
     include: {
@@ -98,7 +113,7 @@ export async function loader({ request, params }: LoaderArgs) {
     },
   })
   if (show == null) throw miss
-  log.debug('got show %o', show)
+  log.info('got show %o', show)
   const [scores, review] = await Promise.all([
     getScores(show.id),
     getReview(show.id, request),

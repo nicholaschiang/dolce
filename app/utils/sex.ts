@@ -11,6 +11,6 @@ export function getSexName(sex: Sex) {
 
 export const SEX_TO_SLUG: Record<Sex, string> = {
   [Sex.MAN]: 'man',
-  [Sex.WOMAN]: '',
+  [Sex.WOMAN]: 'woman',
   [Sex.UNISEX]: 'all',
 }

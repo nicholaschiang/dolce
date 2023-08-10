@@ -12,6 +12,8 @@ import { type Event, type Person, type WithContext } from 'schema-dts'
 
 import { getBrandSchema } from 'utils/brand'
 import { type Serialize, url } from 'utils/general'
+import { LEVEL_TO_SLUG } from 'utils/level'
+import { LOCATION_TO_SLUG } from 'utils/location'
 import { getLookSchema } from 'utils/look'
 import { type Scores, getScoresSchema } from 'utils/scores'
 import { SEASON_NAME_TO_SLUG, getSeasonName } from 'utils/season'
@@ -55,12 +57,14 @@ export function getShowPath(
   show: Serialize<Show & { season: Season; brand: Brand }>,
 ) {
   const path = [
+    show.location ? LOCATION_TO_SLUG[show.location] : undefined,
     show.season.year,
     SEASON_NAME_TO_SLUG[show.season.name],
     SEX_TO_SLUG[show.sex],
+    LEVEL_TO_SLUG[show.level],
     show.brand.slug,
   ]
-  return `/shows/${path.filter((p) => p !== '').join('/')}`
+  return `/shows/${path.filter((p) => p).join('/')}`
 }
 
 /**
