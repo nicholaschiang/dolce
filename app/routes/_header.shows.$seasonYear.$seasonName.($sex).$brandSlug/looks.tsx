@@ -30,21 +30,19 @@ const rowsToEagerLoad = 3
 // How many looks are shown in each row of results.
 const looksPerRow = 2
 
-export function Looks({ className }: { className: string }) {
+export function Looks() {
   const show = useLoaderData<typeof loader>()
   return (
-    <div className={cn('overflow-auto', className)}>
-      <ol
-        className='grid gap-x-2 gap-y-6'
-        style={{
-          gridTemplateColumns: `repeat(${looksPerRow}, minmax(0, 1fr))`,
-        }}
-      >
-        {show.looks.map((look) => (
-          <LookItem key={look.id} look={look} />
-        ))}
-      </ol>
-    </div>
+    <ol
+      className='grid gap-x-2 gap-y-6'
+      style={{
+        gridTemplateColumns: `repeat(${looksPerRow}, minmax(0, 1fr))`,
+      }}
+    >
+      {show.looks.map((look) => (
+        <LookItem key={look.id} look={look} />
+      ))}
+    </ol>
   )
 }
 

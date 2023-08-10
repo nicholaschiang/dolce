@@ -107,9 +107,17 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export default function ShowPage() {
   return (
-    <main className='fixed inset-0 overflow-hidden max-w-screen-xl mx-auto grid grid-cols-5 gap-6'>
-      <About className='col-span-3 pl-6 pb-6 pt-16' />
-      <Looks className='col-span-2 pr-6 pb-6 pt-16' />
+    <main className='fixed inset-0 overflow-hidden flex'>
+      <div className='grow-[3] overflow-auto'>
+        <div className='pl-6 pb-6 pt-16 ml-auto max-w-3xl'>
+          <About />
+        </div>
+      </div>
+      <div className='grow-[2] overflow-auto'>
+        <div className='pr-6 pb-6 pt-16 pl-6 mr-auto max-w-lg'>
+          <Looks />
+        </div>
+      </div>
     </main>
   )
 }
