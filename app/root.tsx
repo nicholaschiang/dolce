@@ -1,3 +1,4 @@
+import * as FullStory from '@fullstory/browser'
 import {
   Link,
   Links,
@@ -142,7 +143,11 @@ export const links: LinksFunction = () => [
 
 export const meta: V2_MetaFunction = () => [{ title: NAME }]
 
-type Env = { VERCEL_ANALYTICS_ID?: string }
+type Env = {
+  VERCEL_ANALYTICS_ID: string | undefined
+  FULLSTORY_ORG_ID: string | undefined
+  FULLSTORY_DEV_MODE: string | undefined
+}
 
 declare global {
   interface Window {
@@ -158,7 +163,11 @@ export async function loader({ request }: LoaderArgs) {
     {
       user: await getUser(request),
       theme: isTheme(theme) ? theme : null,
-      env: { VERCEL_ANALYTICS_ID: process.env.VERCEL_ANALYTICS_ID },
+      env: {
+        VERCEL_ANALYTICS_ID: process.env.VERCEL_ANALYTICS_ID,
+        FULLSTORY_ORG_ID: process.env.FULLSTORY_ORG_ID,
+        FULLSTORY_DEV_MODE: process.env.FULLSTORY_DEV_MODE,
+      } satisfies Env,
     },
     { headers },
   )
@@ -228,6 +237,26 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
 
   useRevalidateOnFocus()
   useRevalidateOnReconnect()
+
+  const devMode = data?.env.FULLSTORY_DEV_MODE === 'true'
+  useEffect(() => {
+    if (!FullStory.isInitialized() && data?.env.FULLSTORY_ORG_ID)
+      FullStory.init({ orgId: data.env.FULLSTORY_ORG_ID, devMode })
+  }, [devMode, data?.env])
+  useEffect(() => {
+    if (devMode) return
+    if (data?.user?.id) FullStory.identify(data.user.id.toString())
+    else FullStory.anonymize()
+  }, [devMode, data?.user?.id])
+  useEffect(() => {
+    if (devMode) return
+    if (data?.user)
+      FullStory.setUserVars({
+        ...data.user,
+        displayName: data.user.name,
+        email: data.user.email ?? undefined,
+      })
+  }, [devMode, data?.user])
 
   return (
     <html lang='en' className={cn('h-full', theme)}>

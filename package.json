@@ -47,6 +47,7 @@
   "dependencies": {
     "@conform-to/react": "^0.7.4",
     "@conform-to/zod": "^0.7.4",
+    "@fullstory/browser": "^1.7.1",
     "@prisma/client": "^4.16.2",
     "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -103,10 +104,10 @@
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
     "@google/semantic-release-replace-plugin": "^1.2.0",
+    "@remix-run/dev": "1.19.2",
     "@remix-run/eslint-config": "1.19.2",
     "@remix-run/node": "1.19.2",
     "@remix-run/serve": "1.19.2",
-    "@remix-run/dev": "1.19.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@tailwindcss/typography": "^0.5.9",
