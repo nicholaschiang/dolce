@@ -54,13 +54,15 @@ function LookItem({ look }: { look: Look }) {
   return (
     <li>
       <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
-        <img
-          className='object-cover h-full w-full'
-          loading={index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
-          decoding={index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'}
-          src={look.images[0]?.url}
-          alt=''
-        />
+        {look.images.length > 0 && (
+          <img
+            className='object-cover h-full w-full'
+            loading={index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
+            decoding={index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'}
+            src={look.images[0].url}
+            alt=''
+          />
+        )}
       </div>
       <div className='flex justify-between items-center mt-1'>
         <p className='text-sm'>Look {look.number}</p>
