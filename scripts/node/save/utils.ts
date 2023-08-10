@@ -9,4 +9,6 @@ export function slug(name: string) {
     .toLowerCase()
     .replace(/[.,/#!$%^&*;:{}=\-_`~()\s]+/g, '-')
     .replace(/-$/, '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f\u2019'"]/g, '')
 }
