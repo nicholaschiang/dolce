@@ -1,7 +1,7 @@
 import { RemixBrowser } from '@remix-run/react'
 import { StrictMode, startTransition } from 'react'
 import { hydrateRoot } from 'react-dom/client'
-import type { Metric, ReportCallback } from 'web-vitals'
+import { type Metric, type ReportCallback } from 'web-vitals'
 
 import { logStayCurious } from 'curious'
 
@@ -37,7 +37,14 @@ function getConnectionSpeed() {
     : ''
 }
 
+declare global {
+  interface Window {
+    metrics?: Metric[]
+  }
+}
+
 function sendToVercelAnalytics(metric: Metric) {
+  window.metrics = [...(window.metrics ?? []), metric]
   const analyticsId = window.env.VERCEL_ANALYTICS_ID
   if (!analyticsId) return
   const body = {
