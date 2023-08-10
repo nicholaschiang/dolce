@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.41.0](https://github.com/nicholaschiang/dolce/compare/v1.40.1...v1.41.0) (2023-08-10)
+
+
+### Features
+
+* **root:** add full story session recording ([6700f13](https://github.com/nicholaschiang/dolce/commit/6700f133603c75a2cbd18a4b015d6da8cef38a7c))
+
 ## [1.40.1](https://github.com/nicholaschiang/dolce/compare/v1.40.0...v1.40.1) (2023-08-10)
 
 
