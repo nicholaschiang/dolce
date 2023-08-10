@@ -15,6 +15,7 @@ import {
 
 import { type loader as locationAPI } from 'routes/api.locations.$location'
 
+import { ClientOnly } from 'components/client-only'
 import { LoadingLine } from 'components/loading-line'
 import { Button } from 'components/ui/button'
 import {
@@ -97,52 +98,54 @@ function Map({ className }: { className?: string }) {
   )
   return (
     <div className={cn('flex justify-center items-center', className)}>
-      <ComposableMap
-        className='object-scale-down w-full h-full'
-        projectionConfig={{ scale: 147 }}
-        width={800}
-        height={400}
-      >
-        <Sphere
-          id='sphere'
-          fill='transparent'
-          stroke='inherit'
-          className='stroke-gray-200 dark:stroke-gray-800'
-          strokeWidth={0.5}
-        />
-        <Graticule
-          className='stroke-gray-200 dark:stroke-gray-800'
-          strokeWidth={0.5}
-        />
-        <Geographies geography={geography}>
-          {({ geographies }) =>
-            geographies.map((geo) => (
-              /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-              <Geography
-                key={(geo as { rsmKey: string }).rsmKey}
-                geography={geo}
-                className='fill-gray-900 dark:fill-gray-100'
-              />
-              /* eslint-enable @typescript-eslint/no-unsafe-assignment */
-            ))
-          }
-        </Geographies>
-        {Object.entries(LOCATION_TO_COORDINATES).map(
-          ([location, coordinates]) => {
-            const stats = counts.find((c) => c.location === location)
-            if (stats == null || !hasLocation(stats)) return null
-            const radius = scale(stats.showsCount)
-            return (
-              <LocationMarker
-                key={location}
-                stats={stats}
-                radius={radius}
-                coordinates={coordinates}
-              />
-            )
-          },
-        )}
-      </ComposableMap>
+      <ClientOnly>
+        <ComposableMap
+          className='object-scale-down w-full h-full'
+          projectionConfig={{ scale: 147 }}
+          width={800}
+          height={400}
+        >
+          <Sphere
+            id='sphere'
+            fill='transparent'
+            stroke='inherit'
+            className='stroke-gray-200 dark:stroke-gray-800'
+            strokeWidth={0.5}
+          />
+          <Graticule
+            className='stroke-gray-200 dark:stroke-gray-800'
+            strokeWidth={0.5}
+          />
+          <Geographies geography={geography}>
+            {({ geographies }) =>
+              geographies.map((geo) => (
+                /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+                <Geography
+                  key={(geo as { rsmKey: string }).rsmKey}
+                  geography={geo}
+                  className='fill-gray-900 dark:fill-gray-100'
+                />
+                /* eslint-enable @typescript-eslint/no-unsafe-assignment */
+              ))
+            }
+          </Geographies>
+          {Object.entries(LOCATION_TO_COORDINATES).map(
+            ([location, coordinates]) => {
+              const stats = counts.find((c) => c.location === location)
+              if (stats == null || !hasLocation(stats)) return null
+              const radius = scale(stats.showsCount)
+              return (
+                <LocationMarker
+                  key={location}
+                  stats={stats}
+                  radius={radius}
+                  coordinates={coordinates}
+                />
+              )
+            },
+          )}
+        </ComposableMap>
+      </ClientOnly>
     </div>
   )
 }
