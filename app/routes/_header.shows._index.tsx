@@ -7,7 +7,14 @@ import {
 } from '@remix-run/react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
-import { useEffect, useRef, useCallback, useLayoutEffect } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useLayoutEffect,
+} from 'react'
+import { type Metric } from 'web-vitals'
 
 import { Empty } from 'components/empty'
 import { Image } from 'components/image'
@@ -176,14 +183,24 @@ export default function ShowsPage() {
     isMountedRef.current = true
   }, [])
 
+  const [metric, setMetric] = useState<Metric>()
+  useEffect(() => {
+    setMetric(window.metrics?.find((m) => m.name === 'TTFB'))
+  }, [])
+
   return (
     <main
       ref={parentRef}
       className='fixed inset-x-0 top-10 bottom-0 overflow-auto'
     >
-      <div className='p-6 mx-auto max-w-screen-xl'>
-        <h1 className='text-6xl mb-6 lowercase tracking-tighter'>
-          {count.toLocaleString()} shows
+      <div className='px-6 pb-6 mx-auto max-w-screen-xl'>
+        <h1 className='text-lg mt-2 mb-8 h-7 lowercase tracking-tighter'>
+          {count.toLocaleString()} shows{' '}
+          {metric && (
+            <span className='text-gray-400 dark:text-gray-600 animate-fade-in'>
+              ({Math.ceil(metric.value / 10) / 100} seconds)
+            </span>
+          )}
         </h1>
         {shows.length > 0 ? (
           <ol

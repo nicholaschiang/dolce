@@ -94,6 +94,11 @@ module.exports = {
           '50%': { opacity: 1, transform: 'translateX(100%)' },
           '100%': { opacity: 0, transform: 'translateX(0)' },
         },
+        // Fade (gradually fade component in on mount)
+        'fade-in': {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
       },
       animation: {
         // Tooltip (tailwindcss-radix)
@@ -108,6 +113,8 @@ module.exports = {
         // Loading (cmdk)
         'load': 'load 1.5s ease infinite',
         'shine': 'load 1.5s ease',
+        // Fade (gradually fade component in on mount)
+        'fade-in': 'fade-in 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       },
     },
   },
