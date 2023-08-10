@@ -3,6 +3,7 @@ import {
   type SerializeFrom,
   type V2_MetaFunction,
 } from '@vercel/remix'
+import { useState, useEffect } from 'react'
 import { type SitemapFunction } from 'remix-sitemap'
 
 import { NAME, invert } from 'utils/general'
@@ -105,16 +106,40 @@ export async function loader({ request, params }: LoaderArgs) {
   return { ...show, scores, review }
 }
 
+// The ratio of the "about" column width to "looks" column width.
+const about = 3 / 5
+const looks = 2 / 5
+
+// The max width of both columns combined.
+const maxWidth = 1200
+
 export default function ShowPage() {
+  const [viewportWidth, setViewportWidth] = useState(maxWidth)
+  useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+  const margin = Math.max((viewportWidth - maxWidth) / 2, 0)
+  const aboutWidth = maxWidth * about + margin
+  const looksWidth = maxWidth * looks + margin
+  const aboutFlexGrow = aboutWidth / looksWidth
+  const looksFlexGrow = 1
   return (
     <main className='fixed inset-0 overflow-hidden flex'>
-      <div className='grow-[3] overflow-auto'>
-        <div className='pl-6 pb-6 pt-16 ml-auto max-w-3xl'>
+      <div className='w-0 overflow-auto' style={{ flexGrow: aboutFlexGrow }}>
+        <div
+          className='pt-16 pl-6 pb-6 ml-auto w-full'
+          style={{ maxWidth: maxWidth * about }}
+        >
           <About />
         </div>
       </div>
-      <div className='grow-[2] overflow-auto'>
-        <div className='pr-6 pb-6 pt-16 pl-6 mr-auto max-w-lg'>
+      <div className='w-0 overflow-auto' style={{ flexGrow: looksFlexGrow }}>
+        <div
+          className='px-6 pt-16 pb-6 mr-auto w-full'
+          style={{ maxWidth: maxWidth * looks }}
+        >
           <Looks />
         </div>
       </div>
