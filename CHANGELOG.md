@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.42.1](https://github.com/nicholaschiang/dolce/compare/v1.42.0...v1.42.1) (2023-08-10)
+
+
+### Bug Fixes
+
+* remove special characters from brand slugs ([1d7db07](https://github.com/nicholaschiang/dolce/commit/1d7db071585007492dbcffd7f1f63315ae05762e))
+* **show/looks:** do not try to show missing images ([de0d89d](https://github.com/nicholaschiang/dolce/commit/de0d89dd3c6fd3c54468ccee750912cbb62d564e))
+
 ## [1.42.0](https://github.com/nicholaschiang/dolce/compare/v1.41.0...v1.42.0) (2023-08-10)
 
 
