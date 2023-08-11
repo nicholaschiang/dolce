@@ -6,6 +6,8 @@ import {
 import { useState } from 'react'
 import { type SitemapFunction } from 'remix-sitemap'
 
+import { ClientOnly } from 'components/client-only'
+
 import { NAME, invert, useLayoutEffect } from 'utils/general'
 import { LEVEL_TO_SLUG } from 'utils/level'
 import { LOCATION_TO_SLUG } from 'utils/location'
@@ -120,11 +122,11 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 // The ratio of the "about" column width to "looks" column width.
-const about = 3 / 5
-const looks = 2 / 5
+const about = 4 / 7
+const looks = 3 / 7
 
 // The max width of both columns combined.
-const maxWidth = 1200
+const maxWidth = 1300
 
 export default function ShowPage() {
   const [viewportWidth, setViewportWidth] = useState(maxWidth)
@@ -140,33 +142,35 @@ export default function ShowPage() {
   const aboutFlexGrow = aboutWidth / looksWidth
   const looksFlexGrow = 1
   return (
-    <main className='sm:fixed sm:inset-0 sm:overflow-hidden sm:flex sm:p-0 p-6'>
-      <div
-        className='sm:w-0 sm:overflow-auto'
-        style={{ flexGrow: aboutFlexGrow }}
-      >
+    <ClientOnly>
+      <main className='sm:fixed sm:inset-0 sm:overflow-hidden sm:flex sm:p-0 p-6'>
         <div
-          className='sm:pt-16 sm:pl-6 pb-6 sm:ml-auto w-full'
-          style={{
-            maxWidth: viewportWidth >= maxWidth ? maxWidth * about : undefined,
-          }}
+          className='sm:w-0 sm:overflow-auto'
+          style={{ flexGrow: aboutFlexGrow }}
         >
-          <About />
+          <div
+            className='sm:pt-16 sm:pl-6 pb-6 sm:ml-auto w-full'
+            style={{
+              maxWidth: viewportWidth > maxWidth ? maxWidth * about : undefined,
+            }}
+          >
+            <About />
+          </div>
         </div>
-      </div>
-      <div
-        className='sm:w-0 sm:overflow-auto'
-        style={{ flexGrow: looksFlexGrow }}
-      >
         <div
-          className='sm:px-6 sm:pt-16 sm:pb-6 sm:mr-auto w-full sm:max-w-auto'
-          style={{
-            maxWidth: viewportWidth >= maxWidth ? maxWidth * looks : undefined,
-          }}
+          className='sm:w-0 sm:overflow-auto'
+          style={{ flexGrow: looksFlexGrow }}
         >
-          <Looks />
+          <div
+            className='sm:px-6 sm:pt-16 sm:pb-6 sm:mr-auto w-full sm:max-w-auto'
+            style={{
+              maxWidth: viewportWidth > maxWidth ? maxWidth * looks : undefined,
+            }}
+          >
+            <Looks />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </ClientOnly>
   )
 }
