@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.44.0](https://github.com/nicholaschiang/dolce/compare/v1.43.3...v1.44.0) (2023-08-11)
+
+
+### Features
+
+* **prisma:** add boolean `curator` flag to users ([0b8e941](https://github.com/nicholaschiang/dolce/commit/0b8e941d70f2a1ff70280bb370d29bb11ff69dc6))
+* **routes/show:** add "upload video" for curators ([2e9eb00](https://github.com/nicholaschiang/dolce/commit/2e9eb00e7d3fbc5e4fcc15055f8de79c2471aef3))
+
 ## [1.43.3](https://github.com/nicholaschiang/dolce/compare/v1.43.2...v1.43.3) (2023-08-11)
 
 
