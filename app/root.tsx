@@ -244,12 +244,12 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
       FullStory.init({ orgId: data.env.FULLSTORY_ORG_ID, devMode })
   }, [devMode, data?.env])
   useEffect(() => {
-    if (devMode) return
+    if (devMode || !FullStory.isInitialized()) return
     if (data?.user?.id) FullStory.identify(data.user.id.toString())
     else FullStory.anonymize()
   }, [devMode, data?.user?.id])
   useEffect(() => {
-    if (devMode) return
+    if (devMode || !FullStory.isInitialized()) return
     if (data?.user)
       FullStory.setUserVars({
         ...data.user,
