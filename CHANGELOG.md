@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.43.3](https://github.com/nicholaschiang/dolce/compare/v1.43.2...v1.43.3) (2023-08-11)
+
+
+### Bug Fixes
+
+* `useLayoutEffect` for DOM measurements ([1a57cb9](https://github.com/nicholaschiang/dolce/commit/1a57cb9a069d5aa86a06cfad93506cf6915d0bb2))
+* **app/root:** do not call `FullStory` before init ([08295ca](https://github.com/nicholaschiang/dolce/commit/08295ca5a88574106b461cc32a9603e0a0b89816))
+* **profile:** use `PATCH` for updating profile ([de017f4](https://github.com/nicholaschiang/dolce/commit/de017f48917d988cbc4e2431685b26159d5e5bd5))
+* **routes/show:** avoid FOUC by rendering client-side ([5491200](https://github.com/nicholaschiang/dolce/commit/5491200a5bd53a56e515dabbdb6172bfd26236b0))
+* **routes/show:** call `handleResize` once on mount ([163f022](https://github.com/nicholaschiang/dolce/commit/163f022357b66c52a8000c6cc411022ff8d34ed4))
+* **routes:** include location and level in show URL ([0556acb](https://github.com/nicholaschiang/dolce/commit/0556acbf6e80a501c8a93836f3f1c1ec67705299))
+* **show/rate-and-review:** replace `action` with `useFetcher` ([c80dd15](https://github.com/nicholaschiang/dolce/commit/c80dd15fe004977592aabff6583fe3675589f7fc))
+
 ## [1.43.2](https://github.com/nicholaschiang/dolce/compare/v1.43.1...v1.43.2) (2023-08-11)
 
 
