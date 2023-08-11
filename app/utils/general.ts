@@ -1,5 +1,6 @@
 import { useLocation, useRouteLoaderData, useNavigate } from '@remix-run/react'
 import { type AppData, type SerializeFrom } from '@vercel/remix'
+import { useEffect, useLayoutEffect as useReactLayoutEffect } from 'react'
 import rfdc from 'rfdc'
 
 import type { User } from 'models/user.server'
@@ -14,6 +15,9 @@ export const OPTIMIZE_IMAGES = false
 export const clone = rfdc()
 
 export type Serialize<T extends AppData> = SerializeFrom<T> | T
+
+export const useLayoutEffect =
+  typeof window === 'undefined' ? useEffect : useReactLayoutEffect
 
 /**
  * Get the `redirectTo` query parameter that will send the user back to their

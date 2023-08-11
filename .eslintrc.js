@@ -188,13 +188,6 @@ module.exports = {
     // @see {@link https://github.com/typescript-eslint/typescript-eslint/issues/3538}
     '@typescript-eslint/restrict-template-expressions': 'warn',
 
-    // Adjust exhaustive-deps to include some of our own custom hooks.
-    // @see {@link https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks#advanced-configuration}
-    'react-hooks/exhaustive-deps': [
-      'error',
-      { additionalHooks: 'useSSRLayoutEffect' },
-    ],
-
     // Reset to the default static property placement (so all class static field
     // declarations remain inside of the class).
     // @todo Perhaps we want to use the AirBNB recommended styling.
