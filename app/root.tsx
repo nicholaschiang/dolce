@@ -147,6 +147,8 @@ type Env = {
   VERCEL_ANALYTICS_ID: string | undefined
   FULLSTORY_ORG_ID: string | undefined
   FULLSTORY_DEV_MODE: string | undefined
+  SUPABASE_URL: string | undefined
+  SUPABASE_ANON_KEY: string | undefined
 }
 
 declare global {
@@ -167,6 +169,8 @@ export async function loader({ request }: LoaderArgs) {
         VERCEL_ANALYTICS_ID: process.env.VERCEL_ANALYTICS_ID,
         FULLSTORY_ORG_ID: process.env.FULLSTORY_ORG_ID,
         FULLSTORY_DEV_MODE: process.env.FULLSTORY_DEV_MODE,
+        SUPABASE_URL: process.env.SUPABASE_URL,
+        SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
       } satisfies Env,
     },
     { headers },
