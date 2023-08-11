@@ -130,6 +130,7 @@ export default function ShowPage() {
   const [viewportWidth, setViewportWidth] = useState(maxWidth)
   useEffect(() => {
     const handleResize = () => setViewportWidth(window.innerWidth)
+    handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
