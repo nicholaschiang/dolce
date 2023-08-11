@@ -113,7 +113,7 @@ export async function loader({ request, params }: LoaderArgs) {
     },
   })
   if (show == null) throw miss
-  log.info('got show %o', show)
+  log.debug('got show %o', show)
   const [scores, review] = await Promise.all([
     getScores(show.id),
     getReview(show.id, request),
