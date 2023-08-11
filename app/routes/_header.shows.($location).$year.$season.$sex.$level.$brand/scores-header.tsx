@@ -1,38 +1,36 @@
-import { useLoaderData } from '@remix-run/react'
-import { useMemo } from 'react'
+import { useForm } from '@conform-to/react'
+import { parse } from '@conform-to/zod'
+import { type Video } from '@prisma/client'
+import { useFetcher, useLoaderData } from '@remix-run/react'
+import { useRef, useMemo } from 'react'
+import { z } from 'zod'
+
+import { type action as videoAPI } from 'routes/api.shows.$showId.video'
 
 import { cn } from 'utils/cn'
+import { type Serialize, useOptionalUser } from 'utils/general'
 import { type Score, getScorePercentage } from 'utils/scores'
 import { getShowSeason } from 'utils/show'
 
 import { type loader } from './route'
 
+export const schema = z.object({
+  video: z
+    .instanceof(File)
+    .refine((file) => file.name !== '' && file.size > 0, 'Video is required')
+    .refine((file) => file.size < 5e9, 'Video cannot be larger than 5 GB'),
+})
+
 export function ScoresHeader() {
   const show = useLoaderData<typeof loader>()
+  const user = useOptionalUser()
   return (
     <div className='grid gap-2'>
-      {show.video != null && (
-        <>
-          <video
-            className='aspect-video w-full bg-gray-100 dark:bg-gray-900'
-            preload='auto'
-            controls
-            autoPlay
-            playsInline
-            muted
-            loop
-          >
-            <source src={show.video.url} type={show.video.mimeType} />
-            Download the <a href={show.video.url}>MP4</a> video.
-          </video>
-          <link
-            rel='preload'
-            href={show.video.url}
-            type={show.video.mimeType}
-            as='video'
-          />
-        </>
-      )}
+      {show.video ? (
+        <VideoPlayer video={show.video} />
+      ) : user?.curator ? (
+        <VideoForm />
+      ) : null}
       <div className='flex gap-2'>
         <div className='flex-none w-40 bg-gray-100 dark:bg-gray-900 h-0 min-h-full'>
           {show.looks.length > 0 && show.looks[0].images.length > 0 && (
@@ -95,5 +93,69 @@ function ScoreItem({ score, name }: ScoreItemProps) {
         </p>
       </div>
     </li>
+  )
+}
+
+function VideoPlayer({ video }: { video: Serialize<Video> }) {
+  return (
+    <>
+      <video
+        className='aspect-video w-full bg-gray-100 dark:bg-gray-900'
+        preload='auto'
+        controls
+        autoPlay
+        playsInline
+        muted
+        loop
+      >
+        <source src={video.url} type={video.mimeType} />
+        Download the <a href={video.url}>MP4</a> video.
+      </video>
+      <link rel='preload' href={video.url} type={video.mimeType} as='video' />
+    </>
+  )
+}
+
+function VideoForm() {
+  const fetcher = useFetcher<typeof videoAPI>()
+  const [form, { video }] = useForm({
+    lastSubmission: fetcher.data,
+    onValidate({ formData }) {
+      return parse(formData, { schema, stripEmptyValue: true })
+    },
+  })
+  const inputRef = useRef<HTMLInputElement>(null)
+  const show = useLoaderData<typeof loader>()
+  return (
+    <fetcher.Form
+      method='post'
+      action={`/api/shows/${show.id}/video`}
+      encType='multipart/form-data'
+      className={cn(
+        'relative aspect-video w-full bg-gray-100 dark:bg-gray-900',
+        fetcher.state !== 'idle' && 'animate-pulse',
+      )}
+      onChange={(event) => fetcher.submit(event.currentTarget)}
+      {...form.props}
+    >
+      <button
+        type='button'
+        className='absolute inset-0 w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600 text-sm'
+        disabled={fetcher.state !== 'idle'}
+        onClick={() => inputRef.current?.click()}
+      >
+        {fetcher.state !== 'idle'
+          ? 'Uploading video...'
+          : video.error ?? 'Click to upload show video'}
+      </button>
+      <input
+        ref={inputRef}
+        name={video.name}
+        className='hidden'
+        accept='video/*'
+        type='file'
+        required
+      />
+    </fetcher.Form>
   )
 }
