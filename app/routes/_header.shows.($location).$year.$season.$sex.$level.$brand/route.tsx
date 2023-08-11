@@ -23,8 +23,6 @@ import { About } from './about'
 import { Looks } from './looks'
 import { getReview } from './rate-and-review'
 
-export { action } from './rate-and-review'
-
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: `404 | ${NAME}` }]
   const keywords = getShowKeywords(data).join(', ')
