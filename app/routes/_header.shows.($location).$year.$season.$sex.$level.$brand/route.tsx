@@ -3,10 +3,10 @@ import {
   type SerializeFrom,
   type V2_MetaFunction,
 } from '@vercel/remix'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { type SitemapFunction } from 'remix-sitemap'
 
-import { NAME, invert } from 'utils/general'
+import { NAME, invert, useLayoutEffect } from 'utils/general'
 import { LEVEL_TO_SLUG } from 'utils/level'
 import { LOCATION_TO_SLUG } from 'utils/location'
 import { getScores } from 'utils/scores.server'
@@ -128,7 +128,7 @@ const maxWidth = 1200
 
 export default function ShowPage() {
   const [viewportWidth, setViewportWidth] = useState(maxWidth)
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleResize = () => setViewportWidth(window.innerWidth)
     handleResize()
     window.addEventListener('resize', handleResize)
@@ -148,7 +148,7 @@ export default function ShowPage() {
         <div
           className='sm:pt-16 sm:pl-6 pb-6 sm:ml-auto w-full'
           style={{
-            maxWidth: viewportWidth > maxWidth ? maxWidth * about : undefined,
+            maxWidth: viewportWidth >= maxWidth ? maxWidth * about : undefined,
           }}
         >
           <About />
@@ -161,7 +161,7 @@ export default function ShowPage() {
         <div
           className='sm:px-6 sm:pt-16 sm:pb-6 sm:mr-auto w-full sm:max-w-auto'
           style={{
-            maxWidth: viewportWidth > maxWidth ? maxWidth * looks : undefined,
+            maxWidth: viewportWidth >= maxWidth ? maxWidth * looks : undefined,
           }}
         >
           <Looks />

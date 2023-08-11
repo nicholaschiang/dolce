@@ -7,20 +7,14 @@ import {
 } from '@remix-run/react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useLayoutEffect,
-} from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { type Metric } from 'web-vitals'
 
 import { Empty } from 'components/empty'
 import { Image } from 'components/image'
 
 import { cn } from 'utils/cn'
-import { NAME } from 'utils/general'
+import { NAME, useLayoutEffect } from 'utils/general'
 import { getShowSeason, getShowPath } from 'utils/show'
 
 import { prisma } from 'db.server'
@@ -98,10 +92,6 @@ function getItemHeight(itemWidth: number) {
   return (itemWidth * 16) / 9 + 50 + 40
 }
 
-// Do not attempt to run layout effects server-side.
-const isServerRender = typeof document === 'undefined'
-const useSSRLayoutEffect = isServerRender ? () => {} : useLayoutEffect
-
 export default function ShowsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { skip, take } = getStartLimit(searchParams)
@@ -118,7 +108,7 @@ export default function ShowsPage() {
   const itemHeight = getItemHeight(itemWidth)
 
   // On window resize, recalculate the item width and number of shows per row.
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleResize = () =>
       setTotalWidth(Math.min(maxWidth, window.innerWidth - padding * 2))
     handleResize()
@@ -155,7 +145,7 @@ export default function ShowsPage() {
         )
     }, []),
   )
-  useSSRLayoutEffect(() => {
+  useLayoutEffect(() => {
     const infiniteScrollTop = sessionStorage.getItem('infiniteScrollTop')
     if (parentRef.current && infiniteScrollTop)
       parentRef.current.scrollTop = Number(infiniteScrollTop)
