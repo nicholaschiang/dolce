@@ -36,7 +36,7 @@ export function HeaderWrapper({
   return (
     <header
       className={cn(
-        'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 px-6 flex items-center justify-between h-10 z-10 relative',
+        'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 px-6 flex items-center justify-between h-10 z-10 relative gap-6',
         className,
       )}
     >
@@ -51,7 +51,7 @@ export function HeaderWrapper({
 export function HeaderBreadcrumbs() {
   const matches = useMatches()
   return (
-    <ol className='flex items-center gap-2'>
+    <ol className='flex w-0 grow items-center gap-2'>
       {matches
         .filter((match) => match.handle && match.handle.breadcrumb)
         .map((match, index) => (
@@ -59,7 +59,7 @@ export function HeaderBreadcrumbs() {
             {index !== 0 && (
               <ChevronRight className='text-gray-300 dark:text-gray-600 h-4 w-4 mt-0.5' />
             )}
-            <li>
+            <li className='last:truncate'>
               <HeaderLink {...(match.handle as Handle).breadcrumb(match)} />
             </li>
           </Fragment>
@@ -84,7 +84,7 @@ export function HeaderActions() {
     (match) => match.id.includes('login') || match.id.includes('join'),
   )
   return (
-    <div className='flex items-center'>
+    <div className='flex-none flex items-center'>
       {!isLoginPage && user == null && <LogInButton />}
       {!isLoginPage && user != null && <LogOutButton />}
       {user?.username != null && (
