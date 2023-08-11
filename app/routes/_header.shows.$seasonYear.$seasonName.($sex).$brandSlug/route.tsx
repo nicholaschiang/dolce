@@ -126,19 +126,29 @@ export default function ShowPage() {
   const aboutFlexGrow = aboutWidth / looksWidth
   const looksFlexGrow = 1
   return (
-    <main className='fixed inset-0 overflow-hidden flex'>
-      <div className='w-0 overflow-auto' style={{ flexGrow: aboutFlexGrow }}>
+    <main className='sm:fixed sm:inset-0 sm:overflow-hidden sm:flex sm:p-0 p-6'>
+      <div
+        className='sm:w-0 sm:overflow-auto'
+        style={{ flexGrow: aboutFlexGrow }}
+      >
         <div
-          className='pt-16 pl-6 pb-6 ml-auto w-full'
-          style={{ maxWidth: maxWidth * about }}
+          className='sm:pt-16 sm:pl-6 pb-6 sm:ml-auto w-full'
+          style={{
+            maxWidth: viewportWidth > maxWidth ? maxWidth * about : undefined,
+          }}
         >
           <About />
         </div>
       </div>
-      <div className='w-0 overflow-auto' style={{ flexGrow: looksFlexGrow }}>
+      <div
+        className='sm:w-0 sm:overflow-auto'
+        style={{ flexGrow: looksFlexGrow }}
+      >
         <div
-          className='px-6 pt-16 pb-6 mr-auto w-full'
-          style={{ maxWidth: maxWidth * looks }}
+          className='sm:px-6 sm:pt-16 sm:pb-6 sm:mr-auto w-full sm:max-w-auto'
+          style={{
+            maxWidth: viewportWidth > maxWidth ? maxWidth * looks : undefined,
+          }}
         >
           <Looks />
         </div>
