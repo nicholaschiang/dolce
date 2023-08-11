@@ -21,7 +21,7 @@ export const schema = z.object({
     .refine((file) => file.size < 5e9, 'Video cannot be larger than 5 GB'),
 })
 
-export function ScoresHeader() {
+export function Header() {
   const show = useLoaderData<typeof loader>()
   const user = useOptionalUser()
   return (
