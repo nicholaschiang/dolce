@@ -42,6 +42,9 @@ model User {
   // The user's sets (i.e. arbitrary groupings of saved looks).
   sets Set[]
 
+  // Whether the user is a curator (i.e. someone who can edit shows, etc).
+  curator Boolean @default(false)
+
   // DESIGNER FIELDS - only applicable to fashion designers.
 
   // Where the designer purports to be from.
