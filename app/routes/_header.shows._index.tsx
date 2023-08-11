@@ -81,11 +81,22 @@ export async function loader({ request }: LoaderArgs) {
 // Eagerly load images for the first two rows of shows (above the fold).
 const rowsToEagerLoad = 2
 
-// How many shows are shown in each row of results.
-const showsPerRow = 5
+// The number of rows to display when at max width.
+const itemsPerRowDefault = 5
 
-// The height of each row (480px for item + 40px for margin).
-const rowHeight = 520
+// The min width of a single show.
+const minItemWidth = 240
+
+// The horizontal padding between the grid and the viewport.
+const padding = 24
+
+// The max width of the entire grid layout (excluding padding).
+const maxWidth = itemsPerRowDefault * minItemWidth
+
+// Derive the item height from width (9:16 image + 50px text + 40px margin).
+function getItemHeight(itemWidth: number) {
+  return (itemWidth * 16) / 9 + 50 + 40
+}
 
 // Do not attempt to run layout effects server-side.
 const isServerRender = typeof document === 'undefined'
@@ -96,15 +107,35 @@ export default function ShowsPage() {
   const { skip, take } = getStartLimit(searchParams)
   const { shows, count } = useLoaderData<typeof loader>()
 
+  // The total width of the grid.
+  const [totalWidth, setTotalWidth] = useState(maxWidth)
+
+  // How many shows are shown in each row of results.
+  const itemsPerRow = Math.floor(totalWidth / minItemWidth)
+
+  // The height of each row (480px for item + 40px for margin).
+  const itemWidth = totalWidth / itemsPerRow
+  const itemHeight = getItemHeight(itemWidth)
+
+  // On window resize, recalculate the item width and number of shows per row.
+  useEffect(() => {
+    const handleResize = () =>
+      setTotalWidth(Math.min(maxWidth, window.innerWidth - padding * 2))
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   // Infinite scroll the shows grid list.
   const parentRef = useRef<HTMLElement>(null)
-  const rowVirtualizer = useVirtualizer({
-    count,
+  const virtualizer = useVirtualizer({
     getScrollElement: () => parentRef.current,
-    estimateSize: () => rowHeight,
-    lanes: showsPerRow,
+    estimateSize: () => itemHeight,
+    lanes: itemsPerRow,
     overscan: 10,
+    count,
   })
+  useEffect(() => virtualizer.measure(), [totalWidth, virtualizer])
 
   // Save the user's scroll position and restore it upon revisiting the page.
   const navigation = useNavigation()
@@ -135,8 +166,8 @@ export default function ShowsPage() {
   const upperBoundary = skip + take - overscan
   const middleCount = Math.ceil(take / 2)
 
-  const [firstVirtualItem] = rowVirtualizer.getVirtualItems()
-  const [lastVirtualItem] = [...rowVirtualizer.getVirtualItems()].reverse()
+  const [firstVirtualItem] = virtualizer.getVirtualItems()
+  const [lastVirtualItem] = [...virtualizer.getVirtualItems()].reverse()
   if (!firstVirtualItem || !lastVirtualItem)
     throw new Error('this should never happen')
 
@@ -191,10 +222,13 @@ export default function ShowsPage() {
   return (
     <main
       ref={parentRef}
-      className='fixed inset-x-0 top-10 bottom-0 overflow-auto'
+      className='fixed inset-x-0 top-10 bottom-0 overflow-y-auto overflow-x-hidden'
     >
-      <div className='px-6 pb-6 mx-auto max-w-screen-xl'>
-        <h1 className='text-lg mt-2 mb-8 h-7 lowercase tracking-tighter'>
+      <div
+        className='mx-auto w-full'
+        style={{ maxWidth: maxWidth + padding * 2, padding }}
+      >
+        <h1 className='text-lg -mt-4 mb-8 h-7 lowercase tracking-tighter'>
           {count.toLocaleString()} shows{' '}
           {metric && (
             <span className='text-gray-400 dark:text-gray-600 animate-fade-in'>
@@ -206,11 +240,11 @@ export default function ShowsPage() {
           <ol
             className='-m-1'
             style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
+              height: `${virtualizer.getTotalSize()}px`,
               position: 'relative',
             }}
           >
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            {virtualizer.getVirtualItems().map((virtualRow) => {
               const index = isMountedRef.current
                 ? Math.abs(skip - virtualRow.index)
                 : virtualRow.index
@@ -218,15 +252,14 @@ export default function ShowsPage() {
               return (
                 <li
                   data-id={show?.id}
-                  data-index={index}
-                  data-virtual-index={virtualRow.index}
+                  data-index={virtualRow.index}
                   key={virtualRow.key}
                   className={cn('p-1', show == null && 'cursor-wait')}
                   style={{
                     position: 'absolute',
                     top: 0,
-                    left: `${(virtualRow.lane / showsPerRow) * 100}%`,
-                    width: `${(1 / showsPerRow) * 100}%`,
+                    left: `${(virtualRow.lane / itemsPerRow) * 100}%`,
+                    width: `${(1 / itemsPerRow) * 100}%`,
                     height: `${virtualRow.size}px`,
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
@@ -248,12 +281,12 @@ export default function ShowsPage() {
                           <Image
                             className='object-cover h-full w-full'
                             loading={
-                              virtualRow.index < showsPerRow * rowsToEagerLoad
+                              virtualRow.index < itemsPerRow * rowsToEagerLoad
                                 ? 'eager'
                                 : 'lazy'
                             }
                             decoding={
-                              virtualRow.index < showsPerRow * rowsToEagerLoad
+                              virtualRow.index < itemsPerRow * rowsToEagerLoad
                                 ? 'sync'
                                 : 'async'
                             }
@@ -262,7 +295,7 @@ export default function ShowsPage() {
                               100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
                             ].map((width) => ({
                               size: { width },
-                              maxWidth: width * showsPerRow,
+                              maxWidth: width * itemsPerRow,
                             }))}
                           />
                         )}
