@@ -26,33 +26,41 @@ describe('smoke tests', () => {
       .click()
     cy.get('@create-button').should('not.be.disabled')
 
+    cy.api('POST', '_header.join').as('join')
     cy.contains('Name is required').should('be.visible')
     cy.findByLabelText('Name').should('have.focus').type(loginForm.name)
     cy.findByLabelText('Username').type(loginForm.username)
     cy.get('@create-button').click()
+    cy.wait('@join')
     cy.get('@create-button').should('not.exist')
 
     cy.findByRole('link', { name: /edit profile/i }).click()
     cy.findByRole('figure').find('cite').should('have.text', loginForm.username)
 
     // update profile
+    cy.api('PATCH', '_layout.profile').as('update-profile')
     const newUserName = faker.internet.userName()
     cy.findByLabelText('Username').type(`{selectAll}{backspace}${newUserName}`)
     cy.findByRole('button', { name: /update profile/i })
       .as('update-button')
       .click()
+    cy.wait('@update-profile')
     cy.get('@update-button').should('not.be.disabled')
     cy.findByRole('figure').find('cite').should('have.text', newUserName)
 
+    cy.api('POST', 'api.logout').as('logout')
     cy.findByRole('button', { name: /log out/i }).click()
+    cy.wait('@logout')
 
     // login
+    cy.api('POST', '_header.login').as('login')
     cy.findByRole('heading', { name: /log in/i }).should('be.visible')
     cy.findByRole('textbox', { name: /email/i }).type(loginForm.email)
     cy.findByLabelText(/password/i).type(loginForm.password)
     cy.findByRole('button', { name: /log in/i })
       .as('login-button')
       .click()
+    cy.wait('@login')
     cy.get('@login-button').should('not.exist')
 
     cy.findByRole('link', { name: /log in/i }).should('not.exist')
@@ -73,6 +81,7 @@ describe('smoke tests', () => {
       .click()
 
     // create review
+    cy.api('POST', 'api.shows.$showId.review').as('create-review')
     cy.findByLabelText('Review score')
       .findAllByRole('radio')
       .filter(`[value="${testReview.score}"]`)
@@ -84,6 +93,7 @@ describe('smoke tests', () => {
       .as('content-textbox')
       .type(testReview.content)
     cy.findByRole('button', { name: /submit review/i }).click()
+    cy.wait('@create-review')
 
     cy.findByRole('heading', { name: /consumer reviews/i })
       .parent()
@@ -96,9 +106,11 @@ describe('smoke tests', () => {
       .should('have.text', `${testReview.score}/5`)
 
     // edit review
+    cy.api('PUT', 'api.shows.$showId.review').as('edit-review')
     const newContent = faker.lorem.paragraph()
     cy.get('@content-textbox').type(`{selectAll}{backspace}${newContent}`)
     cy.findByRole('button', { name: /edit review/i }).click()
+    cy.wait('@edit-review')
     cy.get('@review-blockquote')
       .should('not.contain', testReview.content)
       .and('contain', newContent)

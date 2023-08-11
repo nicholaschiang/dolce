@@ -45,10 +45,20 @@ declare global {
        * @memberof Chainable
        * @example
        *    cy.visitAndCheck('/')
-       *  @example
+       * @example
        *    cy.visitAndCheck('/', 500)
        */
       visitAndCheck: typeof visitAndCheck
+
+      /**
+       * Set up an intercept for a Remix action or loader in the route
+       *
+       * @returns {typeof api}
+       * @memberof Chainable
+       * @example
+       *    cy.api('POST', 'api.shows.$showId.review').as('reviewAPI')
+       */
+      api: typeof api
     }
   }
 }
@@ -93,6 +103,11 @@ function resetDatabase() {
   cy.exec('pnpm prisma migrate reset --force')
 }
 
+function api(method: string, route: string) {
+  const searchParams = new URLSearchParams({ _data: `routes/${route}` })
+  return cy.intercept(method, RegExp(`[\\?&]${searchParams.toString()}$`))
+}
+
 // We're waiting a second because of this issue happen randomly
 // https://github.com/cypress-io/cypress/issues/7306
 // Also added custom types to avoid getting detached
@@ -107,3 +122,4 @@ Cypress.Commands.add('login', login)
 Cypress.Commands.add('resetDatabase', resetDatabase)
 Cypress.Commands.add('cleanupUser', cleanupUser)
 Cypress.Commands.add('visitAndCheck', visitAndCheck)
+Cypress.Commands.add('api', api)
