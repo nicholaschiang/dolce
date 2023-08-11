@@ -1,15 +1,10 @@
 import { useForm } from '@conform-to/react'
 import { parse } from '@conform-to/zod'
-import {
-  Link,
-  Form as RemixForm,
-  useActionData,
-  useNavigation,
-  useLoaderData,
-} from '@remix-run/react'
-import { type ActionArgs, json, redirect } from '@vercel/remix'
+import { Link, useFetcher, useLoaderData } from '@remix-run/react'
 import { useId } from 'react'
 import { z } from 'zod'
+
+import { type action as reviewAPI } from 'routes/api.shows.$showId.review'
 
 import {
   Form,
@@ -24,20 +19,16 @@ import { ScoreInput } from 'components/score-input'
 import { Button } from 'components/ui/button'
 import { Textarea } from 'components/ui/textarea'
 
-import { invert, useOptionalUser, useRedirectTo } from 'utils/general'
-import { SEASON_NAME_TO_SLUG } from 'utils/season'
-import { SEX_TO_SLUG } from 'utils/sex'
-import { getShowPath } from 'utils/show'
+import { useOptionalUser, useRedirectTo } from 'utils/general'
 
 import { prisma } from 'db.server'
-import { log } from 'log.server'
 import { getUserId } from 'session.server'
 
 import { type loader } from './route'
 import { Section } from './section'
 
-const id = 'rate-and-review'
-const schema = z.object({
+export const id = 'rate-and-review'
+export const schema = z.object({
   score: z.preprocess(
     (score) => Number(score),
     z
@@ -60,66 +51,24 @@ export async function getReview(showId: number, request: Request) {
     : undefined
 }
 
-export async function action({ request, params }: ActionArgs) {
-  const seasonYear = Number(params.seasonYear)
-  const miss = new Response(null, { status: 404, statusText: 'Not Found' })
-  if (Number.isNaN(seasonYear) || !params.seasonName || !params.brandSlug)
-    throw miss
-  const seasonName = invert(SEASON_NAME_TO_SLUG)[params.seasonName]
-  const sex = invert(SEX_TO_SLUG)[params.sex ?? '']
-  if (!sex || !seasonName) throw miss
-  const show = await prisma.show.findFirst({
-    where: {
-      brand: { slug: params.brandSlug },
-      season: { year: seasonYear, name: seasonName },
-      sex,
-    },
-    include: { season: true, brand: true },
-  })
-  if (show == null) throw miss
-  const userId = await getUserId(request)
-  if (userId == null)
-    return redirect(`/login?redirectTo=${getShowPath(show)}%23${id}`)
-  const formData = await request.formData()
-  const submission = parse(formData, { schema })
-  if (!submission.value || submission.intent !== 'submit')
-    return json(submission, { status: 400 })
-  log.info('creating review... %o', submission.value)
-  const review = await prisma.review.upsert({
-    where: { authorId_showId: { showId: show.id, authorId: userId } },
-    update: {
-      score: submission.value.score / 5,
-      content: submission.value.content,
-    },
-    create: {
-      score: submission.value.score / 5,
-      content: submission.value.content,
-      author: { connect: { id: userId } },
-      show: { connect: { id: show.id } },
-    },
-  })
-  log.info('created review: %o', review)
-  return redirect('.')
-}
-
 export function RateAndReview() {
   const user = useOptionalUser()
-  const lastSubmission = useActionData<typeof action>()
+  const fetcher = useFetcher<typeof reviewAPI>()
   const [form, { score, content }] = useForm({
-    lastSubmission,
+    lastSubmission: fetcher.data,
     onValidate({ formData }) {
       return parse(formData, { schema })
     },
   })
-  const navigation = useNavigation()
-  const { review } = useLoaderData<typeof loader>()
-  const labelId = useId()
+  const show = useLoaderData<typeof loader>()
   const redirectTo = useRedirectTo({ hash: `#${id}` })
+  const labelId = useId()
   return (
     <Section header='Rate and review' id={id}>
       <Form asChild>
-        <RemixForm
-          method='post'
+        <fetcher.Form
+          method={show.review ? 'put' : 'post'}
+          action={`/api/shows/${show.id}/review`}
           className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded-md p-4 relative'
           {...form.props}
         >
@@ -140,7 +89,7 @@ export function RateAndReview() {
                 aria-labelledby={labelId}
                 required
                 defaultValue={
-                  review ? `${Number(review.score) * 5}` : undefined
+                  show.review ? `${Number(show.review.score) * 5}` : undefined
                 }
               />
             </FormControl>
@@ -151,15 +100,15 @@ export function RateAndReview() {
               {content.error && <FormMessage>{content.error}</FormMessage>}
             </FormLabelWrapper>
             <FormControl asChild>
-              <Textarea required defaultValue={review?.content} />
+              <Textarea required defaultValue={show.review?.content} />
             </FormControl>
           </FormField>
           <FormSubmit asChild>
-            <Button disabled={navigation.formAction != null}>
-              {review ? 'Edit review' : 'Submit review'}
+            <Button disabled={fetcher.state !== 'idle'}>
+              {show.review ? 'Edit review' : 'Submit review'}
             </Button>
           </FormSubmit>
-        </RemixForm>
+        </fetcher.Form>
       </Form>
     </Section>
   )
