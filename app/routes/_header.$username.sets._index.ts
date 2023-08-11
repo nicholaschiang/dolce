@@ -1,4 +1,4 @@
-import { type LoaderArgs, redirect } from '@vercel/remix'
+import { type LoaderArgs, redirect, json } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 
@@ -8,6 +8,9 @@ export async function loader({ params }: LoaderArgs) {
     where: { author: { username: params.username } },
     orderBy: { updatedAt: 'desc' },
   })
-  if (set == null) throw new Response('Not Found', { status: 404 })
-  return redirect(set.id.toString())
+  return set ? redirect(set.id.toString()) : json({})
+}
+
+export default function SetsIndexPage() {
+  return null
 }
