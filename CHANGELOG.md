@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.43.2](https://github.com/nicholaschiang/dolce/compare/v1.43.1...v1.43.2) (2023-08-11)
+
+
+### Bug Fixes
+
+* **routes/index:** only render map client-side ([5689b73](https://github.com/nicholaschiang/dolce/commit/5689b73cd27e18054085a09c23b7e00833e6a945))
+
 ## [1.43.1](https://github.com/nicholaschiang/dolce/compare/v1.43.0...v1.43.1) (2023-08-11)
 
 
