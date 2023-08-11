@@ -136,7 +136,7 @@ export default function ProfilePage() {
       </header>
       <div className='max-h-full flex-1 overflow-auto py-12 px-6'>
         <Form asChild className='max-w-sm w-full mr-auto'>
-          <RemixForm method='post' {...form.props}>
+          <RemixForm method='patch' {...form.props}>
             <FormField name={name.name}>
               <FormLabelWrapper>
                 <FormLabel>Name</FormLabel>
