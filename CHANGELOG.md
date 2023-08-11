@@ -1,5 +1,16 @@
 # Release Notes
 
+## [1.44.1](https://github.com/nicholaschiang/dolce/compare/v1.44.0...v1.44.1) (2023-08-11)
+
+
+### Bug Fixes
+
+* **map:** increase color contrast when active ([dd05854](https://github.com/nicholaschiang/dolce/commit/dd05854c777961b170e9ae7d4173352c01f666b1))
+* **routes/show:** log entire show contents as `debug` ([0ff3b8b](https://github.com/nicholaschiang/dolce/commit/0ff3b8b968886898d58c3303e24b832ec39638c2))
+* **routes/show:** upload video files client-side ([eb5842c](https://github.com/nicholaschiang/dolce/commit/eb5842ccf2b42f0ba112b189e08b0748ce53cc02))
+* **routes/show:** use `teal` borders to match map ([27e699c](https://github.com/nicholaschiang/dolce/commit/27e699c37a7b03c94b0d90c3c2a0e04feb1feab6))
+* **username/sets:** do not 404 if there are no sets ([5bb9cf8](https://github.com/nicholaschiang/dolce/commit/5bb9cf860579bbf12bc06d1fe7a2f2d1e14a2cad))
+
 ## [1.44.0](https://github.com/nicholaschiang/dolce/compare/v1.43.3...v1.44.0) (2023-08-11)
 
 
