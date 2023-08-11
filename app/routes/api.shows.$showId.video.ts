@@ -1,7 +1,7 @@
 import { parse } from '@conform-to/zod'
 import { type ActionArgs, json } from '@vercel/remix'
 
-import { schema } from 'routes/_header.shows.($location).$year.$season.$sex.$level.$brand/scores-header'
+import { schema } from 'routes/_header.shows.($location).$year.$season.$sex.$level.$brand/header'
 
 import { prisma, supabase } from 'db.server'
 import { log } from 'log.server'
