@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.43.1](https://github.com/nicholaschiang/dolce/compare/v1.43.0...v1.43.1) (2023-08-11)
+
+
+### Bug Fixes
+
+* **components/header:** add css responsive design ([3e5f054](https://github.com/nicholaschiang/dolce/commit/3e5f054e07b0522967dfa688376019265ec1e73f))
+* **routes/show:** add basic css responsive design ([0d54533](https://github.com/nicholaschiang/dolce/commit/0d5453393ef6696a22f2b227c0248f4b366551f3))
+
 ## [1.43.0](https://github.com/nicholaschiang/dolce/compare/v1.42.1...v1.43.0) (2023-08-11)
 
 
