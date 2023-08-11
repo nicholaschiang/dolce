@@ -46,7 +46,7 @@ export function ScoresHeader() {
           )}
         </div>
         <article className='flex-1 bg-gray-100 dark:bg-gray-900 text-center px-6 flex flex-col'>
-          <h1 className='font-serif font-bold text-5xl mb-1 mt-8'>
+          <h1 className='font-serif font-bold text-2xl md:text-3xl lg:text-5xl mb-1 mt-8'>
             {show.brand.name}
           </h1>
           <h2 className='uppercase mb-6 text-sm'>{getShowSeason(show)}</h2>
@@ -76,16 +76,19 @@ function ScoreItem({ score, name }: ScoreItemProps) {
   return (
     <li className='flex gap-2 justify-center'>
       <img
-        className={cn('flex-none w-20', score.totalCount === 0 && 'grayscale')}
+        className={cn(
+          'hidden lg:block flex-none w-20',
+          score.totalCount === 0 && 'grayscale',
+        )}
         src={`/flowers/${img}.png`}
         alt=''
       />
-      <div>
-        <h2 className='text-5xl font-black font-serif'>
+      <div className='mb-6 lg:mb-0'>
+        <h2 className='text-3xl lg:text-5xl font-black font-serif'>
           {score.totalCount === 0 ? '--' : `${num}%`}
         </h2>
-        <p className='text-xs font-semibold uppercase'>{name}</p>
-        <p className='text-xs'>
+        <p className='text-3xs lg:text-xs font-semibold uppercase'>{name}</p>
+        <p className='text-3xs lg:text-xs'>
           {score.totalCount === 0
             ? 'No Reviews'
             : `${score.totalCount} Reviews`}
