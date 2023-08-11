@@ -9,7 +9,7 @@ export function Section({
 }: PropsWithChildren<{ id: string; header: string }>) {
   return (
     <section className='grid gap-2 pt-10' id={id}>
-      <h1 className='border-l-2 border-emerald-700 pl-1.5 font-medium text-base uppercase flex items-center gap-1 group'>
+      <h1 className='border-l-2 border-teal-500 pl-1.5 font-medium text-base uppercase flex items-center gap-1 group'>
         {header}
         <Link
           to={`#${id}`}
