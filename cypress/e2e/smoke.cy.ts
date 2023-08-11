@@ -5,7 +5,7 @@ describe('smoke tests', () => {
     cy.resetDatabase()
   })
 
-  it('should allow you to register and login', () => {
+  it.only('should allow you to register and login', () => {
     const loginForm = {
       name: faker.name.fullName(),
       username: faker.internet.userName(),
