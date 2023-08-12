@@ -207,7 +207,7 @@ function LocationMarker({
       <PopoverTrigger asChild onMouseOver={load}>
         <Marker
           coordinates={coordinates}
-          className='fill-teal-500 aria-expanded:fill-rose-500 transition-colors'
+          className='fill-teal-500 aria-expanded:fill-rose-500 transition-colors cursor-pointer'
         >
           <circle className='opacity-50' r={radius} />
           <circle r={2} />
