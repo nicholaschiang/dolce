@@ -37,10 +37,10 @@ export const meta: V2_MetaFunction = () => [
 ]
 
 // Load shows in pages of 100 (each page has 100 shows).
-const defaultTake = 200
+const defaultTake = 100
 
 // Pre-load the next page of shows on scroll.
-const overscan = 40
+const overscan = 10
 
 const getStartLimit = (searchParams: URLSearchParams) => ({
   skip: Number(searchParams.get('skip') || '0'),
