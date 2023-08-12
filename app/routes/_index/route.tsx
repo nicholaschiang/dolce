@@ -225,7 +225,7 @@ function LocationMarker({
         <div className='relative group'>
           <ul
             className={cn(
-              'flex overflow-auto snap-x bg-gray-100 dark:bg-gray-900',
+              'flex overflow-auto snap-x bg-gray-100 dark:bg-gray-900 scrollbar-hide',
               !fetcher.data && fetcher.state === 'loading' && 'animate-pulse',
             )}
             style={{ width: itemWidth * itemsPerSlide }}
