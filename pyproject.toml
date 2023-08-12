@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "site"
+name = "dolce"
 version = "1.47.1"
 description = ""
 authors = ["Nicholas Chiang <nicholas.h.chiang@gmail.com>"]
