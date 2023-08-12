@@ -15,7 +15,7 @@ import {
 
 import { type loader as locationAPI } from 'routes/api.locations.$location'
 
-import { Carousel } from 'components/carousel'
+import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { ClientOnly } from 'components/client-only'
 import { LoadingLine } from 'components/loading-line'
 import { Button } from 'components/ui/button'
@@ -232,22 +232,24 @@ function LocationMarker({
 
 type Show = SerializeFrom<typeof locationAPI>[number]
 
-function CarouselItem(show?: Show) {
-  if (!show) return <div className='w-full aspect-person' />
-  const { id, looks } = show
+function CarouselItem({ item: show, index }: CarouselItemProps<Show>) {
   return (
     <div className='w-full aspect-person'>
-      <Link
-        to={`/shows/${id}`}
-        prefetch='intent'
-        className='block w-full h-full'
-      >
-        <img
-          src={looks[0].images[0].url}
-          alt=''
-          className='w-full h-full object-cover'
-        />
-      </Link>
+      {show && (
+        <Link
+          to={`/shows/${show.id}`}
+          prefetch='intent'
+          className='block w-full h-full'
+        >
+          <img
+            src={show.looks[0].images[0].url}
+            alt=''
+            loading={index < itemsPerSlide ? 'eager' : 'lazy'}
+            decoding={index < itemsPerSlide ? 'sync' : 'async'}
+            className='w-full h-full object-cover'
+          />
+        </Link>
+      )}
     </div>
   )
 }
