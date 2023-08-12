@@ -14,13 +14,15 @@ const dotMargin = 2
 // The number of dots (should be an odd number so there is a center dot).
 const maxDots = 5
 
+export type CarouselItemProps<T> = { item?: T; index: number }
 export type CarouselProps<T> = {
   loading?: boolean
   items?: T[]
-  item: (item?: T) => ReactNode
+  item: ({ item, index }: CarouselItemProps<T>) => ReactNode
   itemWidth: number
   itemsPerSlide: number
   children?: ReactNode
+  className?: string
 }
 
 export function Carousel<T extends { id: number | string }>({
@@ -30,11 +32,15 @@ export function Carousel<T extends { id: number | string }>({
   itemWidth,
   itemsPerSlide,
   children,
+  className,
 }: CarouselProps<T>) {
   const [index, setIndex] = useState(0)
   const carouselRef = useRef<HTMLUListElement>(null)
   return (
-    <div className='relative group'>
+    <div
+      className={cn('relative group overflow-clip', className)}
+      style={{ width: itemWidth * itemsPerSlide }}
+    >
       <ul
         className={cn(
           'flex overflow-auto snap-x bg-gray-100 dark:bg-gray-900 scrollbar-hide',
@@ -51,16 +57,16 @@ export function Carousel<T extends { id: number | string }>({
       >
         {!items?.length && (
           <li className='flex-none' style={{ width: itemWidth }}>
-            {item()}
+            {item({ index: 0 })}
           </li>
         )}
-        {items?.map((i) => (
+        {items?.map((i, idx) => (
           <li
             key={i.id}
             style={{ width: itemWidth }}
             className='flex-none snap-start'
           >
-            {item(i)}
+            {item({ item: i, index: idx })}
           </li>
         ))}
       </ul>
@@ -75,7 +81,7 @@ export function Carousel<T extends { id: number | string }>({
         <div className='flex-1 flex justify-between items-start'>
           {children}
         </div>
-        {items && items.length > 0 && (
+        {items && items.length > 1 && (
           <>
             <PaginationButtons
               index={index}
@@ -123,7 +129,9 @@ function PaginationButtons({
           'rounded-full group-hover:pointer-events-auto opacity-100 duration-200 transition-all',
           index === 0 && 'opacity-0 pointer-events-none scale-50',
         )}
-        onClick={() => {
+        onClick={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
           if (carouselRef.current) {
             const nextIndex = Math.max(index - 1, 0)
             const left = Math.max(nextIndex * itemWidth, minScroll)
@@ -144,7 +152,9 @@ function PaginationButtons({
           index === numOfItems - itemsPerSlide &&
             'opacity-0 pointer-events-none scale-50',
         )}
-        onClick={() => {
+        onClick={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
           if (carouselRef.current) {
             const nextIndex = Math.min(index + 1, numOfItems - 1)
             const left = Math.min(nextIndex * itemWidth, maxScroll)

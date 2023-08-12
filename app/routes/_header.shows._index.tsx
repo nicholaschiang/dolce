@@ -14,8 +14,8 @@ import {
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { type Metric } from 'web-vitals'
 
+import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { Empty } from 'components/empty'
-import { Image } from 'components/image'
 
 import { cn } from 'utils/cn'
 import { NAME, useLayoutEffect } from 'utils/general'
@@ -59,7 +59,6 @@ export async function loader({ request }: LoaderArgs) {
         looks: {
           include: { images: { take: 1 } },
           orderBy: { number: 'asc' },
-          take: 1,
         },
       },
       orderBy: [
@@ -76,9 +75,6 @@ export async function loader({ request }: LoaderArgs) {
   return { shows, count }
 }
 
-// Eagerly load images for the first two rows of shows (above the fold).
-const rowsToEagerLoad = 2
-
 // The number of rows to display when at max width.
 const itemsPerRowDefault = 5
 
@@ -90,6 +86,9 @@ const padding = 24
 
 // The max width of the entire grid layout (excluding padding).
 const maxWidth = itemsPerRowDefault * minItemWidth
+
+// The margin between each show item.
+const itemMargin = 8
 
 // Derive the item height from width (9:16 image + 50px text + 40px margin).
 function getItemHeight(itemWidth: number) {
@@ -232,9 +231,9 @@ export default function ShowsPage() {
         </h1>
         {shows.length > 0 ? (
           <ol
-            className='-m-1'
             style={{
               height: `${virtualizer.getTotalSize()}px`,
+              margin: `-${itemMargin}px`,
               position: 'relative',
             }}
           >
@@ -247,6 +246,7 @@ export default function ShowsPage() {
                 <ShowItem
                   show={show}
                   itemsPerRow={itemsPerRow}
+                  itemWidth={itemWidth}
                   virtualRow={virtualRow}
                   key={virtualRow.key}
                 />
@@ -263,26 +263,29 @@ export default function ShowsPage() {
   )
 }
 
+type Show = SerializeFrom<typeof loader>['shows'][number]
 type ShowItemProps = {
-  show?: SerializeFrom<typeof loader>['shows'][number]
+  show?: Show
   virtualRow: VirtualItem
   itemsPerRow: number
+  itemWidth: number
 }
 
-function ShowItem({ show, virtualRow, itemsPerRow }: ShowItemProps) {
+function ShowItem({ show, virtualRow, itemsPerRow, itemWidth }: ShowItemProps) {
   return (
     <li
       data-id={show?.id}
       data-index={virtualRow.index}
       key={virtualRow.key}
-      className={cn('p-1', show == null && 'cursor-wait')}
+      className={cn(show == null && 'cursor-wait')}
       style={{
         position: 'absolute',
         top: 0,
         left: `${(virtualRow.lane / itemsPerRow) * 100}%`,
-        width: `${(1 / itemsPerRow) * 100}%`,
+        width: `${itemWidth}px`,
         height: `${virtualRow.size}px`,
         transform: `translateY(${virtualRow.start}px)`,
+        padding: `${itemMargin / 2}px`,
       }}
     >
       <Link
@@ -290,37 +293,14 @@ function ShowItem({ show, virtualRow, itemsPerRow }: ShowItemProps) {
         prefetch='intent'
         className='block'
       >
-        <div
-          className={cn(
-            'bg-gray-100 dark:bg-gray-900 aspect-person mb-3',
-            show == null && 'animate-pulse',
-          )}
-        >
-          {show != null &&
-            show.looks.length > 0 &&
-            show.looks[0].images.length > 0 && (
-              <Image
-                className='object-cover h-full w-full'
-                loading={
-                  virtualRow.index < itemsPerRow * rowsToEagerLoad
-                    ? 'eager'
-                    : 'lazy'
-                }
-                decoding={
-                  virtualRow.index < itemsPerRow * rowsToEagerLoad
-                    ? 'sync'
-                    : 'async'
-                }
-                src={show.looks[0].images[0].url}
-                responsive={[
-                  100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-                ].map((width) => ({
-                  size: { width },
-                  maxWidth: width * itemsPerRow,
-                }))}
-              />
-            )}
-        </div>
+        <Carousel
+          className='mb-3'
+          loading={show == null}
+          items={show?.looks}
+          item={ShowLookItem}
+          itemWidth={itemWidth - itemMargin}
+          itemsPerSlide={1}
+        />
         <h2 className='text-xl font-serif font-semibold text-center leading-none mb-1'>
           {show?.brand.name}
         </h2>
@@ -329,5 +309,23 @@ function ShowItem({ show, virtualRow, itemsPerRow }: ShowItemProps) {
         </h3>
       </Link>
     </li>
+  )
+}
+
+type Look = Show['looks'][number]
+
+function ShowLookItem({ item: look, index }: CarouselItemProps<Look>) {
+  return (
+    <div className='w-full aspect-person'>
+      {look && (
+        <img
+          className='object-cover h-full w-full'
+          loading={index === 0 ? 'eager' : 'lazy'}
+          decoding={index === 0 ? 'sync' : 'async'}
+          src={look.images[0].url}
+          alt=''
+        />
+      )}
+    </div>
   )
 }
