@@ -31,19 +31,21 @@ export const JOIN_PARAM = 'j'
 // i tried to use a custom (Objectify<T> = T extends object ? T : never) type
 // but it didn't work for filtering decimal fields (where Decimal is an object).
 type PrismaFilter =
-  | Prisma.IntFilter
-  | Prisma.StringFilter
-  | Prisma.EnumLevelFilter
+  | Prisma.IntFilter<'Product'>
+  | Prisma.StringFilter<'Product'>
+  | Prisma.EnumLevelFilter<'Product'>
+  | Prisma.DateTimeFilter<'Product'>
   | Prisma.SizeListRelationFilter
   | Prisma.VariantListRelationFilter
   | Prisma.DecimalNullableFilter
   | Prisma.PriceListRelationFilter
   | Prisma.VideoListRelationFilter
   | Prisma.ImageListRelationFilter
-  | Prisma.DateTimeFilter
   | Prisma.StyleListRelationFilter
   | Prisma.CollectionListRelationFilter
   | Prisma.BrandListRelationFilter
+  | Prisma.UserListRelationFilter
+  | Prisma.LookListRelationFilter
 
 // keyof union types will return the common keys (thus never), so we have to use
 // conditional types for type params (https://stackoverflow.com/a/52221718)
