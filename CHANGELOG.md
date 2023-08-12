@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.47.0](https://github.com/nicholaschiang/dolce/compare/v1.46.0...v1.47.0) (2023-08-12)
+
+
+### Features
+
+* **index:** add meta title and capitalization ([ecc12c0](https://github.com/nicholaschiang/dolce/commit/ecc12c0df3fcb8fa7711e2e538a676b887820c2a))
+
 ## [1.46.0](https://github.com/nicholaschiang/dolce/compare/v1.45.0...v1.46.0) (2023-08-12)
 
 
