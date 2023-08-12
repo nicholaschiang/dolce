@@ -35,13 +35,13 @@ export function Carousel<T extends { id: number | string }>({
   className,
 }: CarouselProps<T>) {
   const [index, setIndex] = useState(0)
-  const carouselRef = useRef<HTMLUListElement>(null)
+  const carouselRef = useRef<HTMLOListElement>(null)
   return (
     <div
       className={cn('relative group overflow-clip', className)}
       style={{ width: itemWidth * itemsPerSlide }}
     >
-      <ul
+      <ol
         className={cn(
           'flex overflow-auto snap-x bg-gray-100 dark:bg-gray-900 scrollbar-hide',
           !items && loading && 'animate-pulse',
@@ -69,7 +69,7 @@ export function Carousel<T extends { id: number | string }>({
             {item({ item: i, index: idx })}
           </li>
         ))}
-      </ul>
+      </ol>
       <div
         className={cn(
           'absolute inset-0 flex flex-col p-3 pointer-events-none',
