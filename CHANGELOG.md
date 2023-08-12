@@ -1,5 +1,22 @@
 # Release Notes
 
+## [1.45.0](https://github.com/nicholaschiang/dolce/compare/v1.44.1...v1.45.0) (2023-08-12)
+
+
+### Features
+
+* **map:** add pagination dots to location popover ([f67c52a](https://github.com/nicholaschiang/dolce/commit/f67c52a86adc08571641206bf5345b24f7cb6dc6))
+* **map:** show brand count instead of show count ([54c297e](https://github.com/nicholaschiang/dolce/commit/54c297e486a08cd1a53e9a1889425f8ce248ebb2))
+
+
+### Bug Fixes
+
+* **button:** keep transparent color in dark mode ([f2b4002](https://github.com/nicholaschiang/dolce/commit/f2b4002d4056f47942277f79cc24dcaf7fe4001d))
+* **map:** hide scrollbar in location shows carousel ([1d9f889](https://github.com/nicholaschiang/dolce/commit/1d9f88934cffe023757ea2553e20a915448446f2))
+* **map:** manually reposition to avoid conflicts ([89956bf](https://github.com/nicholaschiang/dolce/commit/89956bf79604c4918946e4d4779a9ef7f3febb00))
+* **map:** restore carousel scroll position on open ([5f26e84](https://github.com/nicholaschiang/dolce/commit/5f26e84c56390229ceee11295a48a90e621a7729))
+* **map:** use `cursor-pointer` on location markers ([cf38d6b](https://github.com/nicholaschiang/dolce/commit/cf38d6b66b13b1380bb407aeaa23a50fb7c19b66))
+
 ## [1.44.1](https://github.com/nicholaschiang/dolce/compare/v1.44.0...v1.44.1) (2023-08-11)
 
 
