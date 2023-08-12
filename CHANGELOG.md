@@ -1,5 +1,23 @@
 # Release Notes
 
+## [1.46.0](https://github.com/nicholaschiang/dolce/compare/v1.45.0...v1.46.0) (2023-08-12)
+
+
+### Features
+
+* **shows:** add look carousels to shows list ([b70c838](https://github.com/nicholaschiang/dolce/commit/b70c838509928eb4aeeb2e201ddbf874a8b460dc))
+
+
+### Bug Fixes
+
+* **components/carousel:** use `ol` instead of `ul` ([0175fcb](https://github.com/nicholaschiang/dolce/commit/0175fcbd5a9cd0416830c24e0b1944f0f7268669))
+* put automatic revalidation behind an env flag ([f3193b9](https://github.com/nicholaschiang/dolce/commit/f3193b9569143d81797d2092a42ec17183b43205))
+
+
+### Performance Improvements
+
+* **shows:** reduce default take from 200 to 100 ([d8e2bc2](https://github.com/nicholaschiang/dolce/commit/d8e2bc2e26d073fe57f484352427eee40b260c22))
+
 ## [1.45.0](https://github.com/nicholaschiang/dolce/compare/v1.44.1...v1.45.0) (2023-08-12)
 
 
