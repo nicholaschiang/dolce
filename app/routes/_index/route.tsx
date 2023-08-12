@@ -189,7 +189,18 @@ function LocationMarker({
   const carouselRef = useRef<HTMLUListElement>(null)
 
   return (
-    <Popover>
+    <Popover
+      onOpenChange={() => {
+        setTimeout(() => {
+          if (carouselRef.current) {
+            const maxScroll = (items.length - itemsPerSlide) * itemWidth
+            const scroll = index * itemWidth
+            const left = Math.max(Math.min(scroll, maxScroll), 0)
+            carouselRef.current.scrollTo({ left, behavior: 'auto' })
+          }
+        })
+      }}
+    >
       <PopoverTrigger asChild onMouseOver={load}>
         <Marker
           coordinates={coordinates}
