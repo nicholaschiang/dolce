@@ -10,7 +10,7 @@ export function useRevalidateOnFocus() {
 
   useEffect(() => {
     function onFocus() {
-      revalidate()
+      if (window.env.REVALIDATE_ON_FOCUS === 'true') revalidate()
     }
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)
@@ -18,7 +18,7 @@ export function useRevalidateOnFocus() {
 
   useEffect(() => {
     function onVisibilityChange() {
-      revalidate()
+      if (window.env.REVALIDATE_ON_FOCUS === 'true') revalidate()
     }
     window.addEventListener('visibilitychange', onVisibilityChange)
     return () =>
@@ -34,7 +34,7 @@ export function useRevalidateOnReconnect() {
   const { revalidate } = useRevalidator()
   useEffect(() => {
     function onReconnect() {
-      revalidate()
+      if (window.env.REVALIDATE_ON_RECONNECT === 'true') revalidate()
     }
     window.addEventListener('online', onReconnect)
     return () => window.removeEventListener('online', onReconnect)

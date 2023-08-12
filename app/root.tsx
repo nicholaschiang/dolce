@@ -149,6 +149,8 @@ type Env = {
   FULLSTORY_DEV_MODE: string | undefined
   SUPABASE_URL: string | undefined
   SUPABASE_ANON_KEY: string | undefined
+  REVALIDATE_ON_FOCUS: string | undefined
+  REVALIDATE_ON_RECONNECT: string | undefined
 }
 
 declare global {
@@ -171,6 +173,8 @@ export async function loader({ request }: LoaderArgs) {
         FULLSTORY_DEV_MODE: process.env.FULLSTORY_DEV_MODE,
         SUPABASE_URL: process.env.SUPABASE_URL,
         SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+        REVALIDATE_ON_FOCUS: process.env.REVALIDATE_ON_FOCUS,
+        REVALIDATE_ON_RECONNECT: process.env.REVALIDATE_ON_RECONNECT,
       } satisfies Env,
     },
     { headers },
