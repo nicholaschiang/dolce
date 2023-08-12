@@ -1,6 +1,6 @@
 import { Location } from '@prisma/client'
 import { Link, useFetcher, useLoaderData } from '@remix-run/react'
-import { type SerializeFrom } from '@vercel/remix'
+import { type V2_MetaFunction, type SerializeFrom } from '@vercel/remix'
 import { scaleLinear } from 'd3-scale'
 import { X } from 'lucide-react'
 import { useCallback, useRef, useMemo } from 'react'
@@ -27,6 +27,7 @@ import {
 } from 'components/ui/popover'
 
 import { cn } from 'utils/cn'
+import { NAME } from 'utils/general'
 import { LOCATION_TO_NAME, LOCATION_TO_COORDINATES } from 'utils/location'
 
 import { prisma } from 'db.server'
@@ -39,6 +40,10 @@ type Count = {
   showsCount: number
   brandsCount: number
 }
+
+export const meta: V2_MetaFunction = () => [
+  { title: `DOLCE: The Worldwide Fashion Database | ${NAME}` },
+]
 
 export async function loader() {
   // TODO I am currently doing these aggregations in-memory as Prisma does not
@@ -72,9 +77,9 @@ export default function HomePage() {
       <Header />
       <section className='p-6 mt-6 mx-auto max-w-screen-xl w-full'>
         <header className='flex items-center justify-center gap-1.5 sm:gap-2 text-xl sm:text-2xl tracking-tighter'>
-          <h1>dolce</h1>
+          <h1>DOLCE</h1>
           <span aria-hidden>·</span>
-          <h2>the worldwide fashion database</h2>
+          <h2>The Worldwide Fashion Database</h2>
         </header>
         <Map className='w-full' />
       </section>
