@@ -36,7 +36,7 @@ import { Header } from './header'
 type Count = {
   location: Location | null
   showsCount: number
-  brandIds: number[]
+  brandsCount: number
 }
 
 export async function loader() {
@@ -52,12 +52,12 @@ export async function loader() {
     const count = acc.find((c) => c.location === show.location)
     if (count) {
       count.showsCount += show._count
-      count.brandIds.push(show.brandId)
+      count.brandsCount += 1
     } else {
       acc.push({
         location: show.location,
         showsCount: show._count,
-        brandIds: [show.brandId],
+        brandsCount: 1,
       })
     }
     return acc
@@ -87,13 +87,16 @@ function hasLocation(stats: Stats): stats is Stats & { location: Location } {
   return stats.location != null
 }
 
+// The statistic to show in the map icon sizes.
+const stat = 'brandsCount' satisfies keyof Stats
+
 function Map({ className }: { className?: string }) {
   const counts = useLoaderData<typeof loader>()
   const max = counts
     .filter((c) => c.location != null)
-    .sort((a, b) => b.showsCount - a.showsCount)?.[0]?.showsCount
+    .sort((a, b) => b[stat] - a[stat])?.[0]?.[stat]
   const scale = useMemo(
-    () => scaleLinear().domain([0, max]).range([1, 6]),
+    () => scaleLinear().domain([0, max]).range([3, 6]),
     [max],
   )
   return (
@@ -133,7 +136,7 @@ function Map({ className }: { className?: string }) {
             ([location, coordinates]) => {
               const stats = counts.find((c) => c.location === location)
               if (stats == null || !hasLocation(stats)) return null
-              const radius = scale(stats.showsCount)
+              const radius = scale(stats[stat])
               return (
                 <LocationMarker
                   key={location}
@@ -296,7 +299,7 @@ function LocationMarker({
           <p className='text-gray-400 dark:text-gray-600'>
             {stats.showsCount} shows
             <span aria-hidden> · </span>
-            {stats.brandIds.length} brands
+            {stats.brandsCount} brands
           </p>
         </article>
       </PopoverContent>
