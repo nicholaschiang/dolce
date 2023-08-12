@@ -5,8 +5,12 @@ import {
   useSearchParams,
   useBeforeUnload,
 } from '@remix-run/react'
-import { useVirtualizer } from '@tanstack/react-virtual'
-import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
+import { type VirtualItem, useVirtualizer } from '@tanstack/react-virtual'
+import {
+  type SerializeFrom,
+  type LoaderArgs,
+  type V2_MetaFunction,
+} from '@vercel/remix'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { type Metric } from 'web-vitals'
 
@@ -240,64 +244,12 @@ export default function ShowsPage() {
                 : virtualRow.index
               const show = shows[index]
               return (
-                <li
-                  data-id={show?.id}
-                  data-index={virtualRow.index}
+                <ShowItem
+                  show={show}
+                  itemsPerRow={itemsPerRow}
+                  virtualRow={virtualRow}
                   key={virtualRow.key}
-                  className={cn('p-1', show == null && 'cursor-wait')}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: `${(virtualRow.lane / itemsPerRow) * 100}%`,
-                    width: `${(1 / itemsPerRow) * 100}%`,
-                    height: `${virtualRow.size}px`,
-                    transform: `translateY(${virtualRow.start}px)`,
-                  }}
-                >
-                  <Link
-                    to={show ? getShowPath(show) : ''}
-                    prefetch='intent'
-                    className='block'
-                  >
-                    <div
-                      className={cn(
-                        'bg-gray-100 dark:bg-gray-900 aspect-person mb-3',
-                        show == null && 'animate-pulse',
-                      )}
-                    >
-                      {show != null &&
-                        show.looks.length > 0 &&
-                        show.looks[0].images.length > 0 && (
-                          <Image
-                            className='object-cover h-full w-full'
-                            loading={
-                              virtualRow.index < itemsPerRow * rowsToEagerLoad
-                                ? 'eager'
-                                : 'lazy'
-                            }
-                            decoding={
-                              virtualRow.index < itemsPerRow * rowsToEagerLoad
-                                ? 'sync'
-                                : 'async'
-                            }
-                            src={show.looks[0].images[0].url}
-                            responsive={[
-                              100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-                            ].map((width) => ({
-                              size: { width },
-                              maxWidth: width * itemsPerRow,
-                            }))}
-                          />
-                        )}
-                    </div>
-                    <h2 className='text-xl font-serif font-semibold text-center leading-none mb-1'>
-                      {show?.brand.name}
-                    </h2>
-                    <h3 className='text-xs uppercase text-center'>
-                      {show ? getShowSeason(show) : ''}
-                    </h3>
-                  </Link>
-                </li>
+                />
               )
             })}
           </ol>
@@ -308,5 +260,74 @@ export default function ShowsPage() {
         )}
       </div>
     </main>
+  )
+}
+
+type ShowItemProps = {
+  show?: SerializeFrom<typeof loader>['shows'][number]
+  virtualRow: VirtualItem
+  itemsPerRow: number
+}
+
+function ShowItem({ show, virtualRow, itemsPerRow }: ShowItemProps) {
+  return (
+    <li
+      data-id={show?.id}
+      data-index={virtualRow.index}
+      key={virtualRow.key}
+      className={cn('p-1', show == null && 'cursor-wait')}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: `${(virtualRow.lane / itemsPerRow) * 100}%`,
+        width: `${(1 / itemsPerRow) * 100}%`,
+        height: `${virtualRow.size}px`,
+        transform: `translateY(${virtualRow.start}px)`,
+      }}
+    >
+      <Link
+        to={show ? getShowPath(show) : ''}
+        prefetch='intent'
+        className='block'
+      >
+        <div
+          className={cn(
+            'bg-gray-100 dark:bg-gray-900 aspect-person mb-3',
+            show == null && 'animate-pulse',
+          )}
+        >
+          {show != null &&
+            show.looks.length > 0 &&
+            show.looks[0].images.length > 0 && (
+              <Image
+                className='object-cover h-full w-full'
+                loading={
+                  virtualRow.index < itemsPerRow * rowsToEagerLoad
+                    ? 'eager'
+                    : 'lazy'
+                }
+                decoding={
+                  virtualRow.index < itemsPerRow * rowsToEagerLoad
+                    ? 'sync'
+                    : 'async'
+                }
+                src={show.looks[0].images[0].url}
+                responsive={[
+                  100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+                ].map((width) => ({
+                  size: { width },
+                  maxWidth: width * itemsPerRow,
+                }))}
+              />
+            )}
+        </div>
+        <h2 className='text-xl font-serif font-semibold text-center leading-none mb-1'>
+          {show?.brand.name}
+        </h2>
+        <h3 className='text-xs uppercase text-center'>
+          {show ? getShowSeason(show) : ''}
+        </h3>
+      </Link>
+    </li>
   )
 }
