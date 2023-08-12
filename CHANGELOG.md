@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.47.1](https://github.com/nicholaschiang/dolce/compare/v1.47.0...v1.47.1) (2023-08-12)
+
+
+### Performance Improvements
+
+* **deps:** upgrade to `prisma` v5.1.1 ([e02d8dd](https://github.com/nicholaschiang/dolce/commit/e02d8dd1ed822114919537d84428e8dccfe9d9df))
+
 ## [1.47.0](https://github.com/nicholaschiang/dolce/compare/v1.46.0...v1.47.0) (2023-08-12)
 
 
