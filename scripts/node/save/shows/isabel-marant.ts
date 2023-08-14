@@ -71,7 +71,7 @@ const savoir: Prisma.PublicationCreateInput = {
   avatar:
     'https://www.kindpng.com/picc/m/266-2665896_file-ntsw4mb-savoir-flair-arabia-logo-hd-png.png',
 }
-const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
+const reviews: Prisma.ArticleCreateWithoutShowInput[] = [
   {
     author: {
       connectOrCreate: {
@@ -88,6 +88,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: vogue,
       },
     },
+    title: 'Isabel Marant Fall 2023 Ready-to-Wear Collection',
     url: 'https://www.vogue.com/fashion-shows/fall-2023-ready-to-wear/isabel-marant',
     score: 4 / 5,
     content: `
@@ -161,6 +162,7 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: savoir,
       },
     },
+    title: 'Isabel Marant Throws a Music-Fueled Rager for Fall/Winter 2023',
     url: 'https://www.savoirflair.com/fashion/629428/isabel-marant-fall-winter-2023',
     score: 4 / 5,
     content: `
@@ -203,8 +205,8 @@ const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
   },
 ]
 const country = {
-  where: { code: 'fr' },
-  create: { name: 'france', code: 'fr' },
+  where: { name: 'France' },
+  create: { name: 'France' },
 }
 const brand: Prisma.BrandCreateInput = {
   name: 'Isabel Marant',
@@ -252,8 +254,8 @@ The graphic cut-outs of the flou shape new cleavages while plays on transparency
 The color palette, first natural and minimal, explores yellow and magenta horizons before diving into black. A sparkling evening mixes textures – embroideries, velvet lurex – and volumes – oversized, fitted, cropped.
 
 Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza and Lulu Van Trapp resonates and intoxicates the crowd. A unique creation composed on the idea of desire and disorder, this season’s mantra.`,
-  criticReviewSummary: `A high-energy party atmosphere and a stunning lineup of veteran supermodels—a much needed refresher from Paris Fashion Week. The designs exude Isabel Marant’s signature style, featuring roomy knitwear, smashing outerwear, and cool-girl attire, all while empowering wearability and desirability. With a focus on desire and disorder, the collection showcases unique graphic cut-outs, metallic zips, and playful contrasts, leaving a lasting impression on the audience.`,
-  consumerReviewSummary: null,
+  articlesConsensus: `A high-energy party atmosphere and a stunning lineup of veteran supermodels—a much needed refresher from Paris Fashion Week. The designs exude Isabel Marant’s signature style, featuring roomy knitwear, smashing outerwear, and cool-girl attire, all while empowering wearability and desirability. With a focus on desire and disorder, the collection showcases unique graphic cut-outs, metallic zips, and playful contrasts, leaving a lasting impression on the audience.`,
+  reviewsConsensus: null,
   date: new Date('March 2, 2023'),
   location: Location.PARIS,
   video: { connectOrCreate: { where: { url: video.url }, create: video } },
@@ -264,7 +266,7 @@ Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza a
     },
   },
   looks: { create: looks },
-  reviews: { create: reviews },
+  articles: { create: reviews },
   collections: {
     connectOrCreate: { where: { name: collection.name }, create: collection },
   },

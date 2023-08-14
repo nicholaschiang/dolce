@@ -10,7 +10,7 @@ export async function save() {
   const create = reviews.filter((review) => !review.url?.includes('vogue.com'))
   await prisma.show.update({
     where: { id: 775 },
-    data: { reviews: { create } },
+    data: { articles: { create } },
   })
 }
 
