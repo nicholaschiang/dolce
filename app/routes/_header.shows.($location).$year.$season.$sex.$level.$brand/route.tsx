@@ -14,7 +14,12 @@ import { LOCATION_TO_SLUG } from 'utils/location'
 import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
-import { getShowKeywords, getShowPath, getShowSchema } from 'utils/show'
+import {
+  getShowKeywords,
+  getShowPath,
+  getShowSchema,
+  getShowSeason,
+} from 'utils/show'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
@@ -55,7 +60,16 @@ export const sitemap: SitemapFunction = async () => {
 export const handle: Handle = {
   breadcrumb: (match) => {
     const data = match.data as SerializeFrom<typeof loader> | undefined
-    return { to: data ? getShowPath(data) : '.', children: data?.name ?? '404' }
+    return [
+      {
+        to: data ? `/shows/brands/${data.brand.slug}` : '.',
+        children: data?.brand.name ?? '404',
+      },
+      {
+        to: data ? getShowPath(data) : '.',
+        children: data ? getShowSeason(data) : '404',
+      },
+    ]
   },
 }
 
