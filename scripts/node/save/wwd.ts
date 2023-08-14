@@ -194,7 +194,7 @@ function getData(show: Show & { looks: Look[] }) {
       show.season,
       show.header,
     )
-    let review: Prisma.ReviewCreateWithoutShowInput | undefined
+    let review: Prisma.ArticleCreateWithoutShowInput | undefined
     const date = show.date
       ? DateTime.fromFormat(strip(show.date), 'LLLL d, yyyy, h:mma').toString()
       : null
@@ -204,7 +204,7 @@ function getData(show: Show & { looks: Look[] }) {
       const author = { name: strip(show.author_name), url: show.author_url }
       log('Author:', author)
       review = {
-        date,
+        writtenAt: date,
         title: show.header,
         subtitle: show.excerpt ? strip(show.excerpt) : null,
         score: null,
@@ -299,9 +299,9 @@ function getData(show: Show & { looks: Look[] }) {
       date,
       url: show.url,
       description: null,
-      criticReviewSummary: null,
-      consumerReviewSummary: null,
-      reviews: review ? { create: review } : undefined,
+      articlesConsensus: null,
+      reviewsConsensus: null,
+      articles: review ? { create: review } : undefined,
       season: {
         connectOrCreate: {
           where: { name_year: { name: season.name, year: season.year } },

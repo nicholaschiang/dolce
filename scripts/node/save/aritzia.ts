@@ -97,8 +97,8 @@ async function save(dir = 'public/data/aritzia') {
   /* eslint-disable-next-line no-restricted-syntax */
   for await (const product of products) {
     const country: Prisma.CountryCreateOrConnectWithoutBrandsInput = {
-      where: { code: 'ca' },
-      create: { code: 'ca', name: 'canada' },
+      where: { name: 'Canada' },
+      create: { name: 'Canada' },
     }
     // TODO not all of the brands listed on Aritzia are owned by Aritzia or
     // based out of Canada (e.g. Adidas, Nike, Levi's, etc).

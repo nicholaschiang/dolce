@@ -115,7 +115,7 @@ export const fashionotography: Prisma.PublicationCreateInput = {
 // in its compliments, it should be assigned a 1/5 or 2/5. If a review seems
 // energetically positive, assign a 3/5. Only if a review is resoundingly
 // enthusiastically positive should you assign a 4/5. Never assign a 5/5.
-export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
+export const reviews: Prisma.ArticleCreateWithoutShowInput[] = [
   {
     author: {
       connectOrCreate: {
@@ -133,6 +133,7 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: fashionotography,
       },
     },
+    title: 'Hermès Spring/Summer 2023 – Paris Fashion Week Men’s', 
     url: 'https://www.fashionotography.com/hermes-spring-summer-2023-pfw-mens/',
     content: `
 <p>
@@ -198,6 +199,7 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: highs,
       },
     },
+    title: 'Hermès SS23 Is a Lesson in Outerwear', 
     url: 'https://www.highsnobiety.com/p/hermes-spring-summer-2023/',
     score: 3 / 5,
     content: `
@@ -251,6 +253,8 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: bazaar,
       },
     },
+    title: 'All The Looks From The Hermès Spring/Summer 2023 Men’s Collection',
+    subtitle: 'A masterclass in refined summer dressing.',
     url: 'https://www.harpersbazaar.com.sg/gallery/all-the-looks-from-the-hermes-spring-summer-2023-mens-collection/',
     score: 2 / 5,
     content: `
@@ -297,6 +301,8 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: wwd,
       },
     },
+    title: 'Hermès Men’s Spring 2023',
+    subtitle: 'Models were dressed for fun times: déjeuner at Hotel du Cap-Eden-Roc near Cap d’Antibes, or aperitivo hour at Villa d’Este on Lake Como.',
     url: 'https://wwd.com/runway/mens-spring-2023/paris/hermes/review/',
     score: 3 / 5,
     content: `
@@ -352,6 +358,8 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: lofficiel,
       },
     },
+    title: 'Hermès: the Spring Summer 2023 collection',
+    subtitle: 'Between characters from the underwater world and pastel-colored kniwtwear, the Hermès Spring Summer 2023 men’s collection is described by Véronique Nichanian as "innovatively fascinating"',
     url: 'https://www.lofficielibiza.com/fashion/hermes-man-collection-spring-summer-2023-photo-fashion-show',
     score: 4 / 5,
     content: `
@@ -404,6 +412,8 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: lofficiel,
       },
     },
+    title: 'Hermès Spring/Summer 2024 Collection Embodies the Dream Mediterranean Summer',
+    subtitle: 'Véronique Nichanian’s sensual Spring/Summer 2024 collection for Hermès is a love letter to the Mediterranean.',
     url: 'https://www.lofficielusa.com/fashion/hermes-spring-summer-2024-collection',
     score: 3 / 5,
     content: `
@@ -490,6 +500,7 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: vogue,
       },
     },
+    title: 'Hermès Spring 2023 Menswear Collection',
     url: 'https://www.vogue.com/fashion-shows/spring-2023-menswear/hermes',
     score: 2 / 5,
     content: `
@@ -523,6 +534,8 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
         create: purse,
       },
     },
+    title: 'Hermès Men’s Spring/Summer 2023 RTW Review: Genre-Bending Appeal',
+    subtitle: 'The Men’s Ready-to-Wear Runway collection features fun spring colors and shapes that will appeal to all',
     url: 'https://www.purseblog.com/hermes/hermes-mens-spring-summer-2023-rtw-review-genre-bending-appeal/',
     score: 3 / 5,
     content: `
@@ -548,8 +561,8 @@ export const reviews: Prisma.ReviewCreateWithoutShowInput[] = [
   },
 ]
 export const country = {
-  where: { code: 'fr' },
-  create: { name: 'france', code: 'fr' },
+  where: { name: 'France' },
+  create: { name: 'France' },
 }
 export const brand: Prisma.BrandCreateInput = {
   name: 'Hermès',
@@ -604,8 +617,8 @@ export const show: Prisma.ShowCreateInput = {
     Berlingot canvas, nubuck calfskin, crepe cotton serge, perforated leather, sunset tints... the collection is precise, crafted with the refinement of the hand and the nonchalance of a mind that is free of barriers.
 
     In the open-air enclosure of the Manufacture des Gobelins, Cyril Teste, close partner of Véronique Nichanian, imagined a gesture in the form of a canvas sliding out of the building, swaying slightly in the breeze before disappearing – as if diving – through a workshop window.`,
-  criticReviewSummary: `Hermès Spring-Summer 2023 Mens Ready-to-Wear delights with its innovative fusion of colors, playful marine-themed designs, and luxurious practicality. Véronique Nichanian’s collection blurs the boundaries between menswear and womenswear, offering a tender and harmonious wardrobe that celebrates the joy and lightness of summer.`,
-  consumerReviewSummary: null,
+  articlesConsensus: `Hermès Spring-Summer 2023 Mens Ready-to-Wear delights with its innovative fusion of colors, playful marine-themed designs, and luxurious practicality. Véronique Nichanian’s collection blurs the boundaries between menswear and womenswear, offering a tender and harmonious wardrobe that celebrates the joy and lightness of summer.`,
+  reviewsConsensus: null,
   date: new Date('June 25, 2022'),
   location: Location.PARIS,
   video: { connectOrCreate: { where: { url: video.url }, create: video } },
@@ -616,7 +629,7 @@ export const show: Prisma.ShowCreateInput = {
     },
   },
   looks: { create: looks },
-  reviews: { create: reviews },
+  articles: { create: reviews },
   collections: {
     connectOrCreate: { where: { name: collection.name }, create: collection },
   },

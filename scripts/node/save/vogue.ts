@@ -179,7 +179,7 @@ function parseSeason(season: string): ParsedSeason {
 
 function getData(show: Show) {
   const { season, ...etc } = parseSeason(show.season)
-  let review: Prisma.ReviewCreateWithoutShowInput | undefined
+  let review: Prisma.ArticleCreateWithoutShowInput | undefined
   if (show.author_name && show.author_url)
     review = {
       title: show.title,
@@ -188,7 +188,7 @@ function getData(show: Show) {
       summary: null,
       content: show.content.join('\n'),
       url: show.url,
-      date: show.date ? new Date(show.date) : null,
+      writtenAt: show.date ? new Date(show.date) : null,
       author: {
         connectOrCreate: {
           where: { name: show.author_name },
@@ -238,10 +238,10 @@ function getData(show: Show) {
     name,
     url: show.url,
     description: null,
-    criticReviewSummary: null,
-    consumerReviewSummary: null,
+    articlesConsensus: null,
+    reviewsConsensus: null,
     date: show.date ? new Date(show.date) : null,
-    reviews: review ? { create: review } : undefined,
+    articles: review ? { create: review } : undefined,
     season: {
       connectOrCreate: {
         where: { name_year: { name: season.name, year: season.year } },
