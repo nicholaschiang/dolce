@@ -825,12 +825,12 @@ model Article {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  // The date when the article was originally written or last edited.
+  // The date when the article was originally written or last edited (if known).
   // 
   // The date when the article was originally written and the time when I 
   // imported it will often be different (which is why this field exists 
   // separately from the `createdAt` database field).
-  writtenAt DateTime
+  writtenAt DateTime?
 
   // The article's canonical URL.
   url String @unique
