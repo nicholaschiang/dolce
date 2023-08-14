@@ -27,7 +27,7 @@ export default function SetsPage() {
               <Link
                 prefetch='intent'
                 className='link underline'
-                to={`/${set.author.username}`}
+                to={`/${set.author.username}/sets/${set.id}`}
               >
                 {set.name} by @{set.author.username}
               </Link>
