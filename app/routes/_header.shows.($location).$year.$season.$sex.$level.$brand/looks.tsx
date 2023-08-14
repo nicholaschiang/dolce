@@ -125,7 +125,7 @@ function SaveMenu({ look }: { look: Look }) {
       endpoint='/api/sets'
       className='w-60'
     >
-      <Button size='icon' variant='ghost'>
+      <Button aria-label='Save look' size='icon' variant='ghost'>
         <Bookmark
           className={cn(
             'w-3 h-3',

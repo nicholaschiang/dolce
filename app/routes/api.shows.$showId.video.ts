@@ -11,7 +11,6 @@ export async function action({ request, params }: ActionArgs) {
   if (userId == null) throw new Response('Unauthorized', { status: 401 })
   const user = await prisma.user.findUnique({ where: { id: userId } })
   if (user == null) throw new Response('Not Found', { status: 404 })
-  if (user.id !== userId) throw new Response('Forbidden', { status: 403 })
   if (user.curator === false) throw new Response('Forbidden', { status: 403 })
 
   switch (request.method) {
