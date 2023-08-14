@@ -1,5 +1,5 @@
 import { useFetcher } from '@remix-run/react'
-import { type ReactNode, useEffect, useRef, useState, useCallback } from 'react'
+import { type FC, useEffect, useRef, useState, useCallback } from 'react'
 
 import {
   Command,
@@ -19,11 +19,11 @@ export type ComboboxItemProps<T> = { item: T }
 export type ComboboxProps<T> = {
   endpoint: string
   initialItems?: T[]
-  item: (props: ComboboxItemProps<T>) => ReactNode
-  empty: (props: ComboboxEmptyProps) => ReactNode
+  item: FC<ComboboxItemProps<T>>
+  empty: FC<ComboboxEmptyProps>
   children: JSX.Element
   placeholder: string
-  className?: string
+  className: string
 }
 
 const unique = (item: { id: string | number }) => item.id
@@ -34,8 +34,12 @@ const unique = (item: { id: string | number }) => item.id
  * `search` query parameter that filters items by their name.
  * @param initialItems The initial items to show until the API has loaded.
  * @param item The function that renders an item.
+ * @param empty The function that renders an empty component for when there are
+ * no results. Useful for creating "Create new label with X" UX patterns.
+ * @param placeholder The placeholder text for the search input.
+ * @param className A class name to apply to the combobox content. Required as
+ * you need to set it to assign an explicit width to the content popover.
  * @param children The combobox trigger.
- * @param className An optional class name to apply to the combobox content.
  */
 export function Combobox<T extends { id: string | number; name: string }>({
   endpoint,
@@ -43,8 +47,8 @@ export function Combobox<T extends { id: string | number; name: string }>({
   item,
   empty,
   placeholder,
-  children,
   className,
+  children,
 }: ComboboxProps<T>) {
   // Load additional items based on the search query but don't remove any of the
   // older items. CMD-K will handle the text-based filtering for me. I just have
@@ -84,13 +88,16 @@ export function Combobox<T extends { id: string | number; name: string }>({
     .filter((set) => set.score > 0)
     .sort((a, b) => b.score - a.score)
 
+  const Item = item
+  const Empty = empty
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger onMouseOver={load} asChild>
+      <PopoverTrigger onMouseOver={load} role='combobox' asChild>
         {children}
       </PopoverTrigger>
       <PopoverContent
-        className={cn('w-60 p-0', className)}
+        className={cn('p-0', className)}
         collisionPadding={24}
         align='start'
       >
@@ -103,8 +110,10 @@ export function Combobox<T extends { id: string | number; name: string }>({
           {fetcher.state !== 'idle' && <CommandLoading />}
           <CommandList>
             <CommandGroup>
-              {results.map((result) => item({ item: result }))}
-              {results.length === 0 && empty({ search })}
+              {results.map((result) => (
+                <Item key={result.id} item={result} />
+              ))}
+              {results.length === 0 && <Empty search={search} />}
             </CommandGroup>
           </CommandList>
         </Command>
