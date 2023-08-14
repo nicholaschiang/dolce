@@ -18,7 +18,7 @@ export type CarouselItemProps<T> = { item?: T; index: number }
 export type CarouselProps<T> = {
   loading?: boolean
   items?: T[]
-  item: ({ item, index }: CarouselItemProps<T>) => ReactNode
+  item: (props: CarouselItemProps<T>) => ReactNode
   itemWidth: number
   itemsPerSlide: number
   children?: ReactNode
