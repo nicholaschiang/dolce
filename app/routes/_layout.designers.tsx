@@ -11,13 +11,11 @@ import { log } from 'log.server'
 export async function loader() {
   log.debug('getting designers...')
   const designers = await prisma.user.findMany({
+    where: { products: { some: {} } },
     take: 100,
-    include: { _count: { select: { products: true } } },
   })
   log.debug('got %d designers', designers.length)
-  // TODO apply this filter at the database level instead of in JS.
-
-  return designers.filter((designer) => designer._count.products > 0)
+  return designers
 }
 
 export default function DesignersPage() {
