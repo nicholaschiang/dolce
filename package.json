@@ -36,7 +36,7 @@
     "scripts": "run-s 'scripts:*'",
     "scripts:prisma": "prisma generate",
     "scripts:build": "tsc -p scripts/node",
-    "scripts:run": "node scripts/node/out/wwd.js | pino-pretty"
+    "scripts:run": "node scripts/node/out/wikipedia.js | pino-pretty"
   },
   "eslintIgnore": [
     "/node_modules",
