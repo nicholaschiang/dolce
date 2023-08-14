@@ -10,7 +10,10 @@ import { log } from 'log.server'
 
 export async function loader() {
   log.debug('getting collections...')
-  const collections = await prisma.collection.findMany({ take: 100 })
+  const collections = await prisma.collection.findMany({
+    where: { products: { some: {} } },
+    take: 100,
+  })
   log.debug('got %d collections', collections.length)
   return collections
 }
