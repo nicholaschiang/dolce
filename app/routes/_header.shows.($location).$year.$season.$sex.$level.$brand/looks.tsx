@@ -1,26 +1,21 @@
 import { Link, useFetchers, useFetcher, useLoaderData } from '@remix-run/react'
 import { type SerializeFrom } from '@vercel/remix'
 import { Check, Bookmark, Plus } from 'lucide-react'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useCallback } from 'react'
 
 import { type action as saveAPI } from 'routes/api.looks.$lookId.save'
 import { type action as createAPI } from 'routes/api.looks.$lookId.save.create'
-import { type loader as setsAPI } from 'routes/api.sets'
 
-import { Button, buttonVariants } from 'components/ui/button'
 import {
-  Command,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandLoading,
-} from 'components/ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover'
+  Combobox,
+  type ComboboxItemProps,
+  type ComboboxEmptyProps,
+} from 'components/combobox'
+import { Button, buttonVariants } from 'components/ui/button'
+import { CommandItem } from 'components/ui/command'
 
 import { cn } from 'utils/cn'
-import { commandScore } from 'utils/command-score'
-import { useOptionalUser, useRedirectTo, uniq } from 'utils/general'
+import { useOptionalUser, useRedirectTo } from 'utils/general'
 
 import { type loader } from './route'
 
@@ -108,82 +103,37 @@ function SaveMenu({ look }: { look: Look }) {
   adding.forEach((id) => current.add(id))
   const isSaved = current.size > 0 || creating.length > 0
 
-  // Load additional items based on the search query but don't remove any of the
-  // older items. CMD-K will handle the text-based filtering for me. I just have
-  // to ensure that the most relevant items are included in the results list
-  // (e.g. when there are 1000+ items we have to apply some db-level filters but
-  // we want to still rely on frontend-level filters for instant reactivity).
-  const fetcher = useFetcher<typeof setsAPI>()
-  const [open, setOpen] = useState(false)
-  const [sets, setSets] = useState(() =>
-    uniq([...(fetcher.data ?? []), ...(look.sets ?? [])], (s) => s.id),
+  const item = useCallback(
+    ({ item: set }: ComboboxItemProps<Set>) => (
+      <SelectItem key={set.id} set={set} look={look} action={action} />
+    ),
+    [look, action],
   )
-  useEffect(() => {
-    setSets((prev) =>
-      fetcher.data ? uniq([...prev, ...fetcher.data], (s) => s.id) : prev,
-    )
-  }, [fetcher.data])
-
-  // Refresh the search results after every keystroke (every few ms).
-  const [search, setSearch] = useState('')
-  const loaded = useRef('')
-  const endpoint = `/api/sets?search=${encodeURIComponent(search)}`
-  const load = useCallback(() => {
-    if (loaded.current !== endpoint) {
-      fetcher.load(endpoint)
-      loaded.current = endpoint
-    }
-  }, [fetcher, endpoint])
-  useEffect(() => {
-    const timeoutId = setTimeout(open ? load : () => {}, 50)
-    return () => clearTimeout(timeoutId)
-  }, [open, load])
-
-  // I cannot rely on the CMD-K filtering and sorting as I want to show a
-  // "create new set" item when there are no results.
-  const results = sets
-    .map((set) => ({ ...set, score: commandScore(set.name, search) }))
-    .filter((set) => set.score > 0)
-    .sort((a, b) => b.score - a.score)
+  const empty = useCallback(
+    ({ search }: ComboboxEmptyProps) => (
+      <CreateItem name={search.trim()} action={create} />
+    ),
+    [create],
+  )
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button size='icon' variant='ghost' onMouseOver={load}>
-          <Bookmark
-            className={cn(
-              'w-3 h-3',
-              isSaved && 'fill-gray-900 dark:fill-gray-100',
-            )}
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className='w-60 p-0' align='start' collisionPadding={24}>
-        <Command shouldFilter={false}>
-          <CommandInput
-            value={search}
-            onValueChange={setSearch}
-            placeholder='Search sets...'
-          />
-          {fetcher.state !== 'idle' && <CommandLoading />}
-          <CommandList>
-            <CommandGroup>
-              {results.map((set) => (
-                <SelectItem
-                  key={set.id}
-                  set={set}
-                  look={look}
-                  action={action}
-                />
-              ))}
-              {results.length === 0 && (
-                <CreateItem name={search.trim()} action={create} />
-              )}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Combobox
+      placeholder='Search sets...'
+      initialItems={look.sets}
+      item={item}
+      empty={empty}
+      endpoint='/api/sets'
+      className='w-60'
+    >
+      <Button size='icon' variant='ghost'>
+        <Bookmark
+          className={cn(
+            'w-3 h-3',
+            isSaved && 'fill-gray-900 dark:fill-gray-100',
+          )}
+        />
+      </Button>
+    </Combobox>
   )
 }
 
