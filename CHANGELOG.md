@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.49.0](https://github.com/nicholaschiang/dolce/compare/v1.48.0...v1.49.0) (2023-08-14)
+
+
+### Features
+
+* **routes/sets:** link directly to set page ([c6e6fd7](https://github.com/nicholaschiang/dolce/commit/c6e6fd7bfc5097b5c55519cf9f4c1904a52b5bbe))
+
 ## [1.48.0](https://github.com/nicholaschiang/dolce/compare/v1.47.1...v1.48.0) (2023-08-14)
 
 
