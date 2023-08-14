@@ -54,13 +54,14 @@ export function HeaderBreadcrumbs() {
     <ol className='flex w-0 grow items-center gap-2'>
       {matches
         .filter((match) => match.handle && match.handle.breadcrumb)
-        .map((match, index) => (
-          <Fragment key={match.id}>
+        .flatMap((match) => (match.handle as Handle).breadcrumb(match))
+        .map((props, index) => (
+          <Fragment key={index}>
             {index !== 0 && (
               <ChevronRight className='text-gray-300 dark:text-gray-600 h-4 w-4 mt-0.5' />
             )}
             <li className='last:truncate'>
-              <HeaderLink {...(match.handle as Handle).breadcrumb(match)} />
+              <HeaderLink {...props} />
             </li>
           </Fragment>
         ))}
