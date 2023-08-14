@@ -98,9 +98,10 @@ export async function loader({ request, params }: LoaderArgs) {
           designers: true,
         },
       },
-      reviews: {
+      reviews: { include: { author: true }, orderBy: { updatedAt: 'desc' } },
+      articles: {
         include: { author: true, publication: true },
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { writtenAt: 'desc' },
       },
       looks: {
         include: {

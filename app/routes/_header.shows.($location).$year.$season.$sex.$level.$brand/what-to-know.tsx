@@ -7,13 +7,13 @@ import { Section } from './section'
 
 export function WhatToKnow() {
   const show = useLoaderData<typeof loader>()
-  if (show.criticReviewSummary == null && show.consumerReviewSummary == null)
+  if (show.articlesConsensus == null && show.reviewsConsensus == null)
     return null
   return (
     <Section header='What to know' id='what-to-know'>
       <Subheader>Critics Consensus</Subheader>
-      {show.criticReviewSummary ? (
-        <p className='mb-2'>{show.criticReviewSummary}</p>
+      {show.articlesConsensus ? (
+        <p className='mb-2'>{show.articlesConsensus}</p>
       ) : (
         <Empty className='mb-2'>
           There is no Critics Consensus because there are not enough reviews
@@ -21,8 +21,8 @@ export function WhatToKnow() {
         </Empty>
       )}
       <Subheader>Consumers Say</Subheader>
-      {show.consumerReviewSummary ? (
-        <p>{show.consumerReviewSummary}</p>
+      {show.reviewsConsensus ? (
+        <p>{show.reviewsConsensus}</p>
       ) : (
         <Empty>
           There is no Consumer Summary because there are not enough reviews yet.

@@ -8,17 +8,16 @@ import { Section } from './section'
 
 export function ConsumerReviews() {
   const show = useLoaderData<typeof loader>()
-  const reviews = show.reviews.filter((r) => r.publication == null)
   return (
     <Section header={`Consumer reviews for ${show.name}`} id='consumer-reviews'>
-      {reviews.length === 0 && (
+      {show.reviews.length === 0 && (
         <Empty className='mt-2'>
           There are no consumer reviews yet. Try submitting one above.
         </Empty>
       )}
-      {reviews.length > 0 && (
+      {show.reviews.length > 0 && (
         <ol className='mt-2 grid gap-4'>
-          {reviews.slice(0, 5).map((review) => (
+          {show.reviews.map((review) => (
             <li key={review.id}>
               <ConsumerReview
                 author={review.author}
