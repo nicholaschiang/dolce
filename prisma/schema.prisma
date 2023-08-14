@@ -255,9 +255,6 @@ model Country {
   // The country's full name, as designated by the United Nations.
   name String @unique
 
-  // The country's abbreviated name (e.g. USA).
-  code String @unique
-
   // The designers that purport to be from the country.
   designers User[]
 
