@@ -104,7 +104,7 @@ function DesignerListItem({ designer }: { designer: SerializeFrom<Designer> }) {
             </ExternalLink>
           )}
         </h3>
-        {designer.description != null && (
+        {designer.articles.length > 0 && (
           <div
             className={cn(
               'relative overflow-hidden',
@@ -113,7 +113,7 @@ function DesignerListItem({ designer }: { designer: SerializeFrom<Designer> }) {
           >
             <article
               className='prose prose-sm dark:prose-invert max-w-none'
-              dangerouslySetInnerHTML={{ __html: designer.description }}
+              dangerouslySetInnerHTML={{ __html: designer.articles[0].content }}
             />
             <button
               className={cn(
@@ -128,9 +128,9 @@ function DesignerListItem({ designer }: { designer: SerializeFrom<Designer> }) {
             </button>
           </div>
         )}
-        {designer.description == null && (
+        {designer.articles.length === 0 && (
           <Empty className='py-2 mt-2'>
-            No designer description to show yet. Please check back later.
+            No designer articles to show yet. Please check back later.
           </Empty>
         )}
       </div>

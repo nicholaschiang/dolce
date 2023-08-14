@@ -109,7 +109,9 @@ export async function loader({ request, params }: LoaderArgs) {
       collections: {
         include: {
           links: { include: { brand: true, retailer: true } },
-          designers: true,
+          designers: {
+            include: { articles: { orderBy: { writtenAt: 'desc' }, take: 1 } },
+          },
         },
       },
       reviews: { include: { author: true }, orderBy: { updatedAt: 'desc' } },
