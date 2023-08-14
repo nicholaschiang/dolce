@@ -1,5 +1,21 @@
 # Release Notes
 
+## [1.48.0](https://github.com/nicholaschiang/dolce/compare/v1.47.1...v1.48.0) (2023-08-14)
+
+
+### Features
+
+* create new separate `Article` data model ([e80526f](https://github.com/nicholaschiang/dolce/commit/e80526f936167a4c8c79908b44bf5d7bffb06931))
+* **scripts/node:** save designer profiles to db ([cb56e4a](https://github.com/nicholaschiang/dolce/commit/cb56e4a1adcee3a2c25ea11dfa7956df9f776f38))
+* **scripts:** scrape designers from Wikipedia ([6e90d99](https://github.com/nicholaschiang/dolce/commit/6e90d9937cccc6041b67e5a91b78f221c765b067))
+
+
+### Bug Fixes
+
+* **prisma:** do not require article `writtenAt` ([ac92d4c](https://github.com/nicholaschiang/dolce/commit/ac92d4ccdcc4babb69b5af7870b6b5340a511a8f))
+* **prisma:** remove unused country `code` column ([6e5bf95](https://github.com/nicholaschiang/dolce/commit/6e5bf957fd3694d736a5216a880a0d5c3616545d))
+* **scripts/node:** update to conform with new schema ([23ff38e](https://github.com/nicholaschiang/dolce/commit/23ff38e17eec3c59ddf9490116de9fdacbdfc698))
+
 ## [1.47.1](https://github.com/nicholaschiang/dolce/compare/v1.47.0...v1.47.1) (2023-08-12)
 
 
