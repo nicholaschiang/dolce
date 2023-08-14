@@ -45,7 +45,9 @@ import {
   useTheme,
 } from 'theme'
 
-export type Handle = { breadcrumb: (match: RouteMatch) => LinkProps }
+export type Handle = {
+  breadcrumb: (match: RouteMatch) => LinkProps | LinkProps[]
+}
 
 export const handle: Handle = {
   breadcrumb: () => ({ to: '/', children: 'dolce' }),
