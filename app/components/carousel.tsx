@@ -1,5 +1,11 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { type ReactNode, type RefObject, useState, useRef } from 'react'
+import {
+  type FC,
+  type ReactNode,
+  type RefObject,
+  useState,
+  useRef,
+} from 'react'
 
 import { Button } from 'components/ui/button'
 
@@ -18,7 +24,7 @@ export type CarouselItemProps<T> = { item?: T; index: number }
 export type CarouselProps<T> = {
   loading?: boolean
   items?: T[]
-  item: (props: CarouselItemProps<T>) => ReactNode
+  item: FC<CarouselItemProps<T>>
   itemWidth: number
   itemsPerSlide: number
   children?: ReactNode
@@ -36,6 +42,7 @@ export function Carousel<T extends { id: number | string }>({
 }: CarouselProps<T>) {
   const [index, setIndex] = useState(0)
   const carouselRef = useRef<HTMLOListElement>(null)
+  const Item = item
   return (
     <div
       className={cn('relative group overflow-clip', className)}
@@ -57,7 +64,7 @@ export function Carousel<T extends { id: number | string }>({
       >
         {!items?.length && (
           <li className='flex-none' style={{ width: itemWidth }}>
-            {item({ index: 0 })}
+            <Item index={0} />
           </li>
         )}
         {items?.map((i, idx) => (
@@ -66,7 +73,7 @@ export function Carousel<T extends { id: number | string }>({
             style={{ width: itemWidth }}
             className='flex-none snap-start'
           >
-            {item({ item: i, index: idx })}
+            <Item item={i} index={idx} />
           </li>
         ))}
       </ol>
