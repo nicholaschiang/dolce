@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.49.1](https://github.com/nicholaschiang/dolce/compare/v1.49.0...v1.49.1) (2023-08-14)
+
+
+### Bug Fixes
+
+* only show filter options that have products ([b8480f3](https://github.com/nicholaschiang/dolce/commit/b8480f3db71c922bcd321e531eb47ebb8ea9ef41))
+
 ## [1.49.0](https://github.com/nicholaschiang/dolce/compare/v1.48.0...v1.49.0) (2023-08-14)
 
 
