@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.50.0](https://github.com/nicholaschiang/dolce/compare/v1.49.1...v1.50.0) (2023-08-15)
+
+
+### Features
+
+* add shows page specific to a single brand ([88f22d5](https://github.com/nicholaschiang/dolce/commit/88f22d5cc5c6e3f5abf6beb844489eddba6c01db))
+
 ## [1.49.1](https://github.com/nicholaschiang/dolce/compare/v1.49.0...v1.49.1) (2023-08-14)
 
 
