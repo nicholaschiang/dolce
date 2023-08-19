@@ -26,6 +26,7 @@ import { prisma } from 'db.server'
 import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
+import { sanitize } from 'sanitize.server'
 import { getUserId } from 'session.server'
 
 import { About } from './about'
@@ -39,7 +40,9 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
     { title: `${data.brand.name} ${getShowSeason(data)} Collection | ${NAME}` },
     {
       name: 'description',
-      content: `${data.name} collection, runway looks, beauty, models, and reviews.`,
+      content: data.description
+        ? sanitize(data.description, { allowedTags: [] })
+        : `${data.name} collection, runway looks, beauty, models, and reviews.`,
     },
     { name: 'keywords', content: keywords },
     { name: 'news_keywords', content: keywords },
@@ -142,10 +145,26 @@ export async function loader({ request, params }: LoaderArgs) {
   })
   if (show == null) throw miss
   log.debug('got show %o', show)
+
+  // Sanitize HTML (perhaps this should be in a separate helper function).
+  /* eslint-disable no-param-reassign */
+  show.articles.forEach((article) => {
+    article.content = sanitize(article.content)
+  })
+  show.description = sanitize(show.description)
+  show.collections.forEach((collection) => {
+    collection.designers.forEach((designer) => {
+      designer.description = sanitize(designer.description)
+    })
+  })
+  /* eslint-enable no-param-reassign */
+
+  // Derive the show's scores and get the current user's review of it.
   const [scores, review] = await Promise.all([
     getScores(show.id),
     getReview(show.id, request),
   ])
+
   return { ...show, scores, review }
 }
 
