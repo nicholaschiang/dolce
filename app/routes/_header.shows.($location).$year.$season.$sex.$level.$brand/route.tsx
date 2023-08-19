@@ -3,6 +3,7 @@ import {
   type SerializeFrom,
   type V2_MetaFunction,
 } from '@vercel/remix'
+import { nanoid } from 'nanoid/non-secure'
 import { useState } from 'react'
 import { type SitemapFunction } from 'remix-sitemap'
 
@@ -22,6 +23,7 @@ import {
 } from 'utils/show'
 
 import { prisma } from 'db.server'
+import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 import { getUserId } from 'session.server'
@@ -60,14 +62,22 @@ export const sitemap: SitemapFunction = async () => {
 export const handle: Handle = {
   breadcrumb: (match) => {
     const data = match.data as SerializeFrom<typeof loader> | undefined
+    if (data == null) return []
+    const filter: Filter<'brand', 'is'> = {
+      id: nanoid(5),
+      name: 'brand',
+      condition: 'is',
+      value: { id: data.brand.id, name: data.brand.name },
+    }
+    const param = filterToSearchParam<'brand', 'is'>(filter)
     return [
       {
-        to: data ? `/shows/brands/${data.brand.slug}` : '.',
-        children: data?.brand.name ?? '404',
+        to: `/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`,
+        children: data.brand.name,
       },
       {
-        to: data ? getShowPath(data) : '.',
-        children: data ? getShowSeason(data) : '404',
+        to: getShowPath(data),
+        children: getShowSeason(data),
       },
     ]
   },
