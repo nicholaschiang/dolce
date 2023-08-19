@@ -128,11 +128,15 @@ export default function ShowsPage() {
         style={{ padding }}
         className='h-0 grow overflow-y-auto overflow-x-hidden'
       >
-        <InfiniteList
-          parentRef={parentRef}
-          itemsPerRow={itemsPerRow}
-          setItemsPerRow={setItemsPerRow}
-        />
+        {filteredCount > 0 ? (
+          <InfiniteList
+            parentRef={parentRef}
+            itemsPerRow={itemsPerRow}
+            setItemsPerRow={setItemsPerRow}
+          />
+        ) : (
+          <Empty>There are no fashion shows that match your filters.</Empty>
+        )}
       </div>
     </>
   )
@@ -262,7 +266,7 @@ function InfiniteList({
     isMountedRef.current = true
   }, [])
 
-  return shows.length > 0 ? (
+  return (
     <ol
       style={{
         height: `${virtualizer.getTotalSize()}px`,
@@ -286,10 +290,6 @@ function InfiniteList({
         )
       })}
     </ol>
-  ) : (
-    <Empty>
-      There are no fashion shows to show yet. Please come again later.
-    </Empty>
   )
 }
 
