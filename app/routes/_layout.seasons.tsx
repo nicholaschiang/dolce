@@ -8,35 +8,34 @@ import { FILTER_PARAM, filterToSearchParam } from 'filters'
 import { log } from 'log.server'
 
 export async function loader() {
-  log.debug('getting looks...')
-  const looks = await prisma.look.findMany({
-    include: { show: true },
-    orderBy: [{ show: { name: 'asc' } }, { number: 'asc' }],
+  log.debug('getting seasons...')
+  const seasons = await prisma.season.findMany({
     take: 100,
+    orderBy: { year: 'desc' },
   })
-  log.debug('got %d looks', looks.length)
-  return looks
+  log.debug('got %d seasons', seasons.length)
+  return seasons
 }
 
-export default function LooksPage() {
-  const looks = useLoaderData<typeof loader>()
+export default function SeasonsPage() {
+  const seasons = useLoaderData<typeof loader>()
   return (
-    <ListLayout title='looks'>
-      {looks.map((look) => {
-        const param = filterToSearchParam<'looks', 'some'>({
+    <ListLayout title='seasons'>
+      {seasons.map((season) => {
+        const param = filterToSearchParam<'season', 'is'>({
           id: nanoid(5),
-          name: 'looks',
-          condition: 'some',
-          value: { id: look.id },
+          name: 'season',
+          condition: 'is',
+          value: { id: season.id, name: season.name, year: season.year },
         })
         return (
-          <li key={look.id}>
+          <li key={season.id}>
             <Link
               prefetch='intent'
               className='link underline'
               to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
-              {look.show.name} Look {look.number}
+              {season.name} {season.year}
             </Link>
           </li>
         )

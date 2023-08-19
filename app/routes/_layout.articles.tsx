@@ -8,35 +8,31 @@ import { FILTER_PARAM, filterToSearchParam } from 'filters'
 import { log } from 'log.server'
 
 export async function loader() {
-  log.debug('getting looks...')
-  const looks = await prisma.look.findMany({
-    include: { show: true },
-    orderBy: [{ show: { name: 'asc' } }, { number: 'asc' }],
-    take: 100,
-  })
-  log.debug('got %d looks', looks.length)
-  return looks
+  log.debug('getting articles...')
+  const articles = await prisma.article.findMany({ take: 100 })
+  log.debug('got %d articles', articles.length)
+  return articles
 }
 
-export default function LooksPage() {
-  const looks = useLoaderData<typeof loader>()
+export default function ArticlesPage() {
+  const articles = useLoaderData<typeof loader>()
   return (
-    <ListLayout title='looks'>
-      {looks.map((look) => {
-        const param = filterToSearchParam<'looks', 'some'>({
+    <ListLayout title='articles'>
+      {articles.map((article) => {
+        const param = filterToSearchParam<'articles', 'some'>({
           id: nanoid(5),
-          name: 'looks',
+          name: 'articles',
           condition: 'some',
-          value: { id: look.id },
+          value: { id: article.id, title: article.title },
         })
         return (
-          <li key={look.id}>
+          <li key={article.id}>
             <Link
               prefetch='intent'
               className='link underline'
               to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
-              {look.show.name} Look {look.number}
+              {article.title}
             </Link>
           </li>
         )

@@ -5,7 +5,6 @@ import { ListLayout } from 'components/list-layout'
 
 import { prisma } from 'db.server'
 import { FILTER_PARAM, filterToSearchParam } from 'filters'
-import type { Filter } from 'filters'
 import { log } from 'log.server'
 
 export async function loader() {
@@ -20,13 +19,12 @@ export default function StylesPage() {
   return (
     <ListLayout title='styles'>
       {styles.map((style) => {
-        const filter: Filter<'styles', 'some'> = {
+        const param = filterToSearchParam<'styles', 'some'>({
           id: nanoid(5),
           name: 'styles',
           condition: 'some',
           value: { id: style.id, name: style.name },
-        }
-        const param = filterToSearchParam(filter)
+        })
         return (
           <li key={style.id}>
             <Link
