@@ -11,7 +11,7 @@ import {
   type LoaderArgs,
   type V2_MetaFunction,
 } from '@vercel/remix'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { type RefObject, useState, useEffect, useRef, useCallback } from 'react'
 import { type Metric } from 'web-vitals'
 
 import { Carousel, type CarouselItemProps } from 'components/carousel'
@@ -96,6 +96,42 @@ function getItemHeight(itemWidth: number) {
 }
 
 export default function ShowsPage() {
+  const parentRef = useRef<HTMLElement>(null)
+  return (
+    <main
+      ref={parentRef}
+      className='fixed inset-x-0 top-10 bottom-0 overflow-y-auto overflow-x-hidden'
+    >
+      <div
+        className='mx-auto w-full'
+        style={{ maxWidth: maxWidth + padding * 2, padding }}
+      >
+        <Header />
+        <InfiniteList parentRef={parentRef} />
+      </div>
+    </main>
+  )
+}
+
+function Header() {
+  const [metric, setMetric] = useState<Metric>()
+  useEffect(() => {
+    setMetric(window.metrics?.find((m) => m.name === 'TTFB'))
+  }, [])
+  const { count } = useLoaderData<typeof loader>()
+  return (
+    <h1 className='text-lg -mt-4 mb-8 h-7 lowercase tracking-tighter'>
+      {count.toLocaleString()} shows{' '}
+      {metric && (
+        <span className='text-gray-400 dark:text-gray-600 animate-fade-in'>
+          ({Math.ceil(metric.value / 10) / 100} seconds)
+        </span>
+      )}
+    </h1>
+  )
+}
+
+function InfiniteList({ parentRef }: { parentRef: RefObject<HTMLElement> }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const { skip, take } = getStartLimit(searchParams)
   const { shows, count } = useLoaderData<typeof loader>()
@@ -120,7 +156,6 @@ export default function ShowsPage() {
   }, [])
 
   // Infinite scroll the shows grid list.
-  const parentRef = useRef<HTMLElement>(null)
   const virtualizer = useVirtualizer({
     getScrollElement: () => parentRef.current,
     estimateSize: () => itemHeight,
@@ -138,7 +173,7 @@ export default function ShowsPage() {
         'infiniteScrollTop',
         parentRef.current.scrollTop.toString(),
       )
-  }, [navigation])
+  }, [navigation, parentRef])
   useBeforeUnload(
     useCallback(() => {
       if (parentRef.current)
@@ -146,13 +181,13 @@ export default function ShowsPage() {
           'infiniteScrollTop',
           parentRef.current.scrollTop.toString(),
         )
-    }, []),
+    }, [parentRef]),
   )
   useLayoutEffect(() => {
     const infiniteScrollTop = sessionStorage.getItem('infiniteScrollTop')
     if (parentRef.current && infiniteScrollTop)
-      parentRef.current.scrollTop = Number(infiniteScrollTop)
-  }, [])
+      parentRef.current.scrollTo({ top: Number(infiniteScrollTop) })
+  }, [parentRef])
 
   // Load the results necessary to show the current window of data.
   const lowerBoundary = skip + overscan
@@ -207,59 +242,34 @@ export default function ShowsPage() {
     isMountedRef.current = true
   }, [])
 
-  const [metric, setMetric] = useState<Metric>()
-  useEffect(() => {
-    setMetric(window.metrics?.find((m) => m.name === 'TTFB'))
-  }, [])
-
-  return (
-    <main
-      ref={parentRef}
-      className='fixed inset-x-0 top-10 bottom-0 overflow-y-auto overflow-x-hidden'
+  return shows.length > 0 ? (
+    <ol
+      style={{
+        height: `${virtualizer.getTotalSize()}px`,
+        margin: `-${itemMargin}px`,
+        position: 'relative',
+      }}
     >
-      <div
-        className='mx-auto w-full'
-        style={{ maxWidth: maxWidth + padding * 2, padding }}
-      >
-        <h1 className='text-lg -mt-4 mb-8 h-7 lowercase tracking-tighter'>
-          {count.toLocaleString()} shows{' '}
-          {metric && (
-            <span className='text-gray-400 dark:text-gray-600 animate-fade-in'>
-              ({Math.ceil(metric.value / 10) / 100} seconds)
-            </span>
-          )}
-        </h1>
-        {shows.length > 0 ? (
-          <ol
-            style={{
-              height: `${virtualizer.getTotalSize()}px`,
-              margin: `-${itemMargin}px`,
-              position: 'relative',
-            }}
-          >
-            {virtualizer.getVirtualItems().map((virtualRow) => {
-              const index = isMountedRef.current
-                ? Math.abs(skip - virtualRow.index)
-                : virtualRow.index
-              const show = shows[index]
-              return (
-                <ShowItem
-                  show={show}
-                  itemsPerRow={itemsPerRow}
-                  itemWidth={itemWidth}
-                  virtualRow={virtualRow}
-                  key={virtualRow.key}
-                />
-              )
-            })}
-          </ol>
-        ) : (
-          <Empty>
-            There are no fashion shows to show yet. Please come again later.
-          </Empty>
-        )}
-      </div>
-    </main>
+      {virtualizer.getVirtualItems().map((virtualRow) => {
+        const index = isMountedRef.current
+          ? Math.abs(skip - virtualRow.index)
+          : virtualRow.index
+        const show = shows[index]
+        return (
+          <ShowItem
+            show={show}
+            itemsPerRow={itemsPerRow}
+            itemWidth={itemWidth}
+            virtualRow={virtualRow}
+            key={virtualRow.key}
+          />
+        )
+      })}
+    </ol>
+  ) : (
+    <Empty>
+      There are no fashion shows to show yet. Please come again later.
+    </Empty>
   )
 }
 
@@ -277,7 +287,7 @@ function ShowItem({ show, virtualRow, itemsPerRow, itemWidth }: ShowItemProps) {
       data-id={show?.id}
       data-index={virtualRow.index}
       key={virtualRow.key}
-      className={cn(show == null && 'cursor-wait')}
+      className={cn('overflow-hidden', show == null && 'cursor-wait')}
       style={{
         position: 'absolute',
         top: 0,
