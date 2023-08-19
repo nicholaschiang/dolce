@@ -1,5 +1,31 @@
 # Release Notes
 
+## [1.52.0](https://github.com/nicholaschiang/dolce/compare/v1.51.0...v1.52.0) (2023-08-19)
+
+
+### Features
+
+* add filters bar component to shows page ([163c1b6](https://github.com/nicholaschiang/dolce/commit/163c1b6d23626b7f57da7dcb5cf564582e33f803))
+* **filters:** add database level options search ([c583678](https://github.com/nicholaschiang/dolce/commit/c583678f755872e99aeaeafe683580cea0618ef1))
+* replace brand shows page with filter link ([24b79ae](https://github.com/nicholaschiang/dolce/commit/24b79aea3df27c628077dcd1426e7ce74440e573))
+
+
+### Bug Fixes
+
+* **filters:** allow filtering on multiple enums ([f5b1de0](https://github.com/nicholaschiang/dolce/commit/f5b1de06ce2935ceb12c02b8bd88dc0a3c59bc10))
+* **filters:** show season name and year in items ([580aa38](https://github.com/nicholaschiang/dolce/commit/580aa38d3373f88d9269f59d7ff40411db797261))
+* **filters:** support filtering on any enum ([3568686](https://github.com/nicholaschiang/dolce/commit/35686866906303ac258fd9205bade372968e9ce7))
+* hide articles and reviews from show filters ([078912d](https://github.com/nicholaschiang/dolce/commit/078912d91a560109310c03075d4df03c88525ff7))
+* **shows:** do not reset filters on infinite scroll ([67dcdd9](https://github.com/nicholaschiang/dolce/commit/67dcdd9d899675332f4585af882c5b7dc6945d5e))
+* **shows:** remove redundant results count header ([9593a83](https://github.com/nicholaschiang/dolce/commit/9593a830bb11f9da0f1a2f4c6cf0677278ce9a6b))
+* **shows:** restore `/shows` breadcrumb item ([5c9da90](https://github.com/nicholaschiang/dolce/commit/5c9da908a74831517298f6823780e4ecdaa2e8c6))
+* **shows:** show "no results" instead of error ([37ca52b](https://github.com/nicholaschiang/dolce/commit/37ca52b253eb0976c9c734413d83f1dc88ef3009))
+
+
+### Performance Improvements
+
+* **components/header:** prefetch breadcrumb links ([f5c9410](https://github.com/nicholaschiang/dolce/commit/f5c94101780687b3ecb1f6e3df082a721bfa0f0b))
+
 ## [1.51.0](https://github.com/nicholaschiang/dolce/compare/v1.50.0...v1.51.0) (2023-08-19)
 
 
