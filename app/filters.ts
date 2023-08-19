@@ -91,17 +91,21 @@ type ShowFilterValue<
   N extends ShowFilterName,
   C extends ShowFilterCondition<N>,
 > = Extract<PrismaShowFilter, Prisma.ShowWhereInput[N]>[C]
+type MaybeProductFilterValue<
+  N extends ProductFilterName,
+  C extends FilterCondition<N>,
+> = C extends ProductFilterCondition<N> ? ProductFilterValue<N, C> : never
+type MaybeShowFilterValue<
+  N extends ShowFilterName,
+  C extends FilterCondition<N>,
+> = C extends ShowFilterCondition<N> ? ShowFilterValue<N, C> : never
 export type FilterValue<
   N extends FilterName = FilterName,
   C extends FilterCondition<N> = FilterCondition<N>,
 > = N extends ProductFilterName
-  ? C extends ProductFilterCondition<N>
-    ? ProductFilterValue<N, C>
-    : N extends ShowFilterName
-    ? C extends ShowFilterCondition<N>
-      ? ShowFilterValue<N, C>
-      : never
-    : never
+  ? MaybeProductFilterValue<N, C>
+  : N extends ShowFilterName
+  ? MaybeShowFilterValue<N, C>
   : never
 
 export type Filter<
@@ -164,13 +168,13 @@ function filterValueToString(value: FilterValue): string {
     case 'number':
       return value.toString()
     case 'boolean':
-      return value.toString()
+      return value ? 'TRUE' : 'FALSE'
     case 'object':
       if (Array.isArray(value)) return value.map(filterValueToString).join(', ')
       if (value instanceof Date) return value.toString()
       // TODO instead of surfacing the code-based "null" value, we should add
       // i18n and then surface the relevant "n/a" (or its equivalent) string.
-      if (value === null) return 'null'
+      if (value === null) return 'NULL'
       if ('name' in value && typeof value.name === 'string') return value.name
       return JSON.stringify(value)
     default:
