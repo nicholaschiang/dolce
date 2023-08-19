@@ -111,6 +111,7 @@ function getItemHeight(itemWidth: number) {
 
 // Don't allow users to filter on back-end only fields.
 const hiddenFields: ShowFilterName[] = [
+  'collections',
   'articles',
   'reviews',
   'videoId',
