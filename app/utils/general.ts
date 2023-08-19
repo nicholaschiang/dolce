@@ -1,6 +1,17 @@
-import { useLocation, useRouteLoaderData, useNavigate } from '@remix-run/react'
+import {
+  useFetcher,
+  useLocation,
+  useRouteLoaderData,
+  useNavigate,
+} from '@remix-run/react'
 import { type AppData, type SerializeFrom } from '@vercel/remix'
-import { useEffect, useLayoutEffect as useReactLayoutEffect } from 'react'
+import {
+  useMemo,
+  useRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect as useReactLayoutEffect,
+} from 'react'
 import rfdc from 'rfdc'
 
 import type { User } from 'models/user.server'
@@ -18,6 +29,43 @@ export type Serialize<T extends AppData> = SerializeFrom<T> | T
 
 export const useLayoutEffect =
   typeof window === 'undefined' ? useEffect : useReactLayoutEffect
+
+/**
+ * Load a given endpoint and reload whenever it changes. Useful for querying
+ * data based on a user search string that can change every keystroke.
+ *
+ * During development, you will see a bunch of cancelled requests and then a
+ * subsequent successful request on first mount. This is due to the `useEffect`
+ * running twice during development. This issue does not occur in production.
+ *
+ * @param endpoint The endpoint string to load.
+ * @returns The fetcher with data populated and its `load` method overridden.
+ */
+export function useLoadFetcher<T>(
+  endpoint: string,
+  options?: { load?: boolean },
+) {
+  const fetcher = useFetcher<T>()
+  const loaded = useRef('')
+  const fetcherLoad = fetcher.load
+  const load = useCallback(() => {
+    if (loaded.current !== endpoint) {
+      fetcherLoad(endpoint)
+      loaded.current = endpoint
+    }
+  }, [fetcherLoad, endpoint])
+  useEffect(() => {
+    const prev = loaded.current
+    if (options?.load !== false && prev !== endpoint) {
+      fetcherLoad(endpoint)
+      loaded.current = endpoint
+    }
+    return () => {
+      loaded.current = prev
+    }
+  }, [options?.load, fetcherLoad, endpoint])
+  return useMemo(() => ({ ...fetcher, load }), [fetcher, load])
+}
 
 /**
  * Get the `redirectTo` query parameter that will send the user back to their

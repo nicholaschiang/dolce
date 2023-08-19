@@ -1,9 +1,9 @@
 import { Location } from '@prisma/client'
-import { Link, useFetcher, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 import { type V2_MetaFunction, type SerializeFrom } from '@vercel/remix'
 import { scaleLinear } from 'd3-scale'
 import { X } from 'lucide-react'
-import { useCallback, useRef, useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   ComposableMap,
   Geographies,
@@ -27,7 +27,7 @@ import {
 } from 'components/ui/popover'
 
 import { cn } from 'utils/cn'
-import { NAME } from 'utils/general'
+import { NAME, useLoadFetcher } from 'utils/general'
 import { LOCATION_TO_NAME, LOCATION_TO_COORDINATES } from 'utils/location'
 
 import { prisma } from 'db.server'
@@ -174,19 +174,11 @@ function LocationMarker({
   radius: number
   coordinates: [number, number]
 }) {
-  const fetcher = useFetcher<typeof locationAPI>()
-  const loaded = useRef('')
   const endpoint = `/api/locations/${stats.location}`
-  const load = useCallback(() => {
-    if (loaded.current !== endpoint) {
-      fetcher.load(endpoint)
-      loaded.current = endpoint
-    }
-  }, [fetcher, endpoint])
-
+  const fetcher = useLoadFetcher<typeof locationAPI>(endpoint)
   return (
     <Popover>
-      <PopoverTrigger asChild onMouseOver={load}>
+      <PopoverTrigger asChild onMouseOver={fetcher.load}>
         <Marker
           coordinates={coordinates}
           className='fill-teal-500 aria-expanded:fill-rose-500 transition-colors cursor-pointer'
