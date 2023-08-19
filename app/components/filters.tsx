@@ -1,9 +1,8 @@
-import type { Level, Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import * as Popover from '@radix-ui/react-popover'
 import { useFetcher } from '@remix-run/react'
 import cn from 'classnames'
 import { useCommandState } from 'cmdk'
-import { dequal } from 'dequal/lite'
 import { ChevronDown, X, Plus } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import type {
@@ -28,6 +27,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
 
 import type { loader as layout } from 'routes/_layout'
+import type { loader as seasons } from 'routes/_layout.seasons'
 import type { loader as sizes } from 'routes/_layout.sizes'
 import type { loader as variants } from 'routes/_layout.variants'
 
@@ -35,7 +35,7 @@ import { Dialog } from 'components/dialog'
 import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
-import { clone, useData } from 'utils/general'
+import { uniq, useData } from 'utils/general'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
 import { filterToStrings } from 'filters'
@@ -148,6 +148,8 @@ export function Filters({
           {filters.map((f) =>
             f.name === 'variants' ? (
               <VariantItem key={f.id} filter={f} />
+            ) : f.name === 'season' ? (
+              <SeasonItem key={f.id} filter={f} />
             ) : (
               <Item key={f.id} filter={f} />
             ),
@@ -196,6 +198,38 @@ function Item({ filter }: ItemProps) {
       value={value}
       onClick={() => removeFilter(filter)}
     />
+  )
+}
+
+function isSeason(
+  filter: FilterValue,
+): filter is { name: string; year: number } {
+  return (
+    typeof filter === 'object' &&
+    filter !== null &&
+    'name' in filter &&
+    typeof filter.name === 'string' &&
+    'year' in filter &&
+    typeof filter.year === 'number'
+  )
+}
+
+function SeasonItem({ filter }: ItemProps) {
+  const { removeFilter } = useContext(FiltersContext)
+  const { name, condition } = filterToStrings(filter)
+  if (isSeason(filter.value))
+    return (
+      <GenericItem
+        name={name}
+        condition={condition}
+        value={`${filter.value.name} ${filter.value.year}`}
+        onClick={() => removeFilter(filter)}
+      />
+    )
+  throw new Error(
+    `<SeasonItem> expected a season filter value but got: ${JSON.stringify(
+      filter.value,
+    )}.`,
   )
 }
 
@@ -329,13 +363,15 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
                         )}
                         {f.kind === 'object' &&
                           f.name !== 'sizes' &&
-                          f.name !== 'variants' && (
+                          f.name !== 'variants' &&
+                          f.name !== 'season' && (
                             <ObjectItems nested={!field} field={f} />
                           )}
                         {f.name === 'sizes' && <SizeItems nested={!field} />}
                         {f.name === 'variants' && (
                           <VariantItems nested={!field} />
                         )}
+                        {f.name === 'season' && <SeasonItems nested={!field} />}
                       </Fragment>
                     ))}
                 </Menu.List>
@@ -421,29 +457,58 @@ function ObjectItems({ field, nested }: Props) {
 
   const search = useCommandState((state) => state.search)
   if (search.length < 2 && nested) return null
-  return (
-    <>
-      {(fetcher.data ?? []).map((item) => (
-        <Menu.Item
-          key={item.id}
-          value={`${field.name}-${item.name}`}
-          onSelect={() => {
-            addOrUpdateFilter({
-              id: nanoid(5),
-              name: field.name as FilterName,
-              condition: 'some',
-              value: { id: item.id, name: item.name },
-            })
-            setOpen(false)
-          }}
-        >
-          <Menu.ItemLabel group={nested ? field.name : undefined}>
-            {item.name}
-          </Menu.ItemLabel>
-        </Menu.Item>
-      ))}
-    </>
-  )
+  const items = fetcher.data?.map((item) => (
+    <Menu.Item
+      key={item.id}
+      value={`${field.name}-${item.name}`}
+      onSelect={() => {
+        addOrUpdateFilter({
+          id: nanoid(5),
+          name: field.name as FilterName,
+          condition: 'some',
+          value: { id: item.id, name: item.name },
+        })
+        setOpen(false)
+      }}
+    >
+      <Menu.ItemLabel group={nested ? field.name : undefined}>
+        {item.name}
+      </Menu.ItemLabel>
+    </Menu.Item>
+  ))
+  return <>{items}</>
+}
+
+function SeasonItems({ nested }: Pick<Props, 'nested'>) {
+  const fetcher = useFetcher<typeof seasons>()
+  useEffect(() => {
+    if (fetcher.type === 'init') fetcher.load(MODEL_TO_ROUTE.Season)
+  }, [fetcher])
+  const { addOrUpdateFilter } = useContext(FiltersContext)
+  const setOpen = useContext(MenuContext)
+  const search = useCommandState((state) => state.search)
+  if (search.length < 2 && nested) return null
+  const items = fetcher.data?.map((season) => (
+    <Menu.Item
+      key={season.id}
+      value={`season-${season.name}-${season.year}`}
+      onSelect={() => {
+        const filter: Filter<'season', 'is'> = {
+          id: nanoid(5),
+          name: 'season',
+          condition: 'is',
+          value: { id: season.id, name: season.name, year: season.year },
+        }
+        addOrUpdateFilter(filter)
+        setOpen(false)
+      }}
+    >
+      <Menu.ItemLabel group={nested ? 'season' : undefined}>
+        {season.name} {season.year}
+      </Menu.ItemLabel>
+    </Menu.Item>
+  ))
+  return <>{items}</>
 }
 
 function VariantItems({ nested }: Pick<Props, 'nested'>) {
@@ -455,43 +520,38 @@ function VariantItems({ nested }: Pick<Props, 'nested'>) {
   const setOpen = useContext(MenuContext)
   const search = useCommandState((state) => state.search)
   if (search.length < 2 && nested) return null
-  return (
-    <>
-      {(fetcher.data ?? [])
-        .filter(
-          (variant, index, self) =>
-            index === self.findIndex((v) => dequal(v.colors, variant.colors)),
-        )
-        .map((variant) => (
-          <Menu.Item
-            key={variant.id}
-            value={`variant-${variant.name}`}
-            onSelect={() => {
-              addOrUpdateFilter({
-                id: nanoid(5),
-                name: 'variants',
-                condition: 'some',
-                value: {
-                  colors: {
-                    some: {
-                      AND: variant.colors.map((color) => ({
-                        id: color.id,
-                        name: color.name,
-                      })),
-                    },
-                  },
-                },
-              })
-              setOpen(false)
-            }}
-          >
-            <Menu.ItemLabel group={nested ? 'variants' : undefined}>
-              {variant.colors.map((color) => color.name).join(' ')}
-            </Menu.ItemLabel>
-          </Menu.Item>
-        ))}
-    </>
-  )
+  const items = uniq(fetcher.data ?? [], (v) =>
+    v.colors.map((c) => c.id).join(),
+  ).map((variant) => (
+    <Menu.Item
+      key={variant.id}
+      value={`variant-${variant.name}`}
+      onSelect={() => {
+        const filter: Filter<'variants', 'some'> = {
+          id: nanoid(5),
+          name: 'variants',
+          condition: 'some',
+          value: {
+            colors: {
+              some: {
+                AND: variant.colors.map((color) => ({
+                  id: color.id,
+                  name: color.name,
+                })),
+              },
+            },
+          },
+        }
+        addOrUpdateFilter(filter)
+        setOpen(false)
+      }}
+    >
+      <Menu.ItemLabel group={nested ? 'variants' : undefined}>
+        {variant.colors.map((color) => color.name).join(' ')}
+      </Menu.ItemLabel>
+    </Menu.Item>
+  ))
+  return <>{items}</>
 }
 
 function SizeItems({ nested }: Pick<Props, 'nested'>) {
@@ -503,33 +563,30 @@ function SizeItems({ nested }: Pick<Props, 'nested'>) {
   const setOpen = useContext(MenuContext)
   const search = useCommandState((state) => state.search)
   if (search.length < 2 && nested) return null
-  return (
-    <>
-      {(fetcher.data ?? []).map((size) => (
-        <Menu.Item
-          key={size.id}
-          value={`size-${size.name}`}
-          onSelect={() => {
-            addOrUpdateFilter({
-              id: nanoid(5),
-              name: 'sizes',
-              condition: 'some',
-              value: { id: size.id, name: size.name },
-            })
-            setOpen(false)
-          }}
-        >
-          <Menu.ItemLabel group={nested ? 'sizes' : undefined}>
-            <span className='flex items-center truncate text-gray-500'>
-              {size.sex}
-              <ChevronDown className='mx-2 h-3 w-3 -rotate-90' />
-            </span>
-            {size.name}
-          </Menu.ItemLabel>
-        </Menu.Item>
-      ))}
-    </>
-  )
+  const items = fetcher.data?.map((size) => (
+    <Menu.Item
+      key={size.id}
+      value={`size-${size.name}`}
+      onSelect={() => {
+        addOrUpdateFilter({
+          id: nanoid(5),
+          name: 'sizes',
+          condition: 'some',
+          value: { id: size.id, name: size.name },
+        })
+        setOpen(false)
+      }}
+    >
+      <Menu.ItemLabel group={nested ? 'sizes' : undefined}>
+        <span className='flex items-center truncate text-gray-500'>
+          {size.sex}
+          <ChevronDown className='mx-2 h-3 w-3 -rotate-90' />
+        </span>
+        {size.name}
+      </Menu.ItemLabel>
+    </Menu.Item>
+  ))
+  return <>{items}</>
 }
 
 // if the field is scalar, we show an input letting the user type in what value
