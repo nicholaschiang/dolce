@@ -236,7 +236,12 @@ function InfiniteList({
     if (isMountedRef.current && neededSkip !== skip) {
       const timeoutId = setTimeout(() => {
         setSearchParams(
-          { skip: String(neededSkip), take: defaultTake.toString() },
+          (prev) => {
+            const next = new URLSearchParams(prev)
+            next.set('skip', neededSkip.toString())
+            next.set('take', defaultTake.toString())
+            return next
+          },
           { replace: true },
         )
       }, 100)
