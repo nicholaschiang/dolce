@@ -30,6 +30,7 @@ import { NAME, useLayoutEffect } from 'utils/general'
 import { getShowSeason, getShowPath } from 'utils/show'
 
 import { prisma } from 'db.server'
+import { type ShowFilterName } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 
@@ -108,6 +109,15 @@ function getItemHeight(itemWidth: number) {
   return (itemWidth * 16) / 9 + 50 + 40
 }
 
+// Don't allow users to filter on back-end only fields.
+const hiddenFields: ShowFilterName[] = [
+  'articles',
+  'reviews',
+  'videoId',
+  'brandId',
+  'seasonId',
+]
+
 export default function ShowsPage() {
   const parentRef = useRef<HTMLDivElement>(null)
   const [itemsPerRow, setItemsPerRow] = useState(itemsPerRowDefault)
@@ -116,6 +126,7 @@ export default function ShowsPage() {
     <>
       <FiltersBar
         modelName='Show'
+        hiddenFields={hiddenFields}
         zoom={itemsPerRow}
         setZoom={setItemsPerRow}
         maxZoom={7}

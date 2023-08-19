@@ -65,8 +65,8 @@ type PrismaShowFilter =
   | Prisma.BrandRelationFilter
 
 type Ignore = 'AND' | 'OR' | 'NOT'
-type ProductFilterName = keyof Omit<Prisma.ProductWhereInput, Ignore>
-type ShowFilterName = keyof Omit<Prisma.ShowWhereInput, Ignore>
+export type ProductFilterName = keyof Omit<Prisma.ProductWhereInput, Ignore>
+export type ShowFilterName = keyof Omit<Prisma.ShowWhereInput, Ignore>
 export type FilterName = ProductFilterName | ShowFilterName
 
 type ProductFilterCondition<N extends ProductFilterName> = keyof Extract<

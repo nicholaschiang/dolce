@@ -1,4 +1,3 @@
-import { type Prisma } from '@prisma/client'
 import {
   Link,
   Outlet,
@@ -16,6 +15,7 @@ import { Image } from 'components/image'
 import { NAME } from 'utils/general'
 
 import { prisma } from 'db.server'
+import { type ProductFilterName } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 
@@ -72,7 +72,7 @@ const minResultsPerRow = 1
 const maxResultsPerRow = 20
 
 // Don't allow users to filter on back-end only fields.
-const hiddenFields: (keyof Prisma.ProductSelect)[] = []
+const hiddenFields: ProductFilterName[] = []
 
 export default function ProductsPage() {
   const { products, count } = useLoaderData<typeof loader>()
