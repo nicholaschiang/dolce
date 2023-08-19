@@ -94,10 +94,14 @@ type ShowFilterValue<
 export type FilterValue<
   N extends FilterName = FilterName,
   C extends FilterCondition<N> = FilterCondition<N>,
-> = C extends ProductFilterCondition<infer PN>
-  ? ProductFilterValue<PN, C>
-  : C extends ShowFilterCondition<infer SN>
-  ? ShowFilterValue<SN, C>
+> = N extends ProductFilterName
+  ? C extends ProductFilterCondition<N>
+    ? ProductFilterValue<N, C>
+    : N extends ShowFilterName
+    ? C extends ShowFilterCondition<N>
+      ? ShowFilterValue<N, C>
+      : never
+    : never
   : never
 
 export type Filter<
