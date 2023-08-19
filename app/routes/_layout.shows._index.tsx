@@ -122,36 +122,16 @@ export default function ShowsPage() {
       />
       <div
         ref={parentRef}
+        style={{ padding }}
         className='h-0 grow overflow-y-auto overflow-x-hidden'
       >
-        <div className='mx-auto w-full' style={{ padding }}>
-          <Header />
-          <InfiniteList
-            parentRef={parentRef}
-            itemsPerRow={itemsPerRow}
-            setItemsPerRow={setItemsPerRow}
-          />
-        </div>
+        <InfiniteList
+          parentRef={parentRef}
+          itemsPerRow={itemsPerRow}
+          setItemsPerRow={setItemsPerRow}
+        />
       </div>
     </>
-  )
-}
-
-function Header() {
-  const [metric, setMetric] = useState<Metric>()
-  useEffect(() => {
-    setMetric(window.metrics?.find((m) => m.name === 'TTFB'))
-  }, [])
-  const { filteredCount } = useLoaderData<typeof loader>()
-  return (
-    <h1 className='text-lg -mt-4 mb-8 h-7 lowercase tracking-tighter'>
-      {filteredCount} shows{' '}
-      {metric && (
-        <span className='text-gray-400 dark:text-gray-600 animate-fade-in'>
-          ({Math.ceil(metric.value / 10) / 100} seconds)
-        </span>
-      )}
-    </h1>
   )
 }
 
