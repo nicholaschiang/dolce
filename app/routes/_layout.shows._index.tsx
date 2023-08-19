@@ -280,6 +280,7 @@ function InfiniteList({
   return (
     <ol
       style={{
+        visibility: totalWidth ? 'visible' : 'hidden',
         height: `${virtualizer.getTotalSize()}px`,
         margin: `-${itemMargin}px`,
         position: 'relative',
@@ -318,7 +319,7 @@ function ShowItem({ show, virtualRow, itemsPerRow, itemWidth }: ShowItemProps) {
       data-id={show?.id}
       data-index={virtualRow.index}
       key={virtualRow.key}
-      className={cn('overflow-hidden', show == null && 'cursor-wait')}
+      className={cn(show == null && 'cursor-wait')}
       style={{
         position: 'absolute',
         top: 0,
