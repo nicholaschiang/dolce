@@ -188,6 +188,12 @@ module.exports = {
     // @see {@link https://github.com/typescript-eslint/typescript-eslint/issues/3538}
     '@typescript-eslint/restrict-template-expressions': 'warn',
 
+    // Often, fragments are used to ensure that the return type of a component
+    // is valid (e.g. I can't return JSX.Element[] but must wrap in a fragment).
+    // @see {@link https://stackoverflow.com/a/62702903}
+    // @see {@link https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-no-useless-fragment.md}
+    'react/jsx-no-useless-fragment': ['error', { allowExpressions: true }],
+
     // Reset to the default static property placement (so all class static field
     // declarations remain inside of the class).
     // @todo Perhaps we want to use the AirBNB recommended styling.
