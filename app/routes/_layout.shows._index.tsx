@@ -11,17 +11,27 @@ import {
   type LoaderArgs,
   type V2_MetaFunction,
 } from '@vercel/remix'
-import { type RefObject, useState, useEffect, useRef, useCallback } from 'react'
+import {
+  type RefObject,
+  type Dispatch,
+  type SetStateAction,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from 'react'
 import { type Metric } from 'web-vitals'
 
 import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { Empty } from 'components/empty'
+import { FiltersBar, getWhere } from 'components/filters-bar'
 
 import { cn } from 'utils/cn'
 import { NAME, useLayoutEffect } from 'utils/general'
 import { getShowSeason, getShowPath } from 'utils/show'
 
 import { prisma } from 'db.server'
+import { type Filter, FILTER_PARAM } from 'filters'
 import { log } from 'log.server'
 
 export const meta: V2_MetaFunction = () => [
@@ -48,8 +58,9 @@ const getStartLimit = (searchParams: URLSearchParams) => ({
 })
 
 export async function loader({ request }: LoaderArgs) {
-  log.debug('getting shows...')
-  const [shows, count] = await Promise.all([
+  const { where, string } = getWhere(request)
+  log.debug('getting shows... %s', string)
+  const [shows, filteredCount, totalCount] = await Promise.all([
     prisma.show.findMany({
       ...getStartLimit(new URL(request.url).searchParams),
       include: {
@@ -68,11 +79,13 @@ export async function loader({ request }: LoaderArgs) {
         { level: 'asc' },
         { sex: 'asc' },
       ],
+      where,
     }),
+    prisma.show.count({ where }),
     prisma.show.count(),
   ])
-  log.debug('got %d shows', shows.length)
-  return { shows, count }
+  log.debug('got %d shows of %d/%d', shows.length, filteredCount, totalCount)
+  return { shows, filteredCount, totalCount }
 }
 
 // The number of rows to display when at max width.
@@ -84,9 +97,6 @@ const minItemWidth = 240
 // The horizontal padding between the grid and the viewport.
 const padding = 24
 
-// The max width of the entire grid layout (excluding padding).
-const maxWidth = itemsPerRowDefault * minItemWidth
-
 // The margin between each show item.
 const itemMargin = 8
 
@@ -96,20 +106,34 @@ function getItemHeight(itemWidth: number) {
 }
 
 export default function ShowsPage() {
-  const parentRef = useRef<HTMLElement>(null)
+  const parentRef = useRef<HTMLDivElement>(null)
+  const [itemsPerRow, setItemsPerRow] = useState(itemsPerRowDefault)
+  const { filteredCount, totalCount } = useLoaderData<typeof loader>()
   return (
-    <main
-      ref={parentRef}
-      className='fixed inset-x-0 top-10 bottom-0 overflow-y-auto overflow-x-hidden'
-    >
+    <>
+      <FiltersBar
+        modelName='Show'
+        zoom={itemsPerRow}
+        setZoom={setItemsPerRow}
+        maxZoom={7}
+        minZoom={1}
+        filteredCount={filteredCount}
+        totalCount={totalCount}
+      />
       <div
-        className='mx-auto w-full'
-        style={{ maxWidth: maxWidth + padding * 2, padding }}
+        ref={parentRef}
+        className='h-0 grow overflow-y-auto overflow-x-hidden'
       >
-        <Header />
-        <InfiniteList parentRef={parentRef} />
+        <div className='mx-auto w-full' style={{ padding }}>
+          <Header />
+          <InfiniteList
+            parentRef={parentRef}
+            itemsPerRow={itemsPerRow}
+            setItemsPerRow={setItemsPerRow}
+          />
+        </div>
       </div>
-    </main>
+    </>
   )
 }
 
@@ -118,10 +142,10 @@ function Header() {
   useEffect(() => {
     setMetric(window.metrics?.find((m) => m.name === 'TTFB'))
   }, [])
-  const { count } = useLoaderData<typeof loader>()
+  const { filteredCount } = useLoaderData<typeof loader>()
   return (
     <h1 className='text-lg -mt-4 mb-8 h-7 lowercase tracking-tighter'>
-      {count.toLocaleString()} shows{' '}
+      {filteredCount} shows{' '}
       {metric && (
         <span className='text-gray-400 dark:text-gray-600 animate-fade-in'>
           ({Math.ceil(metric.value / 10) / 100} seconds)
@@ -131,16 +155,21 @@ function Header() {
   )
 }
 
-function InfiniteList({ parentRef }: { parentRef: RefObject<HTMLElement> }) {
+function InfiniteList({
+  parentRef,
+  itemsPerRow,
+  setItemsPerRow,
+}: {
+  parentRef: RefObject<HTMLElement>
+  itemsPerRow: number
+  setItemsPerRow: Dispatch<SetStateAction<number>>
+}) {
   const [searchParams, setSearchParams] = useSearchParams()
   const { skip, take } = getStartLimit(searchParams)
-  const { shows, count } = useLoaderData<typeof loader>()
+  const { shows, filteredCount } = useLoaderData<typeof loader>()
 
   // The total width of the grid.
-  const [totalWidth, setTotalWidth] = useState(maxWidth)
-
-  // How many shows are shown in each row of results.
-  const itemsPerRow = Math.floor(totalWidth / minItemWidth)
+  const [totalWidth, setTotalWidth] = useState(0)
 
   // The height of each row (480px for item + 40px for margin).
   const itemWidth = totalWidth / itemsPerRow
@@ -148,12 +177,15 @@ function InfiniteList({ parentRef }: { parentRef: RefObject<HTMLElement> }) {
 
   // On window resize, recalculate the item width and number of shows per row.
   useLayoutEffect(() => {
-    const handleResize = () =>
-      setTotalWidth(Math.min(maxWidth, window.innerWidth - padding * 2))
+    const handleResize = () => {
+      const newTotalWidth = window.innerWidth - padding * 2
+      setTotalWidth(newTotalWidth)
+      setItemsPerRow(Math.floor(newTotalWidth / minItemWidth))
+    }
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [setItemsPerRow])
 
   // Infinite scroll the shows grid list.
   const virtualizer = useVirtualizer({
@@ -161,9 +193,9 @@ function InfiniteList({ parentRef }: { parentRef: RefObject<HTMLElement> }) {
     estimateSize: () => itemHeight,
     lanes: itemsPerRow,
     overscan: 10,
-    count,
+    count: filteredCount,
   })
-  useEffect(() => virtualizer.measure(), [totalWidth, virtualizer])
+  useEffect(() => virtualizer.measure(), [itemsPerRow, virtualizer])
 
   // Save the user's scroll position and restore it upon revisiting the page.
   const navigation = useNavigation()
@@ -212,7 +244,7 @@ function InfiniteList({ parentRef }: { parentRef: RefObject<HTMLElement> }) {
   }
 
   // Can't go above our data count.
-  if (neededSkip + take > count) neededSkip = count - take
+  if (neededSkip + take > filteredCount) neededSkip = filteredCount - take
 
   // Can't go below zero.
   if (neededSkip < 0) neededSkip = 0

@@ -30,38 +30,73 @@ export const JOIN_PARAM = 'j'
 
 // i tried to use a custom (Objectify<T> = T extends object ? T : never) type
 // but it didn't work for filtering decimal fields (where Decimal is an object).
-type PrismaFilter =
+type PrismaProductFilter =
   | Prisma.IntFilter<'Product'>
   | Prisma.StringFilter<'Product'>
   | Prisma.EnumLevelFilter<'Product'>
   | Prisma.DateTimeFilter<'Product'>
+  | Prisma.DecimalNullableFilter<'Product'>
   | Prisma.SizeListRelationFilter
   | Prisma.VariantListRelationFilter
-  | Prisma.DecimalNullableFilter
-  | Prisma.PriceListRelationFilter
-  | Prisma.VideoListRelationFilter
-  | Prisma.ImageListRelationFilter
   | Prisma.StyleListRelationFilter
   | Prisma.CollectionListRelationFilter
   | Prisma.BrandListRelationFilter
   | Prisma.UserListRelationFilter
   | Prisma.LookListRelationFilter
+type PrismaShowFilter =
+  | Prisma.IntFilter<'Show'>
+  | Prisma.IntNullableFilter<'Show'>
+  | Prisma.StringFilter<'Show'>
+  | Prisma.StringNullableFilter<'Show'>
+  | Prisma.EnumLevelFilter<'Show'>
+  | Prisma.EnumSexFilter<'Show'>
+  | Prisma.DateTimeFilter<'Show'>
+  | Prisma.DateTimeNullableFilter<'Show'>
+  | Prisma.EnumLocationNullableFilter<'Show'>
+  | Prisma.ArticleListRelationFilter
+  | Prisma.ReviewListRelationFilter
+  | Prisma.VideoNullableRelationFilter
+  | Prisma.SeasonRelationFilter
+  | Prisma.CollectionListRelationFilter
+  | Prisma.LookListRelationFilter
+  | Prisma.BrandRelationFilter
 
-// keyof union types will return the common keys (thus never), so we have to use
-// conditional types for type params (https://stackoverflow.com/a/52221718)
-type AllUnionMemberKeys<T> = T extends any ? keyof T : never
+type Ignore = 'AND' | 'OR' | 'NOT'
+type ProductFilterName = keyof Omit<Prisma.ProductWhereInput, Ignore>
+type ShowFilterName = keyof Omit<Prisma.ShowWhereInput, Ignore>
+export type FilterName = ProductFilterName | ShowFilterName
 
-export type FilterName = AllUnionMemberKeys<
-  Omit<Prisma.ProductWhereInput, 'AND' | 'OR' | 'NOT'>
+type ProductFilterCondition<N extends ProductFilterName> = keyof Extract<
+  PrismaProductFilter,
+  Prisma.ProductWhereInput[N]
 >
-
+type ShowFilterCondition<N extends ShowFilterName> = keyof Extract<
+  PrismaShowFilter,
+  Prisma.ShowWhereInput[N]
+>
 export type FilterCondition<N extends FilterName = FilterName> =
-  AllUnionMemberKeys<Extract<Prisma.ProductWhereInput[N], PrismaFilter>>
+  N extends ProductFilterName
+    ? ProductFilterCondition<N>
+    : N extends ShowFilterName
+    ? ShowFilterCondition<N>
+    : never
 
+type ProductFilterValue<
+  N extends ProductFilterName,
+  C extends ProductFilterCondition<N>,
+> = Extract<PrismaProductFilter, Prisma.ProductWhereInput[N]>[C]
+type ShowFilterValue<
+  N extends ShowFilterName,
+  C extends ShowFilterCondition<N>,
+> = Extract<PrismaShowFilter, Prisma.ShowWhereInput[N]>[C]
 export type FilterValue<
   N extends FilterName = FilterName,
   C extends FilterCondition<N> = FilterCondition<N>,
-> = Extract<Prisma.ProductWhereInput[N], PrismaFilter>[C]
+> = C extends ProductFilterCondition<infer PN>
+  ? ProductFilterValue<PN, C>
+  : C extends ShowFilterCondition<infer SN>
+  ? ShowFilterValue<SN, C>
+  : never
 
 export type Filter<
   N extends FilterName = FilterName,
@@ -88,25 +123,21 @@ export function filterToSearchParam<
     .join(':')
 }
 
-export function searchParamToFilter<
-  N extends FilterName,
-  C extends FilterCondition<N>,
->(searchParam: string): Filter<N, C> {
+export function searchParamToFilter(searchParam: string): Filter {
   const [id, name, condition, value] = searchParam
     .split(':')
     .map(decodeURIComponent)
   return {
     id,
-    name: name as N,
-    condition: condition as C,
-    value: JSON.parse(value) as FilterValue<N, C>,
+    name: name as FilterName,
+    condition: condition as FilterCondition,
+    value: JSON.parse(value) as FilterValue,
   }
 }
 
-export function filterToPrismaWhere<
-  N extends FilterName,
-  C extends FilterCondition<N>,
->(filter: Filter<N, C>): Prisma.ProductWhereInput {
+export function filterToPrismaWhere(
+  filter: Filter,
+): Prisma.XOR<Prisma.ProductWhereInput, Prisma.ShowWhereInput> {
   return { [filter.name]: { [filter.condition]: filter.value } }
 }
 

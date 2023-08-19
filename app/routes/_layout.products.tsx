@@ -1,41 +1,21 @@
-import type { Prisma } from '@prisma/client'
+import { type Prisma } from '@prisma/client'
 import {
   Link,
   Outlet,
   useLoaderData,
   useLocation,
   useNavigate,
-  useSearchParams,
 } from '@remix-run/react'
 import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
-import { ZoomIn, ZoomOut } from 'lucide-react'
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import { Filters } from 'components/filters'
+import { FiltersBar, getWhere } from 'components/filters-bar'
 import { Image } from 'components/image'
-import { Tooltip } from 'components/tooltip'
-import { Button } from 'components/ui/button'
 
 import { NAME } from 'utils/general'
 
 import { prisma } from 'db.server'
-import {
-  type Filter,
-  FILTER_PARAM,
-  JOIN_PARAM,
-  filterToPrismaWhere,
-  filterToSearchParam,
-  filterToString,
-  searchParamToFilter,
-} from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 
@@ -45,37 +25,14 @@ export const handle: Handle = {
   breadcrumb: () => ({ to: '/products', children: 'products' }),
 }
 
-enum Join {
-  And = 'AND',
-  Or = 'OR',
-  Not = 'NOT',
-}
-
-// Filter for products matching all filters by default.
-const defaultJoin = Join.And
-
-function isJoin(join: unknown): join is Join {
-  return typeof join === 'string' && Object.values(Join).includes(join as Join)
-}
-
-function getJoinFromSearchParams(searchParams: URLSearchParams): Join {
-  const join = searchParams.get(JOIN_PARAM)
-  return isJoin(join) ? join : defaultJoin
-}
-
 async function getProducts({ request }: LoaderArgs) {
-  const { searchParams } = new URL(request.url)
-  const filters = searchParams.getAll(FILTER_PARAM).map(searchParamToFilter)
-  const join = getJoinFromSearchParams(searchParams)
-  log.debug(
-    'getting products... %s',
-    filters.map(filterToString).join(` ${join} `),
-  )
+  const { where, string } = getWhere(request)
+  log.debug('getting products... %s', string)
   const products = (
     await prisma.product.findMany({
       include: { variants: { include: { images: true } } },
-      where: { [join]: filters.map(filterToPrismaWhere) },
       take: 100,
+      where,
     })
   ).map((product) => ({
     id: product.id,
@@ -108,43 +65,17 @@ export async function loader(args: LoaderArgs) {
   return { products, count }
 }
 
-// Don't allow users to filter on back-end only fields.
-const hiddenFields: (keyof Prisma.ProductSelect)[] = []
-
 // There must be at least one product per row.
 const minResultsPerRow = 1
 
 // Only allow users to zoom out to 20 products per row.
 const maxResultsPerRow = 20
 
+// Don't allow users to filter on back-end only fields.
+const hiddenFields: (keyof Prisma.ProductSelect)[] = []
+
 export default function ProductsPage() {
   const { products, count } = useLoaderData<typeof loader>()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const filters = useMemo<Filter[]>(
-    () => searchParams.getAll(FILTER_PARAM).map(searchParamToFilter),
-    [searchParams],
-  )
-  const setFilters = useCallback<Dispatch<SetStateAction<Filter[]>>>(
-    (action: SetStateAction<Filter[]>) => {
-      setSearchParams(
-        (prevSearchParams) => {
-          const prev = prevSearchParams
-            .getAll(FILTER_PARAM)
-            .map(searchParamToFilter)
-          const next = typeof action === 'function' ? action(prev) : action
-          if (next === prev) return prevSearchParams
-          const nextSearchParams = new URLSearchParams(prevSearchParams)
-          nextSearchParams.delete(FILTER_PARAM)
-          next.forEach((filter) =>
-            nextSearchParams.append(FILTER_PARAM, filterToSearchParam(filter)),
-          )
-          return nextSearchParams
-        },
-        { replace: true },
-      )
-    },
-    [setSearchParams],
-  )
   const nav = useNavigate()
   const location = useLocation()
   useHotkeys(
@@ -161,104 +92,19 @@ export default function ProductsPage() {
   // can use it during SSR to prevent a flash of layout shift).
   // TODO intelligently choose the initial value based on the viewport width.
   const [resultsPerRow, setResultsPerRow] = useState(6)
-  const join = getJoinFromSearchParams(searchParams)
-  const setJoin = useCallback(
-    (action: SetStateAction<Join>) => {
-      setSearchParams(
-        (prevSearchParams) => {
-          const prev = getJoinFromSearchParams(prevSearchParams)
-          const next = typeof action === 'function' ? action(prev) : action
-          if (next === prev) return prevSearchParams
-          const nextSearchParams = new URLSearchParams(prevSearchParams)
-          nextSearchParams.set(JOIN_PARAM, next)
-          return nextSearchParams
-        },
-        { replace: true },
-      )
-    },
-    [setSearchParams],
-  )
-
-  // Reset the filter join when the user clears their filters.
-  useEffect(() => {
-    if (filters.length <= 1) setJoin(defaultJoin)
-  }, [filters.length, setJoin])
-
-  const zoomIn = useCallback(() => {
-    setResultsPerRow((prev) => Math.max(prev - 1, minResultsPerRow))
-  }, [setResultsPerRow])
-  const zoomOut = useCallback(() => {
-    setResultsPerRow((prev) => Math.min(prev + 1, maxResultsPerRow))
-  }, [setResultsPerRow])
   return (
     <>
       <Outlet />
-      <Filters
+      <FiltersBar
         modelName='Product'
-        filters={filters}
-        setFilters={setFilters}
         hiddenFields={hiddenFields}
-      >
-        <div className='flex items-center gap-2 text-xs'>
-          {filters.length > 1 && (
-            <div className='whitespace-nowrap'>
-              <span className='text-gray-400 dark:text-gray-600'>
-                include products that match
-              </span>
-              <button
-                type='button'
-                className='rounded px-1 hover:bg-gray-50 hover:dark:bg-gray-800'
-                onClick={() =>
-                  setJoin((prev) => {
-                    const joins = Object.values(Join)
-                    const index = joins.indexOf(prev)
-                    return joins[(index + 1) % joins.length]
-                  })
-                }
-              >
-                {join === Join.Or && 'any filter'}
-                {join === Join.And && 'all filters'}
-                {join === Join.Not && 'no filters'}
-              </button>
-            </div>
-          )}
-          {filters.length > 0 && (
-            <div className='whitespace-nowrap text-gray-600 dark:text-gray-400'>
-              {products.length}
-              <span className='text-gray-400 dark:text-gray-600'>
-                {' / '}
-                {count}
-              </span>
-            </div>
-          )}
-          <div className='flex items-center'>
-            <Tooltip tip='Zoom In' hotkey='=' onHotkey={zoomIn}>
-              <Button
-                type='button'
-                size='icon'
-                variant='ghost'
-                aria-label='Zoom In'
-                disabled={resultsPerRow === minResultsPerRow}
-                onClick={zoomIn}
-              >
-                <ZoomIn className='h-3 w-3' />
-              </Button>
-            </Tooltip>
-            <Tooltip tip='Zoom Out' hotkey='-' onHotkey={zoomOut}>
-              <Button
-                type='button'
-                size='icon'
-                variant='ghost'
-                aria-label='Zoom Out'
-                disabled={resultsPerRow === maxResultsPerRow}
-                onClick={zoomOut}
-              >
-                <ZoomOut className='h-3 w-3' />
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
-      </Filters>
+        maxZoom={maxResultsPerRow}
+        minZoom={minResultsPerRow}
+        zoom={resultsPerRow}
+        setZoom={setResultsPerRow}
+        totalCount={count}
+        filteredCount={products.length}
+      />
       <div className='h-full flex-1 overflow-y-auto overflow-x-hidden p-6'>
         <ol className='-m-2 flex flex-wrap'>
           {products.map((product, index) => (

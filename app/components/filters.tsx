@@ -60,6 +60,9 @@ const MODEL_TO_ROUTE: Record<string, string> = {
   Season: '/seasons',
   Show: '/shows',
   User: '/designers',
+  Article: '/articles',
+  Review: '/reviews',
+  Video: '/videos',
 }
 
 //////////////////////////////////////////////////////////////////
@@ -142,12 +145,13 @@ export function Filters({
     >
       <nav className='frosted flex items-center justify-between border-b border-gray-200 px-6 py-2 dark:border-gray-800'>
         <ul className='-mb-1.5 flex flex-wrap'>
-          {filters.map((f) => (
-            <>
-              {f.name !== 'variants' && <Item key={f.id} filter={f} />}
-              {f.name === 'variants' && <VariantItem key={f.id} filter={f} />}
-            </>
-          ))}
+          {filters.map((f) =>
+            f.name === 'variants' ? (
+              <VariantItem key={f.id} filter={f} />
+            ) : (
+              <Item key={f.id} filter={f} />
+            ),
+          )}
           <AddFilterButton model={model} hiddenFields={hiddenFields} />
         </ul>
         {children}
@@ -604,8 +608,7 @@ function ScalarDialog({ field, nested }: Props) {
               value = new Date(value as string)
               break
             case 'checkbox':
-              value = value === 'true'
-              break
+              throw new Error('There are no boolean fields to filter on.')
             default:
           }
           addOrUpdateFilter({
