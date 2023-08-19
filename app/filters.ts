@@ -18,6 +18,7 @@ const SINGLE_CONDITION_TO_STRING: Record<FilterCondition, string> = {
   some: 'includes',
   none: 'does not include',
   mode: 'mode',
+  search: 'matches',
 }
 const PLURAL_CONDITION_TO_STRING: Record<FilterCondition, string> = {
   ...SINGLE_CONDITION_TO_STRING,
@@ -236,4 +237,14 @@ export function filterToStrings(filter: Filter): Record<keyof Filter, string> {
 export function filterToString(filter: Filter): string {
   const { name, condition, value } = filterToStrings(filter)
   return `${name} ${condition} ${value}`
+}
+
+/**
+ * Get the Prisma search string from the URL query parameters.
+ * @param request The request to get the URL query parameters from.
+ * @returns A string that can be used with Prisma's text-based search.
+ */
+export function getSearch(request: Request): string {
+  const query = new URL(request.url).searchParams.get('search') ?? ''
+  return query.replace(/\s+/g, '')
 }
