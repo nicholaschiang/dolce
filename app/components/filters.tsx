@@ -60,8 +60,6 @@ const MODEL_TO_ROUTE: Record<string, string> = {
   Season: '/seasons',
   Show: '/shows',
   User: '/designers',
-  Article: '/articles',
-  Review: '/reviews',
   Video: '/videos',
 }
 
@@ -83,7 +81,7 @@ const MenuContext = createContext<Dispatch<SetStateAction<boolean>>>(() => {})
 
 export type FiltersProps = {
   modelName: string
-  hiddenFields?: string[]
+  hiddenFields?: FilterName[]
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   children?: ReactNode
@@ -302,7 +300,7 @@ function ItemButton({ className, children, onClick }: ItemButtonProps) {
 
 type AddFilterButtonProps = {
   model: Prisma.DMMF.Model
-  hiddenFields?: string[]
+  hiddenFields?: FilterName[]
 }
 
 function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
@@ -316,7 +314,9 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
   useEffect(() => setField(undefined), [open])
   useEffect(() => setSearch(''), [open, field])
 
-  const fields = model.fields.filter((f) => !hiddenFields?.includes(f.name))
+  const fields = model.fields.filter(
+    (f) => !hiddenFields?.includes(f.name as FilterName),
+  )
 
   // TODO filter for fetchers that are getting the `MODEL_TO_ROUTE` fields.
   // @see {@link https://github.com/remix-run/remix/discussions/7196}
