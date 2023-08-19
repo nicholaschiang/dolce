@@ -1,6 +1,8 @@
 import type { Prisma } from '@prisma/client'
 
 const SINGLE_CONDITION_TO_STRING: Record<FilterCondition, string> = {
+  is: 'is',
+  isNot: 'is not',
   equals: 'is',
   not: 'is not',
   in: 'is',
