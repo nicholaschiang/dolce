@@ -73,6 +73,7 @@ export function HeaderLink({ className, ...etc }: LinkProps) {
   return (
     <Link
       className={cn('text-lg tracking-tighter lowercase', className)}
+      prefetch='intent'
       {...etc}
     />
   )
