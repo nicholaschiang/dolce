@@ -1,5 +1,4 @@
-import { useFetcher } from '@remix-run/react'
-import { type FC, useEffect, useRef, useState, useCallback } from 'react'
+import { type FC, useEffect, useState } from 'react'
 
 import {
   Command,
@@ -12,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover'
 
 import { cn } from 'utils/cn'
 import { commandScore } from 'utils/command-score'
-import { uniq } from 'utils/general'
+import { uniq, useLoadFetcher } from 'utils/general'
 
 export type ComboboxEmptyProps = { search: string }
 export type ComboboxItemProps<T> = { item: T }
@@ -50,13 +49,17 @@ export function Combobox<T extends { id: string | number; name: string }>({
   className,
   children,
 }: ComboboxProps<T>) {
+  // Refresh the search results after every keystroke (every few ms).
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const path = `${endpoint}?search=${encodeURIComponent(search)}`
+  const fetcher = useLoadFetcher<T[]>(path, { load: open })
+
   // Load additional items based on the search query but don't remove any of the
   // older items. CMD-K will handle the text-based filtering for me. I just have
   // to ensure that the most relevant items are included in the results list
   // (e.g. when there are 1000+ items we have to apply some db-level filters but
   // we want to still rely on frontend-level filters for instant reactivity).
-  const fetcher = useFetcher<T[]>()
-  const [open, setOpen] = useState(false)
   const [items, setItems] = useState<T[]>(() =>
     uniq([...((fetcher.data ?? []) as T[]), ...(initialItems ?? [])], unique),
   )
@@ -65,21 +68,6 @@ export function Combobox<T extends { id: string | number; name: string }>({
       fetcher.data ? uniq([...prev, ...(fetcher.data as T[])], unique) : prev,
     )
   }, [fetcher.data])
-
-  // Refresh the search results after every keystroke (every few ms).
-  const [search, setSearch] = useState('')
-  const loaded = useRef('')
-  const path = `${endpoint}?search=${encodeURIComponent(search)}`
-  const load = useCallback(() => {
-    if (loaded.current !== path) {
-      fetcher.load(path)
-      loaded.current = path
-    }
-  }, [fetcher, path])
-  useEffect(() => {
-    const timeoutId = setTimeout(open ? load : () => {}, 50)
-    return () => clearTimeout(timeoutId)
-  }, [open, load])
 
   // I cannot rely on the CMD-K filtering and sorting as I want to show a
   // "create new set" item when there are no results.
@@ -93,7 +81,7 @@ export function Combobox<T extends { id: string | number; name: string }>({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger onMouseOver={load} role='combobox' asChild>
+      <PopoverTrigger onMouseOver={fetcher.load} role='combobox' asChild>
         {children}
       </PopoverTrigger>
       <PopoverContent
