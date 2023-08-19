@@ -50,7 +50,7 @@ export type Handle = {
 }
 
 export const handle: Handle = {
-  breadcrumb: () => ({ to: '/', children: 'dolce' }),
+  breadcrumb: () => ({ to: '/', children: 'DOLCE' }),
 }
 
 export const config = { runtime: 'edge' }

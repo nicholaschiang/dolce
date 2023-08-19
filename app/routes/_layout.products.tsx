@@ -22,7 +22,7 @@ import { type Handle } from 'root'
 export const meta: V2_MetaFunction = () => [{ title: `Products | ${NAME}` }]
 
 export const handle: Handle = {
-  breadcrumb: () => ({ to: '/products', children: 'products' }),
+  breadcrumb: () => ({ to: '/products', children: 'Products' }),
 }
 
 async function getProducts({ request }: LoaderArgs) {
