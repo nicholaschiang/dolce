@@ -71,6 +71,7 @@ export const handle: Handle = {
     }
     const param = filterToSearchParam<'brand', 'is'>(filter)
     return [
+      { to: '/shows', children: 'Shows' },
       {
         to: `/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`,
         children: data.brand.name,
