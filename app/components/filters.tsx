@@ -393,12 +393,6 @@ type Props = { field: Prisma.DMMF.Field; nested?: boolean }
 function EnumItems({ field, nested }: Props) {
   const { addOrUpdateFilter } = useContext(FiltersContext)
 
-  // TODO while this should work for any enum, we shouldn't hardcode to only the
-  // Level enum type and should instead see if a union would work here as well.
-  // if not, i may have to split this up into individual components; i may want
-  // to do that eventually anyways (e.g. to render special icons per option).
-  const filterId = useRef(nanoid(5))
-
   const data = useData<typeof layout>('routes/_layout')
   const en = data?.enums.find((e) => e.name === field.type)
   invariant(en, `Could not find enum "${field.type}"`)
@@ -415,7 +409,7 @@ function EnumItems({ field, nested }: Props) {
           onSelect={() => {
             if (nested)
               addOrUpdateFilter({
-                id: filterId.current,
+                id: nanoid(5),
                 name: field.name as FilterName,
                 condition: 'equals',
                 value: e.name,
