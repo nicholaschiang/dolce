@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.51.0](https://github.com/nicholaschiang/dolce/compare/v1.50.0...v1.51.0) (2023-08-19)
+
+
+### Features
+
+* **routes/show:** add designer select for curators ([f730f12](https://github.com/nicholaschiang/dolce/commit/f730f12b110a4e47b4be35ce8c932991fea5f887))
+* **show/designers:** show designer articles ([89fc011](https://github.com/nicholaschiang/dolce/commit/89fc011a65dcfae93d5708aa1a5f76fb67053f6b))
+
+
+### Bug Fixes
+
+* **carousel:** render items as React components ([d604ab3](https://github.com/nicholaschiang/dolce/commit/d604ab3835fa3f720c094dbc50d6a877628df378))
+
 ## [1.50.0](https://github.com/nicholaschiang/dolce/compare/v1.49.1...v1.50.0) (2023-08-15)
 
 
