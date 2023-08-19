@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client'
 import * as Popover from '@radix-ui/react-popover'
-import { useFetcher } from '@remix-run/react'
+import { useFetchers } from '@remix-run/react'
 import cn from 'classnames'
-import { useCommandState } from 'cmdk'
+import { Command, useCommandState } from 'cmdk'
 import { ChevronDown, X, Plus } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import type {
@@ -20,7 +20,6 @@ import {
   useEffect,
   useId,
   useMemo,
-  useRef,
   useState,
 } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -32,10 +31,11 @@ import type { loader as sizes } from 'routes/_layout.sizes'
 import type { loader as variants } from 'routes/_layout.variants'
 
 import { Dialog } from 'components/dialog'
+import { LoadingLine } from 'components/loading-line'
 import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
-import { uniq, useData } from 'utils/general'
+import { uniq, useData, useLoadFetcher } from 'utils/general'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
 import { filterToStrings } from 'filters'
@@ -318,6 +318,10 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
 
   const fields = model.fields.filter((f) => !hiddenFields?.includes(f.name))
 
+  // TODO filter for fetchers that are getting the `MODEL_TO_ROUTE` fields.
+  // @see {@link https://github.com/remix-run/remix/discussions/7196}
+  const loading = useFetchers().some((f) => f.state === 'loading')
+
   return (
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Tooltip tip='Filter' hotkey='f' onHotkey={() => setOpen(true)}>
@@ -343,7 +347,13 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
                   placeholder={field?.name ?? 'field'}
                   hotkey='f'
                 />
+                {loading && <LoadingLine className='-mt-px' />}
                 <Menu.List>
+                  {loading && (
+                    <Command.Empty>
+                      <div className='animate-pulse h-8 bg-gray-400/10 dark:bg-gray-500/10 m-1 rounded-md' />
+                    </Command.Empty>
+                  )}
                   {field === undefined &&
                     fields.map((f: Prisma.DMMF.Field) => (
                       <Menu.Item
@@ -426,6 +436,13 @@ function EnumItems({ field, nested }: Props) {
   )
 }
 
+function useSearchFetcher<T>(route: string) {
+  const search = useCommandState((state) => state.search)
+  const endpoint = `${route}?search=${encodeURIComponent(search)}`
+  const fetcher = useLoadFetcher<T>(endpoint)
+  return fetcher
+}
+
 // TODO allow users to select multiple objects and then toggle between "AND" and
 // "OR" using the filter item (e.g. the "is any of" v.s. "is not" in Linear).
 // if the field is an object (i.e. a nested model), we query that model's table
@@ -433,24 +450,13 @@ function EnumItems({ field, nested }: Props) {
 // to show a list of all the possible sizes)
 // Ex: <SizeOption />, <BrandOption />, <CountryOption />, <ShowOption />
 function ObjectItems({ field, nested }: Props) {
-  // TODO we need to ensure that each one of our Prisma models has a name field
-  // TODO perhaps we should define individual components for each model? that
-  // would let us do fancy things with the menu item UI (e.g. colors should
-  // show a little dot of their color in the menu options)
-  const fetcher = useFetcher<{ id: number; name: string }[]>()
-  useEffect(() => {
-    const route = MODEL_TO_ROUTE[field.type]
-    if (route === undefined)
-      throw new Error(`No route defined to load data for field "${field.type}"`)
-    if (fetcher.type === 'init') fetcher.load(route)
-  }, [fetcher, field.type])
-
-  // TODO show a skeleton state while the options are loading
+  const route = MODEL_TO_ROUTE[field.type]
+  if (route === undefined)
+    throw new Error(`No route defined to load data for field "${field.type}"`)
+  const fetcher = useSearchFetcher<{ id: number; name: string }[]>(route)
   const setOpen = useContext(MenuContext)
   const { addOrUpdateFilter } = useContext(FiltersContext)
-
-  const search = useCommandState((state) => state.search)
-  if (search.length < 2 && nested) return null
+  if (useCommandState((state) => state.search).length < 2 && nested) return null
   const items = fetcher.data?.map((item) => (
     <Menu.Item
       key={item.id}
@@ -459,7 +465,7 @@ function ObjectItems({ field, nested }: Props) {
         addOrUpdateFilter({
           id: nanoid(5),
           name: field.name as FilterName,
-          condition: 'some',
+          condition: field.isList ? 'some' : 'is',
           value: { id: item.id, name: item.name },
         })
         setOpen(false)
@@ -474,14 +480,10 @@ function ObjectItems({ field, nested }: Props) {
 }
 
 function SeasonItems({ nested }: Pick<Props, 'nested'>) {
-  const fetcher = useFetcher<typeof seasons>()
-  useEffect(() => {
-    if (fetcher.type === 'init') fetcher.load(MODEL_TO_ROUTE.Season)
-  }, [fetcher])
+  const fetcher = useSearchFetcher<typeof seasons>(MODEL_TO_ROUTE.Season)
   const { addOrUpdateFilter } = useContext(FiltersContext)
   const setOpen = useContext(MenuContext)
-  const search = useCommandState((state) => state.search)
-  if (search.length < 2 && nested) return null
+  if (useCommandState((state) => state.search).length < 2 && nested) return null
   const items = fetcher.data?.map((season) => (
     <Menu.Item
       key={season.id}
@@ -506,14 +508,10 @@ function SeasonItems({ nested }: Pick<Props, 'nested'>) {
 }
 
 function VariantItems({ nested }: Pick<Props, 'nested'>) {
-  const fetcher = useFetcher<typeof variants>()
-  useEffect(() => {
-    if (fetcher.type === 'init') fetcher.load(MODEL_TO_ROUTE.Variant)
-  }, [fetcher])
+  const fetcher = useSearchFetcher<typeof variants>(MODEL_TO_ROUTE.Variant)
   const { addOrUpdateFilter } = useContext(FiltersContext)
   const setOpen = useContext(MenuContext)
-  const search = useCommandState((state) => state.search)
-  if (search.length < 2 && nested) return null
+  if (useCommandState((state) => state.search).length < 2 && nested) return null
   const items = uniq(fetcher.data ?? [], (v) =>
     v.colors.map((c) => c.id).join(),
   ).map((variant) => (
@@ -549,14 +547,10 @@ function VariantItems({ nested }: Pick<Props, 'nested'>) {
 }
 
 function SizeItems({ nested }: Pick<Props, 'nested'>) {
-  const fetcher = useFetcher<typeof sizes>()
-  useEffect(() => {
-    if (fetcher.type === 'init') fetcher.load(MODEL_TO_ROUTE.Size)
-  }, [fetcher])
+  const fetcher = useSearchFetcher<typeof sizes>(MODEL_TO_ROUTE.Size)
   const { addOrUpdateFilter } = useContext(FiltersContext)
   const setOpen = useContext(MenuContext)
-  const search = useCommandState((state) => state.search)
-  if (search.length < 2 && nested) return null
+  if (useCommandState((state) => state.search).length < 2 && nested) return null
   const items = fetcher.data?.map((size) => (
     <Menu.Item
       key={size.id}
