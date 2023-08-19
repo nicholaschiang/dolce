@@ -36,7 +36,7 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: `404 | ${NAME}` }]
   const keywords = getShowKeywords(data).join(', ')
   return [
-    { title: `${data.name} Collection | ${NAME}` },
+    { title: `${data.brand.name} ${getShowSeason(data)} Collection | ${NAME}` },
     {
       name: 'description',
       content: `${data.name} collection, runway looks, beauty, models, and reviews.`,
