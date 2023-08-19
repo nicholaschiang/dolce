@@ -1,5 +1,15 @@
 # Release Notes
 
+## [1.52.1](https://github.com/nicholaschiang/dolce/compare/v1.52.0...v1.52.1) (2023-08-19)
+
+
+### Bug Fixes
+
+* **products:** remove rounded borders from images ([112742a](https://github.com/nicholaschiang/dolce/commit/112742adc7ef8706410be15ce8a9a6b13da8d728))
+* **routes/show:** do not use show name in `title` ([6cb06f8](https://github.com/nicholaschiang/dolce/commit/6cb06f807f703237bd35d3745bdf8e67234e1818))
+* **shows:** avoid FOUC when `totalWidth` is zero ([15bc8cd](https://github.com/nicholaschiang/dolce/commit/15bc8cdee2d5b0710f56667c48d9b6a0a63ba585))
+* **shows:** hide `collections` from filter menu ([9f5addc](https://github.com/nicholaschiang/dolce/commit/9f5addc28967319510ed44c75e609c04a911ed93))
+
 ## [1.52.0](https://github.com/nicholaschiang/dolce/compare/v1.51.0...v1.52.0) (2023-08-19)
 
 
