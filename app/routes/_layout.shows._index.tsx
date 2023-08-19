@@ -20,7 +20,6 @@ import {
   useRef,
   useCallback,
 } from 'react'
-import { type Metric } from 'web-vitals'
 
 import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { Empty } from 'components/empty'
@@ -31,8 +30,12 @@ import { NAME, useLayoutEffect } from 'utils/general'
 import { getShowSeason, getShowPath } from 'utils/show'
 
 import { prisma } from 'db.server'
-import { type Filter, FILTER_PARAM } from 'filters'
 import { log } from 'log.server'
+import { type Handle } from 'root'
+
+export const handle: Handle = {
+  breadcrumb: () => ({ to: '/shows', children: 'shows' }),
+}
 
 export const meta: V2_MetaFunction = () => [
   {
