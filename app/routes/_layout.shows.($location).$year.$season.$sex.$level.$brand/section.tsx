@@ -10,10 +10,14 @@ export function Section({
   id,
   header,
   children,
-}: PropsWithChildren<{ id: string; header: string }>) {
+  className,
+}: PropsWithChildren<{ id: string; header: string; className?: string }>) {
   return (
     <section
-      className='p-6 border-b border-gray-200 dark:border-gray-800 last:border-0 group/section'
+      className={cn(
+        'p-6 border-b border-gray-200 dark:border-gray-800 last:border-0 group/section',
+        className,
+      )}
       id={id}
     >
       <h1 className='font-medium mb-4 text-sm flex items-center justify-between gap-1 text-gray-500'>
