@@ -9,7 +9,7 @@ import { Section } from './section'
 export function CriticReviews() {
   const show = useLoaderData<typeof loader>()
   return (
-    <Section header={`Critic reviews for ${show.name}`} id='critic-reviews'>
+    <Section header='Critic Reviews' id='critic-reviews'>
       {show.articles.length === 0 && (
         <Empty className='mt-2'>
           No critic reviews to show yet. Try checking back later.
@@ -42,9 +42,9 @@ type ReviewProps = {
 
 function Review({ author, publication, url, content }: ReviewProps) {
   return (
-    <figure className='overflow-hidden bg-gray-100 dark:bg-gray-900 pb-4'>
-      <figcaption className='mt-8 text-center'>
-        <cite className='text-lg underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-600'>
+    <figure className='overflow-hidden bg-gray-100 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-800'>
+      <figcaption className='p-3 text-center border-b border-gray-200 dark:border-gray-800 text-base'>
+        <cite className='underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-600'>
           {author != null && (
             <>
               <span className='text-gray-500'>By </span>
@@ -69,7 +69,7 @@ function Review({ author, publication, url, content }: ReviewProps) {
         </cite>
       </figcaption>
       <blockquote
-        className='prose prose-zinc dark:prose-invert p-6 m-auto'
+        className='prose prose-sm prose-zinc dark:prose-invert p-3 m-auto'
         cite={url}
         dangerouslySetInnerHTML={{ __html: content }}
       />

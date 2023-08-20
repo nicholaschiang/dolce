@@ -9,7 +9,7 @@ import { Section } from './section'
 export function ConsumerReviews() {
   const show = useLoaderData<typeof loader>()
   return (
-    <Section header={`Consumer reviews for ${show.name}`} id='consumer-reviews'>
+    <Section header='Consumer Reviews' id='consumer-reviews'>
       {show.reviews.length === 0 && (
         <Empty className='mt-2'>
           There are no consumer reviews yet. Try submitting one above.

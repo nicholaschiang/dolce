@@ -12,14 +12,14 @@ import { Section } from './section'
 export function ShowInfo() {
   const show = useLoaderData<typeof loader>()
   return (
-    <Section header='Show info' id='show-info'>
+    <Section header='Properties' id='properties'>
       {show.description != null && (
         <article
           className='prose dark:prose-invert max-w-none'
           dangerouslySetInnerHTML={{ __html: show.description }}
         />
       )}
-      <dl className='mt-2'>
+      <dl className='mt-2 flex flex-col gap-2'>
         {show.date != null && (
           <InfoItem label='Date'>
             {new Date(show.date).toLocaleDateString(undefined, {
@@ -58,9 +58,16 @@ function InfoItem({
   children,
 }: PropsWithChildren<{ label: string; className?: string }>) {
   return (
-    <div className='flex gap-1 items-center'>
-      <dt className='flex-none font-semibold'>{label}:</dt>
-      <dd className={cn('w-0 flex-1 truncate', className)}>{children}</dd>
+    <div className='flex items-center text-xs'>
+      <dt className='flex-none shrink-0 w-20 text-gray-500'>{label}</dt>
+      <dd
+        className={cn(
+          'w-0 flex-1 truncate text-gray-700 dark:text-gray-300',
+          className,
+        )}
+      >
+        {children}
+      </dd>
     </div>
   )
 }
