@@ -1,5 +1,6 @@
 import { useLoaderData } from '@remix-run/react'
 import { ExternalLink } from 'lucide-react'
+import { useId } from 'react'
 
 import { Empty } from 'components/empty'
 
@@ -9,27 +10,27 @@ import { Section } from './section'
 export function CriticReviews() {
   const show = useLoaderData<typeof loader>()
   return (
-    <Section header='Critic Reviews' id='critic-reviews'>
+    <>
+      <Section
+        header='Critic Reviews'
+        id='critic-reviews'
+        className='pb-0 border-0'
+      />
       {show.articles.length === 0 && (
         <Empty className='mt-2'>
           No critic reviews to show yet. Try checking back later.
         </Empty>
       )}
-      {show.articles.length > 0 && (
-        <ol className='mt-2 grid gap-4'>
-          {show.articles.map((review) => (
-            <li key={review.id}>
-              <Review
-                author={review.author}
-                publication={review.publication.name}
-                url={review.url}
-                content={review.content}
-              />
-            </li>
-          ))}
-        </ol>
-      )}
-    </Section>
+      {show.articles.map((review) => (
+        <Review
+          key={review.id}
+          author={review.author}
+          publication={review.publication.name}
+          url={review.url}
+          content={review.content}
+        />
+      ))}
+    </>
   )
 }
 
@@ -41,9 +42,13 @@ type ReviewProps = {
 }
 
 function Review({ author, publication, url, content }: ReviewProps) {
+  const id = useId()
   return (
-    <figure className='overflow-hidden bg-gray-100 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-800'>
-      <figcaption className='p-3 text-center border-b border-gray-200 dark:border-gray-800 text-base'>
+    <>
+      <figcaption
+        id={id}
+        className='p-3 text-center border border-gray-200 dark:border-gray-800 text-base mx-6 rounded-t sticky -top-1 bg-gray-100 dark:bg-gray-900'
+      >
         <cite className='underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-600'>
           {author != null && (
             <>
@@ -68,11 +73,16 @@ function Review({ author, publication, url, content }: ReviewProps) {
           </a>
         </cite>
       </figcaption>
-      <blockquote
-        className='prose prose-sm prose-zinc dark:prose-invert p-3 m-auto'
-        cite={url}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
-    </figure>
+      <figure
+        aria-labelledby={id}
+        className='overflow-hidden mx-6 mb-6 bg-gray-100 dark:bg-gray-900 rounded-b border-b border-x border-gray-200 dark:border-gray-800'
+      >
+        <blockquote
+          className='prose prose-sm prose-zinc dark:prose-invert p-3 m-auto'
+          cite={url}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      </figure>
+    </>
   )
 }
