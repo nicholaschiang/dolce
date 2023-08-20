@@ -4,12 +4,10 @@ import {
   type V2_MetaFunction,
 } from '@vercel/remix'
 import { nanoid } from 'nanoid/non-secure'
-import { useState } from 'react'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { type SitemapFunction } from 'remix-sitemap'
 
-import { ClientOnly } from 'components/client-only'
-
-import { NAME, invert, useLayoutEffect } from 'utils/general'
+import { NAME, invert } from 'utils/general'
 import { LEVEL_TO_SLUG } from 'utils/level'
 import { LOCATION_TO_SLUG } from 'utils/location'
 import { getScores } from 'utils/scores.server'
@@ -28,9 +26,16 @@ import { log } from 'log.server'
 import { type Handle } from 'root'
 import { getUserId } from 'session.server'
 
-import { About } from './about'
+import { ConsumerReviews } from './consumer-reviews'
+import { CriticReviews } from './critic-reviews'
+import { Designers } from './designers'
+import { Header } from './header'
 import { Looks } from './looks'
-import { getReview } from './rate-and-review'
+import { RateAndReview, getReview } from './rate-and-review'
+import { ShowInfo } from './show-info'
+import { Video } from './video'
+import { WhatToKnow } from './what-to-know'
+import { WhereToBuy } from './where-to-buy'
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: `404 | ${NAME}` }]
@@ -149,56 +154,43 @@ export async function loader({ request, params }: LoaderArgs) {
   return { ...show, scores, review }
 }
 
-// The ratio of the "about" column width to "looks" column width.
-const about = 4 / 7
-const looks = 3 / 7
-
-// The max width of both columns combined.
-const maxWidth = 1300
+function ResizeHandle() {
+  return (
+    <PanelResizeHandle className='data-[panel-group-direction=horizontal]:border-l data-[panel-group-direction=vertical]:border-t border-gray-200 dark:border-gray-800 relative group'>
+      <div className='w-2 group-data-[panel-group-direction=horizontal]:-left-1 group-data-[panel-group-direction=vertical]:-top-1 absolute group-data-[panel-group-direction=horizontal]:inset-y-0 group-data-[panel-group-direction=vertical]:inset-x-0 after:absolute after:group-data-[panel-group-direction=horizontal]:inset-y-0 after:group-data-[panel-group-direction=horizontal]:left-0.5 after:group-data-[panel-group-direction=horizontal]:w-0.5 after:group-data-[panel-group-direction=vertical]:inset-x-0 after:group-data-[panel-group-direction=vertical]:top-0.5 after:group-data-[panel-group-direction=vertical]:h-0.5 after:bg-gray-400 after:dark:bg-gray-600 after:opacity-0 after:group-data-[resize-handle-active]:opacity-100 hover:after:opacity-100 after:transition-opacity after:pointer-events-none' />
+    </PanelResizeHandle>
+  )
+}
 
 export default function ShowPage() {
-  const [viewportWidth, setViewportWidth] = useState(maxWidth)
-  useLayoutEffect(() => {
-    const handleResize = () => setViewportWidth(window.innerWidth)
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  const margin = Math.max((viewportWidth - maxWidth) / 2, 0)
-  const aboutWidth = maxWidth * about + margin
-  const looksWidth = maxWidth * looks + margin
-  const aboutFlexGrow = aboutWidth / looksWidth
-  const looksFlexGrow = 1
   return (
-    <ClientOnly>
-      <main className='sm:fixed sm:inset-0 sm:overflow-hidden sm:flex sm:p-0 p-6'>
-        <div
-          className='sm:w-0 sm:overflow-auto'
-          style={{ flexGrow: aboutFlexGrow }}
-        >
-          <div
-            className='sm:pt-16 sm:pl-6 pb-6 sm:ml-auto w-full'
-            style={{
-              maxWidth: viewportWidth > maxWidth ? maxWidth * about : undefined,
-            }}
-          >
-            <About />
-          </div>
-        </div>
-        <div
-          className='sm:w-0 sm:overflow-auto'
-          style={{ flexGrow: looksFlexGrow }}
-        >
-          <div
-            className='sm:px-6 sm:pt-16 sm:pb-6 sm:mr-auto w-full sm:max-w-auto'
-            style={{
-              maxWidth: viewportWidth > maxWidth ? maxWidth * looks : undefined,
-            }}
-          >
-            <Looks />
-          </div>
-        </div>
-      </main>
-    </ClientOnly>
+    <PanelGroup direction='horizontal' className='h-0 grow overflow-hidden'>
+      <Panel
+        defaultSize={65}
+        minSize={50}
+        maxSize={80}
+        className='overflow-hidden h-full flex flex-col'
+      >
+        <Video className='flex-none pt-2 px-2 w-full' />
+        <Looks className='h-0 grow py-2 pl-2 overflow-x-auto overflow-y-hidden' />
+      </Panel>
+      <ResizeHandle />
+      <Panel
+        defaultSize={35}
+        minSize={30}
+        maxSize={40}
+        tagName='aside'
+        className='!overflow-y-auto !overflow-x-hidden h-full shadow-lg'
+      >
+        <Header />
+        <WhatToKnow />
+        <Designers />
+        <WhereToBuy />
+        <RateAndReview />
+        <ConsumerReviews />
+        <ShowInfo />
+        <CriticReviews />
+      </Panel>
+    </PanelGroup>
   )
 }

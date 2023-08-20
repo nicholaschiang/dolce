@@ -4,7 +4,7 @@ import { type ActionArgs, json, redirect } from '@vercel/remix'
 import {
   id,
   schema,
-} from 'routes/_header.shows.($location).$year.$season.$sex.$level.$brand/rate-and-review'
+} from 'routes/_layout.shows.($location).$year.$season.$sex.$level.$brand/rate-and-review'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'

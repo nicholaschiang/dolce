@@ -27,7 +27,7 @@ import { getUserId } from 'session.server'
 import { type loader } from './route'
 import { Section } from './section'
 
-export const id = 'rate-and-review'
+export const id = 'review'
 export const schema = z.object({
   score: z.preprocess(
     (score) => Number(score),
@@ -64,12 +64,12 @@ export function RateAndReview() {
   const redirectTo = useRedirectTo({ hash: `#${id}` })
   const labelId = useId()
   return (
-    <Section header='Rate and review' id={id}>
-      <Form asChild>
+    <Section header='Your Review' id={id}>
+      <Form className='gap-3' asChild>
         <fetcher.Form
           method={show.review ? 'put' : 'post'}
           action={`/api/shows/${show.id}/review`}
-          className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded-md p-4 relative'
+          className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded p-3 relative bg-gray-50 dark:bg-gray-900'
           {...form.props}
         >
           {user == null && (

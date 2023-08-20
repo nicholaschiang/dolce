@@ -19,21 +19,10 @@ import { useOptionalUser, useRedirectTo } from 'utils/general'
 
 import { type loader } from './route'
 
-// Eagerly load images for the first three rows of looks (above the fold).
-const rowsToEagerLoad = 3
-
-// How many looks are shown in each row of results.
-const looksPerRow = 2
-
-export function Looks() {
+export function Looks({ className }: { className?: string }) {
   const show = useLoaderData<typeof loader>()
   return (
-    <ol
-      className='grid gap-x-2 gap-y-6'
-      style={{
-        gridTemplateColumns: `repeat(${looksPerRow}, minmax(0, 1fr))`,
-      }}
-    >
+    <ol className={cn('flex whitespace-nowrap', className)}>
       {show.looks.map((look) => (
         <LookItem key={look.id} look={look} />
       ))}
@@ -45,21 +34,20 @@ type Look = SerializeFrom<typeof loader>['looks'][number]
 type Set = Look['sets'][number]
 
 function LookItem({ look }: { look: Look }) {
-  const index = look.number - 1
   return (
-    <li>
-      <div className='bg-gray-100 dark:bg-gray-900 aspect-person'>
+    <li className='aspect-person flex h-full flex-col pr-2'>
+      <div className='bg-gray-100 dark:bg-gray-900 h-full w-full overflow-hidden'>
         {look.images.length > 0 && (
           <img
             className='object-cover h-full w-full'
-            loading={index < looksPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
-            decoding={index < looksPerRow * rowsToEagerLoad ? 'sync' : 'async'}
+            loading='lazy'
+            decoding='async'
             src={look.images[0].url}
             alt=''
           />
         )}
       </div>
-      <div className='flex justify-between items-center mt-1'>
+      <div className='flex-none flex justify-between items-center py-1'>
         <p className='text-sm'>Look {look.number}</p>
         <SaveButton look={look} />
       </div>
