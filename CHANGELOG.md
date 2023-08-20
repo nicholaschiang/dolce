@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.53.0](https://github.com/nicholaschiang/dolce/compare/v1.52.1...v1.53.0) (2023-08-20)
+
+
+### Features
+
+* **api/designers:** use full text-based search ([ca4e48d](https://github.com/nicholaschiang/dolce/commit/ca4e48d5caf51d92c609c80b6c33d3b2c505543f))
+
 ## [1.52.1](https://github.com/nicholaschiang/dolce/compare/v1.52.0...v1.52.1) (2023-08-19)
 
 
