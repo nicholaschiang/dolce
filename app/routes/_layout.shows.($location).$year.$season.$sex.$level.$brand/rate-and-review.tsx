@@ -65,11 +65,11 @@ export function RateAndReview() {
   const labelId = useId()
   return (
     <Section header='Your Review' id={id}>
-      <Form className='gap-3' asChild>
+      <Form asChild>
         <fetcher.Form
           method={show.review ? 'put' : 'post'}
           action={`/api/shows/${show.id}/review`}
-          className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded p-3 relative bg-gray-50 dark:bg-gray-900'
+          className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded p-4 relative'
           {...form.props}
         >
           {user == null && (
