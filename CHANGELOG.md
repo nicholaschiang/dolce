@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.54.0](https://github.com/nicholaschiang/dolce/compare/v1.53.0...v1.54.0) (2023-08-21)
+
+
+### Features
+
+* **show:** make article headers sticky ([7c4c644](https://github.com/nicholaschiang/dolce/commit/7c4c644e8080e42d78736d9c320ab4f53abba3d3))
+* **show:** redesign show page to focus on video ([d40f571](https://github.com/nicholaschiang/dolce/commit/d40f5714dc09957b764eb080a84a887242a1a573))
+
+
+### Bug Fixes
+
+* **show/rate-and-review:** increase form padding ([d52abbe](https://github.com/nicholaschiang/dolce/commit/d52abbe267d863cb3f18231f2a383a1c29261ceb))
+
 ## [1.53.0](https://github.com/nicholaschiang/dolce/compare/v1.52.1...v1.53.0) (2023-08-20)
 
 
