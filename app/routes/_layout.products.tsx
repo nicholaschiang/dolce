@@ -9,6 +9,7 @@ import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
 import { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
+import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { FiltersBar, getWhere } from 'components/filters-bar'
 import { Image } from 'components/image'
 
@@ -30,17 +31,15 @@ async function getProducts({ request }: LoaderArgs) {
   log.debug('getting products... %s', string)
   const products = (
     await prisma.product.findMany({
-      include: { variants: { include: { images: true } } },
+      include: { brands: true, variants: { include: { images: true } } },
       take: 100,
       where,
     })
   ).map((product) => ({
     id: product.id,
     name: product.name,
-    images: product.variants
-      .map((v) => v.images)
-      .flat()
-      .map((image) => image.url),
+    brand: product.brands.map((brand) => brand.name).join(' x '),
+    images: product.variants.flatMap((v) => v.images).map((image) => image.url),
     // real users don't care about cents. most reputable brands won't include
     // cents in their prices anyway. prices that do include cents are usually
     // intended to be misleading (e.g. $69.70 instead of $70).
@@ -106,7 +105,12 @@ export default function ProductsPage() {
         filteredCount={products.length}
       />
       <div className='h-full flex-1 overflow-y-auto overflow-x-hidden p-6'>
-        <ol className='-m-2 flex flex-wrap'>
+        <ol
+          className='grid gap-x-3 gap-y-6'
+          style={{
+            gridTemplateColumns: `repeat(${resultsPerRow}, minmax(0, 1fr))`,
+          }}
+        >
           {products.map((product, index) => (
             <ProductItem
               {...product}
@@ -126,11 +130,9 @@ export default function ProductsPage() {
 // Eagerly load images for the first two rows of products.
 const rowsToEagerLoad = 2
 
-// Images are currently sized w:h = 1:1.25 (e.g. Isabel Marant).
-const widthToHeightImageRatio = 1.25
-
 type ProductItemProps = {
   id: number
+  brand: string
   name: string
   images: string[]
   msrp?: number
@@ -140,6 +142,7 @@ type ProductItemProps = {
 
 function ProductItem({
   id,
+  brand,
   name,
   images,
   msrp,
@@ -148,53 +151,54 @@ function ProductItem({
 }: ProductItemProps) {
   const location = useLocation()
   return (
-    <li
-      className='group shrink-0 grow-0'
-      style={{ flexBasis: `${(1 / resultsPerRow) * 100}%` }}
+    <Link
+      className='block text-xs'
+      prefetch='intent'
+      to={`${id}${location.search}`}
     >
-      <div className='relative m-2'>
-        <div
-          className='absolute w-full'
-          style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
-        >
-          {images.length > 1 && (
-            <Image
-              className='absolute top-0 z-20 h-full w-full overflow-hidden bg-gray-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-gray-900'
-              loading='lazy'
-              decoding='async'
-              src={images[1]}
-              responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
-                (width) => ({
-                  size: { width },
-                  maxWidth: width * resultsPerRow,
-                }),
-              )}
-            />
-          )}
-          <Image
-            className='absolute top-0 z-10 h-full w-full overflow-hidden bg-gray-100 dark:bg-gray-900'
-            loading={index < resultsPerRow * rowsToEagerLoad ? 'eager' : 'lazy'}
-            decoding={
-              index < resultsPerRow * rowsToEagerLoad ? 'sync' : 'async'
-            }
-            src={images[0]}
-            responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
-              (width) => ({
-                size: { width, height: width * widthToHeightImageRatio },
-                maxWidth: width * resultsPerRow,
-              }),
-            )}
-          />
+      <li className='flex flex-col gap-2'>
+        <Carousel
+          items={images.map((url) => ({ id: url, index, resultsPerRow }))}
+          item={ProductImage}
+        />
+        <div>
+          <h2 className='font-medium uppercase'>{brand}</h2>
+          <h3 className='leading-none'>{name}</h3>
+          <p>${msrp}</p>
         </div>
-        <Link prefetch='intent' to={`${id}${location.search}`}>
-          <div
-            className='relative z-30 mb-2'
-            style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
-          />
-          <h2 className='leading-none'>{name}</h2>
-          <h3>${msrp}</h3>
-        </Link>
-      </div>
-    </li>
+      </li>
+    </Link>
+  )
+}
+
+function ProductImage({
+  item: image,
+  index,
+}: CarouselItemProps<{ id: string; index: number; resultsPerRow: number }>) {
+  return (
+    <div className='w-full aspect-product'>
+      {image && (
+        <Image
+          className='h-full w-full object-cover'
+          loading={
+            index === 0 && image.index < image.resultsPerRow * rowsToEagerLoad
+              ? 'eager'
+              : 'lazy'
+          }
+          decoding={
+            index === 0 && image.index < image.resultsPerRow * rowsToEagerLoad
+              ? 'sync'
+              : 'async'
+          }
+          src={image.id}
+          responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
+            (width) => ({
+              size: { width },
+              maxWidth: width * image.resultsPerRow,
+            }),
+          )}
+        />
+      )}
+    </div>
   )
 }
