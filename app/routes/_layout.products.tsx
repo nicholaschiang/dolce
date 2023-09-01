@@ -11,6 +11,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Banner } from 'components/banner'
 import { Carousel, type CarouselItemProps } from 'components/carousel'
+import { Empty } from 'components/empty'
 import { FiltersBar, getWhere } from 'components/filters-bar'
 import { Image } from 'components/image'
 
@@ -116,21 +117,25 @@ export default function ProductsPage() {
         filteredCount={products.length}
       />
       <div className='h-full flex-1 overflow-y-auto overflow-x-hidden p-6'>
-        <ol
-          className='grid gap-x-3 gap-y-6'
-          style={{
-            gridTemplateColumns: `repeat(${resultsPerRow}, minmax(0, 1fr))`,
-          }}
-        >
-          {products.map((product, index) => (
-            <ProductItem
-              {...product}
-              key={product.id}
-              index={index}
-              resultsPerRow={resultsPerRow}
-            />
-          ))}
-        </ol>
+        {products.length > 0 ? (
+          <ol
+            className='grid gap-x-3 gap-y-6'
+            style={{
+              gridTemplateColumns: `repeat(${resultsPerRow}, minmax(0, 1fr))`,
+            }}
+          >
+            {products.map((product, index) => (
+              <ProductItem
+                {...product}
+                key={product.id}
+                index={index}
+                resultsPerRow={resultsPerRow}
+              />
+            ))}
+          </ol>
+        ) : (
+          <Empty>There are no products that match your filters.</Empty>
+        )}
       </div>
     </>
   )
