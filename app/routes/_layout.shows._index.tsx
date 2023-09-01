@@ -340,7 +340,6 @@ function ShowItem({ show, virtualRow, itemsPerRow, itemWidth }: ShowItemProps) {
           loading={show == null}
           items={show?.looks}
           item={ShowLookItem}
-          itemsPerSlide={1}
         />
         <h2 className='text-xl font-serif font-semibold text-center leading-none mb-1'>
           {show?.brand.name}
