@@ -70,7 +70,6 @@ export async function loader({ request }: LoaderArgs) {
       include: {
         season: true,
         brand: true,
-        collections: true,
         looks: {
           include: { images: { take: 1 } },
           orderBy: { number: 'asc' },
