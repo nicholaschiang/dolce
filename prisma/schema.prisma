@@ -100,7 +100,7 @@ model Company {
   url String? @unique
 
   // A short description of the company, typically sourced from Wikipedia.
-  description String
+  description String?
 
   // The brands owned and operated by the corporation.
   brands Brand[]
@@ -137,7 +137,7 @@ model Retailer {
   companyId Int?
 
   // A short description of the retailer, typically sourced from Wikipedia.
-  description String
+  description String?
 
   // The brands sold by the retailer.
   // @todo perhaps this shouldn't be an explicit relation but rather implied by
@@ -414,7 +414,7 @@ model Material {
 
   // The material's description, as designated by the brand (e.g. for
   // proprietary fabrics like LENZING ECOVERO Viscose) or industry standard.
-  description String
+  description String?
 
   // The material's sustainability status, if any.
   sustainability Sustainability?
@@ -589,10 +589,10 @@ model Product {
   updatedAt DateTime @default(now()) @updatedAt
 
   // The product's name as designated by the brand and designer.
-  name String
+  name String @unique
 
   // The product's description.
-  description String @unique
+  description String?
 
   // The product's level.
   // @todo perhaps rename this to "ProductLevel" to avoid confusion with "Tier"? 

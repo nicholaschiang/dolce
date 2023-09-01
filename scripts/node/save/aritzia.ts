@@ -4,7 +4,7 @@ import { Level, Market, PrismaClient, Tier } from '@prisma/client'
 import type { Prisma } from '@prisma/client'
 import ProgressBar from 'progress'
 
-import { slug } from './utils'
+import { caps, slug } from './utils'
 
 type Product = {
   image: {
@@ -103,47 +103,29 @@ async function save(dir = 'public/data/aritzia') {
     // TODO not all of the brands listed on Aritzia are owned by Aritzia or
     // based out of Canada (e.g. Adidas, Nike, Levi's, etc).
     const brand: Prisma.BrandCreateOrConnectWithoutSizesInput = {
-      where: { name: product.master.brand.toLowerCase() },
+      where: { name: product.master.brand },
       create: {
-        name: product.master.brand.toLowerCase(),
+        name: product.master.brand,
         slug: slug(product.master.brand),
-        description: '',
         tier: Tier.AFFORDABLE_LUXURY,
         company: {
           connectOrCreate: {
-            where: { name: 'aritzia' },
-            create: {
-              name: 'aritzia',
-              description: '',
-              country: { connectOrCreate: country },
-            },
+            where: { name: 'Aritzia' },
+            create: { name: 'Aritzia', country: { connectOrCreate: country } },
           },
         },
         country: { connectOrCreate: country },
       },
     }
     const style: Prisma.StyleCreateOrConnectWithoutSizesInput = {
-      where: {
-        name: (product.style.name ?? product.style.category).toLowerCase(),
-      },
-      create: {
-        name: (product.style.name ?? product.style.category).toLowerCase(),
-        parent:
-          product.style.name && product.style.name !== product.style.category
-            ? {
-                connectOrCreate: {
-                  where: { name: product.style.category.toLowerCase() },
-                  create: { name: product.style.category.toLowerCase() },
-                },
-              }
-            : undefined,
-      },
+      where: { name: caps(product.style.category.replace(/-+/g, ' ')) },
+      create: { name: caps(product.style.category.replace(/-+/g, ' ')) },
     }
     // TODO: Filter for duplicate products (that have the same name) that should
     // instead be represented as variants instead of separate products in db.
     const retailer: Prisma.RetailerCreateOrConnectWithoutPricesInput = {
-      where: { name: 'aritzia' },
-      create: { name: 'aritzia', description: '' },
+      where: { name: 'Aritzia' },
+      create: { name: 'Aritzia' },
     }
     const msrp = Number(product.master.listprice)
     const prices: Prisma.PriceCreateOrConnectWithoutVariantsInput[] = [
@@ -172,25 +154,24 @@ async function save(dir = 'public/data/aritzia') {
       getLargestImage(product.image.srcset),
       getLargestImage(product.image.srcset_mouseover),
     ]
-    const description = `${product.master.name} from Aritzia`
     const variant: Prisma.VariantCreateWithoutProductInput = {
-      name: product.variant.color.name.toLowerCase(),
+      name: caps(product.variant.color.name),
       colors: {
         connectOrCreate: {
-          where: { name: product.variant.color.name.toLowerCase() },
-          create: { name: product.variant.color.name.toLowerCase() },
+          where: { name: caps(product.variant.color.name) },
+          create: { name: caps(product.variant.color.name) },
         },
       },
       images: { connectOrCreate: images },
       prices: { connectOrCreate: prices },
     }
+    const name = caps(product.master.name)
     const productData = await prisma.product.findUnique({
-      where: { description },
+      where: { name },
     })
     const productInput: Prisma.ProductCreateInput = {
       msrp,
-      description,
-      name: product.master.name.toLowerCase(),
+      name,
       level: Level.RTW,
       // TODO is there any way that we can regularly get this information? if
       // not, perhaps we should make these fields optional or remove them.
@@ -216,7 +197,7 @@ async function save(dir = 'public/data/aritzia') {
     await prisma.product.upsert({
       create: productInput,
       update: productInput,
-      where: { description: productInput.description },
+      where: { name },
     })
     bar.tick()
   }
