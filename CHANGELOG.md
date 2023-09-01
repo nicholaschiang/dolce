@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.54.1](https://github.com/nicholaschiang/dolce/compare/v1.54.0...v1.54.1) (2023-09-01)
+
+
+### Performance Improvements
+
+* **shows:** remove unnecessary `collections` join ([447e141](https://github.com/nicholaschiang/dolce/commit/447e1410ef3f80fb6590bbf94cfad126a6349d12))
+
 ## [1.54.0](https://github.com/nicholaschiang/dolce/compare/v1.53.0...v1.54.0) (2023-08-21)
 
 

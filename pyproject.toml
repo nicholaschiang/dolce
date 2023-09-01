@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dolce"
-version = "1.54.0"
+version = "1.54.1"
 description = ""
 authors = ["Nicholas Chiang <nicholas.h.chiang@gmail.com>"]
 license = "MIT"
