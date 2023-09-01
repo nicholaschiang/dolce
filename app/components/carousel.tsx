@@ -28,7 +28,7 @@ export type CarouselProps<T> = {
   loading?: boolean
   items?: T[]
   item: FC<CarouselItemProps<T>>
-  itemsPerSlide: number
+  itemsPerSlide?: number
   children?: ReactNode
   className?: string
 }
@@ -37,7 +37,7 @@ export function Carousel<T extends { id: number | string }>({
   loading,
   items,
   item,
-  itemsPerSlide,
+  itemsPerSlide = 1,
   children,
   className,
 }: CarouselProps<T>) {
@@ -45,7 +45,7 @@ export function Carousel<T extends { id: number | string }>({
   const carouselRef = useRef<HTMLOListElement>(null)
   const Item = item
   return (
-    <div className={cn('relative group overflow-clip', className)}>
+    <div className={cn('relative group overflow-clip h-fit', className)}>
       <ol
         className={cn(
           'grid grid-flow-col overflow-auto snap-x snap-mandatory bg-gray-100 dark:bg-gray-900 scrollbar-hide',
@@ -75,14 +75,7 @@ export function Carousel<T extends { id: number | string }>({
           </li>
         ))}
       </ol>
-      <div
-        className={cn(
-          'absolute inset-0 flex flex-col p-3 pointer-events-none',
-          items &&
-            items.length > 0 &&
-            'bg-gradient-to-b from-transparent from-80% to-black/25',
-        )}
-      >
+      <div className='absolute inset-0 flex flex-col p-3 pointer-events-none'>
         <div className='flex-1 flex justify-between items-start'>
           {children}
         </div>
