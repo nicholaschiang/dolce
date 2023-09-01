@@ -203,7 +203,7 @@ function Dots({
                 <span
                   key={idx}
                   className={cn(
-                    'flex-none rounded-full bg-white transition-all opacity-50 duration-200',
+                    'flex-none rounded-full bg-white dark:bg-gray-950 transition-all opacity-50 duration-200',
                     idx === index && 'opacity-100',
                     transform > 0 && idx <= left && 'scale-[.66]',
                     transform > 0 && idx === left + 1 && 'scale-[.83]',
