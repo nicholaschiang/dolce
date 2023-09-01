@@ -194,12 +194,12 @@ function LocationMarker({
       </PopoverTrigger>
       <PopoverContent
         collisionPadding={12}
-        className='w-auto text-sm p-0 overflow-hidden'
+        className='text-sm p-0 overflow-hidden'
+        style={{ width: itemsPerSlide * itemWidth }}
       >
         <Carousel
           items={fetcher.data}
           item={CarouselItem}
-          itemWidth={itemWidth}
           itemsPerSlide={itemsPerSlide}
           loading={fetcher.state === 'loading'}
         >

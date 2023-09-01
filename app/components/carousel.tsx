@@ -20,12 +20,14 @@ const dotMargin = 2
 // The number of dots (should be an odd number so there is a center dot).
 const maxDots = 5
 
+// The gap (margin; px) between each item in the carousel.
+const carouselGap = 0
+
 export type CarouselItemProps<T> = { item?: T; index: number }
 export type CarouselProps<T> = {
   loading?: boolean
   items?: T[]
   item: FC<CarouselItemProps<T>>
-  itemWidth: number
   itemsPerSlide: number
   children?: ReactNode
   className?: string
@@ -35,7 +37,6 @@ export function Carousel<T extends { id: number | string }>({
   loading,
   items,
   item,
-  itemWidth,
   itemsPerSlide,
   children,
   className,
@@ -44,35 +45,32 @@ export function Carousel<T extends { id: number | string }>({
   const carouselRef = useRef<HTMLOListElement>(null)
   const Item = item
   return (
-    <div
-      className={cn('relative group overflow-clip', className)}
-      style={{ width: itemWidth * itemsPerSlide }}
-    >
+    <div className={cn('relative group overflow-clip', className)}>
       <ol
         className={cn(
-          'flex overflow-auto snap-x bg-gray-100 dark:bg-gray-900 scrollbar-hide',
+          'grid grid-flow-col overflow-auto snap-x snap-mandatory bg-gray-100 dark:bg-gray-900 scrollbar-hide',
           !items && loading && 'animate-pulse',
         )}
-        style={{ width: itemWidth * itemsPerSlide }}
+        style={{
+          gridAutoColumns: `calc( ( 100% - ${carouselGap}px * (${itemsPerSlide} - 1) ) / ${itemsPerSlide} )`,
+        }}
         ref={carouselRef}
         onScroll={() => {
           if (carouselRef.current) {
+            const numOfItems = items?.length ?? 1
+            const itemWidth = carouselRef.current.scrollWidth / numOfItems
             const nextIndex = carouselRef.current.scrollLeft / itemWidth
             setIndex(Math.round(nextIndex))
           }
         }}
       >
         {!items?.length && (
-          <li className='flex-none' style={{ width: itemWidth }}>
+          <li>
             <Item index={0} />
           </li>
         )}
         {items?.map((i, idx) => (
-          <li
-            key={i.id}
-            style={{ width: itemWidth }}
-            className='flex-none snap-start'
-          >
+          <li key={i.id} className='snap-start'>
             <Item item={i} index={idx} />
           </li>
         ))}
@@ -93,7 +91,6 @@ export function Carousel<T extends { id: number | string }>({
             <PaginationButtons
               index={index}
               numOfItems={items.length}
-              itemWidth={itemWidth}
               itemsPerSlide={itemsPerSlide}
               carouselRef={carouselRef}
             />
@@ -112,21 +109,14 @@ export function Carousel<T extends { id: number | string }>({
 function PaginationButtons({
   index,
   numOfItems,
-  itemWidth,
   itemsPerSlide,
   carouselRef,
 }: {
   index: number
   numOfItems: number
-  itemWidth: number
   itemsPerSlide: number
   carouselRef: RefObject<HTMLElement | null>
 }) {
-  const minScroll = 0
-  const maxScroll = Math.max(
-    (numOfItems - itemsPerSlide) * itemWidth,
-    minScroll,
-  )
   return (
     <div className='flex-1 flex justify-between items-center opacity-0 transition-opacity group-hover:opacity-100 duration-300'>
       <Button
@@ -140,12 +130,10 @@ function PaginationButtons({
           event.preventDefault()
           event.stopPropagation()
           if (carouselRef.current) {
+            const itemWidth = carouselRef.current.scrollWidth / numOfItems
             const nextIndex = Math.max(index - 1, 0)
-            const left = Math.max(nextIndex * itemWidth, minScroll)
-            carouselRef.current.scrollTo({
-              left,
-              behavior: 'smooth',
-            })
+            const left = Math.max(nextIndex * itemWidth, 0)
+            carouselRef.current.scrollTo({ left, behavior: 'smooth' })
           }
         }}
       >
@@ -163,12 +151,11 @@ function PaginationButtons({
           event.preventDefault()
           event.stopPropagation()
           if (carouselRef.current) {
+            const itemWidth = carouselRef.current.scrollWidth / numOfItems
+            const maxScroll = (numOfItems - itemsPerSlide) * itemWidth
             const nextIndex = Math.min(index + 1, numOfItems - 1)
-            const left = Math.min(nextIndex * itemWidth, maxScroll)
-            carouselRef.current.scrollTo({
-              left,
-              behavior: 'smooth',
-            })
+            const left = Math.max(Math.min(nextIndex * itemWidth, maxScroll), 0)
+            carouselRef.current.scrollTo({ left, behavior: 'smooth' })
           }
         }}
       >
