@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.55.1](https://github.com/nicholaschiang/dolce/compare/v1.55.0...v1.55.1) (2023-09-02)
+
+
+### Bug Fixes
+
+* **infinite-list:** wait for mount before scroll ([06e5202](https://github.com/nicholaschiang/dolce/commit/06e5202b0385fd78ee173f9050e156faf52fae89))
+* remove `looks` from filterable attributes ([de84e62](https://github.com/nicholaschiang/dolce/commit/de84e6232f64bfa838f781f066c02cdd38624392))
+
 ## [1.55.0](https://github.com/nicholaschiang/dolce/compare/v1.54.1...v1.55.0) (2023-09-02)
 
 
