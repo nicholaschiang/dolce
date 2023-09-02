@@ -84,6 +84,7 @@ const itemsPerRowDefault = 5
 const hiddenFields: ShowFilterName[] = [
   'collections',
   'articles',
+  'looks',
   'reviews',
   'videoId',
   'brandId',
