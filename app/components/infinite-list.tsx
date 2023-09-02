@@ -5,15 +5,14 @@ import {
 } from '@remix-run/react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import {
-  type RefObject,
   type Dispatch,
   type SetStateAction,
   type FC,
-  useState,
   useEffect,
   useRef,
   useCallback,
 } from 'react'
+import useMeasure from 'react-use-measure'
 
 import { Empty } from 'components/empty'
 
@@ -33,8 +32,7 @@ export const getPagination = (searchParams: URLSearchParams) => ({
 })
 
 export type InfiniteListItemProps<T> = { item?: T }
-type InfiniteListContentProps<T> = {
-  parentRef: RefObject<HTMLElement>
+export type InfiniteListProps<T> = {
   sessionStorageKey: string
   items: T[]
   item: FC<InfiniteListItemProps<T>>
@@ -42,17 +40,9 @@ type InfiniteListContentProps<T> = {
   itemCount: number
   itemsPerRow: number
   setItemsPerRow: Dispatch<SetStateAction<number>>
-}
-export type InfiniteListProps<T> = Omit<
-  InfiniteListContentProps<T>,
-  'parentRef'
-> & {
   emptyMessage?: string
   className?: string
 }
-
-// The horizontal padding between the grid and the viewport.
-const padding = 24
 
 // The min width of a single item.
 const minItemWidth = 240
@@ -61,33 +51,23 @@ const minItemWidth = 240
 const itemMargin = 8
 
 export function InfiniteList<T>({
-  emptyMessage,
   itemCount,
+  emptyMessage,
   className,
-  ...etc
+  ...props
 }: InfiniteListProps<T>) {
-  const parentRef = useRef<HTMLDivElement>(null)
+  if (itemCount === 0)
+    return <Empty className={cn('m-6', className)}>{emptyMessage}</Empty>
   return (
-    <div
-      ref={parentRef}
-      style={{ padding }}
-      className={cn('overflow-y-auto overflow-x-hidden', className)}
-    >
-      {itemCount > 0 ? (
-        <InfiniteListContent
-          parentRef={parentRef}
-          itemCount={itemCount}
-          {...etc}
-        />
-      ) : (
-        <Empty>{emptyMessage}</Empty>
-      )}
-    </div>
+    <InfiniteListContent
+      itemCount={itemCount}
+      className={className}
+      {...props}
+    />
   )
 }
 
 function InfiniteListContent<T>({
-  parentRef,
   sessionStorageKey,
   items,
   item: Item,
@@ -95,64 +75,59 @@ function InfiniteListContent<T>({
   itemCount,
   itemsPerRow,
   setItemsPerRow,
-}: InfiniteListContentProps<T>) {
+  className,
+}: Omit<InfiniteListProps<T>, 'emptyMessage'>) {
   const [searchParams, setSearchParams] = useSearchParams()
   const { skip, take } = getPagination(searchParams)
 
   // The total width of the grid.
-  const [totalWidth, setTotalWidth] = useState(0)
+  const [innerRef, { width: totalWidth }] = useMeasure()
+  const outerRef = useRef<HTMLDivElement>(null)
 
-  // The height of each row (480px for item + 40px for margin).
+  // Reduce the number of items per row as viewport shrinks.
+  useLayoutEffect(() => {
+    setItemsPerRow(Math.floor(totalWidth / minItemWidth))
+  }, [setItemsPerRow, totalWidth])
+
+  // The height of each row (480px for item + 24px for margin).
   const itemWidth = totalWidth / itemsPerRow
 
-  // Derive the item height from width (9:16 image + 50px text + 40px margin).
-  const itemHeight = itemWidth / itemAspectRatio + 50 + 40
-
-  // On window resize, recalculate the item width and number of shows per row.
-  useLayoutEffect(() => {
-    const handleResize = () => {
-      const newTotalWidth = window.innerWidth - padding * 2
-      setTotalWidth(newTotalWidth)
-      setItemsPerRow(Math.floor(newTotalWidth / minItemWidth))
-    }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [setItemsPerRow])
+  // Derive the item height from width (9:16 image + 50px text + 24px margin).
+  const itemHeight = itemWidth / itemAspectRatio + 50 + 24
 
   // Infinite scroll the shows grid list.
   const virtualizer = useVirtualizer({
-    getScrollElement: () => parentRef.current,
+    getScrollElement: () => outerRef.current,
     estimateSize: () => itemHeight,
     lanes: itemsPerRow,
     overscan: 10,
     count: itemCount,
   })
-  useEffect(() => virtualizer.measure(), [itemsPerRow, virtualizer])
+  useLayoutEffect(() => virtualizer.measure(), [itemHeight, virtualizer])
 
   // Save the user's scroll position and restore it upon revisiting the page.
   const navigation = useNavigation()
   useEffect(() => {
-    if (navigation.location && parentRef.current)
+    if (navigation.location && outerRef.current)
       sessionStorage.setItem(
         sessionStorageKey,
-        parentRef.current.scrollTop.toString(),
+        outerRef.current.scrollTop.toString(),
       )
-  }, [sessionStorageKey, navigation, parentRef])
+  }, [sessionStorageKey, navigation, outerRef])
   useBeforeUnload(
     useCallback(() => {
-      if (parentRef.current)
+      if (outerRef.current)
         sessionStorage.setItem(
           sessionStorageKey,
-          parentRef.current.scrollTop.toString(),
+          outerRef.current.scrollTop.toString(),
         )
-    }, [sessionStorageKey, parentRef]),
+    }, [sessionStorageKey, outerRef]),
   )
   useLayoutEffect(() => {
     const infiniteScrollTop = sessionStorage.getItem(sessionStorageKey)
-    if (totalWidth && parentRef.current && infiniteScrollTop)
-      parentRef.current.scrollTo({ top: Number(infiniteScrollTop) })
-  }, [sessionStorageKey, parentRef, totalWidth])
+    if (totalWidth && outerRef.current && infiniteScrollTop)
+      outerRef.current.scrollTo({ top: Number(infiniteScrollTop) })
+  }, [sessionStorageKey, outerRef, totalWidth])
 
   // Load the results necessary to show the current window of data.
   const lowerBoundary = skip + overscan
@@ -213,38 +188,44 @@ function InfiniteListContent<T>({
   }, [])
 
   return (
-    <ol
-      style={{
-        visibility: totalWidth ? 'visible' : 'hidden',
-        height: `${virtualizer.getTotalSize()}px`,
-        margin: `-${itemMargin}px`,
-        position: 'relative',
-      }}
+    <div
+      ref={outerRef}
+      className={cn('overflow-y-auto overflow-x-hidden p-6', className)}
     >
-      {virtualizer.getVirtualItems().map((virtualRow) => {
-        const index = isMountedRef.current
-          ? Math.abs(skip - virtualRow.index)
-          : virtualRow.index
-        const item = items[index]
-        return (
-          <li
-            data-index={virtualRow.index}
-            key={virtualRow.key}
-            className={cn(item == null && 'cursor-wait')}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: `${(virtualRow.lane / itemsPerRow) * 100}%`,
-              width: `${itemWidth}px`,
-              height: `${virtualRow.size}px`,
-              transform: `translateY(${virtualRow.start}px)`,
-              padding: `${itemMargin / 2}px`,
-            }}
-          >
-            <Item item={item} />
-          </li>
-        )
-      })}
-    </ol>
+      <ol
+        ref={innerRef}
+        style={{
+          visibility: totalWidth ? 'visible' : 'hidden',
+          height: `${virtualizer.getTotalSize()}px`,
+          margin: `-${itemMargin / 2}px`,
+          position: 'relative',
+        }}
+      >
+        {virtualizer.getVirtualItems().map((virtualRow) => {
+          const index = isMountedRef.current
+            ? Math.abs(skip - virtualRow.index)
+            : virtualRow.index
+          const item = items[index]
+          return (
+            <li
+              data-index={virtualRow.index}
+              key={virtualRow.key}
+              className={cn(item == null && 'cursor-wait')}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: `${(virtualRow.lane / itemsPerRow) * 100}%`,
+                width: `${itemWidth}px`,
+                height: `${virtualRow.size}px`,
+                transform: `translateY(${virtualRow.start}px)`,
+                padding: `${itemMargin / 2}px`,
+              }}
+            >
+              <Item item={item} />
+            </li>
+          )
+        })}
+      </ol>
+    </div>
   )
 }
