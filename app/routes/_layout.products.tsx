@@ -1,5 +1,4 @@
 import {
-  Link,
   Outlet,
   useLoaderData,
   useLocation,
@@ -21,6 +20,13 @@ import {
   InfiniteList,
   type InfiniteListItemProps,
 } from 'components/infinite-list'
+import {
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemSubtitle,
+  ItemDescription,
+} from 'components/item'
 
 import { NAME } from 'utils/general'
 
@@ -126,27 +132,21 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
   // intended to be misleading (e.g. $69.70 instead of $70).
   const msrp = product?.msrp ? Math.round(Number(product.msrp)) : undefined
   return (
-    <Link
-      className='block text-xs'
-      prefetch='intent'
-      to={`${product?.id}${location.search}`}
-    >
-      <li className='flex flex-col gap-2'>
-        <Carousel
-          items={product?.variants.flatMap((v) => v.images)}
-          item={ProductImage}
-        />
-        <div>
-          {product && product.brands.length > 0 && (
-            <h2 className='font-medium uppercase'>
-              {product?.brands.map((b) => b.name).join(' x ')}
-            </h2>
-          )}
-          {product && <h3 className='leading-none'>{product.name}</h3>}
-          {msrp && <p>${msrp}</p>}
-        </div>
-      </li>
-    </Link>
+    <Item to={`${product?.id}${location.search}`}>
+      <Carousel
+        items={product?.variants.flatMap((v) => v.images)}
+        item={ProductImage}
+      />
+      {product && (
+        <ItemContent>
+          <ItemTitle>
+            {product?.brands.map((b) => b.name).join(' x ')}
+          </ItemTitle>
+          <ItemSubtitle>{product.name}</ItemSubtitle>
+          {msrp && <ItemDescription>${msrp}</ItemDescription>}
+        </ItemContent>
+      )}
+    </Item>
   )
 }
 
