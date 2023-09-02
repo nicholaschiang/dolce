@@ -7,6 +7,9 @@ const links = [
   { to: '/shows', label: 'Shows' },
   { to: '/products', label: 'Products' },
   { to: '/brands', label: 'Brands' },
+  { to: '/styles', label: 'Styles' },
+  { to: '/seasons', label: 'Seasons' },
+  { to: '/sets', label: 'Sets' },
 ]
 
 export function Header({ className }: { className?: string }) {
