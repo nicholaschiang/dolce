@@ -3,6 +3,8 @@ import { nanoid } from 'nanoid/non-secure'
 
 import { ListLayout } from 'components/list-layout'
 
+import { getSeasonName } from 'utils/season'
+
 import { prisma } from 'db.server'
 import { FILTER_PARAM, filterToSearchParam } from 'filters'
 import { log } from 'log.server'
@@ -33,9 +35,9 @@ export default function SeasonsPage() {
             <Link
               prefetch='intent'
               className='link underline'
-              to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
+              to={`/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
-              {season.name} {season.year}
+              {getSeasonName(season)}
             </Link>
           </li>
         )
