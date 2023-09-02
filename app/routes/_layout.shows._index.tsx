@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import {
   type SerializeFrom,
   type LoaderArgs,
@@ -14,8 +14,16 @@ import {
   InfiniteList,
   type InfiniteListItemProps,
 } from 'components/infinite-list'
+import {
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemSubtitle,
+  ItemDescription,
+} from 'components/item'
 
 import { NAME } from 'utils/general'
+import { LOCATION_TO_NAME } from 'utils/location'
 import { getShowSeason, getShowPath } from 'utils/show'
 
 import { prisma } from 'db.server'
@@ -125,24 +133,22 @@ type Show = SerializeFrom<typeof loader>['shows'][number]
 
 function ShowItem({ item: show }: InfiniteListItemProps<Show>) {
   return (
-    <Link
-      to={show ? getShowPath(show) : ''}
-      prefetch='intent'
-      className='block'
-    >
+    <Item to={show ? getShowPath(show) : ''}>
       <Carousel
-        className='mb-3'
         loading={show == null}
         items={show?.looks}
         item={ShowLookItem}
       />
-      <h2 className='text-xl font-serif font-semibold text-center leading-none mb-1'>
-        {show?.brand.name}
-      </h2>
-      <h3 className='text-xs uppercase text-center'>
-        {show ? getShowSeason(show) : ''}
-      </h3>
-    </Link>
+      {show && (
+        <ItemContent>
+          <ItemTitle>{show.brand.name}</ItemTitle>
+          <ItemSubtitle>{getShowSeason(show)}</ItemSubtitle>
+          {show?.location && (
+            <ItemDescription>{LOCATION_TO_NAME[show.location]}</ItemDescription>
+          )}
+        </ItemContent>
+      )}
+    </Item>
   )
 }
 
