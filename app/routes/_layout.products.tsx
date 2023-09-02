@@ -5,15 +5,22 @@ import {
   useLocation,
   useNavigate,
 } from '@remix-run/react'
-import { type LoaderArgs, type V2_MetaFunction } from '@vercel/remix'
+import {
+  type SerializeFrom,
+  type LoaderArgs,
+  type V2_MetaFunction,
+} from '@vercel/remix'
 import { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Banner } from 'components/banner'
 import { Carousel, type CarouselItemProps } from 'components/carousel'
-import { Empty } from 'components/empty'
 import { FiltersBar, getWhere } from 'components/filters-bar'
-import { Image } from 'components/image'
+import {
+  getPagination,
+  InfiniteList,
+  type InfiniteListItemProps,
+} from 'components/infinite-list'
 
 import { NAME } from 'utils/general'
 
@@ -28,42 +35,20 @@ export const handle: Handle = {
   breadcrumb: () => ({ to: '/products', children: 'Products' }),
 }
 
-async function getProducts({ request }: LoaderArgs) {
+export async function loader({ request }: LoaderArgs) {
   const { where, string } = getWhere(request)
   log.debug('getting products... %s', string)
-  const products = (
-    await prisma.product.findMany({
+  const [products, filteredCount, totalCount] = await Promise.all([
+    prisma.product.findMany({
+      ...getPagination(new URL(request.url).searchParams),
       include: { brands: true, variants: { include: { images: true } } },
-      take: 100,
       where,
-    })
-  ).map((product) => ({
-    id: product.id,
-    name: product.name,
-    brand: product.brands.map((brand) => brand.name).join(' x '),
-    images: product.variants.flatMap((v) => v.images).map((image) => image.url),
-    // real users don't care about cents. most reputable brands won't include
-    // cents in their prices anyway. prices that do include cents are usually
-    // intended to be misleading (e.g. $69.70 instead of $70).
-    msrp: product.msrp ? Math.round(Number(product.msrp)) : undefined,
-  }))
+    }),
+    prisma.product.count({ where }),
+    prisma.product.count(),
+  ])
   log.debug('got %d products', products.length)
-  return products
-}
-
-async function getCount() {
-  log.debug('getting products count...')
-  const count = await prisma.product.count()
-  log.debug('got product count: %d', count)
-  return count
-}
-
-// users can control prisma queries via url search parameters.
-// Ex: /products?f=price:gt:100&f=price:lt:200&j=OR
-// ... will return products with a price between 100 and 200.
-export async function loader(args: LoaderArgs) {
-  const [products, count] = await Promise.all([getProducts(args), getCount()])
-  return { products, count }
+  return { products, filteredCount, totalCount }
 }
 
 // There must be at least one product per row.
@@ -76,7 +61,7 @@ const maxResultsPerRow = 20
 const hiddenFields: ProductFilterName[] = []
 
 export default function ProductsPage() {
-  const { products, count } = useLoaderData<typeof loader>()
+  const { products, filteredCount, totalCount } = useLoaderData<typeof loader>()
   const nav = useNavigate()
   const location = useLocation()
   useHotkeys(
@@ -113,106 +98,70 @@ export default function ProductsPage() {
         minZoom={minResultsPerRow}
         zoom={resultsPerRow}
         setZoom={setResultsPerRow}
-        totalCount={count}
-        filteredCount={products.length}
+        totalCount={totalCount}
+        filteredCount={filteredCount}
       />
-      <div className='h-full flex-1 overflow-y-auto overflow-x-hidden p-6'>
-        {products.length > 0 ? (
-          <ol
-            className='grid gap-x-3 gap-y-6'
-            style={{
-              gridTemplateColumns: `repeat(${resultsPerRow}, minmax(0, 1fr))`,
-            }}
-          >
-            {products.map((product, index) => (
-              <ProductItem
-                {...product}
-                key={product.id}
-                index={index}
-                resultsPerRow={resultsPerRow}
-              />
-            ))}
-          </ol>
-        ) : (
-          <Empty>There are no products that match your filters.</Empty>
-        )}
-      </div>
+      <InfiniteList
+        items={products}
+        item={ProductItem}
+        itemAspectRatio={500 / 683}
+        itemCount={filteredCount}
+        itemsPerRow={resultsPerRow}
+        setItemsPerRow={setResultsPerRow}
+        emptyMessage='There are no products that match your filters.'
+        className='h-0 grow'
+      />
     </>
   )
 }
 
 //////////////////////////////////////////////////////////////////
 
-// Eagerly load images for the first two rows of products.
-const rowsToEagerLoad = 2
+type Product = SerializeFrom<typeof loader>['products'][number]
 
-type ProductItemProps = {
-  id: number
-  brand: string
-  name: string
-  images: string[]
-  msrp?: number
-  index: number
-  resultsPerRow: number
-}
-
-function ProductItem({
-  id,
-  brand,
-  name,
-  images,
-  msrp,
-  index,
-  resultsPerRow,
-}: ProductItemProps) {
+function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
   const location = useLocation()
+  // real users don't care about cents. most reputable brands won't include
+  // cents in their prices anyway. prices that do include cents are usually
+  // intended to be misleading (e.g. $69.70 instead of $70).
+  const msrp = product?.msrp ? Math.round(Number(product.msrp)) : undefined
   return (
     <Link
       className='block text-xs'
       prefetch='intent'
-      to={`${id}${location.search}`}
+      to={`${product?.id}${location.search}`}
     >
       <li className='flex flex-col gap-2'>
         <Carousel
-          items={images.map((url) => ({ id: url, index, resultsPerRow }))}
+          items={product?.variants.flatMap((v) => v.images)}
           item={ProductImage}
         />
         <div>
-          <h2 className='font-medium uppercase'>{brand}</h2>
-          <h3 className='leading-none'>{name}</h3>
-          <p>${msrp}</p>
+          {product && product.brands.length > 0 && (
+            <h2 className='font-medium uppercase'>
+              {product?.brands.map((b) => b.name).join(' x ')}
+            </h2>
+          )}
+          {product && <h3 className='leading-none'>{product.name}</h3>}
+          {msrp && <p>${msrp}</p>}
         </div>
       </li>
     </Link>
   )
 }
 
-function ProductImage({
-  item: image,
-  index,
-}: CarouselItemProps<{ id: string; index: number; resultsPerRow: number }>) {
+type Image = Product['variants'][number]['images'][number]
+
+function ProductImage({ item: image }: CarouselItemProps<Image>) {
   return (
     <div className='w-full aspect-product'>
       {image && (
-        <Image
+        <img
           className='h-full w-full object-cover'
-          loading={
-            index === 0 && image.index < image.resultsPerRow * rowsToEagerLoad
-              ? 'eager'
-              : 'lazy'
-          }
-          decoding={
-            index === 0 && image.index < image.resultsPerRow * rowsToEagerLoad
-              ? 'sync'
-              : 'async'
-          }
-          src={image.id}
-          responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
-            (width) => ({
-              size: { width },
-              maxWidth: width * image.resultsPerRow,
-            }),
-          )}
+          loading='lazy'
+          decoding='async'
+          src={image.url}
+          alt=''
         />
       )}
     </div>
