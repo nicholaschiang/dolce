@@ -24,7 +24,7 @@ export function Dialog({
         <DialogPrimitive.Overlay className='fixed inset-0 z-40 bg-white/50 dark:bg-gray-900/50' />
         <DialogPrimitive.Content
           className={cn(
-            'center fixed z-50 overflow-hidden rounded-lg border border-gray-200/50 bg-white shadow-2xl focus:outline-none dark:border-gray-800/50 dark:bg-gray-900',
+            'center fixed z-50 overflow-auto rounded-lg border border-gray-200/50 bg-white shadow-2xl focus:outline-none dark:border-gray-800/50 dark:bg-gray-900 max-h-[calc(100vh-3rem)]',
             className,
           )}
           onOpenAutoFocus={onOpenAutoFocus}
