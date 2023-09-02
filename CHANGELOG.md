@@ -1,5 +1,32 @@
 # Release Notes
 
+## [1.55.0](https://github.com/nicholaschiang/dolce/compare/v1.54.1...v1.55.0) (2023-09-02)
+
+
+### Features
+
+* add explanation banner to list pages ([d1366bc](https://github.com/nicholaschiang/dolce/commit/d1366bc9712a2be41094cbfc6f6fc1e597e9e108))
+* **index/header:** add links to useful list pages ([3738b19](https://github.com/nicholaschiang/dolce/commit/3738b19dcdb16ac37e0f4b6e8750935f9ce92417))
+* **index/header:** link to latest shows season ([7bc1f05](https://github.com/nicholaschiang/dolce/commit/7bc1f053282d539bf37a4f597eb2032b3b176d19))
+* **map:** open shows when location name clicked ([93e3d10](https://github.com/nicholaschiang/dolce/commit/93e3d103601bb74b0a0dcb5764833c97233f920c))
+* **products:** add "no results" state to list ([bc079a5](https://github.com/nicholaschiang/dolce/commit/bc079a568e0f86dfc41cb9df6b333a3b3daf7149))
+* **products:** add infinite scrolling to products ([6abc7a9](https://github.com/nicholaschiang/dolce/commit/6abc7a975d862a1bef2cc2bd6f73060c4ec27871))
+* **products:** add variant carousel to products list ([b7b5bde](https://github.com/nicholaschiang/dolce/commit/b7b5bde15f52665ddf47bdfd739b475f33103581))
+* reuse item styling for shows and products ([5a08461](https://github.com/nicholaschiang/dolce/commit/5a084615d2a2b2de72d8361bd6f1d28a1ab53f7b))
+* **routes/seasons:** link to shows page instead ([2388bfa](https://github.com/nicholaschiang/dolce/commit/2388bfa34e0b138b96dd0a6b33fa7a9ec2ca6558))
+
+
+### Bug Fixes
+
+* **carousel:** add dark background to pagination dots ([11c023a](https://github.com/nicholaschiang/dolce/commit/11c023a3f7671cd2e6942ef3d87e9fca38f06a6a))
+* **carousel:** do not require explicit `itemWidth` ([0fb1420](https://github.com/nicholaschiang/dolce/commit/0fb142094577704431960b0301079ed37650a577))
+* **carousel:** remove gradient background ([cc1e4e4](https://github.com/nicholaschiang/dolce/commit/cc1e4e43ad87717d07370dded6212650dd4e9130))
+* **components/filters:** remove frosted background ([41109d8](https://github.com/nicholaschiang/dolce/commit/41109d835d0a65efd01819bab761671285440190))
+* **index/header:** remove "brands" homepage link ([5958035](https://github.com/nicholaschiang/dolce/commit/5958035988c92314ee6551619b5d44f92269392d))
+* **routes/brands:** link to shows page instead ([743a91b](https://github.com/nicholaschiang/dolce/commit/743a91b7bee925993519028df6caa70298b19453))
+* save properly capitalized product names ([c170751](https://github.com/nicholaschiang/dolce/commit/c170751c356ae1764cc5f7ebb0244060c5bf761e))
+* **show/critic-reviews:** add margin to empty state ([a02d623](https://github.com/nicholaschiang/dolce/commit/a02d62342ae6f70406a4d870370349c704b3dcc2))
+
 ## [1.54.1](https://github.com/nicholaschiang/dolce/compare/v1.54.0...v1.54.1) (2023-09-01)
 
 
