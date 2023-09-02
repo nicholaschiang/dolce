@@ -123,6 +123,7 @@ export default function ShowsPage() {
         itemCount={filteredCount}
         itemsPerRow={itemsPerRow}
         setItemsPerRow={setItemsPerRow}
+        sessionStorageKey='shows'
         emptyMessage='There are no fashion shows that match your filters.'
         className='h-0 grow'
       />

@@ -35,6 +35,7 @@ export const getPagination = (searchParams: URLSearchParams) => ({
 export type InfiniteListItemProps<T> = { item?: T }
 type InfiniteListContentProps<T> = {
   parentRef: RefObject<HTMLElement>
+  sessionStorageKey: string
   items: T[]
   item: FC<InfiniteListItemProps<T>>
   itemAspectRatio: number
@@ -87,6 +88,7 @@ export function InfiniteList<T>({
 
 function InfiniteListContent<T>({
   parentRef,
+  sessionStorageKey,
   items,
   item: Item,
   itemAspectRatio,
@@ -133,24 +135,24 @@ function InfiniteListContent<T>({
   useEffect(() => {
     if (navigation.location && parentRef.current)
       sessionStorage.setItem(
-        'infiniteScrollTop',
+        sessionStorageKey,
         parentRef.current.scrollTop.toString(),
       )
-  }, [navigation, parentRef])
+  }, [sessionStorageKey, navigation, parentRef])
   useBeforeUnload(
     useCallback(() => {
       if (parentRef.current)
         sessionStorage.setItem(
-          'infiniteScrollTop',
+          sessionStorageKey,
           parentRef.current.scrollTop.toString(),
         )
-    }, [parentRef]),
+    }, [sessionStorageKey, parentRef]),
   )
   useLayoutEffect(() => {
-    const infiniteScrollTop = sessionStorage.getItem('infiniteScrollTop')
-    if (parentRef.current && infiniteScrollTop)
+    const infiniteScrollTop = sessionStorage.getItem(sessionStorageKey)
+    if (totalWidth && parentRef.current && infiniteScrollTop)
       parentRef.current.scrollTo({ top: Number(infiniteScrollTop) })
-  }, [parentRef])
+  }, [sessionStorageKey, parentRef, totalWidth])
 
   // Load the results necessary to show the current window of data.
   const lowerBoundary = skip + overscan
