@@ -3,6 +3,7 @@ import { Link, useLoaderData } from '@remix-run/react'
 import { type V2_MetaFunction, type SerializeFrom } from '@vercel/remix'
 import { scaleLinear } from 'd3-scale'
 import { X } from 'lucide-react'
+import { nanoid } from 'nanoid/non-secure'
 import { useMemo } from 'react'
 import {
   ComposableMap,
@@ -31,6 +32,7 @@ import { NAME, useLoadFetcher } from 'utils/general'
 import { LOCATION_TO_NAME, LOCATION_TO_COORDINATES } from 'utils/location'
 
 import { prisma } from 'db.server'
+import { FILTER_PARAM, filterToSearchParam } from 'filters'
 
 import geography from './geography.json'
 import { Header } from './header'
@@ -176,6 +178,12 @@ function LocationMarker({
 }) {
   const endpoint = `/api/locations/${stats.location}`
   const fetcher = useLoadFetcher<typeof locationAPI>(endpoint)
+  const param = filterToSearchParam<'location', 'equals'>({
+    id: nanoid(5),
+    name: 'location',
+    condition: 'equals',
+    value: stats.location,
+  })
   return (
     <Popover>
       <PopoverTrigger asChild onMouseOver={fetcher.load}>
@@ -214,14 +222,18 @@ function LocationMarker({
           </PopoverClose>
         </Carousel>
         {fetcher.state === 'loading' && <LoadingLine className='-mt-px' />}
-        <article className='py-2 px-3'>
+        <Link
+          prefetch='intent'
+          to={`/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`}
+          className='block py-2 px-3'
+        >
           <h2 className='font-semibold'>{LOCATION_TO_NAME[stats.location]}</h2>
           <p className='text-gray-400 dark:text-gray-600'>
             {stats.showsCount} shows
             <span aria-hidden> · </span>
             {stats.brandsCount} brands
           </p>
-        </article>
+        </Link>
       </PopoverContent>
     </Popover>
   )
