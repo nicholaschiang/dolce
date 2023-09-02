@@ -17,7 +17,7 @@ export function CriticReviews() {
         className='pb-0 border-0'
       />
       {show.articles.length === 0 && (
-        <Empty className='mt-2'>
+        <Empty className='mx-6 mb-6'>
           No critic reviews to show yet. Try checking back later.
         </Empty>
       )}
