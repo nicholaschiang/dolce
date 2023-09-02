@@ -114,6 +114,7 @@ export default function ProductsPage() {
         itemCount={filteredCount}
         itemsPerRow={resultsPerRow}
         setItemsPerRow={setResultsPerRow}
+        sessionStorageKey='products'
         emptyMessage='There are no products that match your filters.'
         className='h-0 grow'
       />
