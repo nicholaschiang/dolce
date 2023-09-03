@@ -1,24 +1,21 @@
 import * as Popover from '@radix-ui/react-popover'
-import { Link, useLoaderData, useLocation, useNavigate } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import {
   type LoaderArgs,
   type SerializeFrom,
   type V2_MetaFunction,
 } from '@vercel/remix'
-import { ChevronDown, ChevronUp, X, Info } from 'lucide-react'
-import { type PropsWithChildren, type ReactNode } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
+import { Info } from 'lucide-react'
+import { nanoid } from 'nanoid/non-secure'
+import { type PropsWithChildren } from 'react'
 import invariant from 'tiny-invariant'
 
-import type { loader as products } from 'routes/_layout.products'
-
-import { Dialog } from 'components/dialog'
 import { Image } from 'components/image'
-import { Tooltip } from 'components/tooltip'
 
-import { NAME, useData } from 'utils/general'
+import { NAME } from 'utils/general'
 
 import { prisma } from 'db.server'
+import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
 import { type Handle } from 'root'
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
@@ -26,10 +23,28 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
 ]
 
 export const handle: Handle = {
-  breadcrumb: (match) => ({
-    to: `/products/${match.params.productId as string}`,
-    children: (match.data as SerializeFrom<typeof loader>)?.name ?? '404',
-  }),
+  breadcrumb: (match) => {
+    const data = match.data as SerializeFrom<typeof loader> | undefined
+    if (data == null) return []
+    const filter: Filter<'brands', 'some'> = {
+      id: nanoid(5),
+      name: 'brands',
+      condition: 'some',
+      value: { id: data.brands[0].id, name: data.brands[0].name },
+    }
+    const param = filterToSearchParam<'brands', 'some'>(filter)
+    return [
+      { to: '/products', children: 'Products' },
+      {
+        to: `/products?${FILTER_PARAM}=${encodeURIComponent(param)}`,
+        children: data.brands[0].name,
+      },
+      {
+        to: `/products/${match.params.productId as string}`,
+        children: (match.data as SerializeFrom<typeof loader>)?.name ?? '404',
+      },
+    ]
+  },
 }
 
 export async function loader({ params }: LoaderArgs) {
@@ -52,116 +67,24 @@ export async function loader({ params }: LoaderArgs) {
   return product
 }
 
-// Images are currently sized w:h = 1:1.25 (e.g. Isabel Marant).
-const widthToHeightImageRatio = 1.25
-
-type LinkWithHotkeyProps = {
-  to: string
-  tip: string
-  hotkey: string
-  disabled: boolean
-  children: ReactNode
-}
-
-function LinkWithHotkey({
-  to,
-  tip,
-  hotkey,
-  disabled,
-  children,
-}: LinkWithHotkeyProps) {
-  const nav = useNavigate()
-  if (disabled)
-    return (
-      <button type='button' className='icon-button square outlined' disabled>
-        {children}
-      </button>
-    )
-  return (
-    <Tooltip tip={tip} hotkey={hotkey} onHotkey={() => nav(to)}>
-      <Link to={to} className='icon-button square outlined' prefetch='intent'>
-        {children}
-      </Link>
-    </Tooltip>
-  )
-}
+const widthToHeightImageRatio = 683 / 500
 
 export default function ProductPage() {
-  const nav = useNavigate()
-  const location = useLocation()
-  const data = useData<typeof products>('routes/_layout.products')
-  const productIds = (data?.products ?? []).map((product) => product.id)
   const product = useLoaderData<typeof loader>()
-  const productIndex = productIds.indexOf(product.id)
-  useHotkeys(
-    'g',
-    (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      nav(`../${productIds[0]}${location.search}`)
-    },
-    [nav, productIds, location.search],
-  )
-  useHotkeys(
-    'shift+G',
-    (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      nav(`../${productIds[productIds.length - 1]}${location.search}`)
-    },
-    [nav, productIds, location.search],
-  )
-  const images = product.variants.map((v) => v.images).flat()
+  const images = product.variants.flatMap((v) => v.images)
   return (
-    <Dialog
-      open
-      onOpenChange={() => nav(`..${location.search}`)}
-      onOpenAutoFocus={(event) => event.preventDefault()}
-      className='w-full max-w-screen-lg'
-    >
-      <div className='flex items-center gap-2.5 border-b border-gray-200/50 bg-gray-50 p-2 px-6 dark:border-gray-800/50 dark:bg-gray-900'>
-        <Tooltip tip='close' hotkey='esc'>
-          <Dialog.Close className='icon-button square'>
-            <X className='w-3 h-3' />
-          </Dialog.Close>
-        </Tooltip>
-        <div className='flex items-center gap-1'>
-          <LinkWithHotkey
-            tip='move up'
-            hotkey='k'
-            to={`../${productIds[productIndex - 1]}${location.search}`}
-            disabled={productIndex <= 0}
-          >
-            <ChevronUp className='w-3 h-3' />
-          </LinkWithHotkey>
-          <LinkWithHotkey
-            tip='move down'
-            hotkey='j'
-            to={`../${productIds[productIndex + 1]}${location.search}`}
-            disabled={productIndex === productIds.length - 1}
-          >
-            <ChevronDown className='w-3 h-3' />
-          </LinkWithHotkey>
-        </div>
-        <span className='mt-0.5 text-sm text-gray-600 dark:text-gray-400'>
-          {productIndex + 1}
-          <span className='text-gray-400 dark:text-gray-600'>
-            {' / '}
-            {productIds.length}
-          </span>
-        </span>
-      </div>
-      <div className='flex w-full items-start gap-6 p-6'>
-        <div className='relative w-0 flex-1'>
+    <div className='h-0 grow overflow-auto flex w-full items-start gap-6 p-6'>
+      <div className='w-0 flex-1 grid grid-cols-2 gap-1'>
+        {images.map((image, index) => (
           <div
-            className='absolute w-full'
-            style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
+            key={image.id}
+            className='aspect-product bg-gray-100 dark:bg-gray-900'
           >
             <Image
-              className='absolute top-0 h-full w-full overflow-hidden rounded-md bg-gray-100 dark:bg-gray-900'
-              loading='eager'
-              decoding='sync'
-              src={images[0].url}
+              className='h-full w-full object-cover'
+              loading={index < 2 ? 'eager' : 'lazy'}
+              decoding={index < 2 ? 'sync' : 'async'}
+              src={image.url}
               responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
                 (width) => ({
                   size: { width, height: width * widthToHeightImageRatio },
@@ -170,168 +93,164 @@ export default function ProductPage() {
               )}
             />
           </div>
-          <div
-            className='relative z-30 mb-2 rounded-md'
-            style={{ paddingTop: `${widthToHeightImageRatio * 100}%` }}
-          />
-        </div>
-        <article className='flex w-0 flex-1 flex-col gap-3'>
-          <Section>
-            <p className='text-sm text-gray-400 dark:text-gray-600'>
-              {product.level}
-            </p>
-            <Dialog.Title className='text-2xl'>{product.name}</Dialog.Title>
-            <p className='text-2xs'>{product.description}</p>
-          </Section>
-          <Section>
-            <Section.Title>
-              sizes
-              <Section.Info>
-                <Section.InfoHeader>
-                  The sizes the product was originally made to fit.
-                </Section.InfoHeader>
-                <Section.InfoDetail>
-                  A size is a measurement of a product’s dimensions. Sizes can
-                  either be owned by a brand (for proprietary brand specific
-                  sizing systems) or a country (for nationwide standardized
-                  sizes). You can add multiple sizes to your profile. Our system
-                  will automatically suggest sizes to add based on your previous
-                  purchases and existing profile sizes.
-                </Section.InfoDetail>
-              </Section.Info>
-            </Section.Title>
-            <Section.Content>
-              {product.sizes.map((size) => (
-                <Chip key={size.id}>{size.name}</Chip>
-              ))}
-            </Section.Content>
-          </Section>
-          <Section>
-            <Section.Title>
-              variants
-              <Section.Info>
-                <Section.InfoHeader>
-                  The variants the product was originally made in.
-                </Section.InfoHeader>
-                <Section.InfoDetail>
-                  A variant is a specific colorway of a product. Variants are
-                  product-specific.
-                </Section.InfoDetail>
-              </Section.Info>
-            </Section.Title>
-            <Section.Content>
-              {product.variants.map((variant) => (
-                <Chip key={variant.id}>{variant.name}</Chip>
-              ))}
-            </Section.Content>
-          </Section>
-          <Section>
-            <Section.Title>
-              styles
-              <Section.Info>
-                <Section.InfoHeader>
-                  The product’s styles. Allegorical to labels (e.g. top,
-                  t-shirt, v-neck).
-                </Section.InfoHeader>
-                <Section.InfoDetail>
-                  A product style category is a high-level grouping of products.
-                  Styles are a tad bit reminiscent of the typical issue tracking
-                  tool’s “labels” feature. e.g. blazer, bomber, cardigan,
-                  quilted, raincoat, jeans, tuxedos, etc.
-                </Section.InfoDetail>
-              </Section.Info>
-            </Section.Title>
-            <Section.Content>
-              {product.styles.map((style) => (
-                <Chip key={style.id}>{style.name}</Chip>
-              ))}
-            </Section.Content>
-          </Section>
-          <Section>
-            <Section.Title>
-              collections
-              <Section.Info>
-                <Section.InfoHeader>
-                  The collections that feature the product.
-                </Section.InfoHeader>
-                <Section.InfoDetail>
-                  A collection is an arbitrary grouping of products, typically
-                  done by a brand or a designer. Often, collections are created
-                  entirely by a single designer.
-                </Section.InfoDetail>
-              </Section.Info>
-            </Section.Title>
-            <Section.Content>
-              {product.collections.map((collection) => (
-                <Chip key={collection.id}>{collection.name}</Chip>
-              ))}
-            </Section.Content>
-          </Section>
-          <Section>
-            <Section.Title>
-              designers
-              <Section.Info>
-                <Section.InfoHeader>
-                  The product’s designers. Typically, this will be a single
-                  person.
-                </Section.InfoHeader>
-                <Section.InfoDetail>
-                  A designer is a person who contributed to the design of a
-                  product.
-                </Section.InfoDetail>
-              </Section.Info>
-            </Section.Title>
-            <Section.Content>
-              {product.designers.map((designer) => (
-                <Chip key={designer.id}>{designer.name}</Chip>
-              ))}
-            </Section.Content>
-          </Section>
-          <Section>
-            <Section.Title>
-              brands
-              <Section.Info>
-                <Section.InfoHeader>
-                  The product’s brands. Collaborations can have multiple brands.
-                </Section.InfoHeader>
-                <Section.InfoDetail>
-                  A brand is a recognizable name. Brands with similar names are
-                  given tiers. e.g. GUESS is given tier 1 while GBG and GUESS
-                  FACTORY are given tier 2.
-                </Section.InfoDetail>
-              </Section.Info>
-            </Section.Title>
-            <Section.Content>
-              {product.brands.map((brand) => (
-                <Chip key={brand.id}>{brand.name}</Chip>
-              ))}
-            </Section.Content>
-          </Section>
-          <Section>
-            <Section.Title>
-              prices
-              <Section.Info>
-                <Section.InfoHeader>
-                  The product’s available prices (MSRP, retail, resale) per size
-                  and color.
-                </Section.InfoHeader>
-                <Section.InfoDetail>
-                  A price is an encapsulation of a product’s value. A price can
-                  be for all the sizes and color variants of a product (e.g.
-                  when being sold at retail value) or specific to a single size
-                  and color variant (e.g. GOAT, Ebay, StockX).
-                </Section.InfoDetail>
-              </Section.Info>
-            </Section.Title>
-            <Section.Content>
-              {product.brands.map((brand) => (
-                <Chip key={brand.id}>{brand.name}</Chip>
-              ))}
-            </Section.Content>
-          </Section>
-        </article>
+        ))}
       </div>
-    </Dialog>
+      <article className='flex w-0 flex-1 flex-col gap-3 sticky top-0'>
+        <Section>
+          <p className='text-sm text-gray-400 dark:text-gray-600'>
+            {product.level}
+          </p>
+          <h2 className='text-2xl'>{product.name}</h2>
+          <p className='text-2xs'>{product.description}</p>
+        </Section>
+        <Section>
+          <Section.Title>
+            sizes
+            <Section.Info>
+              <Section.InfoHeader>
+                The sizes the product was originally made to fit.
+              </Section.InfoHeader>
+              <Section.InfoDetail>
+                A size is a measurement of a product’s dimensions. Sizes can
+                either be owned by a brand (for proprietary brand specific
+                sizing systems) or a country (for nationwide standardized
+                sizes). You can add multiple sizes to your profile. Our system
+                will automatically suggest sizes to add based on your previous
+                purchases and existing profile sizes.
+              </Section.InfoDetail>
+            </Section.Info>
+          </Section.Title>
+          <Section.Content>
+            {product.sizes.map((size) => (
+              <Chip key={size.id}>{size.name}</Chip>
+            ))}
+          </Section.Content>
+        </Section>
+        <Section>
+          <Section.Title>
+            variants
+            <Section.Info>
+              <Section.InfoHeader>
+                The variants the product was originally made in.
+              </Section.InfoHeader>
+              <Section.InfoDetail>
+                A variant is a specific colorway of a product. Variants are
+                product-specific.
+              </Section.InfoDetail>
+            </Section.Info>
+          </Section.Title>
+          <Section.Content>
+            {product.variants.map((variant) => (
+              <Chip key={variant.id}>{variant.name}</Chip>
+            ))}
+          </Section.Content>
+        </Section>
+        <Section>
+          <Section.Title>
+            styles
+            <Section.Info>
+              <Section.InfoHeader>
+                The product’s styles. Allegorical to labels (e.g. top, t-shirt,
+                v-neck).
+              </Section.InfoHeader>
+              <Section.InfoDetail>
+                A product style category is a high-level grouping of products.
+                Styles are a tad bit reminiscent of the typical issue tracking
+                tool’s “labels” feature. e.g. blazer, bomber, cardigan, quilted,
+                raincoat, jeans, tuxedos, etc.
+              </Section.InfoDetail>
+            </Section.Info>
+          </Section.Title>
+          <Section.Content>
+            {product.styles.map((style) => (
+              <Chip key={style.id}>{style.name}</Chip>
+            ))}
+          </Section.Content>
+        </Section>
+        <Section>
+          <Section.Title>
+            collections
+            <Section.Info>
+              <Section.InfoHeader>
+                The collections that feature the product.
+              </Section.InfoHeader>
+              <Section.InfoDetail>
+                A collection is an arbitrary grouping of products, typically
+                done by a brand or a designer. Often, collections are created
+                entirely by a single designer.
+              </Section.InfoDetail>
+            </Section.Info>
+          </Section.Title>
+          <Section.Content>
+            {product.collections.map((collection) => (
+              <Chip key={collection.id}>{collection.name}</Chip>
+            ))}
+          </Section.Content>
+        </Section>
+        <Section>
+          <Section.Title>
+            designers
+            <Section.Info>
+              <Section.InfoHeader>
+                The product’s designers. Typically, this will be a single
+                person.
+              </Section.InfoHeader>
+              <Section.InfoDetail>
+                A designer is a person who contributed to the design of a
+                product.
+              </Section.InfoDetail>
+            </Section.Info>
+          </Section.Title>
+          <Section.Content>
+            {product.designers.map((designer) => (
+              <Chip key={designer.id}>{designer.name}</Chip>
+            ))}
+          </Section.Content>
+        </Section>
+        <Section>
+          <Section.Title>
+            brands
+            <Section.Info>
+              <Section.InfoHeader>
+                The product’s brands. Collaborations can have multiple brands.
+              </Section.InfoHeader>
+              <Section.InfoDetail>
+                A brand is a recognizable name. Brands with similar names are
+                given tiers. e.g. GUESS is given tier 1 while GBG and GUESS
+                FACTORY are given tier 2.
+              </Section.InfoDetail>
+            </Section.Info>
+          </Section.Title>
+          <Section.Content>
+            {product.brands.map((brand) => (
+              <Chip key={brand.id}>{brand.name}</Chip>
+            ))}
+          </Section.Content>
+        </Section>
+        <Section>
+          <Section.Title>
+            prices
+            <Section.Info>
+              <Section.InfoHeader>
+                The product’s available prices (MSRP, retail, resale) per size
+                and color.
+              </Section.InfoHeader>
+              <Section.InfoDetail>
+                A price is an encapsulation of a product’s value. A price can be
+                for all the sizes and color variants of a product (e.g. when
+                being sold at retail value) or specific to a single size and
+                color variant (e.g. GOAT, Ebay, StockX).
+              </Section.InfoDetail>
+            </Section.Info>
+          </Section.Title>
+          <Section.Content>
+            {product.brands.map((brand) => (
+              <Chip key={brand.id}>{brand.name}</Chip>
+            ))}
+          </Section.Content>
+        </Section>
+      </article>
+    </div>
   )
 }
 
