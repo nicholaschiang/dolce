@@ -1,9 +1,4 @@
-import {
-  Outlet,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-} from '@remix-run/react'
+import { useLoaderData, useLocation, useNavigate } from '@remix-run/react'
 import {
   type SerializeFrom,
   type LoaderArgs,
@@ -86,7 +81,6 @@ export default function ProductsPage() {
   const [resultsPerRow, setResultsPerRow] = useState(6)
   return (
     <>
-      <Outlet />
       <Banner>
         Products are aggregated from across the web and show prices direct from
         the brand (e.g. Ralph Lauren, Gucci), from third-party retailers (e.g.
