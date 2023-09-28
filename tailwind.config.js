@@ -43,7 +43,7 @@ module.exports = {
     extend: {
       aspectRatio: {
         person: '9 / 16',
-        product: '500 / 683',
+        product: '4 / 5',
       },
       fontSize: {
         'xs': ['0.8125rem', '1.0625rem'],

@@ -42,7 +42,13 @@ export async function loader({ request }: LoaderArgs) {
   const [products, filteredCount, totalCount] = await Promise.all([
     prisma.product.findMany({
       ...getPagination(new URL(request.url).searchParams),
-      include: { brands: true, variants: { include: { images: true } } },
+      include: {
+        brands: true,
+        variants: {
+          include: { images: { orderBy: { position: 'asc' } } },
+          take: 1,
+        },
+      },
       where,
     }),
     prisma.product.count({ where }),

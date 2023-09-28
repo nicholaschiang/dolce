@@ -56,7 +56,12 @@ export async function loader({ params }: LoaderArgs) {
     where: { id },
     include: {
       variants: {
-        include: { size: true, colors: true, images: true, prices: true },
+        include: {
+          size: true,
+          colors: true,
+          prices: true,
+          images: { orderBy: { position: 'asc' } },
+        },
       },
       styles: true,
       collections: true,
@@ -68,15 +73,14 @@ export async function loader({ params }: LoaderArgs) {
   return product
 }
 
-const widthToHeightImageRatio = 683 / 500
+const widthToHeightImageRatio = 4 / 5
 
 export default function ProductPage() {
   const product = useLoaderData<typeof loader>()
-  const images = product.variants.flatMap((v) => v.images)
   return (
     <div className='h-0 grow overflow-auto flex w-full items-start gap-6 p-6'>
       <div className='w-0 flex-1 grid grid-cols-2 gap-1'>
-        {images.map((image, index) => (
+        {product.variants[0].images.map((image, index) => (
           <div
             key={image.id}
             className='aspect-product bg-gray-100 dark:bg-gray-900'
