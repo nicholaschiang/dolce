@@ -55,8 +55,9 @@ export async function loader({ params }: LoaderArgs) {
   const product = await prisma.product.findUnique({
     where: { id },
     include: {
-      sizes: true,
-      variants: { include: { images: true, prices: true } },
+      variants: {
+        include: { size: true, colors: true, images: true, prices: true },
+      },
       styles: true,
       collections: true,
       designers: true,
@@ -101,7 +102,12 @@ export default function ProductPage() {
             {product.level}
           </p>
           <h2 className='text-2xl'>{product.name}</h2>
-          <p className='text-2xs'>{product.description}</p>
+          {product.description && (
+            <article
+              className='prose prose-sm prose-zinc dark:prose-invert max-w-none'
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
+          )}
         </Section>
         <Section>
           <Section.Title>
@@ -121,27 +127,35 @@ export default function ProductPage() {
             </Section.Info>
           </Section.Title>
           <Section.Content>
-            {product.sizes.map((size) => (
-              <Chip key={size.id}>{size.name}</Chip>
-            ))}
+            {[...new Set(product.variants.map((v) => v.size.name))].map(
+              (name) => (
+                <Chip key={name}>{name}</Chip>
+              ),
+            )}
           </Section.Content>
         </Section>
         <Section>
           <Section.Title>
-            variants
+            colors
             <Section.Info>
               <Section.InfoHeader>
-                The variants the product was originally made in.
+                The colors the product was originally made in.
               </Section.InfoHeader>
               <Section.InfoDetail>
-                A variant is a specific colorway of a product. Variants are
+                A color is a specific colorway of a product. Variants are
                 product-specific.
               </Section.InfoDetail>
             </Section.Info>
           </Section.Title>
           <Section.Content>
-            {product.variants.map((variant) => (
-              <Chip key={variant.id}>{variant.name}</Chip>
+            {[
+              ...new Set(
+                product.variants.map((v) =>
+                  v.colors.map((c) => c.name).join(' / '),
+                ),
+              ),
+            ].map((color) => (
+              <Chip key={color}>{color}</Chip>
             ))}
           </Section.Content>
         </Section>
