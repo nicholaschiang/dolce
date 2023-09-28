@@ -1,7 +1,8 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import { nanoid } from 'nanoid/non-secure'
 
 import { ListLayout } from 'components/list-layout'
+
+import { getColorFilter } from 'utils/variant'
 
 import { prisma } from 'db.server'
 import { FILTER_PARAM, filterToSearchParam } from 'filters'
@@ -22,12 +23,9 @@ export default function VariantsPage() {
   return (
     <ListLayout title='variants'>
       {variants.map((variant) => {
-        const param = filterToSearchParam<'variants', 'some'>({
-          id: nanoid(5),
-          name: 'variants',
-          condition: 'some',
-          value: { id: variant.id },
-        })
+        const param = filterToSearchParam<'variants', 'some'>(
+          getColorFilter(variant),
+        )
         return (
           <li key={variant.id}>
             <Link

@@ -35,6 +35,7 @@ import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
 import { uniq, useData, useLoadFetcher } from 'utils/general'
+import { getColorFilter } from 'utils/variant'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
 import { filterToStrings } from 'filters'
@@ -229,13 +230,21 @@ function SeasonItem({ filter }: ItemProps) {
   )
 }
 
-function isColorsArray(array: unknown[]): array is { name: string }[] {
+function isColorsArray(
+  array: unknown[],
+): array is { colors: { some: { name: string } } }[] {
   return array.every(
     (object) =>
       typeof object === 'object' &&
       object !== null &&
-      'name' in object &&
-      typeof object.name === 'string',
+      'colors' in object &&
+      typeof object.colors === 'object' &&
+      object.colors !== null &&
+      'some' in object.colors &&
+      typeof object.colors.some === 'object' &&
+      object.colors.some !== null &&
+      'name' in object.colors.some &&
+      typeof object.colors.some.name === 'string',
   )
 }
 
@@ -245,21 +254,17 @@ function VariantItem({ filter }: ItemProps) {
   if (
     typeof filter.value === 'object' &&
     filter.value !== null &&
-    'colors' in filter.value &&
-    typeof filter.value.colors === 'object' &&
-    filter.value.colors !== null &&
-    'some' in filter.value.colors &&
-    typeof filter.value.colors.some === 'object' &&
-    filter.value.colors.some !== null &&
-    'AND' in filter.value.colors.some &&
-    filter.value.colors.some.AND instanceof Array &&
-    isColorsArray(filter.value.colors.some.AND)
+    'AND' in filter.value &&
+    typeof filter.value.AND === 'object' &&
+    filter.value.AND !== null &&
+    filter.value.AND instanceof Array &&
+    isColorsArray(filter.value.AND)
   )
     return (
       <GenericItem
         name={name}
         condition={condition}
-        value={filter.value.colors.some.AND.map((c) => c.name).join(' ')}
+        value={filter.value.AND.map((c) => c.colors.some.name).join(' / ')}
         onClick={() => removeFilter(filter)}
       />
     )
@@ -516,22 +521,7 @@ function VariantItems({ nested }: Pick<Props, 'nested'>) {
       key={variant.id}
       value={`variant-${variant.colors.map((c) => c.name).join(' / ')}`}
       onSelect={() => {
-        const filter: Filter<'variants', 'some'> = {
-          id: nanoid(5),
-          name: 'variants',
-          condition: 'some',
-          value: {
-            colors: {
-              some: {
-                AND: variant.colors.map((color) => ({
-                  id: color.id,
-                  name: color.name,
-                })),
-              },
-            },
-          },
-        }
-        addOrUpdateFilter(filter)
+        addOrUpdateFilter(getColorFilter(variant))
         setOpen(false)
       }}
     >
