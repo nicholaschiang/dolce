@@ -44,8 +44,13 @@ export async function loader({ request }: LoaderArgs) {
       ...getPagination(new URL(request.url).searchParams),
       include: {
         brands: true,
+        // TODO order the variants by whichever has the cheapest price. Right
+        // now, we just show the cheapest price of an arbitrary variant.
         variants: {
-          include: { images: { orderBy: { position: 'asc' } } },
+          include: {
+            images: { orderBy: { position: 'asc' } },
+            prices: { orderBy: { value: 'asc' }, take: 1 },
+          },
           take: 1,
         },
       },
@@ -132,6 +137,8 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
   // cents in their prices anyway. prices that do include cents are usually
   // intended to be misleading (e.g. $69.70 instead of $70).
   const msrp = product?.msrp ? Math.round(Number(product.msrp)) : undefined
+  const priceString = product?.variants[0]?.prices[0]?.value
+  const price = priceString ? Math.round(Number(priceString)) : undefined
   return (
     <Item to={`${product?.id}${location.search}`}>
       <Carousel
@@ -144,7 +151,12 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
             {product?.brands.map((b) => b.name).join(' x ')}
           </ItemTitle>
           <ItemSubtitle>{product.name}</ItemSubtitle>
-          {msrp && <ItemDescription>${msrp}</ItemDescription>}
+          <ItemDescription>
+            ${price ?? msrp}{' '}
+            {price && msrp && price < msrp && (
+              <span className='line-through'>${msrp}</span>
+            )}
+          </ItemDescription>
         </ItemContent>
       )}
     </Item>
