@@ -330,7 +330,12 @@ model Size {
   updatedAt DateTime @default(now()) @updatedAt
 
   // The size's name, as designated by the brand or country.
-  name String @unique
+  name String
+
+  // A unique slug derived from the name, sex, style, and brand. This exists
+  // primarily to make imports easier (i.e. we can use the slug to match sizes
+  // in a connectOrCreate statement instead of having to fetch the styleId).
+  slug String @unique
 
   // The product style the size is used for (e.g. tops, outerwear, puffers).
   style   Style @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -363,11 +368,8 @@ model Size {
   equivalents  Size[] @relation("SizeEquivalents")
   equivalentOf Size[] @relation("SizeEquivalents")
 
-  // The products that are available in this size.
-  products Product[]
-
-  // The prices (associated with products) sold in this size.
-  prices Price[]
+  // The product variants that are available in this size.
+  variants Variant[]
 
   // @todo ensure that a size always has either a country or a brand.
   // @see https://github.com/prisma/prisma/issues/17319
@@ -434,15 +436,16 @@ model Material {
   // @todo perhaps create a manufacturer model to associate with materials?
 }
 
-// A variant is a specific colorway of a product. Variants are product-specific.
+// A variant specifies the properties of an item you can purchase. Each variant
+// is associated with a unique SKU number. Variants are identified primarily by
+// size and color. Each variant has prices from different vendors.
 model Variant {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  // The variant's name, as designated by the brand (e.g. "Black", "White", etc).
-  // @todo don't use the color as the variant name bc there's already colors. 
-  name String
+  // The variant's SKU, as designated by the brand.
+  sku String @unique
 
   // The product the variant is of.
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -455,17 +458,20 @@ model Variant {
   // The materials (a.k.a. fabrics) that the variant is made of.
   materials Material[]
 
+  // The size of the variant.
+  size   Size @relation(fields: [sizeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sizeId Int
+
   // Images and videos of the product variant being modeled.
   videos Video[]
   images Image[]
 
   // The prices that are associated with the variant. Typically a single price
   // but can be multiple if the item is sold by multiple retailers or if there
-  // are different prices per size. Can also be zero if the variant is sold out.
+  // are different prices per size. Can be empty if the variant is sold out.
   prices Price[]
 
-  // Each product can only have a single variant with a given name.
-  @@unique([name, productId])
+  // @todo each product can only have a single variant per color and size combo.
 }
 
 // A sex is an arbitrary label designated by a brand or designer to indicate a 
@@ -507,13 +513,8 @@ model Price {
   brand   Brand? @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   brandId Int?
 
-  // The product size(s) sold at this price. Secondary retailers sell different
-  // sizes at different prices (e.g. Ebay, GOAT, Grailed, StockX, etc). 
-  sizes Size[]
-
-  // The product variant sold at this price (behaves the same as "sizes").
-  variants  Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId Int
+  // The product variant(s) sold at this price (the size and color combo).
+  variants Variant[]
 
   // @todo ensure that a price always has either a retailer or a brand.
   // @see https://github.com/prisma/prisma/issues/17319
@@ -535,9 +536,20 @@ model Image {
   // the image available (the front-end optimizes images at runtime).
   url String @unique
 
-  // The product variant the image is of.
-  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId Int?
+  // The image position in the product or look's gallery (if applicable).
+  // @todo enforce unique image positions per product, variant, or look.
+  position Int?
+
+  // The image width (if known) in px.
+  width Int?
+
+  // The image height (if known) in px.
+  height Int?
+
+  // The product variant(s) the image is of.
+  // @todo if multiple products refer to the same image, we should make it
+  // associated with a look instead and then link the look with those products.
+  variants Variant[]
 
   // The runway look the image is of.
   look   Look? @relation(fields: [lookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -559,9 +571,8 @@ model Video {
   // The video's mime type.
   mimeType String
 
-  // The product variant the video is of.
-  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId Int?
+  // The product variant(s) the video is of.
+  variants Variant[]
 
   // The show the video is of.
   show Show?
@@ -591,6 +602,11 @@ model Product {
   // The product's name as designated by the brand and designer.
   name String @unique
 
+  // The URL friendly slug identifier for the product.
+  // Ex: /products/hermes-frozen-shorts is better than /products/356 for SEO.
+  // @see {@link https://linear.app/nicholaschiang/issue/NC-673}
+  slug String @unique
+
   // The product's description.
   description String?
 
@@ -598,13 +614,11 @@ model Product {
   // @todo perhaps rename this to "ProductLevel" to avoid confusion with "Tier"? 
   level Level
 
-  // The sizes the product was originally made to fit.
-  sizes Size[]
-
-  // The variants (colors + materials) the product was originally made in.
+  // The variants (colors + materials + sizes) the product was made in.
   variants Variant[]
 
   // The original MSRP value of the product in USD (if applicable).
+  // @todo perhaps this should be a field on the variant?
   msrp Decimal?
 
   // When a product was originally conceived.
