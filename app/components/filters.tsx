@@ -3,7 +3,7 @@ import * as Popover from '@radix-ui/react-popover'
 import { useFetchers } from '@remix-run/react'
 import cn from 'classnames'
 import { Command, useCommandState } from 'cmdk'
-import { ChevronDown, X, Plus } from 'lucide-react'
+import { X, Plus } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import type {
   Dispatch,
@@ -27,7 +27,6 @@ import invariant from 'tiny-invariant'
 
 import type { loader as layout } from 'routes/_layout'
 import type { loader as seasons } from 'routes/_layout.seasons'
-import type { loader as sizes } from 'routes/_layout.sizes'
 import type { loader as variants } from 'routes/_layout.variants'
 
 import { Dialog } from 'components/dialog'
@@ -376,7 +375,6 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
                           f.name !== 'season' && (
                             <ObjectItems nested={!field} field={f} />
                           )}
-                        {f.name === 'sizes' && <SizeItems nested={!field} />}
                         {f.name === 'variants' && (
                           <VariantItems nested={!field} />
                         )}
@@ -516,7 +514,7 @@ function VariantItems({ nested }: Pick<Props, 'nested'>) {
   ).map((variant) => (
     <Menu.Item
       key={variant.id}
-      value={`variant-${variant.name}`}
+      value={`variant-${variant.colors.map((c) => c.name).join(' / ')}`}
       onSelect={() => {
         const filter: Filter<'variants', 'some'> = {
           id: nanoid(5),
@@ -538,38 +536,7 @@ function VariantItems({ nested }: Pick<Props, 'nested'>) {
       }}
     >
       <Menu.ItemLabel group={nested ? 'variants' : undefined}>
-        {variant.colors.map((color) => color.name).join(' ')}
-      </Menu.ItemLabel>
-    </Menu.Item>
-  ))
-  return <>{items}</>
-}
-
-function SizeItems({ nested }: Pick<Props, 'nested'>) {
-  const fetcher = useSearchFetcher<typeof sizes>(MODEL_TO_ROUTE.Size)
-  const { addOrUpdateFilter } = useContext(FiltersContext)
-  const setOpen = useContext(MenuContext)
-  if (useCommandState((state) => state.search).length < 2 && nested) return null
-  const items = fetcher.data?.map((size) => (
-    <Menu.Item
-      key={size.id}
-      value={`size-${size.name}`}
-      onSelect={() => {
-        addOrUpdateFilter({
-          id: nanoid(5),
-          name: 'sizes',
-          condition: 'some',
-          value: { id: size.id, name: size.name },
-        })
-        setOpen(false)
-      }}
-    >
-      <Menu.ItemLabel group={nested ? 'sizes' : undefined}>
-        <span className='flex items-center truncate text-gray-500'>
-          {size.sex}
-          <ChevronDown className='mx-2 h-3 w-3 -rotate-90' />
-        </span>
-        {size.name}
+        {variant.colors.map((color) => color.name).join(' / ')}
       </Menu.ItemLabel>
     </Menu.Item>
   ))

@@ -39,8 +39,9 @@ type PrismaProductFilter =
   | Prisma.EnumLevelFilter<'Product'>
   | Prisma.DateTimeFilter<'Product'>
   | Prisma.DecimalNullableFilter<'Product'>
-  | Prisma.SizeListRelationFilter
   | Prisma.VariantListRelationFilter
+  | Prisma.VideoListRelationFilter
+  | Prisma.ImageListRelationFilter
   | Prisma.StyleListRelationFilter
   | Prisma.CollectionListRelationFilter
   | Prisma.BrandListRelationFilter

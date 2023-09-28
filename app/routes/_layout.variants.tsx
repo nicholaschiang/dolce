@@ -26,7 +26,7 @@ export default function VariantsPage() {
           id: nanoid(5),
           name: 'variants',
           condition: 'some',
-          value: { id: variant.id, name: variant.name },
+          value: { id: variant.id },
         })
         return (
           <li key={variant.id}>
@@ -35,7 +35,7 @@ export default function VariantsPage() {
               className='link underline'
               to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
-              {variant.name}
+              {variant.colors.map((c) => c.name).join(' / ')}
             </Link>
           </li>
         )
