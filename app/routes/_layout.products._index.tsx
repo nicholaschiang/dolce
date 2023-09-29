@@ -140,7 +140,7 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
   const priceString = product?.variants[0]?.prices[0]?.value
   const price = priceString ? Math.round(Number(priceString)) : undefined
   return (
-    <Item to={`${product?.id}${location.search}`}>
+    <Item to={`${product?.slug}${location.search}`}>
       <Carousel
         items={product?.variants.flatMap((v) => v.images)}
         item={ProductImage}
