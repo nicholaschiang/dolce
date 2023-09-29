@@ -31,8 +31,8 @@ import { CriticReviews } from './critic-reviews'
 import { Designers } from './designers'
 import { Header } from './header'
 import { Looks } from './looks'
+import { Properties } from './properties'
 import { RateAndReview, getReview } from './rate-and-review'
-import { ShowInfo } from './show-info'
 import { Video } from './video'
 import { WhatToKnow } from './what-to-know'
 import { WhereToBuy } from './where-to-buy'
@@ -188,7 +188,7 @@ export default function ShowPage() {
         <WhereToBuy />
         <RateAndReview />
         <ConsumerReviews />
-        <ShowInfo />
+        <Properties />
         <CriticReviews />
       </Panel>
     </PanelGroup>

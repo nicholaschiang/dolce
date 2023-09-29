@@ -9,7 +9,7 @@ import { LOCATION_TO_NAME } from 'utils/location'
 import { type loader } from './route'
 import { Section } from './section'
 
-export function ShowInfo() {
+export function Properties() {
   const show = useLoaderData<typeof loader>()
   return (
     <Section header='Properties' id='properties'>
