@@ -3,15 +3,15 @@ import { ExternalLink } from 'lucide-react'
 import { useId } from 'react'
 
 import { Empty } from 'components/empty'
+import { LayoutSection } from 'components/layout'
 
 import { type loader } from './route'
-import { Section } from './section'
 
 export function CriticReviews() {
   const show = useLoaderData<typeof loader>()
   return (
     <>
-      <Section
+      <LayoutSection
         header='Critic Reviews'
         id='critic-reviews'
         className='pb-0 border-0'

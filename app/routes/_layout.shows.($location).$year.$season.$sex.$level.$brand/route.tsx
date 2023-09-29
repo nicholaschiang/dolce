@@ -4,8 +4,14 @@ import {
   type V2_MetaFunction,
 } from '@vercel/remix'
 import { nanoid } from 'nanoid/non-secure'
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { type SitemapFunction } from 'remix-sitemap'
+
+import {
+  Layout,
+  LayoutLeft,
+  LayoutRight,
+  LayoutDivider,
+} from 'components/layout'
 
 import { NAME, invert } from 'utils/general'
 import { LEVEL_TO_SLUG } from 'utils/level'
@@ -154,34 +160,15 @@ export async function loader({ request, params }: LoaderArgs) {
   return { ...show, scores, review }
 }
 
-function ResizeHandle() {
-  return (
-    <PanelResizeHandle className='data-[panel-group-direction=horizontal]:border-l data-[panel-group-direction=vertical]:border-t border-gray-200 dark:border-gray-800 relative group'>
-      <div className='w-2 group-data-[panel-group-direction=horizontal]:-left-1 group-data-[panel-group-direction=vertical]:-top-1 absolute group-data-[panel-group-direction=horizontal]:inset-y-0 group-data-[panel-group-direction=vertical]:inset-x-0 after:absolute after:group-data-[panel-group-direction=horizontal]:inset-y-0 after:group-data-[panel-group-direction=horizontal]:left-0.5 after:group-data-[panel-group-direction=horizontal]:w-0.5 after:group-data-[panel-group-direction=vertical]:inset-x-0 after:group-data-[panel-group-direction=vertical]:top-0.5 after:group-data-[panel-group-direction=vertical]:h-0.5 after:bg-gray-400 after:dark:bg-gray-600 after:opacity-0 after:group-data-[resize-handle-active]:opacity-100 hover:after:opacity-100 after:transition-opacity after:pointer-events-none' />
-    </PanelResizeHandle>
-  )
-}
-
 export default function ShowPage() {
   return (
-    <PanelGroup direction='horizontal' className='h-0 grow overflow-hidden'>
-      <Panel
-        defaultSize={65}
-        minSize={50}
-        maxSize={80}
-        className='overflow-hidden h-full flex flex-col'
-      >
+    <Layout>
+      <LayoutLeft>
         <Video className='flex-none pt-2 px-2 w-full' />
         <Looks className='h-0 grow py-2 pl-2 overflow-x-auto overflow-y-hidden' />
-      </Panel>
-      <ResizeHandle />
-      <Panel
-        defaultSize={35}
-        minSize={30}
-        maxSize={40}
-        tagName='aside'
-        className='!overflow-y-auto !overflow-x-hidden h-full shadow-lg'
-      >
+      </LayoutLeft>
+      <LayoutDivider />
+      <LayoutRight>
         <Header />
         <WhatToKnow />
         <Designers />
@@ -190,7 +177,7 @@ export default function ShowPage() {
         <ConsumerReviews />
         <Properties />
         <CriticReviews />
-      </Panel>
-    </PanelGroup>
+      </LayoutRight>
+    </Layout>
   )
 }

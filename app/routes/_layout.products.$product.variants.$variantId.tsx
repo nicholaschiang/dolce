@@ -21,26 +21,25 @@ const widthToHeightImageRatio = 4 / 5
 export default function VariantPage() {
   const variant = useLoaderData<typeof loader>()
   return (
-    <div className='w-0 flex-1 grid grid-cols-2 gap-2'>
+    <ol className='h-0 grow py-2 pl-2 overflow-x-auto overflow-y-hidden flex whitespace-nowrap'>
       {variant.images.map((image, index) => (
-        <div
-          key={image.id}
-          className='aspect-product bg-gray-100 dark:bg-gray-900'
-        >
-          <Image
-            className='h-full w-full object-cover'
-            loading={index < 2 ? 'eager' : 'lazy'}
-            decoding={index < 2 ? 'sync' : 'async'}
-            src={image.url}
-            responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
-              (width) => ({
-                size: { width, height: width * widthToHeightImageRatio },
-                maxWidth: width * 2,
-              }),
-            )}
-          />
-        </div>
+        <li key={image.id} className='aspect-product h-full pr-2'>
+          <div className='bg-gray-100 dark:bg-gray-900 w-full h-full overflow-hidden'>
+            <Image
+              className='h-full w-full object-cover'
+              loading={index < 2 ? 'eager' : 'lazy'}
+              decoding={index < 2 ? 'sync' : 'async'}
+              src={image.url}
+              responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
+                (width) => ({
+                  size: { width, height: width * widthToHeightImageRatio },
+                  maxWidth: width * 2,
+                }),
+              )}
+            />
+          </div>
+        </li>
       ))}
-    </div>
+    </ol>
   )
 }

@@ -7,6 +7,14 @@ import {
 import { nanoid } from 'nanoid/non-secure'
 import invariant from 'tiny-invariant'
 
+import { Info, InfoItem } from 'components/info'
+import {
+  Layout,
+  LayoutLeft,
+  LayoutRight,
+  LayoutDivider,
+  LayoutSection,
+} from 'components/layout'
 import { buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
@@ -74,50 +82,46 @@ export default function ProductPage() {
     ? product.variants.find((v) => v.id.toString() === variantId)
     : product.variants[0]
   return (
-    <div className='h-0 grow overflow-auto flex w-full items-start gap-6 p-2'>
-      <Outlet />
-      <div className='flex w-0 flex-1 flex-col gap-3 sticky top-0'>
-        <h1>{product.name}</h1>
-        <section>
-          <h2>Properties</h2>
-          <dl>
-            <dt>Slug</dt>
-            <dd>{product.slug}</dd>
-            <dt>Level</dt>
-            <dd>{product.level}</dd>
-            <dt>MSRP</dt>
-            <dd>
+    <Layout>
+      <LayoutLeft>
+        <Outlet />
+      </LayoutLeft>
+      <LayoutDivider />
+      <LayoutRight>
+        <article className='bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6'>
+          <h1 className='font-medium'>{product.name}</h1>
+        </article>
+        <LayoutSection id='properties' header='Properties'>
+          <Info>
+            <InfoItem label='Slug'>{product.slug}</InfoItem>
+            <InfoItem label='Level'>{product.level}</InfoItem>
+            <InfoItem label='MSRP'>
               ${(Math.round(Number(product.msrp) * 100) / 100).toFixed(2)}
-            </dd>
-            <dt>Designed at</dt>
-            <dd>
+            </InfoItem>
+            <InfoItem label='Designed at'>
               {new Date(product.designedAt).toLocaleDateString(undefined, {
                 dateStyle: 'long',
               })}
-            </dd>
-            <dt>Released at</dt>
-            <dd>
+            </InfoItem>
+            <InfoItem label='Released at'>
               {new Date(product.releasedAt).toLocaleDateString(undefined, {
                 dateStyle: 'long',
               })}
-            </dd>
-            <dt>Imported at</dt>
-            <dd>
+            </InfoItem>
+            <InfoItem label='Imported at'>
               {new Date(product.createdAt).toLocaleDateString(undefined, {
                 dateStyle: 'long',
               })}
-            </dd>
-            <dt>Last update at</dt>
-            <dd>
+            </InfoItem>
+            <InfoItem label='Last update'>
               {new Date(product.updatedAt).toLocaleDateString(undefined, {
                 dateStyle: 'long',
               })}
-            </dd>
-          </dl>
-        </section>
-        <section>
-          <h2>Colors</h2>
-          <ul className='flex gap-1'>
+            </InfoItem>
+          </Info>
+        </LayoutSection>
+        <LayoutSection id='colors' header='Colors'>
+          <ul className='flex flex-wrap gap-1'>
             {product.variants
               .filter(
                 (v) => variant == null || v.size.name === variant.size.name,
@@ -138,10 +142,9 @@ export default function ProductPage() {
                 </li>
               ))}
           </ul>
-        </section>
-        <section>
-          <h2>Sizes</h2>
-          <ul className='flex gap-1'>
+        </LayoutSection>
+        <LayoutSection id='sizes' header='Sizes'>
+          <ul className='flex flex-wrap gap-1'>
             {product.variants
               .filter(
                 (v) =>
@@ -165,25 +168,28 @@ export default function ProductPage() {
                 </li>
               ))}
           </ul>
-        </section>
-        <section>
-          <h2>Prices</h2>
-          {variant?.prices.map((price) => (
-            <a
-              className={cn(
-                buttonVariants({ variant: 'outline', size: 'sm' }),
-                'h-auto py-1.5 inline-flex flex-col items-center',
-              )}
-              href={price.url}
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              <h3>{(price.brand ?? price.retailer)?.name}</h3>
-              <p>${price.value}</p>
-            </a>
-          ))}
-        </section>
-      </div>
-    </div>
+        </LayoutSection>
+        <LayoutSection id='prices' header='Prices'>
+          <ul className='flex flex-wrap gap-1'>
+            {variant?.prices.map((price) => (
+              <li key={price.id}>
+                <a
+                  className={cn(
+                    buttonVariants({ variant: 'outline', size: 'sm' }),
+                    'h-auto py-1.5 inline-flex flex-col items-center',
+                  )}
+                  href={price.url}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  <h3>{(price.brand ?? price.retailer)?.name}</h3>
+                  <p>${price.value}</p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </LayoutSection>
+      </LayoutRight>
+    </Layout>
   )
 }

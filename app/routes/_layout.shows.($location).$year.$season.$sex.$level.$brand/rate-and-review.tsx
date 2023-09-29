@@ -15,6 +15,7 @@ import {
   FormSubmit,
   FormMessage,
 } from 'components/form'
+import { LayoutSection } from 'components/layout'
 import { ScoreInput } from 'components/score-input'
 import { Button } from 'components/ui/button'
 import { Textarea } from 'components/ui/textarea'
@@ -25,7 +26,6 @@ import { prisma } from 'db.server'
 import { getUserId } from 'session.server'
 
 import { type loader } from './route'
-import { Section } from './section'
 
 export const id = 'review'
 export const schema = z.object({
@@ -64,7 +64,7 @@ export function RateAndReview() {
   const redirectTo = useRedirectTo({ hash: `#${id}` })
   const labelId = useId()
   return (
-    <Section header='Your Review' id={id}>
+    <LayoutSection header='Your Review' id={id}>
       <Form asChild>
         <fetcher.Form
           method={show.review ? 'put' : 'post'}
@@ -110,6 +110,6 @@ export function RateAndReview() {
           </FormSubmit>
         </fetcher.Form>
       </Form>
-    </Section>
+    </LayoutSection>
   )
 }
