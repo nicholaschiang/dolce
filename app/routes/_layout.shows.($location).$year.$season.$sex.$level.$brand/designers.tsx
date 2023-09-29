@@ -10,6 +10,7 @@ import { Avatar } from 'components/avatar'
 import { Combobox, type ComboboxItemProps } from 'components/combobox'
 import { Empty } from 'components/empty'
 import { ExternalLink } from 'components/external-link'
+import { LayoutSection } from 'components/layout'
 import { Button } from 'components/ui/button'
 import { CommandItem, CommandEmpty } from 'components/ui/command'
 
@@ -17,7 +18,6 @@ import { cn } from 'utils/cn'
 import { useOptionalUser } from 'utils/general'
 
 import { type loader } from './route'
-import { Section } from './section'
 
 export function Designers() {
   const show = useLoaderData<typeof loader>()
@@ -25,7 +25,7 @@ export function Designers() {
   const user = useOptionalUser()
   if (designers.length === 0 && !user?.curator) return null
   return (
-    <Section
+    <LayoutSection
       header={designers.length === 1 ? 'Designer' : 'Designers'}
       id='designers'
     >
@@ -37,7 +37,7 @@ export function Designers() {
         </ul>
       )}
       {designers.length === 0 && <DesignerSelect />}
-    </Section>
+    </LayoutSection>
   )
 }
 

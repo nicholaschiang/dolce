@@ -1,16 +1,16 @@
 import { useLoaderData } from '@remix-run/react'
 
 import { Empty } from 'components/empty'
+import { LayoutSection } from 'components/layout'
 
 import { type loader } from './route'
-import { Section } from './section'
 
 export function WhatToKnow() {
   const show = useLoaderData<typeof loader>()
   if (show.articlesConsensus == null && show.reviewsConsensus == null)
     return null
   return (
-    <Section header='What to know' id='what-to-know'>
+    <LayoutSection header='What to know' id='what-to-know'>
       <Subheader>Critics Consensus</Subheader>
       {show.articlesConsensus ? (
         <p className='mb-2'>{show.articlesConsensus}</p>
@@ -28,7 +28,7 @@ export function WhatToKnow() {
           There is no Consumer Summary because there are not enough reviews yet.
         </Empty>
       )}
-    </Section>
+    </LayoutSection>
   )
 }
 

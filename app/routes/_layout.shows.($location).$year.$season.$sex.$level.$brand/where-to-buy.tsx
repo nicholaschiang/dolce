@@ -2,19 +2,19 @@ import { useLoaderData } from '@remix-run/react'
 
 import { Empty } from 'components/empty'
 import { ExternalLink } from 'components/external-link'
+import { LayoutSection } from 'components/layout'
 import { buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
 
 import { type loader } from './route'
-import { Section } from './section'
 
 export function WhereToBuy() {
   const show = useLoaderData<typeof loader>()
   const links = show.collections.flatMap((collection) => collection.links)
   if (links.length === 0) return null
   return (
-    <Section header='Where to buy' id='where-to-buy'>
+    <LayoutSection header='Where to buy' id='where-to-buy'>
       {links.length === 0 && (
         <Empty className='mt-2'>
           <p>
@@ -47,7 +47,7 @@ export function WhereToBuy() {
           ))}
         </ul>
       )}
-    </Section>
+    </LayoutSection>
   )
 }
 

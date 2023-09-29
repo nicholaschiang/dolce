@@ -1,25 +1,24 @@
 import { useLoaderData } from '@remix-run/react'
-import { type PropsWithChildren } from 'react'
 
 import { ExternalLink } from 'components/external-link'
+import { Info, InfoItem } from 'components/info'
+import { LayoutSection } from 'components/layout'
 
-import { cn } from 'utils/cn'
 import { LOCATION_TO_NAME } from 'utils/location'
 
 import { type loader } from './route'
-import { Section } from './section'
 
 export function Properties() {
   const show = useLoaderData<typeof loader>()
   return (
-    <Section header='Properties' id='properties'>
+    <LayoutSection header='Properties' id='properties'>
       {show.description != null && (
         <article
           className='prose dark:prose-invert max-w-none'
           dangerouslySetInnerHTML={{ __html: show.description }}
         />
       )}
-      <dl className='mt-2 flex flex-col gap-2'>
+      <Info>
         {show.date != null && (
           <InfoItem label='Date'>
             {new Date(show.date).toLocaleDateString(undefined, {
@@ -47,27 +46,7 @@ export function Properties() {
             {new URL(show.url).hostname}
           </ExternalLink>
         </InfoItem>
-      </dl>
-    </Section>
-  )
-}
-
-function InfoItem({
-  label,
-  className,
-  children,
-}: PropsWithChildren<{ label: string; className?: string }>) {
-  return (
-    <div className='flex items-center text-xs'>
-      <dt className='flex-none shrink-0 w-20 text-gray-500'>{label}</dt>
-      <dd
-        className={cn(
-          'w-0 flex-1 truncate text-gray-700 dark:text-gray-300',
-          className,
-        )}
-      >
-        {children}
-      </dd>
-    </div>
+      </Info>
+    </LayoutSection>
   )
 }
