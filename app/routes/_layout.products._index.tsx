@@ -23,7 +23,7 @@ import {
   ItemDescription,
 } from 'components/item'
 
-import { NAME } from 'utils/general'
+import { NAME, PRODUCT_ASPECT_RATIO } from 'utils/general'
 import { getBrandName } from 'utils/product'
 
 import { prisma } from 'db.server'
@@ -117,7 +117,7 @@ export default function ProductsPage() {
       <InfiniteList
         items={products}
         item={ProductItem}
-        itemAspectRatio={500 / 683}
+        itemAspectRatio={PRODUCT_ASPECT_RATIO}
         itemCount={filteredCount}
         itemsPerRow={resultsPerRow}
         setItemsPerRow={setResultsPerRow}

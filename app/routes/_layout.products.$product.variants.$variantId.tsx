@@ -3,6 +3,8 @@ import { type LoaderArgs } from '@vercel/remix'
 
 import { Image } from 'components/image'
 
+import { PRODUCT_ASPECT_RATIO } from 'utils/general'
+
 import { prisma } from 'db.server'
 
 export async function loader({ params }: LoaderArgs) {
@@ -15,8 +17,6 @@ export async function loader({ params }: LoaderArgs) {
   if (variant === null) throw new Response('Not Found', { status: 404 })
   return variant
 }
-
-const widthToHeightImageRatio = 4 / 5
 
 export default function VariantPage() {
   const variant = useLoaderData<typeof loader>()
@@ -32,7 +32,7 @@ export default function VariantPage() {
               src={image.url}
               responsive={[200, 300, 400, 500, 600, 700, 800, 900, 1000].map(
                 (width) => ({
-                  size: { width, height: width * widthToHeightImageRatio },
+                  size: { width, height: width * PRODUCT_ASPECT_RATIO },
                   maxWidth: width * 2,
                 }),
               )}
