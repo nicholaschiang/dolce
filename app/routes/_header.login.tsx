@@ -74,7 +74,7 @@ export async function action({ request }: ActionArgs) {
   )
 
   if (!user) {
-    submission.error.emailOrUsername = 'Incorrect email or password'
+    submission.error.emailOrUsername = ['Incorrect email or password']
     return json(submission, { status: 400 })
   }
 

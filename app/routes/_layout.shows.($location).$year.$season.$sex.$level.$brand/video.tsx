@@ -87,11 +87,11 @@ function VideoForm() {
 
   const [form, { video }] = useForm({
     onValidate({ formData }) {
-      return parse(formData, { schema, stripEmptyValue: true })
+      return parse(formData, { schema })
     },
     onSubmit(event, { formData }) {
       event.preventDefault()
-      const submission = parse(formData, { schema, stripEmptyValue: true })
+      const submission = parse(formData, { schema })
       const videoFile = submission.value?.video
       setFile(videoFile)
       if (videoFile) fetcher.submit({}, { action, method: 'POST' })

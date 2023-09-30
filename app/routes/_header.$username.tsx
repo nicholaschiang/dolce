@@ -93,7 +93,7 @@ export async function action({ request, params }: ActionArgs) {
   if (user.id !== userId) throw new Response('Forbidden', { status: 403 })
 
   const formData = await request.formData()
-  const submission = parse(formData, { schema, stripEmptyValue: true })
+  const submission = parse(formData, { schema })
 
   if (!submission.value || submission.intent !== 'submit')
     return json(submission, { status: 400 })
@@ -104,7 +104,7 @@ export async function action({ request, params }: ActionArgs) {
 
   if (error) {
     log.error('Error updating avatar for @%s: %s', params.username, error.stack)
-    submission.error.avatar = 'Failed to upload avatar; try again later'
+    submission.error.avatar = ['Failed to upload avatar; try again later']
     return json(submission, { status: 500 })
   }
 
@@ -232,7 +232,7 @@ function AvatarForm() {
   const [form, { avatar }] = useForm({
     lastSubmission,
     onValidate({ formData }) {
-      return parse(formData, { schema, stripEmptyValue: true })
+      return parse(formData, { schema })
     },
   })
   const user = useLoaderData<typeof loader>()
