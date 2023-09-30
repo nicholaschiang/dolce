@@ -11,14 +11,20 @@ import sanitizeHtml from 'sanitize-html'
 import example from './shopify/example.json'
 import { slug, caps } from './utils'
 
-const SKIP_PRODUCTS_WITH_TITLE = ['Aimé Leon Dore Gift Card']
-const PATH = '../../../../static/data/shopify/aimeleondore.json'
+const SKIP_PRODUCTS_WITH_TITLE: string[] = []
+const PATH = '../../../../static/data/shopify/kith.json'
 const LEVEL = Level.RTW
 const MARKET = Market.PRIMARY
 const SEX = Sex.UNISEX
-const BASE_URI = 'https://www.aimeleondore.com'
+const BRAND_NAME = 'Kith' // The brand name that these prices should be from.
+const BASE_URI = 'https://kith.com'
+const BRAND: Prisma.BrandCreateInput = {
+  name: BRAND_NAME,
+  slug: slug(BRAND_NAME),
+  url: BASE_URI,
+}
 const DEFAULT_SIZE = 'OS' // "One Size" is the default size when there is none.
-const SKIP_FIRST_IMAGE = true // The first image is a duplicate of the second.
+const SKIP_FIRST_IMAGE = false // The first image is a duplicate of the second.
 
 type Product = typeof example
 
@@ -31,13 +37,20 @@ export async function save() {
   const all = JSON.parse(json) as Product[]
 
   console.log(`Filtering ${all.length} products by blacklist...`)
-  const filtered = all.filter(
+  const filtered1 = all.filter(
     (p) => !SKIP_PRODUCTS_WITH_TITLE.includes(p.title),
   )
-  console.log(`Filtered out ${all.length - filtered.length} products.`)
+  console.log(`Filtered out ${all.length - filtered1.length} products.`)
 
-  console.log(`Parsing ${filtered.length} products...`)
-  const data = filtered.map(getData)
+  // Filter out products that are actually looks. KITH seems to save all their
+  // looks as products that can be shown inline with products.
+  // Ex: https://kith.com/products/kith-spring-2-2022-look-15
+  console.log(`Filtering looks from ${filtered1.length} products...`)
+  const filtered2 = filtered1.filter((p) => !p.title.includes(' - Look'))
+  console.log(`Filtered out ${filtered1.length - filtered2.length} looks.`)
+
+  console.log(`Parsing ${filtered2.length} products...`)
+  const data = filtered2.map(getData)
   console.log(`Parsed ${data.length} products.`)
 
   // Combine duplicate products. Often, different product color variants will be
@@ -118,15 +131,29 @@ function getMSRP(product: Product): number | null {
 
 // Convert a Shopify product object to a Prisma product object.
 function getData(product: Product) {
-  const sizeOption = product.options.find((o) => o.name === 'Size')
-  if (sizeOption == null)
-    console.warn(
-      `No size option found for ${product.title} (${product.id}), using "${DEFAULT_SIZE}" as default...`,
-    )
+  // KITH (like Aime Leon Dore) saves each color variant of a product as a
+  // separate Shopify product. However, unlike Aime Leon Dore, they do not have
+  // a color variant option. Instead, they just append the color name to the
+  // product title (concatenated with a " - " string).
+  const [title, color] = product.title.split(' - ').map((s) => s.trim())
+  const url = `${BASE_URI}/products/${product.handle}`
 
-  const colorOption = product.options.find((o) => o.name === 'Color')
-  if (colorOption == null)
-    throw new Error(`No color option found for product ${product.id}`)
+  // TODO perhaps I should do something with the KITH "title" option?
+  // Ex: The following have different title options and are similar products:
+  // - https://kith.com/products/ma2301102-s-fw23
+  // - https://kith.com/products/ma2301101-s-fw23
+
+  const sizeOption = product.options.find(
+    (o) => o.name.toLowerCase() === 'size',
+  )
+  if (sizeOption == null)
+    console.warn(`[MISSING SIZE] ${product.title} (${url})`)
+
+  const colorOption = product.options.find(
+    (o) => o.name.toLowerCase() === 'color',
+  )
+  if (colorOption == null && color == null)
+    console.warn(`[MISSING COLOR] ${product.title} (${url})`)
 
   const style: Prisma.StyleCreateInput = { name: product.product_type }
   const brand: Prisma.BrandCreateInput = {
@@ -156,7 +183,7 @@ function getData(product: Product) {
   const variants = product.variants.map((v) => {
     const variantColor = colorOption
       ? v[`option${colorOption.position}` as 'option1']
-      : ''
+      : color ?? ''
     const colorNames = variantColor.split(' / ').map((c) => caps(c.trim()))
 
     const variantSize = sizeOption
@@ -179,10 +206,10 @@ function getData(product: Product) {
     const price: Prisma.PriceCreateWithoutVariantInput = {
       value: Number(v.price),
       market: MARKET,
-      url: `${BASE_URI}/products/${product.handle}`,
+      url,
       available: v.available,
       brand: {
-        connectOrCreate: { where: { slug: brand.slug }, create: brand },
+        connectOrCreate: { where: { slug: BRAND.slug }, create: BRAND },
       },
     }
 
@@ -223,8 +250,8 @@ function getData(product: Product) {
   // timestamps differently or more explicitly?
   // TODO preserve the product tags?
   const data = {
-    name: product.title,
-    slug: slug(product.title),
+    name: title,
+    slug: slug(title),
     // Remove unnecessary <br> tags from the product description and resolve all
     // relative links to the given BASE_URI (also open them in a new tab).
     description: sanitizeHtml(product.body_html, {
