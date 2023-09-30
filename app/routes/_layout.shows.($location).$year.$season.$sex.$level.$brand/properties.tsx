@@ -3,6 +3,7 @@ import { useLoaderData } from '@remix-run/react'
 import { ExternalLink } from 'components/external-link'
 import { Info, InfoItem } from 'components/info'
 import { LayoutSection } from 'components/layout'
+import { Prose } from 'components/prose'
 
 import { LOCATION_TO_NAME } from 'utils/location'
 
@@ -12,12 +13,7 @@ export function Properties() {
   const show = useLoaderData<typeof loader>()
   return (
     <LayoutSection header='Properties' id='properties'>
-      {show.description != null && (
-        <article
-          className='prose dark:prose-invert max-w-none'
-          dangerouslySetInnerHTML={{ __html: show.description }}
-        />
-      )}
+      {show.description != null && <Prose content={show.description} />}
       <Info>
         {show.date != null && (
           <InfoItem label='Date'>
