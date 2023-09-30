@@ -11,6 +11,7 @@ import { Combobox, type ComboboxItemProps } from 'components/combobox'
 import { Empty } from 'components/empty'
 import { ExternalLink } from 'components/external-link'
 import { LayoutSection } from 'components/layout'
+import { Prose } from 'components/prose'
 import { Button } from 'components/ui/button'
 import { CommandItem, CommandEmpty } from 'components/ui/command'
 
@@ -111,10 +112,7 @@ function DesignerListItem({ designer }: { designer: SerializeFrom<Designer> }) {
               !expanded && 'h-0 flex-1',
             )}
           >
-            <article
-              className='prose prose-sm dark:prose-invert max-w-none'
-              dangerouslySetInnerHTML={{ __html: designer.articles[0].content }}
-            />
+            <Prose content={designer.articles[0].content} />
             <button
               className={cn(
                 'w-full text-sm mt-2 underline',

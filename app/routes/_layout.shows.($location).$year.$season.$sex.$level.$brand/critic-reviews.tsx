@@ -4,6 +4,7 @@ import { useId } from 'react'
 
 import { Empty } from 'components/empty'
 import { LayoutSection } from 'components/layout'
+import { Prose } from 'components/prose'
 
 import { type loader } from './route'
 
@@ -77,11 +78,9 @@ function Review({ author, publication, url, content }: ReviewProps) {
         aria-labelledby={id}
         className='overflow-hidden mx-6 mb-6 bg-gray-100 dark:bg-gray-900 rounded-b border-b border-x border-gray-200 dark:border-gray-800'
       >
-        <blockquote
-          className='prose prose-sm prose-zinc dark:prose-invert p-3 m-auto'
-          cite={url}
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+        <Prose className='p-3 m-auto' content={content} maxWidth asChild>
+          <blockquote cite={url} />
+        </Prose>
       </figure>
     </>
   )
