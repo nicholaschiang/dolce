@@ -77,19 +77,19 @@ export async function action({ request }: ActionArgs) {
 
   let existingUser = await getUserByName(submission.value.name)
   if (existingUser) {
-    submission.error.name = 'A user already exists with this name'
+    submission.error.name = ['A user already exists with this name']
     return json(submission, { status: 400 })
   }
 
   existingUser = await getUserByUsername(submission.value.username)
   if (existingUser) {
-    submission.error.username = 'A user already exists with this username'
+    submission.error.username = ['A user already exists with this username']
     return json(submission, { status: 400 })
   }
 
   existingUser = await getUserByEmail(submission.value.email)
   if (existingUser) {
-    submission.error.email = 'A user already exists with this email'
+    submission.error.email = ['A user already exists with this email']
     return json(submission, { status: 400 })
   }
 

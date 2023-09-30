@@ -68,7 +68,7 @@ export async function action({ request }: ActionArgs) {
   if (userId == null) return redirect('/login?redirectTo=/profile')
 
   const formData = await request.formData()
-  const submission = parse(formData, { schema, stripEmptyValue: true })
+  const submission = parse(formData, { schema })
 
   if (!submission.value || submission.intent !== 'submit')
     return json(submission, { status: 400 })
@@ -77,7 +77,7 @@ export async function action({ request }: ActionArgs) {
     where: { name: submission.value.name, id: { not: userId } },
   })
   if (existingUser) {
-    submission.error.name = 'A user already exists with this name'
+    submission.error.name = ['A user already exists with this name']
     return json(submission, { status: 400 })
   }
 
@@ -85,7 +85,7 @@ export async function action({ request }: ActionArgs) {
     where: { username: submission.value.username, id: { not: userId } },
   })
   if (existingUser) {
-    submission.error.username = 'A user already exists with this username'
+    submission.error.username = ['A user already exists with this username']
     return json(submission, { status: 400 })
   }
 
@@ -93,7 +93,7 @@ export async function action({ request }: ActionArgs) {
     where: { email: submission.value.email, id: { not: userId } },
   })
   if (existingUser) {
-    submission.error.email = 'A user already exists with this email'
+    submission.error.email = ['A user already exists with this email']
     return json(submission, { status: 400 })
   }
 
@@ -118,7 +118,7 @@ export default function ProfilePage() {
   const [form, { name, username, description, email, password }] = useForm({
     lastSubmission,
     onValidate({ formData }) {
-      return parse(formData, { schema, stripEmptyValue: true })
+      return parse(formData, { schema })
     },
   })
   const [state, setState] = useState(user)
