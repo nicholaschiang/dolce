@@ -1,5 +1,19 @@
 # Release Notes
 
+## [1.57.0](https://github.com/nicholaschiang/dolce/compare/v1.56.1...v1.57.0) (2023-09-30)
+
+
+### Features
+
+* **product:** add details section to product ([c0e2584](https://github.com/nicholaschiang/dolce/commit/c0e2584e69ef36ee45376bfc9eaf3b79257ad5e7))
+* **product:** make product aside header sticky ([7f6fe00](https://github.com/nicholaschiang/dolce/commit/7f6fe001e8145106034507a949d30fcd1d688aad))
+* save all prices and set `available` field ([176b6f1](https://github.com/nicholaschiang/dolce/commit/176b6f157aa2c3a153debc674865f173d9e16ea0))
+
+
+### Bug Fixes
+
+* **scripts/node/save/shopify:** resolve relative links ([c478722](https://github.com/nicholaschiang/dolce/commit/c4787221c3f46e665d471519adf03e6e359c4850))
+
 ## [1.56.1](https://github.com/nicholaschiang/dolce/compare/v1.56.0...v1.56.1) (2023-09-30)
 
 
