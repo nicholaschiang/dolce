@@ -4,7 +4,7 @@ import {
   useRouteLoaderData,
   useNavigate,
 } from '@remix-run/react'
-import { type AppData, type SerializeFrom } from '@vercel/remix'
+import { type SerializeFrom } from '@vercel/remix'
 import {
   useMemo,
   useRef,
@@ -29,7 +29,7 @@ export const PERSON_ASPECT_RATIO = 9 / 16
 
 export const clone = rfdc()
 
-export type Serialize<T extends AppData> = SerializeFrom<T> | T
+export type Serialize<T> = SerializeFrom<T> | T
 
 export const useLayoutEffect =
   typeof window === 'undefined' ? useEffect : useReactLayoutEffect
@@ -179,7 +179,7 @@ export function safeRedirect(
  * @param {string} id The route id
  * @returns {JSON|undefined} The router data or undefined if not found
  */
-export function useData<T = AppData>(id: string): SerializeFrom<T> | undefined {
+export function useData<T>(id: string): SerializeFrom<T> | undefined {
   return useRouteLoaderData<T>(id)
 }
 

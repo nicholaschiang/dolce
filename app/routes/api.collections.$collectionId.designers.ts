@@ -1,9 +1,9 @@
-import { type ActionArgs } from '@vercel/remix'
+import { type DataFunctionArgs } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 import { getUserId } from 'session.server'
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request, params }: DataFunctionArgs) {
   const collectionId = Number(params.collectionId)
   if (Number.isNaN(collectionId))
     throw new Response('Not Found', { status: 404 })

@@ -1,8 +1,8 @@
 import { useLoaderData, useLocation, useNavigate } from '@remix-run/react'
 import {
   type SerializeFrom,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type DataFunctionArgs,
+  type MetaFunction,
 } from '@vercel/remix'
 import { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -31,13 +31,13 @@ import { type ProductFilterName } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 
-export const meta: V2_MetaFunction = () => [{ title: `Products | ${NAME}` }]
+export const meta: MetaFunction = () => [{ title: `Products | ${NAME}` }]
 
 export const handle: Handle = {
   breadcrumb: () => ({ to: '/products', children: 'Products' }),
 }
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const { where, string } = getWhere(request)
   log.debug('getting products... %s', string)
   const [products, filteredCount, totalCount] = await Promise.all([

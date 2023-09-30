@@ -13,10 +13,9 @@ import {
   useSubmit,
 } from '@remix-run/react'
 import {
-  type ActionArgs,
-  type LoaderArgs,
+  type DataFunctionArgs,
   type SerializeFrom,
-  type V2_MetaFunction,
+  type MetaFunction,
   json,
 } from '@vercel/remix'
 import { Bookmark, Folder, MessageCircle } from 'lucide-react'
@@ -47,7 +46,7 @@ const schema = z.object({
     .refine((file) => file.size < 5e6, 'Avatar cannot be larger than 5 MB'),
 })
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: `404 | ${NAME}` }]
   let title = data.name
   if (data.username) title += ` (@${data.username})`
@@ -66,7 +65,7 @@ export const sitemap: SitemapFunction = async () => {
   }))
 }
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const [user, lookCount] = await Promise.all([
     prisma.user.findUnique({
@@ -81,7 +80,7 @@ export async function loader({ params }: LoaderArgs) {
   return { ...user, lookCount }
 }
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request, params }: DataFunctionArgs) {
   log.info('Updating avatar for @%s...', params.username)
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const userId = await getUserId(request)

@@ -1,9 +1,9 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import { type LoaderArgs } from '@vercel/remix'
+import { type DataFunctionArgs } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   const setId = Number(params.setId)
   if (Number.isNaN(setId)) throw new Response('Not Found', { status: 404 })
   const set = await prisma.set.findUnique({

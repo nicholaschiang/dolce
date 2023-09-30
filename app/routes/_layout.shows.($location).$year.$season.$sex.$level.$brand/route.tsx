@@ -1,7 +1,7 @@
 import {
-  type LoaderArgs,
+  type DataFunctionArgs,
   type SerializeFrom,
-  type V2_MetaFunction,
+  type MetaFunction,
 } from '@vercel/remix'
 import { nanoid } from 'nanoid/non-secure'
 import { type SitemapFunction } from 'remix-sitemap'
@@ -43,7 +43,7 @@ import { Video } from './video'
 import { WhatToKnow } from './what-to-know'
 import { WhereToBuy } from './where-to-buy'
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: `404 | ${NAME}` }]
   const keywords = getShowKeywords(data).join(', ')
   return [
@@ -95,7 +95,7 @@ export const handle: Handle = {
   },
 }
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: DataFunctionArgs) {
   log.info('getting show... %o', params)
   const miss = new Response(null, { status: 404, statusText: 'Not Found' })
   if (!params.season || !params.sex || !params.level || !params.brand)

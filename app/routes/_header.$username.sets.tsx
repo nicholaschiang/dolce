@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLoaderData, useNavigation } from '@remix-run/react'
-import { type LoaderArgs } from '@vercel/remix'
+import { type DataFunctionArgs } from '@vercel/remix'
 import { FolderClosed, FolderOpen } from 'lucide-react'
 
 import { buttonVariants } from 'components/ui/button'
@@ -8,7 +8,7 @@ import { cn } from 'utils/cn'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const sets = await prisma.set.findMany({
     where: { author: { username: params.username } },

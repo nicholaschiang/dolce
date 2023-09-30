@@ -1,6 +1,7 @@
 import {
   Link,
   type LinkProps,
+  type UIMatch,
   useFetcher,
   useMatches,
   useNavigation,
@@ -49,12 +50,12 @@ export function HeaderWrapper({
 }
 
 export function HeaderBreadcrumbs() {
-  const matches = useMatches()
+  const matches = useMatches() as UIMatch<unknown, Handle<unknown>>[]
   return (
     <ol className='flex w-0 grow items-center gap-2'>
       {matches
         .filter((match) => match.handle && match.handle.breadcrumb)
-        .flatMap((match) => (match.handle as Handle).breadcrumb(match))
+        .flatMap((match) => match.handle.breadcrumb(match))
         .map((props, index) => (
           <Fragment key={index}>
             {index !== 0 && (

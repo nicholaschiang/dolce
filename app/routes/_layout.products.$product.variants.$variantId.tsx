@@ -1,5 +1,5 @@
 import { useLoaderData } from '@remix-run/react'
-import { type LoaderArgs } from '@vercel/remix'
+import { type DataFunctionArgs } from '@vercel/remix'
 
 import { Image } from 'components/image'
 
@@ -7,7 +7,7 @@ import { PRODUCT_ASPECT_RATIO } from 'utils/general'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   const variantId = Number(params.variantId)
   if (Number.isNaN(variantId)) throw new Response('Not Found', { status: 404 })
   const variant = await prisma.variant.findUnique({

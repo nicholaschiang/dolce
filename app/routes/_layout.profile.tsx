@@ -6,9 +6,8 @@ import {
   useNavigation,
 } from '@remix-run/react'
 import {
-  type ActionArgs,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type DataFunctionArgs,
+  type MetaFunction,
   json,
   redirect,
 } from '@vercel/remix'
@@ -57,13 +56,13 @@ export const handle: Handle = {
 
 export const config = { runtime: 'nodejs' }
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const userId = await getUserId(request)
   if (userId == null) return redirect('/login?redirectTo=/profile')
   return json({})
 }
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: DataFunctionArgs) {
   const userId = await getUserId(request)
   if (userId == null) return redirect('/login?redirectTo=/profile')
 
@@ -109,7 +108,7 @@ export async function action({ request }: ActionArgs) {
   return json(submission)
 }
 
-export const meta: V2_MetaFunction = () => [{ title: `Edit Profile | ${NAME}` }]
+export const meta: MetaFunction = () => [{ title: `Edit Profile | ${NAME}` }]
 
 export default function ProfilePage() {
   const user = useUser()

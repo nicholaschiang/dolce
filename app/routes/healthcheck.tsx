@@ -1,9 +1,9 @@
 // learn more: https://fly.io/docs/reference/configuration/#services-http_checks
-import { type LoaderArgs } from '@vercel/remix'
+import { type DataFunctionArgs } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const host =
     request.headers.get('X-Forwarded-Host') ?? request.headers.get('host')
 

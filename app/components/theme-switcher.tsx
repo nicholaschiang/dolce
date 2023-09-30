@@ -14,7 +14,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   useEffect(() => {
     if (fetcher.formData)
       setTheme((prev) => {
-        const themeValue = fetcher.formData.get('theme')
+        const themeValue = fetcher.formData?.get('theme')
         return isTheme(themeValue) ? themeValue : prev
       })
   }, [fetcher.formData, setTheme])

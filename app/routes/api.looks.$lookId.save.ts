@@ -1,9 +1,9 @@
-import { type ActionArgs } from '@vercel/remix'
+import { type DataFunctionArgs } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 import { requireUserId } from 'session.server'
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request, params }: DataFunctionArgs) {
   const lookId = Number(params.lookId)
   if (Number.isNaN(lookId)) throw new Response('Not Found', { status: 404 })
   const look = await prisma.look.findUnique({ where: { id: lookId } })
