@@ -21,8 +21,8 @@ import { Button, buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
 import { NAME, type Serialize } from 'utils/general'
-import { getColorName } from 'utils/variant'
 import { getBrandName } from 'utils/product'
+import { getColorName } from 'utils/variant'
 
 import { prisma } from 'db.server'
 import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
@@ -82,80 +82,6 @@ export async function loader({ params }: LoaderArgs) {
   })
   if (product === null) throw new Response('Not Found', { status: 404 })
   return product
-}
-
-function getMarketColor(market: Market): string {
-  return market === Market.PRIMARY
-    ? 'text-teal-600 dark:text-teal-500'
-    : 'text-amber-600 dark:text-amber-500'
-}
-
-function PriceValue({ price }: { price: Serialize<Price> }) {
-  return (
-    <span className={getMarketColor(price.market)}>
-      ${Math.round(Number(price.value))}
-    </span>
-  )
-}
-
-function Options({ children }: PropsWithChildren) {
-  return <ul className='flex flex-wrap gap-1'>{children}</ul>
-}
-
-function OptionsItem({
-  label,
-  prices,
-  variant,
-}: {
-  label: string
-  prices: Serialize<Price>[]
-  variant?: { id: number }
-}) {
-  let lowest = prices[0]
-  let highest = lowest
-  prices.forEach((p) => {
-    if (lowest == null || Number(p.value) < Number(lowest.value)) lowest = p
-    if (highest == null || Number(p.value) > Number(highest.value)) highest = p
-  })
-  const content = (
-    <>
-      <h3>{label}</h3>
-      {lowest == null || highest == null ? (
-        <p className='text-gray-400 dark:text-gray-500 uppercase'>N/A</p>
-      ) : lowest.value === highest.value ? (
-        <p>
-          <PriceValue price={lowest} />
-        </p>
-      ) : (
-        <p>
-          <PriceValue price={lowest} /> – <PriceValue price={highest} />
-        </p>
-      )}
-    </>
-  )
-  return (
-    <li>
-      {variant ? (
-        <NavLink
-          className={({ isActive }) =>
-            cn(
-              buttonVariants({ variant: 'outline', size: 'sm' }),
-              'flex-col h-auto py-1.5',
-              isActive &&
-                'border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-800',
-            )
-          }
-          to={`variants/${variant.id}`}
-        >
-          {content}
-        </NavLink>
-      ) : (
-        <Button variant='outline' size='sm' disabled>
-          {content}
-        </Button>
-      )}
-    </li>
-  )
 }
 
 export default function ProductPage() {
@@ -280,5 +206,79 @@ export default function ProductPage() {
         </LayoutSection>
       </LayoutRight>
     </Layout>
+  )
+}
+
+function getMarketColor(market: Market): string {
+  return market === Market.PRIMARY
+    ? 'text-teal-600 dark:text-teal-500'
+    : 'text-amber-600 dark:text-amber-500'
+}
+
+function PriceValue({ price }: { price: Serialize<Price> }) {
+  return (
+    <span className={getMarketColor(price.market)}>
+      ${Math.round(Number(price.value))}
+    </span>
+  )
+}
+
+function Options({ children }: PropsWithChildren) {
+  return <ul className='flex flex-wrap gap-1'>{children}</ul>
+}
+
+function OptionsItem({
+  label,
+  prices,
+  variant,
+}: {
+  label: string
+  prices: Serialize<Price>[]
+  variant?: { id: number }
+}) {
+  let lowest = prices[0]
+  let highest = lowest
+  prices.forEach((p) => {
+    if (lowest == null || Number(p.value) < Number(lowest.value)) lowest = p
+    if (highest == null || Number(p.value) > Number(highest.value)) highest = p
+  })
+  const content = (
+    <>
+      <h3>{label}</h3>
+      {lowest == null || highest == null ? (
+        <p className='text-gray-400 dark:text-gray-500 uppercase'>N/A</p>
+      ) : lowest.value === highest.value ? (
+        <p>
+          <PriceValue price={lowest} />
+        </p>
+      ) : (
+        <p>
+          <PriceValue price={lowest} /> – <PriceValue price={highest} />
+        </p>
+      )}
+    </>
+  )
+  return (
+    <li>
+      {variant ? (
+        <NavLink
+          className={({ isActive }) =>
+            cn(
+              buttonVariants({ variant: 'outline', size: 'sm' }),
+              'flex-col h-auto py-1.5',
+              isActive &&
+                'border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-800',
+            )
+          }
+          to={`variants/${variant.id}`}
+        >
+          {content}
+        </NavLink>
+      ) : (
+        <Button variant='outline' size='sm' disabled>
+          {content}
+        </Button>
+      )}
+    </li>
   )
 }
