@@ -24,6 +24,7 @@ import {
 } from 'components/item'
 
 import { NAME } from 'utils/general'
+import { getBrandName } from 'utils/product'
 
 import { prisma } from 'db.server'
 import { type ProductFilterName } from 'filters'
@@ -148,9 +149,7 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
       />
       {product && (
         <ItemContent>
-          <ItemTitle>
-            {product?.brands.map((b) => b.name).join(' x ')}
-          </ItemTitle>
+          <ItemTitle>{getBrandName(product)}</ItemTitle>
           <ItemSubtitle>{product.name}</ItemSubtitle>
           <ItemDescription>
             ${price ?? msrp}{' '}
