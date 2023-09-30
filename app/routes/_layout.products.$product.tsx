@@ -22,6 +22,7 @@ import { Button, buttonVariants } from 'components/ui/button'
 import { cn } from 'utils/cn'
 import { NAME, type Serialize } from 'utils/general'
 import { getColorName } from 'utils/variant'
+import { getBrandName } from 'utils/product'
 
 import { prisma } from 'db.server'
 import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
@@ -171,7 +172,8 @@ export default function ProductPage() {
       <LayoutDivider />
       <LayoutRight>
         <article className='bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6'>
-          <h1 className='font-medium'>{product.name}</h1>
+          <h2 className='font-semibold'>{getBrandName(product)}</h2>
+          <h1>{product.name}</h1>
         </article>
         <LayoutSection id='properties' header='Properties'>
           <Info>
