@@ -35,7 +35,7 @@ import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
 import { uniq, useData, useLoadFetcher } from 'utils/general'
-import { getColorFilter } from 'utils/variant'
+import { getColorFilter, getColorName } from 'utils/variant'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
 import { filterToStrings } from 'filters'
@@ -514,19 +514,17 @@ function VariantItems({ nested }: Pick<Props, 'nested'>) {
   const { addOrUpdateFilter } = useContext(FiltersContext)
   const setOpen = useContext(MenuContext)
   if (useCommandState((state) => state.search).length < 2 && nested) return null
-  const items = uniq(fetcher.data ?? [], (v) =>
-    v.colors.map((c) => c.id).join(),
-  ).map((variant) => (
+  const items = uniq(fetcher.data ?? [], getColorName).map((variant) => (
     <Menu.Item
       key={variant.id}
-      value={`variant-${variant.colors.map((c) => c.name).join(' / ')}`}
+      value={`variant-${getColorName(variant)}`}
       onSelect={() => {
         addOrUpdateFilter(getColorFilter(variant))
         setOpen(false)
       }}
     >
       <Menu.ItemLabel group={nested ? 'variants' : undefined}>
-        {variant.colors.map((color) => color.name).join(' / ')}
+        {getColorName(variant)}
       </Menu.ItemLabel>
     </Menu.Item>
   ))
