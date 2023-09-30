@@ -1,5 +1,33 @@
 # Release Notes
 
+## [1.56.0](https://github.com/nicholaschiang/dolce/compare/v1.55.1...v1.56.0) (2023-09-30)
+
+
+### Features
+
+* **app:** updates for new product data model ([6c413ca](https://github.com/nicholaschiang/dolce/commit/6c413caea7e27fe1af3fde2e5bf092dd58398962))
+* **prisma:** update product and variant models ([b14c362](https://github.com/nicholaschiang/dolce/commit/b14c36283a006dd902772aa7aa5e8a18591faf62))
+* **product:** reuse show layout in product page ([11c7f66](https://github.com/nicholaschiang/dolce/commit/11c7f66b0834e5aeaeefe4428dae1ecea7beddf0))
+* **product:** show prices per variant option ([a1b7f3f](https://github.com/nicholaschiang/dolce/commit/a1b7f3f6e81b7bca52b84bb1ca47b284bdf5a177))
+* **products:** move product dialog to separate page ([0998f9c](https://github.com/nicholaschiang/dolce/commit/0998f9c43af73b3fd455d04cf4502e3d72c49717))
+* **products:** show lowest price in products list ([4a0ee2d](https://github.com/nicholaschiang/dolce/commit/4a0ee2d2c448808ad855b8cb969d173ea8db46cd))
+* **routes/variants:** search variants by color name ([4973e35](https://github.com/nicholaschiang/dolce/commit/4973e35314156c2feed1ba1b107029327acd8fe6))
+* **routes:** add new product page with prices ([af084c6](https://github.com/nicholaschiang/dolce/commit/af084c60c10ed04b4700c61c487be23ed2d42972))
+* **scripts/node/save:** import shopify products ([6a3dba9](https://github.com/nicholaschiang/dolce/commit/6a3dba908c71eaabbb569542308b56f6c0806dc7))
+* **scripts/python/settings:** enable download delay ([0bd9ef5](https://github.com/nicholaschiang/dolce/commit/0bd9ef56746baeff9e9f56067bfb7a66feda0945))
+* **scripts:** add spider to scrape Shopify products ([4394504](https://github.com/nicholaschiang/dolce/commit/4394504cf2b134fd0c86f0e148d5c9a344a3a4a6))
+
+
+### Bug Fixes
+
+* **app/product:** order images by position number ([8a28aa4](https://github.com/nicholaschiang/dolce/commit/8a28aa4f55befd877f729b5b0d2ec7f51c6495e2))
+* **app:** move image aspect ratio to constants ([b029e01](https://github.com/nicholaschiang/dolce/commit/b029e01a94ed949423f4c479d22625596e921fcc))
+* **components/dialog:** add max height to dialog ([7dd888d](https://github.com/nicholaschiang/dolce/commit/7dd888d7e66669c1976908866f4df2fbad9026b8))
+* **filters/variant:** filter for multiple colors ([9423b78](https://github.com/nicholaschiang/dolce/commit/9423b782928480276e679210bacd6aca888c09a6))
+* **infinite-list:** increase vertical spacing ([0107432](https://github.com/nicholaschiang/dolce/commit/0107432aa127c3d984fa117f06dc66cddbc821a2))
+* **infinite-list:** support nested resizing ([25d5ef7](https://github.com/nicholaschiang/dolce/commit/25d5ef702cde66db34839437320dec0682b522b2))
+* **product:** show brand name in product page ([26f60ec](https://github.com/nicholaschiang/dolce/commit/26f60ece3357b398fbc24d0819733efb1f60e4d3))
+
 ## [1.55.1](https://github.com/nicholaschiang/dolce/compare/v1.55.0...v1.55.1) (2023-09-02)
 
 
