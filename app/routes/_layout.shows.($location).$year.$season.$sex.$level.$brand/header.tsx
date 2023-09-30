@@ -10,7 +10,7 @@ import { type loader } from './route'
 export function Header() {
   const show = useLoaderData<typeof loader>()
   return (
-    <article className='bg-gray-100 dark:bg-gray-900 text-center px-6 flex flex-col border-b border-gray-200 dark:border-gray-800'>
+    <header className='bg-gray-100 dark:bg-gray-900 text-center px-6 flex flex-col border-b border-gray-200 dark:border-gray-800'>
       <h1 className='font-serif font-bold text-2xl md:text-3xl lg:text-5xl mb-1 mt-8'>
         {show.brand.name}
       </h1>
@@ -19,7 +19,7 @@ export function Header() {
         <ScoreItem score={show.scores.critic} name='Critic Score' />
         <ScoreItem score={show.scores.consumer} name='Consumer Score' />
       </ul>
-    </article>
+    </header>
   )
 }
 
