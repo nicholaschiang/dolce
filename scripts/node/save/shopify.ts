@@ -6,6 +6,7 @@ import path from 'path'
 
 import { type Prisma, Sex, Level, Market, PrismaClient } from '@prisma/client'
 import ProgressBar from 'progress'
+import sanitizeHtml from 'sanitize-html'
 
 import example from './shopify/example.json'
 import { slug, caps } from './utils'
@@ -46,26 +47,29 @@ export async function save() {
   // more normalized and can account for inconsistencies with name spacing (e.g.
   // the "ALD Garden Mule" product has a bunch of erroneous spacing sometimes).
   console.log(`Combining ${data.length} products by slug...`)
-  const products = data.reduce((acc, product) => {
-    const existing = acc.find((p) => p.slug === product.slug)
-    if (existing) {
-      existing.variants.connectOrCreate = [
-        ...existing.variants.connectOrCreate,
-        ...product.variants.connectOrCreate,
-      ]
-      existing.styles.connectOrCreate = [
-        ...existing.styles.connectOrCreate,
-        ...product.styles.connectOrCreate,
-      ]
-      existing.brands.connectOrCreate = [
-        ...existing.brands.connectOrCreate,
-        ...product.brands.connectOrCreate,
-      ]
-    } else {
-      acc.push(product)
-    }
-    return acc
-  }, [] as ReturnType<typeof getData>[])
+  const products = data.reduce(
+    (acc, product) => {
+      const existing = acc.find((p) => p.slug === product.slug)
+      if (existing) {
+        existing.variants.connectOrCreate = [
+          ...existing.variants.connectOrCreate,
+          ...product.variants.connectOrCreate,
+        ]
+        existing.styles.connectOrCreate = [
+          ...existing.styles.connectOrCreate,
+          ...product.styles.connectOrCreate,
+        ]
+        existing.brands.connectOrCreate = [
+          ...existing.brands.connectOrCreate,
+          ...product.brands.connectOrCreate,
+        ]
+      } else {
+        acc.push(product)
+      }
+      return acc
+    },
+    [] as ReturnType<typeof getData>[],
+  )
   console.log(`Combined ${data.length - products.length} duplicate products.`)
 
   let index = Number(process.argv[2])
@@ -225,7 +229,22 @@ function getData(product: Product) {
   const data = {
     name: product.title,
     slug: slug(product.title),
-    description: product.body_html,
+    // Remove unnecessary <br> tags from the product description and resolve all
+    // relative links to the given BASE_URI (also open them in a new tab).
+    description: sanitizeHtml(product.body_html, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.filter((t) => t !== 'br'),
+      transformTags: {
+        a: (tagName, attribs) => ({
+          tagName,
+          attribs: {
+            ...attribs,
+            href: new URL(attribs.href, BASE_URI).toString(),
+            rel: 'noopener noreferrer',
+            target: '_blank',
+          },
+        }),
+      },
+    }),
     level: LEVEL,
     msrp: getMSRP(product),
     designedAt: product.created_at,
