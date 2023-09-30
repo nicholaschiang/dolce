@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.56.1](https://github.com/nicholaschiang/dolce/compare/v1.56.0...v1.56.1) (2023-09-30)
+
+
+### Bug Fixes
+
+* **app:** address remix breaking changes ([dc40c2c](https://github.com/nicholaschiang/dolce/commit/dc40c2cf864ca74d8898a53c420c9b62486d4437))
+* **app:** address TS enum errors ([c575183](https://github.com/nicholaschiang/dolce/commit/c5751836449aa1806a61f10043942399fa5b27b2))
+* **cypress/tsconfig:** address some config issues ([17a16ac](https://github.com/nicholaschiang/dolce/commit/17a16ac51c8b84f2d5306f7e124ac75b0190cbaa))
+* **routes:** address `[@conform-to](https://github.com/conform-to)` breaking changes ([a8a4eae](https://github.com/nicholaschiang/dolce/commit/a8a4eae3b2ec7dc79a96aa43e41bb4f8e4008858))
+* **server:** `installGlobals` in custom server ([413c961](https://github.com/nicholaschiang/dolce/commit/413c96181d01156300a719438fe757068ec4ea79))
+* **ui/dialog:** remove `className` from `<Portal>` ([bf0a21a](https://github.com/nicholaschiang/dolce/commit/bf0a21a41bb3761bff6bbd9641ef7b4fd2b2fa38))
+* **utils/schema:** surface custom required messages ([b14ac5b](https://github.com/nicholaschiang/dolce/commit/b14ac5b475fc0573335033d8f5d5ae21d7c9cb7e))
+
 ## [1.56.0](https://github.com/nicholaschiang/dolce/compare/v1.55.1...v1.56.0) (2023-09-30)
 
 
