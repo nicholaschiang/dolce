@@ -21,7 +21,7 @@ import { Prose } from 'components/prose'
 import { Button, buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
-import { NAME, type Serialize } from 'utils/general'
+import { NAME, type Serialize, caps } from 'utils/general'
 import { getBrandName } from 'utils/product'
 import { getColorName } from 'utils/variant'
 
@@ -177,7 +177,8 @@ export default function ProductPage() {
               // with the given size. Then, when the user clicks on one, we want
               // to redirect to a variant with a price.
               const active =
-                activeVariants.find((a) => a.prices.length) ?? activeVariants[0]
+                activeVariants.find((a) => a.prices.some((p) => p.available)) ??
+                activeVariants[0]
               return (
                 <OptionsItem
                   key={size}
@@ -202,7 +203,15 @@ export default function ProductPage() {
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  <p className={getMarketColor(price.market)}>{price.market}</p>
+                  {price.available ? (
+                    <p className={getMarketColor(price.market)}>
+                      {caps(price.market)}
+                    </p>
+                  ) : (
+                    <p className='text-gray-400 dark:text-gray-500'>
+                      Unavailable
+                    </p>
+                  )}
                   <h3>{(price.brand ?? price.retailer)?.name}</h3>
                   <p>${price.value}</p>
                 </a>
@@ -242,9 +251,11 @@ function OptionsItem({
   prices: Serialize<Price>[]
   variant?: { id: number }
 }) {
-  let lowest = prices[0]
+  console.log('prices', prices)
+  const available = prices.filter((p) => p.available)
+  let lowest = available[0]
   let highest = lowest
-  prices.forEach((p) => {
+  available.forEach((p) => {
     if (lowest == null || Number(p.value) < Number(lowest.value)) lowest = p
     if (highest == null || Number(p.value) > Number(highest.value)) highest = p
   })
@@ -252,7 +263,7 @@ function OptionsItem({
     <>
       <h3>{label}</h3>
       {lowest == null || highest == null ? (
-        <p className='text-gray-400 dark:text-gray-500 uppercase'>N/A</p>
+        <p className='text-gray-400 dark:text-gray-500'>N/A</p>
       ) : lowest.value === highest.value ? (
         <p>
           <PriceValue price={lowest} />

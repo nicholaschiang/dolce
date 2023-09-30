@@ -513,8 +513,16 @@ model Price {
   brand   Brand? @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   brandId Int?
 
-  // The product variant(s) sold at this price (the size and color combo).
-  variants Variant[]
+  // The product variant sold at this price (the size and color combo).
+  variant  Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int
+
+  // Whether or not the price is still available (e.g. if it is sold out). This
+  // is stored on the price model instead of the variant model as different
+  // vendors can have different stocks of a given variant.
+  // @todo instead of this, perhaps we should have a "stock" numeric field that
+  // tracks how many units are available at this price from this retailer?
+  available Boolean @default(true)
 
   // @todo ensure that a price always has either a retailer or a brand.
   // @see https://github.com/prisma/prisma/issues/17319
@@ -522,7 +530,10 @@ model Price {
   // Each price must have a unique value and URL (note that I can't simply put a
   // unique constraint on the URL due to secondary markets like GOAT that have a
   // single URL for many different sizes at many different prices).
-  @@unique([value, url])
+  
+  // Because each price contains the stock information for a specific size and
+  // color variant, each price must be unique to that variant.
+  @@unique([variantId, value, url])
 }
 
 // An image. Typically of a product being modeled.
