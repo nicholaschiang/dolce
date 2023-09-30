@@ -102,10 +102,17 @@ export async function save() {
   /* eslint-disable-next-line no-restricted-syntax */
   for await (const product of final) {
     try {
-      await prisma.product.create({ data: product })
+      await prisma.product.upsert({
+        where: { slug: product.slug },
+        create: product,
+        update: product,
+      })
       bar.tick()
     } catch (error) {
-      console.error(`Error while saving product:`, product)
+      console.error(
+        `Error while saving product:`,
+        JSON.stringify(product, null, 2),
+      )
       throw error
     }
   }
