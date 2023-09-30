@@ -160,11 +160,6 @@ export default function ProductPage() {
             </InfoItem>
           </Info>
         </LayoutSection>
-        {product.description && (
-          <LayoutSection id='details' header='Details'>
-            <Prose content={product.description} />
-          </LayoutSection>
-        )}
         <LayoutSection id='colors' header='Colors'>
           <Options>
             {Array.from(colors).map((color) => {
@@ -247,6 +242,11 @@ export default function ProductPage() {
             ))}
           </Options>
         </LayoutSection>
+        {product.description && (
+          <LayoutSection id='details' header='Details'>
+            <Prose content={product.description} />
+          </LayoutSection>
+        )}
       </LayoutRight>
     </Layout>
   )
