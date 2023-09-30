@@ -8,13 +8,7 @@ const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
 
-function DialogPortal({
-  className,
-  ...props
-}: DialogPrimitive.DialogPortalProps) {
-  return <DialogPrimitive.Portal className={cn(className)} {...props} />
-}
-DialogPortal.displayName = DialogPrimitive.Portal.displayName
+const DialogPortal = DialogPrimitive.Portal
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
