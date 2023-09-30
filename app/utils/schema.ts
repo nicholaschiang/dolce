@@ -1,11 +1,10 @@
 import { z } from 'zod'
 
-export const name = z.string().trim().min(1, 'Name is required')
+export const name = z.string({ required_error: 'Name is required' }).trim()
 
 export const username = z
-  .string()
+  .string({ required_error: 'Username is required' })
   .trim()
-  .min(1, 'Username is required')
   .min(3, 'Username must be at least 3 characters')
   .max(30, 'Username must be fewer than 30 characters')
   .regex(
@@ -14,13 +13,11 @@ export const username = z
   )
 
 export const email = z
-  .string()
+  .string({ required_error: 'Email is required' })
   .trim()
-  .min(1, 'Email is required')
   .email('Email is invalid')
 
 export const password = z
-  .string()
+  .string({ required_error: 'Password is required' })
   .trim()
-  .min(1, 'Password is required')
   .min(8, 'Password must be at least 8 characters')
