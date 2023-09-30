@@ -1,3 +1,4 @@
+import { Market, type Price } from '@prisma/client'
 import { NavLink, Outlet, useLoaderData, useParams } from '@remix-run/react'
 import {
   type LoaderArgs,
@@ -5,6 +6,7 @@ import {
   type V2_MetaFunction,
 } from '@vercel/remix'
 import { nanoid } from 'nanoid/non-secure'
+import { type PropsWithChildren } from 'react'
 import invariant from 'tiny-invariant'
 
 import { Info, InfoItem } from 'components/info'
@@ -15,10 +17,11 @@ import {
   LayoutDivider,
   LayoutSection,
 } from 'components/layout'
-import { buttonVariants } from 'components/ui/button'
+import { Button, buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
-import { NAME } from 'utils/general'
+import { NAME, type Serialize } from 'utils/general'
+import { getColorName } from 'utils/variant'
 
 import { prisma } from 'db.server'
 import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
@@ -64,6 +67,11 @@ export async function loader({ params }: LoaderArgs) {
           colors: true,
           prices: { include: { brand: true, retailer: true } },
         },
+        // TODO instead of relying on the fact that we imported the sizes and
+        // colors in the order that we scraped them (which ensures that the size
+        // option ordering is intuitive e.g. XS, S, M, LG), we should add an
+        // explicit variant `position` field.
+        orderBy: { createdAt: 'asc' },
       },
       styles: true,
       collections: true,
@@ -75,12 +83,86 @@ export async function loader({ params }: LoaderArgs) {
   return product
 }
 
+function getMarketColor(market: Market): string {
+  return market === Market.PRIMARY
+    ? 'text-teal-600 dark:text-teal-500'
+    : 'text-amber-600 dark:text-amber-500'
+}
+
+function PriceValue({ price }: { price: Serialize<Price> }) {
+  return (
+    <span className={getMarketColor(price.market)}>
+      ${Math.round(Number(price.value))}
+    </span>
+  )
+}
+
+function Options({ children }: PropsWithChildren) {
+  return <ul className='flex flex-wrap gap-1'>{children}</ul>
+}
+
+function OptionsItem({
+  label,
+  prices,
+  variant,
+}: {
+  label: string
+  prices: Serialize<Price>[]
+  variant?: { id: number }
+}) {
+  let lowest = prices[0]
+  let highest = lowest
+  prices.forEach((p) => {
+    if (lowest == null || Number(p.value) < Number(lowest.value)) lowest = p
+    if (highest == null || Number(p.value) > Number(highest.value)) highest = p
+  })
+  const content = (
+    <>
+      <h3>{label}</h3>
+      {lowest == null || highest == null ? (
+        <p className='text-gray-400 dark:text-gray-500 uppercase'>N/A</p>
+      ) : lowest.value === highest.value ? (
+        <p>
+          <PriceValue price={lowest} />
+        </p>
+      ) : (
+        <p>
+          <PriceValue price={lowest} /> – <PriceValue price={highest} />
+        </p>
+      )}
+    </>
+  )
+  return (
+    <li>
+      {variant ? (
+        <NavLink
+          className={({ isActive }) =>
+            cn(
+              buttonVariants({ variant: 'outline', size: 'sm' }),
+              'flex-col h-auto py-1.5',
+              isActive &&
+                'border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-800',
+            )
+          }
+          to={`variants/${variant.id}`}
+        >
+          {content}
+        </NavLink>
+      ) : (
+        <Button variant='outline' size='sm' disabled>
+          {content}
+        </Button>
+      )}
+    </li>
+  )
+}
+
 export default function ProductPage() {
   const product = useLoaderData<typeof loader>()
   const { variantId } = useParams()
-  const variant = variantId
-    ? product.variants.find((v) => v.id.toString() === variantId)
-    : product.variants[0]
+  const colors = new Set(product.variants.map(getColorName))
+  const sizes = new Set(product.variants.map((s) => s.size.name))
+  const variant = product.variants.find((v) => v.id.toString() === variantId)
   return (
     <Layout>
       <LayoutLeft>
@@ -98,6 +180,7 @@ export default function ProductPage() {
             <InfoItem label='MSRP'>
               ${(Math.round(Number(product.msrp) * 100) / 100).toFixed(2)}
             </InfoItem>
+            {variant && <InfoItem label='SKU'>{variant.sku}</InfoItem>}
             <InfoItem label='Designed at'>
               {new Date(product.designedAt).toLocaleDateString(undefined, {
                 dateStyle: 'long',
@@ -121,73 +204,77 @@ export default function ProductPage() {
           </Info>
         </LayoutSection>
         <LayoutSection id='colors' header='Colors'>
-          <ul className='flex flex-wrap gap-1'>
-            {product.variants
-              .filter(
+          <Options>
+            {Array.from(colors).map((color) => {
+              const variantsWithColor = product.variants.filter(
+                (v) => getColorName(v) === color,
+              )
+              // Link to the first variant with the color and selected size.
+              const active = variantsWithColor.find(
                 (v) => variant == null || v.size.name === variant.size.name,
               )
-              .map((v) => (
-                <li key={v.id}>
-                  <NavLink
-                    className={({ isActive }) =>
-                      buttonVariants({
-                        variant: isActive ? 'default' : 'outline',
-                        size: 'sm',
-                      })
-                    }
-                    to={`variants/${v.id}`}
-                  >
-                    {v.colors.map((c) => c.name).join(' / ')}
-                  </NavLink>
-                </li>
-              ))}
-          </ul>
+              return (
+                <OptionsItem
+                  key={color}
+                  label={color}
+                  prices={variantsWithColor.flatMap((v) => v.prices)}
+                  variant={active}
+                />
+              )
+            })}
+          </Options>
         </LayoutSection>
         <LayoutSection id='sizes' header='Sizes'>
-          <ul className='flex flex-wrap gap-1'>
-            {product.variants
-              .filter(
-                (v) =>
-                  variant == null ||
-                  v.colors.map((c) => c.name).join() ===
-                    variant.colors.map((c) => c.name).join(),
+          <Options>
+            {Array.from(sizes).map((size) => {
+              const variantsWithSize = product.variants.filter(
+                (v) => v.size.name === size,
               )
-              .map((v) => (
-                <li key={v.id}>
-                  <NavLink
-                    className={({ isActive }) =>
-                      buttonVariants({
-                        variant: isActive ? 'default' : 'outline',
-                        size: 'sm',
-                      })
-                    }
-                    to={`variants/${v.id}`}
-                  >
-                    {v.size.name}
-                  </NavLink>
-                </li>
-              ))}
-          </ul>
+              // Instead of showing information for all variants with the size,
+              // we only show information for variants with the selected color
+              // _and_ the size. Users select color first and then size.
+              const activeVariants = variantsWithSize.filter(
+                (v) =>
+                  variant == null || getColorName(v) === getColorName(variant),
+              )
+              // Link to the first variant with a price. This will do nothing
+              // when a color has already been selected. But when a color has
+              // not yet been selected, we show the price range of all variants
+              // with the given size. Then, when the user clicks on one, we want
+              // to redirect to a variant with a price.
+              const active =
+                activeVariants.find((a) => a.prices.length) ?? activeVariants[0]
+              return (
+                <OptionsItem
+                  key={size}
+                  label={size}
+                  prices={activeVariants.flatMap((v) => v.prices)}
+                  variant={active}
+                />
+              )
+            })}
+          </Options>
         </LayoutSection>
         <LayoutSection id='prices' header='Prices'>
-          <ul className='flex flex-wrap gap-1'>
+          <Options>
             {variant?.prices.map((price) => (
               <li key={price.id}>
                 <a
                   className={cn(
                     buttonVariants({ variant: 'outline', size: 'sm' }),
-                    'h-auto py-1.5 inline-flex flex-col items-center',
+                    'h-auto py-1.5 flex-col items-center',
                   )}
                   href={price.url}
                   target='_blank'
                   rel='noopener noreferrer'
                 >
+                  <p className={getMarketColor(price.market)}>{price.market}</p>
                   <h3>{(price.brand ?? price.retailer)?.name}</h3>
                   <p>${price.value}</p>
                 </a>
               </li>
             ))}
-          </ul>
+          </Options>
         </LayoutSection>
       </LayoutRight>
     </Layout>

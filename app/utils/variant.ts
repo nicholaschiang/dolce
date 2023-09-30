@@ -1,4 +1,4 @@
-import { type Variant, type Color } from '@prisma/client'
+import { type Color } from '@prisma/client'
 import { nanoid } from 'nanoid/non-secure'
 
 import { type Serialize } from 'utils/general'
@@ -6,7 +6,7 @@ import { type Serialize } from 'utils/general'
 import { type Filter } from 'filters'
 
 export function getColorFilter(
-  variant: Serialize<Variant & { colors: Color[] }>,
+  variant: Serialize<{ colors: Color[] }>,
 ): Filter<'variants', 'some'> {
   const filter: Filter<'variants', 'some'> = {
     id: nanoid(5),
@@ -19,4 +19,8 @@ export function getColorFilter(
     },
   }
   return filter
+}
+
+export function getColorName(variant: Serialize<{ colors: Color[] }>) {
+  return variant.colors.map((c) => c.name).join(' / ')
 }
