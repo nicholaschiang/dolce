@@ -5,10 +5,12 @@ import {
   type SerializeFrom,
   type MetaFunction,
 } from '@vercel/remix'
+import { ExternalLink } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import { type PropsWithChildren } from 'react'
 import invariant from 'tiny-invariant'
 
+import { FilterLink } from 'components/filter-link'
 import { Info, InfoItem } from 'components/info'
 import {
   Layout,
@@ -108,6 +110,32 @@ export default function ProductPage() {
             <InfoItem label='Level'>{product.level}</InfoItem>
             <InfoItem label='MSRP'>
               ${(Math.round(Number(product.msrp) * 100) / 100).toFixed(2)}
+            </InfoItem>
+            <InfoItem label='Styles' className='flex flex-wrap gap-2'>
+              {product.styles.map((style) => (
+                <FilterLink
+                  to='/products'
+                  filters={[
+                    {
+                      id: nanoid(5),
+                      name: 'styles',
+                      condition: 'some',
+                      value: { id: style.id, name: style.name },
+                    },
+                    ...product.brands.map((brand) => ({
+                      id: nanoid(5),
+                      name: 'brands' as const,
+                      condition: 'some' as const,
+                      value: { id: brand.id, name: brand.name },
+                    })),
+                  ]}
+                  className='block'
+                  key={style.id}
+                >
+                  {style.name}
+                  <ExternalLink className='w-3 h-3 inline-block ml-1' />
+                </FilterLink>
+              ))}
             </InfoItem>
             {variant && <InfoItem label='SKU'>{variant.sku}</InfoItem>}
             <InfoItem label='Designed at'>
@@ -251,7 +279,6 @@ function OptionsItem({
   prices: Serialize<Price>[]
   variant?: { id: number }
 }) {
-  console.log('prices', prices)
   const available = prices.filter((p) => p.available)
   let lowest = available[0]
   let highest = lowest
@@ -292,7 +319,12 @@ function OptionsItem({
           {content}
         </NavLink>
       ) : (
-        <Button variant='outline' size='sm' disabled>
+        <Button
+          className='flex-col h-auto py-1.5'
+          variant='outline'
+          size='sm'
+          disabled
+        >
           {content}
         </Button>
       )}
