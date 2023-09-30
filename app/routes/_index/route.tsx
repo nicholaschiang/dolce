@@ -18,6 +18,7 @@ import { type loader as locationAPI } from 'routes/api.locations.$location'
 
 import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { ClientOnly } from 'components/client-only'
+import { FilterLink } from 'components/filter-link'
 import { LoadingLine } from 'components/loading-line'
 import { Button } from 'components/ui/button'
 import {
@@ -32,7 +33,6 @@ import { NAME, useLoadFetcher } from 'utils/general'
 import { LOCATION_TO_NAME, LOCATION_TO_COORDINATES } from 'utils/location'
 
 import { prisma } from 'db.server'
-import { FILTER_PARAM, filterToSearchParam } from 'filters'
 
 import geography from './geography.json'
 import { Header } from './header'
@@ -178,12 +178,6 @@ function LocationMarker({
 }) {
   const endpoint = `/api/locations/${stats.location}`
   const fetcher = useLoadFetcher<typeof locationAPI>(endpoint)
-  const param = filterToSearchParam<'location', 'equals'>({
-    id: nanoid(5),
-    name: 'location',
-    condition: 'equals',
-    value: stats.location,
-  })
   return (
     <Popover>
       <PopoverTrigger asChild onMouseOver={fetcher.load}>
@@ -222,9 +216,17 @@ function LocationMarker({
           </PopoverClose>
         </Carousel>
         {fetcher.state === 'loading' && <LoadingLine className='-mt-px' />}
-        <Link
+        <FilterLink
           prefetch='intent'
-          to={`/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`}
+          filters={[
+            {
+              id: nanoid(5),
+              name: 'location',
+              condition: 'equals',
+              value: stats.location,
+            },
+          ]}
+          to='/shows'
           className='block py-2 px-3'
         >
           <h2 className='font-semibold'>{LOCATION_TO_NAME[stats.location]}</h2>
@@ -233,7 +235,7 @@ function LocationMarker({
             <span aria-hidden> · </span>
             {stats.brandsCount} brands
           </p>
-        </Link>
+        </FilterLink>
       </PopoverContent>
     </Popover>
   )
