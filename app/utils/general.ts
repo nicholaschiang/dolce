@@ -23,6 +23,10 @@ export const DEFAULT_REDIRECT = '/'
 export const BASE_URL = 'https://dolce.so'
 export const OPTIMIZE_IMAGES = false
 
+// TODO find a way to include these in the Tailwind configuration as well.
+export const PRODUCT_ASPECT_RATIO = 4 / 5
+export const PERSON_ASPECT_RATIO = 9 / 16
+
 export const clone = rfdc()
 
 export type Serialize<T extends AppData> = SerializeFrom<T> | T

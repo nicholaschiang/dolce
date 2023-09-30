@@ -22,7 +22,7 @@ import {
   ItemDescription,
 } from 'components/item'
 
-import { NAME } from 'utils/general'
+import { NAME, PERSON_ASPECT_RATIO } from 'utils/general'
 import { LOCATION_TO_NAME } from 'utils/location'
 import { getShowSeason, getShowPath } from 'utils/show'
 
@@ -119,7 +119,7 @@ export default function ShowsPage() {
       <InfiniteList
         items={shows}
         item={ShowItem}
-        itemAspectRatio={9 / 16}
+        itemAspectRatio={PERSON_ASPECT_RATIO}
         itemCount={filteredCount}
         itemsPerRow={itemsPerRow}
         setItemsPerRow={setItemsPerRow}
