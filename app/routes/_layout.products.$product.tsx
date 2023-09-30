@@ -98,10 +98,10 @@ export default function ProductPage() {
       </LayoutLeft>
       <LayoutDivider />
       <LayoutRight>
-        <article className='bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-6'>
+        <header className='sticky top-0 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-3'>
           <h2 className='font-semibold'>{getBrandName(product)}</h2>
           <h1>{product.name}</h1>
-        </article>
+        </header>
         <LayoutSection id='properties' header='Properties'>
           <Info>
             <InfoItem label='Slug'>{product.slug}</InfoItem>
