@@ -48,7 +48,8 @@ export type InfiniteListProps<T> = {
 const minItemWidth = 240
 
 // The margin between each show item.
-const itemMargin = 8
+const itemMarginX = 8
+const itemMarginY = 36
 
 export function InfiniteList<T>({
   itemCount,
@@ -89,11 +90,11 @@ function InfiniteListContent<T>({
     setItemsPerRow(Math.floor(totalWidth / minItemWidth))
   }, [setItemsPerRow, totalWidth])
 
-  // The height of each row (480px for item + 24px for margin).
+  // The height of each row (480px for item + 36px for margin).
   const itemWidth = totalWidth / itemsPerRow
 
-  // Derive the item height from width (9:16 image + 50px text + 24px margin).
-  const itemHeight = itemWidth / itemAspectRatio + 50 + 24
+  // Derive the item height from width (9:16 image + 50px text + 36px margin).
+  const itemHeight = itemWidth / itemAspectRatio + 50 + itemMarginY
 
   // Infinite scroll the shows grid list.
   const virtualizer = useVirtualizer({
@@ -197,7 +198,7 @@ function InfiniteListContent<T>({
         style={{
           visibility: totalWidth ? 'visible' : 'hidden',
           height: `${virtualizer.getTotalSize()}px`,
-          margin: `-${itemMargin / 2}px`,
+          margin: `-${itemMarginX / 2}px`,
           position: 'relative',
         }}
       >
@@ -218,7 +219,7 @@ function InfiniteListContent<T>({
                 width: `${itemWidth}px`,
                 height: `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start}px)`,
-                padding: `${itemMargin / 2}px`,
+                padding: `${itemMarginX / 2}px`,
               }}
             >
               <Item item={item} />
