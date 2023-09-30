@@ -3,7 +3,7 @@ import { type LoaderArgs } from '@vercel/remix'
 
 import { ListLayout } from 'components/list-layout'
 
-import { getColorFilter } from 'utils/variant'
+import { getColorFilter, getColorName } from 'utils/variant'
 
 import { prisma } from 'db.server'
 import { FILTER_PARAM, filterToSearchParam, getSearch } from 'filters'
@@ -36,7 +36,7 @@ export default function VariantsPage() {
               className='link underline'
               to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
-              {variant.colors.map((c) => c.name).join(' / ')}
+              {getColorName(variant)}
             </Link>
           </li>
         )
