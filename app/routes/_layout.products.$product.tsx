@@ -241,7 +241,7 @@ export default function ProductPage() {
                     </p>
                   )}
                   <h3>{(price.brand ?? price.retailer)?.name}</h3>
-                  <p>${price.value}</p>
+                  <p>${Math.round(Number(price.value))}</p>
                 </a>
               </li>
             ))}
