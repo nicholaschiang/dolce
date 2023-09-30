@@ -15,6 +15,7 @@ import {
   type UIMatch,
   type LinkProps,
 } from '@remix-run/react'
+import { Action } from '@remix-run/router'
 import { Analytics } from '@vercel/analytics/react'
 import {
   type SerializeFrom,
@@ -239,7 +240,7 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
     if (navigation.state === 'idle') NProgress.done()
     // and when it's something else it means it's either submitting a form or
     // waiting for the loaders of the next location so we start it
-    else if (type !== 'REPLACE') {
+    else if (type !== Action.Replace) {
       const timeoutId = setTimeout(() => NProgress.start(), 100)
       return () => clearTimeout(timeoutId)
     }
