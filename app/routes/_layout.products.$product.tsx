@@ -17,6 +17,7 @@ import {
   LayoutDivider,
   LayoutSection,
 } from 'components/layout'
+import { Prose } from 'components/prose'
 import { Button, buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
@@ -131,6 +132,11 @@ export default function ProductPage() {
             </InfoItem>
           </Info>
         </LayoutSection>
+        {product.description && (
+          <LayoutSection id='details' header='Details'>
+            <Prose content={product.description} />
+          </LayoutSection>
+        )}
         <LayoutSection id='colors' header='Colors'>
           <Options>
             {Array.from(colors).map((color) => {
