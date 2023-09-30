@@ -151,7 +151,7 @@ export function ThemeHead({ ssrTheme }: { ssrTheme: boolean }) {
       */}
       <meta
         name='color-scheme'
-        content={theme === 'light' ? 'light dark' : 'dark light'}
+        content={theme === Theme.Light ? 'light dark' : 'dark light'}
       />
       {/*
         If we know what the theme is from the server then we don't need
@@ -236,7 +236,7 @@ export function Themed({
   }
 
   /* eslint-disable-next-line react/jsx-no-useless-fragment */
-  return <>{themeToReference === 'light' ? light : dark}</>
+  return <>{themeToReference === Theme.Light ? light : dark}</>
 }
 
 export function isTheme(value: unknown): value is Theme {

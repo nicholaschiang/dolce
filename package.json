@@ -61,6 +61,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@remix-run/express": "2.0.1",
     "@remix-run/react": "2.0.1",
+    "@remix-run/router": "^1.9.0",
     "@supabase/supabase-js": "^2.37.0",
     "@tanstack/react-virtual": "3.0.0-beta.54",
     "@vercel/analytics": "^1.0.2",

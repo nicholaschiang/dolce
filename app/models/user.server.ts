@@ -64,7 +64,7 @@ export async function updateUser(
 }
 
 export async function verifyLogin(
-  emailOrUsername: User['email'] | User['username'],
+  emailOrUsername: User['email'],
   password: Password['hash'],
 ) {
   const userWithPassword = await prisma.user.findFirst({
