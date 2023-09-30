@@ -8,9 +8,8 @@ import {
   useNavigation,
 } from '@remix-run/react'
 import {
-  type ActionArgs,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type DataFunctionArgs,
+  type MetaFunction,
   json,
   redirect,
 } from '@vercel/remix'
@@ -51,7 +50,7 @@ export const handle: Handle = {
 
 export const config = { runtime: 'nodejs' }
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const url = new URL(request.url)
   const redirectTo = safeRedirect(url.searchParams.get('redirectTo'), '/')
   const userId = await getUserId(request)
@@ -59,7 +58,7 @@ export async function loader({ request }: LoaderArgs) {
   return json({})
 }
 
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: DataFunctionArgs) {
   const formData = await request.formData()
   const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
   const remember = formData.get('remember')
@@ -86,7 +85,7 @@ export async function action({ request }: ActionArgs) {
   })
 }
 
-export const meta: V2_MetaFunction = () => [{ title: 'Login' }]
+export const meta: MetaFunction = () => [{ title: 'Login' }]
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams()

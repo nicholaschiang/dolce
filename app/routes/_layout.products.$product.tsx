@@ -1,9 +1,9 @@
 import { Market, type Price } from '@prisma/client'
 import { NavLink, Outlet, useLoaderData, useParams } from '@remix-run/react'
 import {
-  type LoaderArgs,
+  type DataFunctionArgs,
   type SerializeFrom,
-  type V2_MetaFunction,
+  type MetaFunction,
 } from '@vercel/remix'
 import { nanoid } from 'nanoid/non-secure'
 import { type PropsWithChildren } from 'react'
@@ -28,7 +28,7 @@ import { prisma } from 'db.server'
 import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
 import { type Handle } from 'root'
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
   { title: `${data?.name ?? '404'} | ${NAME}` },
 ]
 
@@ -57,7 +57,7 @@ export const handle: Handle = {
   },
 }
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   invariant(params.product, 'product is required')
   const product = await prisma.product.findUnique({
     where: { slug: params.product },

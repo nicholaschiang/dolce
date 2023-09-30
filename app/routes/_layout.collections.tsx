@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import { type LoaderArgs } from '@vercel/remix'
+import { type DataFunctionArgs } from '@vercel/remix'
 import { nanoid } from 'nanoid/non-secure'
 
 import { ListLayout } from 'components/list-layout'
@@ -8,7 +8,7 @@ import { prisma } from 'db.server'
 import { FILTER_PARAM, filterToSearchParam, getSearch } from 'filters'
 import { log } from 'log.server'
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   log.debug('getting collections...')
   const search = getSearch(request)
   const collections = await prisma.collection.findMany({

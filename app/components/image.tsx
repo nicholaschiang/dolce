@@ -53,7 +53,7 @@ export function Image({
     props.src = ''
   }
 
-  if (largestImageSrc && (!etc.width || largestImageWidth > etc.width))
+  if (largestImageSrc && (!etc.width || largestImageWidth > Number(etc.width)))
     props.src = largestImageSrc
 
   return (

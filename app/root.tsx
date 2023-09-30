@@ -12,15 +12,15 @@ import {
   isRouteErrorResponse,
   useNavigation,
   useNavigationType,
-  type RouteMatch,
+  type UIMatch,
   type LinkProps,
 } from '@remix-run/react'
 import { Analytics } from '@vercel/analytics/react'
 import {
   type SerializeFrom,
   type LinksFunction,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type DataFunctionArgs,
+  type MetaFunction,
   json,
 } from '@vercel/remix'
 import cn from 'classnames'
@@ -45,8 +45,8 @@ import {
   useTheme,
 } from 'theme'
 
-export type Handle = {
-  breadcrumb: (match: RouteMatch) => LinkProps | LinkProps[]
+export type Handle<D = unknown> = {
+  breadcrumb: (match: UIMatch<D, Handle<D>>) => LinkProps | LinkProps[]
 }
 
 export const handle: Handle = {
@@ -143,7 +143,7 @@ export const links: LinksFunction = () => [
   { rel: 'manifest', href: '/site.webmanifest' },
 ]
 
-export const meta: V2_MetaFunction = () => [{ title: NAME }]
+export const meta: MetaFunction = () => [{ title: NAME }]
 
 type Env = {
   VERCEL_ANALYTICS_ID: string | undefined
@@ -161,7 +161,7 @@ declare global {
   }
 }
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const session = await getSession(request)
   const theme = session.get('theme') as Theme | null
   const headers = { 'Set-Cookie': await sessionStorage.commitSession(session) }

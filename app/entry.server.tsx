@@ -16,7 +16,11 @@ export default function entry(
   responseHeaders: Headers,
   remixContext: EntryContext,
 ) {
-  if (isSitemapUrl(request)) return sitemap(request, remixContext)
+  // TODO remove this "any" assertion once `remix-sitemap` has bumped the Remix
+  // version to v2. I don't believe any actual changes need to be made.
+  // @see {@link https://github.com/fedeya/remix-sitemap/pull/54}
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+  if (isSitemapUrl(request)) return sitemap(request, remixContext as any)
   responseHeaders.set('Cache-Control', 's-maxage=1, stale-while-revalidate=59')
   return handleRequest(
     request,

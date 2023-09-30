@@ -1,11 +1,11 @@
-import { type LoaderArgs, redirect } from '@vercel/remix'
+import { type DataFunctionArgs, redirect } from '@vercel/remix'
 import invariant from 'tiny-invariant'
 
 import { Empty } from 'components/empty'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: LoaderArgs) {
+export async function loader({ params }: DataFunctionArgs) {
   invariant(params.product, 'product is required')
   const product = await prisma.product.findUnique({
     where: { slug: params.product },

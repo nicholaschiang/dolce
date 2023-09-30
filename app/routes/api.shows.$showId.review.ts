@@ -1,5 +1,5 @@
 import { parse } from '@conform-to/zod'
-import { type ActionArgs, json, redirect } from '@vercel/remix'
+import { type DataFunctionArgs, json, redirect } from '@vercel/remix'
 
 import {
   id,
@@ -10,7 +10,7 @@ import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request, params }: DataFunctionArgs) {
   const showId = Number(params.showId)
   if (Number.isNaN(showId)) throw new Response('Not Found', { status: 404 })
   const userId = await getUserId(request)

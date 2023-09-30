@@ -1,8 +1,8 @@
 import { useLoaderData } from '@remix-run/react'
 import {
   type SerializeFrom,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type DataFunctionArgs,
+  type MetaFunction,
 } from '@vercel/remix'
 import { useState } from 'react'
 
@@ -35,7 +35,7 @@ export const handle: Handle = {
   breadcrumb: () => ({ to: '/shows', children: 'shows' }),
 }
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   {
     title: `Fashion Shows: Fashion Week, Runway, Designer Collections | ${NAME}`,
   },
@@ -47,7 +47,7 @@ export const meta: V2_MetaFunction = () => [
   },
 ]
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: DataFunctionArgs) {
   const { where, string } = getWhere(request)
   log.debug('getting shows... %s', string)
   const [shows, filteredCount, totalCount] = await Promise.all([

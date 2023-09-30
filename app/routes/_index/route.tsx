@@ -1,6 +1,6 @@
 import { Location } from '@prisma/client'
 import { Link, useLoaderData } from '@remix-run/react'
-import { type V2_MetaFunction, type SerializeFrom } from '@vercel/remix'
+import { type MetaFunction, type SerializeFrom } from '@vercel/remix'
 import { scaleLinear } from 'd3-scale'
 import { X } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
@@ -43,7 +43,7 @@ type Count = {
   brandsCount: number
 }
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { title: `DOLCE: The Worldwide Fashion Database | ${NAME}` },
 ]
 
