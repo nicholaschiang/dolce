@@ -51,6 +51,7 @@ export async function loader({ request }: LoaderArgs) {
             images: { orderBy: { position: 'asc' } },
             prices: { orderBy: { value: 'asc' }, take: 1 },
           },
+          orderBy: { createdAt: 'asc' },
           take: 1,
         },
       },
