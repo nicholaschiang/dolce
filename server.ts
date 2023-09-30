@@ -2,9 +2,12 @@ import path from 'path'
 
 import compression from 'compression'
 import { createRequestHandler } from '@remix-run/express'
+import { installGlobals } from '@remix-run/node'
 import express from 'express'
 import morgan from 'morgan'
 import prom from 'express-prometheus-middleware'
+
+installGlobals()
 
 const app = express()
 const metricsApp = express()
