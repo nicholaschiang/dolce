@@ -16,7 +16,7 @@
     "dev:prisma": "prisma generate --watch",
     "dev:build": "cross-env NODE_ENV=development pnpm build:server --watch",
     "dev:css": "cross-env NODE_ENV=development pnpm generate:css --watch",
-    "dev:remix": "cross-env NODE_ENV=development remix dev",
+    "dev:remix": "cross-env NODE_ENV=development remix dev --manual",
     "docker": "docker-compose up -d",
     "format": "prettier --write .",
     "generate:css": "tailwindcss -m -i ./app/app.css --postcss ./postcss.config.js -o ./app/styles/tailwind.css",
