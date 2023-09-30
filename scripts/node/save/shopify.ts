@@ -176,10 +176,11 @@ function getData(product: Product) {
 
     // If it is available, we add the price as one of the Price[]. Otherwise, we
     // do not add it (the MSRP will already be saved to the Product).
-    const price: Prisma.PriceCreateWithoutVariantsInput = {
+    const price: Prisma.PriceCreateWithoutVariantInput = {
       value: Number(v.price),
       market: MARKET,
       url: `${BASE_URI}/products/${product.handle}`,
+      available: v.available,
       brand: {
         connectOrCreate: { where: { slug: brand.slug }, create: brand },
       },
@@ -210,14 +211,9 @@ function getData(product: Product) {
           create: i,
         })),
       },
-      prices: v.available
-        ? {
-            connectOrCreate: {
-              where: { value_url: { value: price.value, url: price.url } },
-              create: price,
-            },
-          }
-        : undefined,
+      // Each price is unique to each variant, so there's no need to
+      // connectOrCreate. We already connectOrCreate on the variants.
+      prices: { create: price },
     }
 
     return data
