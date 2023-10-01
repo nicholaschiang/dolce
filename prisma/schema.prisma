@@ -471,6 +471,9 @@ model Variant {
   // are different prices per size. Can be empty if the variant is sold out.
   prices Price[]
 
+  // The user-curated sets that the product variant is a part of.
+  sets Set[]
+
   // @todo each product can only have a single variant per color and size combo.
 }
 
@@ -655,9 +658,6 @@ model Product {
   // The product's looks (runway outfits that it was included in).
   looks Look[]
 
-  // The user-curated sets that the product is a part of.
-  sets Set[]
-
   // @todo perhaps we should also store the product's original source?
 
   // @todo products must have a unique name per brand(s).
@@ -702,8 +702,8 @@ model Set {
   // The set's looks.
   looks Look[]
 
-  // The set's products.
-  products Product[]
+  // The set's product variants.
+  variants Variant[]
 
   // A user can only have one set with a given name.
   @@unique([name, authorId])

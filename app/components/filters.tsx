@@ -60,7 +60,6 @@ const MODEL_TO_ROUTE: Record<string, string> = {
   Show: '/shows',
   User: '/designers',
   Video: '/videos',
-  Set: '/sets',
 }
 
 //////////////////////////////////////////////////////////////////
