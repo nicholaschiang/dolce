@@ -1,5 +1,21 @@
 # Release Notes
 
+## [1.59.0](https://github.com/nicholaschiang/dolce/compare/v1.58.0...v1.59.0) (2023-10-01)
+
+
+### Features
+
+* allow users to save products to sets ([04a318b](https://github.com/nicholaschiang/dolce/commit/04a318b470d91b57b75da54233908c9ad6a5fd2a))
+* **prisma:** products can be added to sets too ([85fb410](https://github.com/nicholaschiang/dolce/commit/85fb41020c63a5a0834d0afe7a58de5061437dcf))
+* **products:** add save menu to products list ([0c16631](https://github.com/nicholaschiang/dolce/commit/0c166316ecb78151dd33307b695faaffa7ffc28d))
+
+
+### Bug Fixes
+
+* **prisma:** save specific product variants to sets ([5caea78](https://github.com/nicholaschiang/dolce/commit/5caea78d02c166e687a7c15c129e78c5bfaa3afd))
+* **ui/button:** add background to `ghost` variant ([0904942](https://github.com/nicholaschiang/dolce/commit/090494203a38da4d96d06d6fa04c16d38efcf36a))
+* **ui/button:** show expanded state on outlined ([7b7712f](https://github.com/nicholaschiang/dolce/commit/7b7712fb6bdff22e771c3644f4fe7bfae2aeaae0))
+
 ## [1.58.0](https://github.com/nicholaschiang/dolce/compare/v1.57.0...v1.58.0) (2023-10-01)
 
 
