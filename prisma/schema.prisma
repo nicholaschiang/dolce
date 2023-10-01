@@ -655,6 +655,9 @@ model Product {
   // The product's looks (runway outfits that it was included in).
   looks Look[]
 
+  // The user-curated sets that the product is a part of.
+  sets Set[]
+
   // @todo perhaps we should also store the product's original source?
 
   // @todo products must have a unique name per brand(s).
@@ -667,9 +670,14 @@ model Product {
 // similar looks).
 //
 // Sets are separate from collections for simplicity. Collections are officially
-// curated by a brand while sets are simple groupings of looks created by users.
-// I may opt to combine these two data models in the future, but for now, simply
-// adding an additional data model was easiest.
+// curated by a brand while sets are simple groupings of looks and products
+// created by users. I may opt to combine these two data models in the future, 
+// but for now, simply adding an additional data model was easiest.
+//
+// Users can import looks and products from anywhere to add to their sets (e.g.
+// if I see an outfit I like on Instagram, I can click "share" to DOLCE and the
+// app will add it as a look to the selected set... that look will then be
+// automatically augmented with possible products to purchase).
 //
 // The name "set" was inspired by the website "Polyvore" which allowed users to
 // add products to a shared index called a "set".
@@ -693,6 +701,9 @@ model Set {
 
   // The set's looks.
   looks Look[]
+
+  // The set's products.
+  products Product[]
 
   // A user can only have one set with a given name.
   @@unique([name, authorId])
