@@ -1,5 +1,9 @@
-import { Link, useLoaderData } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import { type DataFunctionArgs } from '@vercel/remix'
+
+import { SetItem } from 'components/set-item'
+
+import { getItems } from 'utils/set'
 
 import { prisma } from 'db.server'
 
@@ -9,6 +13,10 @@ export async function loader({ params }: DataFunctionArgs) {
   const set = await prisma.set.findUnique({
     where: { id: setId },
     include: {
+      variants: {
+        orderBy: { updatedAt: 'desc' },
+        include: { images: { take: 1 }, product: true },
+      },
       looks: {
         orderBy: { updatedAt: 'desc' },
         include: { images: { take: 1 } },
@@ -16,29 +24,15 @@ export async function loader({ params }: DataFunctionArgs) {
     },
   })
   if (set == null) throw new Response('Not Found', { status: 404 })
-  return set
+  return getItems(set)
 }
 
 export default function UserSetsPage() {
-  const set = useLoaderData<typeof loader>()
+  const items = useLoaderData<typeof loader>()
   return (
     <ol className='grid grid-cols-5 gap-1'>
-      {set.looks.map((look) => (
-        <li key={look.id}>
-          <Link
-            to={`/shows/${look.showId}`}
-            prefetch='intent'
-            className='aspect-person bg-gray-100 dark:bg-gray-900 block'
-          >
-            {look.images.length > 0 && (
-              <img
-                className='object-cover w-full h-full'
-                src={look.images[0].url}
-                alt=''
-              />
-            )}
-          </Link>
-        </li>
+      {items.map((item) => (
+        <SetItem key={item.id} item={item} />
       ))}
     </ol>
   )

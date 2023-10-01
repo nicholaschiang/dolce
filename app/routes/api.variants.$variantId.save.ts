@@ -4,13 +4,19 @@ import { prisma } from 'db.server'
 import { requireUserId } from 'session.server'
 
 export async function action({ request, params }: DataFunctionArgs) {
-  const lookId = Number(params.lookId)
-  if (Number.isNaN(lookId)) throw new Response('Not Found', { status: 404 })
+  const variantId = Number(params.variantId)
+  if (Number.isNaN(variantId)) throw new Response('Not Found', { status: 404 })
 
-  const look = await prisma.look.findUnique({ where: { id: lookId } })
-  if (look == null) throw new Response('Not Found', { status: 404 })
+  const variant = await prisma.variant.findUnique({
+    include: { product: true },
+    where: { id: variantId },
+  })
+  if (variant == null) throw new Response('Not Found', { status: 404 })
 
-  const userId = await requireUserId(request, `/shows/${look.showId}`)
+  const userId = await requireUserId(
+    request,
+    `/products/${variant.product.slug}/variants/${variant.id}`,
+  )
 
   const setId = Number((await request.formData()).get('setId'))
   if (Number.isNaN(setId)) throw new Response('Bad Request', { status: 400 })
@@ -21,15 +27,15 @@ export async function action({ request, params }: DataFunctionArgs) {
 
   switch (request.method) {
     case 'POST': {
-      await prisma.look.update({
-        where: { id: lookId },
+      await prisma.variant.update({
+        where: { id: variantId },
         data: { sets: { connect: { id: setId } } },
       })
       break
     }
     case 'DELETE': {
-      await prisma.look.update({
-        where: { id: lookId },
+      await prisma.variant.update({
+        where: { id: variantId },
         data: { sets: { disconnect: { id: setId } } },
       })
       break
