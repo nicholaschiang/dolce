@@ -19,7 +19,7 @@ const buttonVariants = cva(
         secondary:
           'bg-gray-100 text-gray-900 shadow-sm hover:bg-gray-100/80 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-800/80',
         ghost:
-          'hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50 aria-expanded:bg-gray-100 dark:aria-expanded:bg-gray-800 aria-expanded:text-gray-900 dark:aria-expanded:text-gray-50',
+          'hover:bg-gray-100 bg-white hover:text-gray-900 dark:hover:bg-gray-800 dark:bg-gray-950 dark:hover:text-gray-50 aria-expanded:bg-gray-100 dark:aria-expanded:bg-gray-800 aria-expanded:text-gray-900 dark:aria-expanded:text-gray-50',
         link: 'text-gray-900 underline-offset-4 hover:underline dark:text-gray-50',
       },
       size: {
