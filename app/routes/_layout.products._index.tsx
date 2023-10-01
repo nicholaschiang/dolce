@@ -4,7 +4,7 @@ import {
   type DataFunctionArgs,
   type MetaFunction,
 } from '@vercel/remix'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Banner } from 'components/banner'
@@ -22,14 +22,16 @@ import {
   ItemSubtitle,
   ItemDescription,
 } from 'components/item'
+import { SaveMenu } from 'components/save-menu'
 
-import { NAME, PRODUCT_ASPECT_RATIO } from 'utils/general'
+import { NAME, PRODUCT_ASPECT_RATIO, useOptionalUser } from 'utils/general'
 import { getBrandName } from 'utils/product'
 
 import { prisma } from 'db.server'
 import { type ProductFilterName } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
+import { getUserId } from 'session.server'
 
 export const meta: MetaFunction = () => [{ title: `Products | ${NAME}` }]
 
@@ -40,6 +42,7 @@ export const handle: Handle = {
 export async function loader({ request }: DataFunctionArgs) {
   const { where, string } = getWhere(request)
   log.debug('getting products... %s', string)
+  const userId = await getUserId(request)
   const [products, filteredCount, totalCount] = await Promise.all([
     prisma.product.findMany({
       ...getPagination(new URL(request.url).searchParams),
@@ -51,13 +54,14 @@ export async function loader({ request }: DataFunctionArgs) {
           include: {
             images: { orderBy: { position: 'asc' } },
             prices: { orderBy: { value: 'asc' }, take: 1 },
+            sets: userId ? { where: { authorId: userId } } : false,
           },
           orderBy: { createdAt: 'asc' },
           take: 1,
         },
       },
       where,
-      orderBy: { releasedAt: 'desc' },
+      orderBy: [{ releasedAt: 'desc' }, { id: 'desc' }],
     }),
     prisma.product.count({ where }),
     prisma.product.count(),
@@ -135,19 +139,29 @@ export default function ProductsPage() {
 type Product = SerializeFrom<typeof loader>['products'][number]
 
 function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
-  const location = useLocation()
   // real users don't care about cents. most reputable brands won't include
   // cents in their prices anyway. prices that do include cents are usually
   // intended to be misleading (e.g. $69.70 instead of $70).
   const msrp = product?.msrp ? Math.round(Number(product.msrp)) : undefined
   const priceString = product?.variants[0]?.prices[0]?.value
   const price = priceString ? Math.round(Number(priceString)) : undefined
+  const user = useOptionalUser()
+  const variant = product?.variants[0]
+  const ref = useRef<HTMLButtonElement>(null)
   return (
-    <Item to={`${product?.slug}${location.search}`}>
-      <Carousel
-        items={product?.variants.flatMap((v) => v.images)}
-        item={ProductImage}
-      />
+    <Item to={`${product?.slug}/variants/${variant?.id}`}>
+      <Carousel items={variant?.images} item={ProductImage}>
+        {user && variant && (
+          <SaveMenu
+            ref={ref}
+            saveAPI={`/api/variants/${variant.id}/save`}
+            createAPI={`/api/variants/${variant.id}/save/create`}
+            sets={variant.sets}
+            aria-label='Save product'
+            className='ml-auto pointer-events-auto'
+          />
+        )}
+      </Carousel>
       {product && (
         <ItemContent>
           <ItemTitle>{getBrandName(product)}</ItemTitle>
