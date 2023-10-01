@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.60.0](https://github.com/nicholaschiang/dolce/compare/v1.59.0...v1.60.0) (2023-10-01)
+
+
+### Features
+
+* **routes:** only show banner on home page ([ccabeaa](https://github.com/nicholaschiang/dolce/commit/ccabeaa355db11815fc51fb32a17ac81c67cee4e))
+
 ## [1.59.0](https://github.com/nicholaschiang/dolce/compare/v1.58.0...v1.59.0) (2023-10-01)
 
 
