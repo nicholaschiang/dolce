@@ -21,7 +21,7 @@ type SaveMenuProps = {
   sets?: Serialize<Set>[]
   saveAPI: string
   createAPI: string
-} & Omit<ButtonProps, 'children' | 'size' | 'variant' | 'ref'>
+} & Omit<ButtonProps, 'children' | 'ref'>
 
 const SaveMenu = forwardRef<HTMLButtonElement, SaveMenuProps>(
   ({ sets, saveAPI: action, createAPI: create, ...etc }, ref) => {
@@ -64,7 +64,7 @@ const SaveMenu = forwardRef<HTMLButtonElement, SaveMenuProps>(
         endpoint='/api/sets'
         className='w-60'
       >
-        <Button {...etc} size='icon' variant='ghost' ref={ref}>
+        <Button size='icon' variant='ghost' ref={ref} {...etc}>
           <Bookmark
             className={cn(
               'w-3 h-3',

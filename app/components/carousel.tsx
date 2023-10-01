@@ -45,6 +45,7 @@ export function Carousel<T extends { id: number | string }>({
   const carouselRef = useRef<HTMLOListElement>(null)
   const Item = item
   return (
+    /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
     <div className={cn('relative group overflow-clip h-fit', className)}>
       <ol
         className={cn(
@@ -75,7 +76,14 @@ export function Carousel<T extends { id: number | string }>({
           </li>
         ))}
       </ol>
-      <div className='absolute inset-0 flex flex-col p-3 pointer-events-none'>
+      <div
+        role='group'
+        className='absolute inset-0 flex flex-col p-3 pointer-events-none'
+        onClick={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+        }}
+      >
         <div className='flex-1 flex justify-between items-start'>
           {children}
         </div>
@@ -96,6 +104,7 @@ export function Carousel<T extends { id: number | string }>({
         )}
       </div>
     </div>
+    /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
   )
 }
 
@@ -119,9 +128,7 @@ function PaginationButtons({
           'rounded-full group-hover:pointer-events-auto opacity-100 duration-200 transition-all',
           index === 0 && 'opacity-0 pointer-events-none scale-50',
         )}
-        onClick={(event) => {
-          event.preventDefault()
-          event.stopPropagation()
+        onClick={() => {
           if (carouselRef.current) {
             const itemWidth = carouselRef.current.scrollWidth / numOfItems
             const nextIndex = Math.max(index - 1, 0)
@@ -140,9 +147,7 @@ function PaginationButtons({
           index === numOfItems - itemsPerSlide &&
             'opacity-0 pointer-events-none scale-50',
         )}
-        onClick={(event) => {
-          event.preventDefault()
-          event.stopPropagation()
+        onClick={() => {
           if (carouselRef.current) {
             const itemWidth = carouselRef.current.scrollWidth / numOfItems
             const maxScroll = (numOfItems - itemsPerSlide) * itemWidth
