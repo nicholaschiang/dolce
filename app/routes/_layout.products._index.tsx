@@ -57,6 +57,7 @@ export async function loader({ request }: DataFunctionArgs) {
         },
       },
       where,
+      orderBy: { releasedAt: 'desc' },
     }),
     prisma.product.count({ where }),
     prisma.product.count(),
