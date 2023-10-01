@@ -9,9 +9,6 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.11.0
-
       - name: Checkout repo
         uses: actions/checkout@v3
       
