@@ -1,5 +1,25 @@
 # Release Notes
 
+## [1.58.0](https://github.com/nicholaschiang/dolce/compare/v1.57.0...v1.58.0) (2023-10-01)
+
+
+### Features
+
+* **product:** add styles link to properties ([b3855c6](https://github.com/nicholaschiang/dolce/commit/b3855c648c4aa888e604cb6136b9f762f06d01da))
+* **products:** show most recently released products ([41050fd](https://github.com/nicholaschiang/dolce/commit/41050fd1c46d8ef27dafcc859350ed11082e26d7))
+* **scripts/save/shopify:** import kith products ([9ead2b8](https://github.com/nicholaschiang/dolce/commit/9ead2b819235c65fe38cd7f800ddebc63f4ba87b))
+* **show/looks:** clicking on look opens save menu ([2a52b0e](https://github.com/nicholaschiang/dolce/commit/2a52b0e4e3db8a23c48f95a084d366bba7043a11))
+
+
+### Bug Fixes
+
+* **package.json:** enable manual HMR for now ([63f1706](https://github.com/nicholaschiang/dolce/commit/63f1706430cfe4d69fce5f9dc4f043ba262c3c02))
+* **product:** clicking size or color replaces URL ([d14a383](https://github.com/nicholaschiang/dolce/commit/d14a3830c12d0ef08febff19c03b4dd6216758ea))
+* **product:** move details below pricing info ([8f2c2f7](https://github.com/nicholaschiang/dolce/commit/8f2c2f729b71259b227fcefd99eff0d1220a5518))
+* **product:** round price values in prices section ([8e1cd5b](https://github.com/nicholaschiang/dolce/commit/8e1cd5b59706929ce9ba0a54c2240caa2e72957e))
+* **scripts/save/shopify:** skip variants without sku ([84fa8fc](https://github.com/nicholaschiang/dolce/commit/84fa8fc0d404f290b798c992eb47e9f0b94785fe))
+* **scripts/save/shopify:** upsert existing products ([3c496b4](https://github.com/nicholaschiang/dolce/commit/3c496b41815785afeae53fa978812f97f55002bc))
+
 ## [1.57.0](https://github.com/nicholaschiang/dolce/compare/v1.56.1...v1.57.0) (2023-09-30)
 
 
