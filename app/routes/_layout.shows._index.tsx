@@ -6,7 +6,6 @@ import {
 } from '@vercel/remix'
 import { useState } from 'react'
 
-import { Banner } from 'components/banner'
 import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { FiltersBar, getWhere } from 'components/filters-bar'
 import {
@@ -96,16 +95,6 @@ export default function ShowsPage() {
   const { shows, filteredCount, totalCount } = useLoaderData<typeof loader>()
   return (
     <>
-      <Banner>
-        Explore the world of fashion. Watch shows, peruse runway looks, read
-        critic reviews, save your favorite looks to custom sets, and compare
-        purchase options for the products in those looks—we help you find the
-        best price across retailers (e.g. SSENSE, Neiman Marcus) and secondary
-        markets (e.g. StockX, GOAT). You can add filters (by clicking the “+”
-        button below or by typing “f”) to refine your results by a specific
-        season (e.g. Fall 2023), brand (e.g. Louis Vuitton, Brunello Cucinelli),
-        location (e.g. Tokyo, Paris), and many more show attributes.
-      </Banner>
       <FiltersBar
         modelName='Show'
         hiddenFields={hiddenFields}

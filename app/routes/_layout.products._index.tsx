@@ -7,7 +7,6 @@ import {
 import { useState, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import { Banner } from 'components/banner'
 import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { FiltersBar, getWhere } from 'components/filters-bar'
 import {
@@ -99,16 +98,6 @@ export default function ProductsPage() {
   const [resultsPerRow, setResultsPerRow] = useState(6)
   return (
     <>
-      <Banner>
-        Products are aggregated from across the web and show prices direct from
-        the brand (e.g. Ralph Lauren, Gucci), from third-party retailers (e.g.
-        Nordstrom, Neiman Marcus, SSENSE), and from secondary markets (e.g.
-        StockX, GOAT, Ebay). You can add filters (by clicking the “+” button
-        below or by typing “f”) to refine your results by brand (e.g. Louis
-        Vuitton, Prada), style (e.g. Pants, Tops), variant (e.g. Blue, Pink),
-        designer (e.g. Pharrell Williams, Virgil Abloh), and many more product
-        attributes.
-      </Banner>
       <FiltersBar
         modelName='Product'
         hiddenFields={hiddenFields}

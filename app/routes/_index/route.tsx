@@ -16,6 +16,7 @@ import {
 
 import { type loader as locationAPI } from 'routes/api.locations.$location'
 
+import { Banner } from 'components/banner'
 import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { ClientOnly } from 'components/client-only'
 import { FilterLink } from 'components/filter-link'
@@ -77,6 +78,16 @@ export default function HomePage() {
   return (
     <>
       <Header />
+      <Banner>
+        Explore the world of fashion. Watch shows, peruse runway looks, read
+        critic reviews, save your favorite looks to custom sets, and compare
+        purchase options for the products in those looks—we help you find the
+        best price across retailers and secondary markets. Products are
+        aggregated from across the web and show prices direct from the brand
+        (e.g. Ralph Lauren, Gucci), from third-party retailers (e.g. Nordstrom,
+        Neiman Marcus, SSENSE), and from secondary markets (e.g. StockX, GOAT,
+        Ebay).
+      </Banner>
       <section className='p-6 mt-6 mx-auto max-w-screen-xl w-full'>
         <header className='flex items-center justify-center gap-1.5 sm:gap-2 text-xl sm:text-2xl tracking-tighter'>
           <h1>DOLCE</h1>
