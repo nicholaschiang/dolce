@@ -280,10 +280,18 @@ function getData(product: Product) {
     designedAt: product.created_at,
     releasedAt: product.published_at,
     variants: {
-      connectOrCreate: variants.map((v) => ({
-        where: { sku: v.sku },
-        create: v,
-      })),
+      connectOrCreate: variants
+        .filter((v) => {
+          if (v.sku == null) {
+            console.warn(`[MISSING SKU] ${product.title} (${url})`)
+            return false
+          }
+          return true
+        })
+        .map((v) => ({
+          where: { sku: v.sku },
+          create: v,
+        })),
     },
     // TODO do the tags include any product styles that we should link here?
     styles: {
