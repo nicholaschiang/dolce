@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.61.0](https://github.com/nicholaschiang/dolce/compare/v1.60.0...v1.61.0) (2023-10-02)
+
+
+### Features
+
+* **prisma:** save shopify tags on product variants ([b6144eb](https://github.com/nicholaschiang/dolce/commit/b6144eb2817cb5b41042bab43af30463ba5f2011))
+
+
+### Bug Fixes
+
+* **scripts/save/shopify:** save variant tags to db ([c9e9b58](https://github.com/nicholaschiang/dolce/commit/c9e9b58e1c20ea8241d521eddf77bd15c0d3c4db))
+
 ## [1.60.0](https://github.com/nicholaschiang/dolce/compare/v1.59.0...v1.60.0) (2023-10-01)
 
 
