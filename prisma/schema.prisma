@@ -436,6 +436,23 @@ model Material {
   // @todo perhaps create a manufacturer model to associate with materials?
 }
 
+// A tag is an arbitrary label applied by a brand or retailer to their items.
+// This was added primarily to preserve information from scraping Shopify. These
+// often correlate with specific collections, seasons, or styles. There's no
+// easy way to classify them at save time, so I just include them and will run
+// SQL queries manually to re-classify them.
+model Tag {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // The tag's name, as designated by the brand or retailer.
+  name String @unique
+
+  // The product variants that are available in this tag.
+  variants Variant[]
+}
+
 // A variant specifies the properties of an item you can purchase. Each variant
 // is associated with a unique SKU number. Variants are identified primarily by
 // size and color. Each variant has prices from different vendors.
@@ -465,6 +482,9 @@ model Variant {
   // Images and videos of the product variant being modeled.
   videos Video[]
   images Image[]
+
+  // Arbitrary tags applied by the brand or retailer.
+  tags Tag[]
 
   // The prices that are associated with the variant. Typically a single price
   // but can be multiple if the item is sold by multiple retailers or if there
@@ -517,7 +537,7 @@ model Price {
   brandId Int?
 
   // The product variant sold at this price (the size and color combo).
-  variant  Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variant   Variant @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   variantId Int
 
   // Whether or not the price is still available (e.g. if it is sold out). This
@@ -533,7 +553,7 @@ model Price {
   // Each price must have a unique value and URL (note that I can't simply put a
   // unique constraint on the URL due to secondary markets like GOAT that have a
   // single URL for many different sizes at many different prices).
-  
+
   // Because each price contains the stock information for a specific size and
   // color variant, each price must be unique to that variant.
   @@unique([variantId, value, url])
