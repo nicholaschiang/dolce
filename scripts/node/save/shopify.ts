@@ -101,17 +101,18 @@ export async function save() {
 
   /* eslint-disable-next-line no-restricted-syntax */
   for await (const product of final) {
+    const upsert = {
+      where: { slug: product.slug },
+      create: product,
+      update: getUpdateData(product),
+    }
     try {
-      await prisma.product.upsert({
-        where: { slug: product.slug },
-        create: product,
-        update: product,
-      })
+      await prisma.product.upsert(upsert)
       bar.tick()
     } catch (error) {
       console.error(
         `Error while saving product:`,
-        JSON.stringify(product, null, 2),
+        JSON.stringify(upsert, null, 2),
       )
       throw error
     }
@@ -220,6 +221,10 @@ function getData(product: Product) {
       },
     }
 
+    const tags: Prisma.TagCreateWithoutVariantsInput[] = product.tags.map(
+      (tag) => ({ name: tag }),
+    )
+
     // TODO should I preserve the Shopify created_at and updated_at timestamps?
     const data: Prisma.VariantCreateWithoutProductInput = {
       sku: v.sku,
@@ -245,6 +250,12 @@ function getData(product: Product) {
           create: i,
         })),
       },
+      tags: {
+        connectOrCreate: tags.map((t) => ({
+          where: { name: t.name },
+          create: t,
+        })),
+      },
       // Each price is unique to each variant, so there's no need to
       // connectOrCreate. We already connectOrCreate on the variants.
       prices: { create: price },
@@ -261,6 +272,7 @@ function getData(product: Product) {
     slug: slug(title),
     // Remove unnecessary <br> tags from the product description and resolve all
     // relative links to the given BASE_URI (also open them in a new tab).
+    // TODO perhaps the product description should be on the variant instead?
     description: sanitizeHtml(product.body_html, {
       allowedTags: sanitizeHtml.defaults.allowedTags.filter((t) => t !== 'br'),
       transformTags: {
@@ -309,4 +321,42 @@ function getData(product: Product) {
     looks: undefined,
   } satisfies Prisma.ProductCreateInput
   return data
+}
+
+// Ensure that deeply nested connectOrCreate relations are upserted as well.
+function getUpdateData(
+  data: ReturnType<typeof getData>,
+): Prisma.ProductUpdateInput {
+  // TODO make this recursively replace all connectOrCreate with upsert. This
+  // should work mostly for now as all the nested connectOrCreate relations do
+  // not need to be upserted but simply created if they don't exist.
+  return {
+    ...data,
+    variants: {
+      upsert: data.variants.connectOrCreate.map((v) => ({
+        where: v.where,
+        create: v.create,
+        // TODO allow creating a new price if it is a different source or a
+        // different value. Right now, I can't easily do that because I do not
+        // know the variantId at save time. I should probably add a unique slug
+        // to the price model that is derived from the variant SKU and the price
+        // URL and value.
+        update: { ...v.create, prices: undefined },
+      })),
+    },
+    styles: {
+      upsert: data.styles.connectOrCreate.map((s) => ({
+        where: s.where,
+        create: s.create,
+        update: s.create,
+      })),
+    },
+    brands: {
+      upsert: data.brands.connectOrCreate.map((b) => ({
+        where: b.where,
+        create: b.create,
+        update: b.create,
+      })),
+    },
+  }
 }
