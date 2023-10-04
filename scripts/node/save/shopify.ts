@@ -110,10 +110,7 @@ export async function save() {
       await prisma.product.upsert(upsert)
       bar.tick()
     } catch (error) {
-      console.error(
-        `Error while saving product:`,
-        JSON.stringify(upsert, null, 2),
-      )
+      console.error(`Error while saving product:`, JSON.stringify(upsert))
       throw error
     }
   }
