@@ -18,7 +18,13 @@ import {
   type MetaFunction,
   json,
 } from '@vercel/remix'
-import { Bookmark, Folder, MessageCircle } from 'lucide-react'
+import {
+  Shirt,
+  ShoppingCart,
+  Bookmark,
+  Folder,
+  MessageCircle,
+} from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import { type PropsWithChildren, useRef } from 'react'
 import { type SitemapFunction } from 'remix-sitemap'
@@ -34,6 +40,7 @@ import { buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
 import { NAME, useOptionalUser, useRedirectTo } from 'utils/general'
+import { OWN_SET_NAME, WANT_SET_NAME } from 'utils/set'
 
 import { prisma, supabase } from 'db.server'
 import { log } from 'log.server'
@@ -127,6 +134,14 @@ export default function UserPage() {
         <Tab to='.' end>
           <Bookmark className='w-3 h-3' />
           Saved
+        </Tab>
+        <Tab to='want'>
+          <ShoppingCart className='w-3 h-3' />
+          {WANT_SET_NAME}
+        </Tab>
+        <Tab to='own'>
+          <Shirt className='w-3 h-3' />
+          {OWN_SET_NAME}
         </Tab>
         <Tab to='sets'>
           <Folder className='w-3 h-3' />
