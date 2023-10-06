@@ -7,6 +7,10 @@ import {
 
 import { type Serialize } from 'utils/general'
 
+// The name of the "Own" and "Want" sets. These are hard-coded values for now.
+export const OWN_SET_NAME = 'OWN'
+export const WANT_SET_NAME = 'WANT'
+
 export type SetItem = {
   id: number
   url: string
