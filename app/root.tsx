@@ -1,4 +1,5 @@
 import * as FullStory from '@fullstory/browser'
+import { Prisma } from '@prisma/client'
 import {
   Link,
   Links,
@@ -36,6 +37,7 @@ import {
 
 import tailwindStylesheetUrl from 'styles/tailwind.css'
 
+import { log } from 'log.server'
 import { getSession, getUser, sessionStorage } from 'session.server'
 import {
   Theme,
@@ -166,8 +168,13 @@ export async function loader({ request }: DataFunctionArgs) {
   const session = await getSession(request)
   const theme = session.get('theme') as Theme | null
   const headers = { 'Set-Cookie': await sessionStorage.commitSession(session) }
+  const { models, enums } = Prisma.dmmf.datamodel
+  log.trace('got %d models %s', models.length, JSON.stringify(models, null, 2))
+  log.trace('got %d enums %s', enums.length, JSON.stringify(enums, null, 2))
   return json(
     {
+      models,
+      enums,
       user: await getUser(request),
       theme: isTheme(theme) ? theme : null,
       env: {
