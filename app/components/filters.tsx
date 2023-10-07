@@ -25,7 +25,6 @@ import {
 import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
 
-import type { loader as layout } from 'routes/_layout'
 import type { loader as seasons } from 'routes/_layout.seasons'
 import type { loader as variants } from 'routes/_layout.variants'
 
@@ -39,6 +38,7 @@ import { getColorFilter, getColorName } from 'utils/variant'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
 import { filterToStrings } from 'filters'
+import type { loader as root } from 'root'
 
 // we need a way to load menu options when filtering based on a model; this
 // constant aims to map models to the routes that have loaders to get their
@@ -117,7 +117,7 @@ export function Filters({
 
   // TODO perhaps refactor this component to simply accept a Prisma data model
   // instead of relying on our own proprietary Remix API routes.
-  const data = useData<typeof layout>('routes/_layout')
+  const data = useData<typeof root>('root')
   const model = data?.models.find((m) => m.name === modelName)
   invariant(model, `Could not find model "${modelName}"`)
 
@@ -405,7 +405,7 @@ type Props = { field: Prisma.DMMF.Field; nested?: boolean }
 function EnumItems({ field, nested }: Props) {
   const { addOrUpdateFilter } = useContext(FiltersContext)
 
-  const data = useData<typeof layout>('routes/_layout')
+  const data = useData<typeof root>('root')
   const en = data?.enums.find((e) => e.name === field.type)
   invariant(en, `Could not find enum "${field.type}"`)
 
