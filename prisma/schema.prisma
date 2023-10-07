@@ -49,6 +49,9 @@ model User {
   // The user's sets (i.e. arbitrary groupings of saved looks).
   sets Set[]
 
+  // The looks this user has authored.
+  looks Look[]
+
   // Whether the user is a curator (i.e. someone who can edit shows, etc).
   curator Boolean @default(false)
 
@@ -67,7 +70,7 @@ model User {
   // MODEL FIELDS - only applicable to fashion models.
 
   // The looks that this model wore during runway shows.
-  looks Look[]
+  looksModeled Look[] @relation("LooksModeled")
 }
 
 // A user's password, stored in Postgres as an encrypted hash.
@@ -852,11 +855,18 @@ model Look {
   number Int
 
   // The look's show.
-  show   Show @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  showId Int
+  show   Show? @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  showId Int?
+
+  // The look's author (if not part of a show, this was created by a user).
+  author   User? @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId Int?
+
+  // @todo ensure that a look always has either a show or an author.
+  // @see https://github.com/prisma/prisma/issues/17319
 
   // The look's model (if known).
-  model   User? @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  model   User? @relation("LooksModeled", fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   modelId Int?
 
   // The look's products (if known).
@@ -868,8 +878,9 @@ model Look {
   // The user-curated sets that the look is a part of.
   sets Set[]
 
-  // Each look must have a unique number in the show.
-  @@unique([number, showId])
+  // Each look must have a unique number in the show or by the author.
+  @@unique([showId, number])
+  @@unique([authorId, number])
 }
 
 // An article is exactly that: a work of writing about some fashion-related 
