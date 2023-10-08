@@ -842,8 +842,9 @@ model Season {
   @@unique([name, year])
 }
 
-// A look is an outfit that a model wore during a runway show.
-model Look {
+// Make the look to show explicit so that we ensure that each look is assigned a
+// unique number per show that it is in.
+model ShowLooks {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -854,6 +855,27 @@ model Look {
   // The look's show.
   show   Show @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   showId Int
+
+  // For now, each look can only be in one show (which is why there is a unique
+  // constraint on this lookId field). This is an explicit one-to-many relation.
+  look   Look @relation(fields: [lookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lookId Int  @unique
+
+  // Each look can only be shown once per show.
+  @@unique([showId, lookId])
+  // Each look must have a unique number in the show.
+  @@unique([showId, number])
+}
+
+// A look is an outfit that a model wore during a runway show.
+model Look {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // The look's show(s). For now, this will always either be empty or an array 
+  // of one (each look can only be in a single show; one-to-many).
+  shows ShowLooks[]
 
   // The look's model (if known).
   model   User? @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -867,9 +889,6 @@ model Look {
 
   // The user-curated sets that the look is a part of.
   sets Set[]
-
-  // Each look must have a unique number in the show.
-  @@unique([number, showId])
 }
 
 // An article is exactly that: a work of writing about some fashion-related 
@@ -1091,7 +1110,7 @@ model Show {
   collections Collection[]
 
   // The looks that were presented at the show.
-  looks Look[]
+  looks ShowLooks[]
 
   // The brand that hosted the show. This is different than the collection(s)
   // brand(s) that were presented at the show. Often, they will be the same.
