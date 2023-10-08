@@ -1,10 +1,12 @@
 import { type LinkProps, Link } from '@remix-run/react'
-import { type HTMLAttributes } from 'react'
+import { type HTMLAttributes, forwardRef } from 'react'
 
 import { cn } from 'utils/cn'
 
-function Item({ className, to, ...props }: LinkProps) {
-  return (
+export type ItemProps = LinkProps
+
+const Item = forwardRef<HTMLAnchorElement, ItemProps>(
+  ({ className, to, ...props }, ref) => (
     <Link
       to={to}
       prefetch='intent'
@@ -13,10 +15,11 @@ function Item({ className, to, ...props }: LinkProps) {
         to === '' && 'cursor-wait',
         className,
       )}
+      ref={ref}
       {...props}
     />
-  )
-}
+  ),
+)
 Item.displayName = 'Item'
 
 function ItemContent(props: HTMLAttributes<HTMLDivElement>) {

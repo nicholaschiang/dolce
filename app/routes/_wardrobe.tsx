@@ -1,7 +1,17 @@
+import {
+  DndContext,
+  DragOverlay,
+  useDroppable,
+  useDndMonitor,
+} from '@dnd-kit/core'
 import { Outlet, Link, useLoaderData } from '@remix-run/react'
 import { type DataFunctionArgs, type SerializeFrom } from '@vercel/remix'
+import { useState } from 'react'
+
+import { type Product, ProductItem } from 'routes/_wardrobe.products._index'
 
 import { Avatar } from 'components/avatar'
+import { Empty } from 'components/empty'
 import { Header } from 'components/header'
 import {
   Layout,
@@ -12,6 +22,7 @@ import {
 import { badgeVariants } from 'components/ui/badge'
 
 import { cn } from 'utils/cn'
+import { useUser } from 'utils/general'
 import { OWN_SET_NAME } from 'utils/set'
 import { getShowSeason } from 'utils/show'
 
@@ -34,17 +45,25 @@ export async function loader({ request }: DataFunctionArgs) {
 }
 
 export default function WardrobePage() {
+  const [active, setActive] = useState<Product>()
+  console.log('active', active)
   return (
-    <Layout className='h-auto fixed inset-0'>
-      <LayoutLeft>
-        <Content />
-      </LayoutLeft>
-      <LayoutDivider />
-      <LayoutRight className='flex flex-col'>
-        <WardrobeHeader />
-        <Looks />
-      </LayoutRight>
-    </Layout>
+    <DndContext
+      onDragStart={(event) => setActive(event.active.data.current as Product)}
+      onDragEnd={() => setActive(undefined)}
+    >
+      <Layout className='h-auto fixed inset-0'>
+        <LayoutLeft>
+          <Content />
+        </LayoutLeft>
+        <LayoutDivider />
+        <LayoutRight className='flex flex-col'>
+          <WardrobeHeader />
+          <Looks />
+        </LayoutRight>
+      </Layout>
+      <DragOverlay>{active && <ProductItem item={active} />}</DragOverlay>
+    </DndContext>
   )
 }
 
@@ -73,11 +92,69 @@ function Looks() {
   return (
     <div className='flex-1 bg-gray-50 dark:bg-gray-900'>
       <ul className='grid grid-cols-2 gap-2 p-2'>
+        <CreateItem />
         {looks.map((look) => (
           <LookItem key={look.id} look={look} />
         ))}
       </ul>
     </div>
+  )
+}
+
+function CreateItem() {
+  const user = useUser()
+  const looks = useLoaderData<typeof loader>()
+    .filter((l) => l.authorId === user.id)
+    .sort((a, b) => b.number - a.number)
+  const number = looks[0]?.number ?? 1
+  const { isOver, setNodeRef } = useDroppable({ id: 'create' })
+  const [products, setProducts] = useState<Product[]>([])
+  useDndMonitor({
+    onDragEnd(event) {
+      setProducts((prev) => [event.active.data.current as Product, ...prev])
+    },
+  })
+  return (
+    <li className='rounded-md border border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-xs'>
+      <div className='p-2 flex items-center gap-1'>
+        <Avatar className='h-6 w-6 text-3xs' src={user} />
+        <strong className='font-medium'>{user.username}</strong>
+      </div>
+      <div
+        ref={setNodeRef}
+        className={cn(
+          'w-full aspect-person bg-gray-100 dark:bg-gray-900 transition-colors overflow-y-auto overflow-x-hidden',
+          isOver && 'bg-gray-200 dark:bg-gray-800',
+          products.length === 0 && 'p-3',
+        )}
+      >
+        {products.length ? (
+          <ul>
+            {products.map((product) => (
+              <li
+                key={product.id}
+                className='w-full aspect-product bg-gray-100 dark:bg-gray-900'
+              >
+                {product.variants[0] && product.variants[0].images[0] && (
+                  <img
+                    src={product.variants[0].images[0].url}
+                    className='w-full h-full object-cover'
+                    alt=''
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Empty>Drag products here</Empty>
+        )}
+      </div>
+      <div className='p-2 flex flex-col gap-2'>
+        <p className='truncate'>
+          <strong className='font-medium'>{user.username}</strong> Look {number}
+        </p>
+      </div>
+    </li>
   )
 }
 

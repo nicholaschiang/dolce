@@ -1,10 +1,11 @@
+import { type UniqueIdentifier, useDraggable } from '@dnd-kit/core'
 import { useLoaderData, useLocation, useNavigate } from '@remix-run/react'
 import {
   type SerializeFrom,
   type DataFunctionArgs,
   type MetaFunction,
 } from '@vercel/remix'
-import { useState, useRef } from 'react'
+import { useState, forwardRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Carousel, type CarouselItemProps } from 'components/carousel'
@@ -16,6 +17,7 @@ import {
 } from 'components/infinite-list'
 import {
   Item,
+  type ItemProps,
   ItemContent,
   ItemTitle,
   ItemSubtitle,
@@ -23,6 +25,7 @@ import {
 } from 'components/item'
 import { SaveMenu } from 'components/save-menu'
 
+import { cn } from 'utils/cn'
 import { NAME, PRODUCT_ASPECT_RATIO, useOptionalUser } from 'utils/general'
 import { getBrandName } from 'utils/product'
 
@@ -110,7 +113,7 @@ export default function ProductsPage() {
       />
       <InfiniteList
         items={products}
-        item={ProductItem}
+        item={DraggableItem}
         itemAspectRatio={PRODUCT_ASPECT_RATIO}
         itemCount={filteredCount}
         itemsPerRow={resultsPerRow}
@@ -125,9 +128,29 @@ export default function ProductsPage() {
 
 //////////////////////////////////////////////////////////////////
 
-type Product = SerializeFrom<typeof loader>['products'][number]
+export type Product = SerializeFrom<typeof loader>['products'][number]
 
-function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
+function DraggableItem({ item, ...etc }: InfiniteListItemProps<Product>) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: item?.id ?? 'product',
+    data: item,
+  })
+  return (
+    <ProductItem
+      ref={setNodeRef}
+      className={cn(isDragging && 'opacity-25')}
+      item={item}
+      {...etc}
+      {...listeners}
+      {...attributes}
+    />
+  )
+}
+
+export const ProductItem = forwardRef<
+  HTMLAnchorElement,
+  InfiniteListItemProps<Product> & Omit<ItemProps, 'to'>
+>(({ item: product, ...etc }, ref) => {
   // real users don't care about cents. most reputable brands won't include
   // cents in their prices anyway. prices that do include cents are usually
   // intended to be misleading (e.g. $69.70 instead of $70).
@@ -136,13 +159,15 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
   const price = priceString ? Math.round(Number(priceString)) : undefined
   const user = useOptionalUser()
   const variant = product?.variants[0]
-  const ref = useRef<HTMLButtonElement>(null)
   return (
-    <Item to={`${product?.slug}/variants/${variant?.id}`}>
+    <Item
+      ref={ref}
+      to={`/products/${product?.slug}/variants/${variant?.id}`}
+      {...etc}
+    >
       <Carousel items={variant?.images} item={ProductImage}>
         {user && variant && (
           <SaveMenu
-            ref={ref}
             saveAPI={`/api/variants/${variant.id}/save`}
             createAPI={`/api/variants/${variant.id}/save/create`}
             sets={variant.sets}
@@ -165,7 +190,8 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
       )}
     </Item>
   )
-}
+})
+ProductItem.displayName = 'ProductItem'
 
 type Image = Product['variants'][number]['images'][number]
 
