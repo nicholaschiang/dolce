@@ -4,8 +4,11 @@ import {
   type DataFunctionArgs,
   type MetaFunction,
 } from '@vercel/remix'
+import { Plus, Minus } from 'lucide-react'
 import { useState, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+
+import { useProducts } from 'routes/_wardrobe'
 
 import { Carousel, type CarouselItemProps } from 'components/carousel'
 import { FiltersBar, getWhere } from 'components/filters-bar'
@@ -22,6 +25,7 @@ import {
   ItemDescription,
 } from 'components/item'
 import { SaveMenu } from 'components/save-menu'
+import { Button } from 'components/ui/button'
 
 import { NAME, PRODUCT_ASPECT_RATIO, useOptionalUser } from 'utils/general'
 import { getBrandName } from 'utils/product'
@@ -125,7 +129,7 @@ export default function ProductsPage() {
 
 //////////////////////////////////////////////////////////////////
 
-type Product = SerializeFrom<typeof loader>['products'][number]
+export type Product = SerializeFrom<typeof loader>['products'][number]
 
 function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
   // real users don't care about cents. most reputable brands won't include
@@ -140,16 +144,19 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
   return (
     <Item to={`${product?.slug}/variants/${variant?.id}`}>
       <Carousel items={variant?.images} item={ProductImage}>
-        {user && variant && (
-          <SaveMenu
-            ref={ref}
-            saveAPI={`/api/variants/${variant.id}/save`}
-            createAPI={`/api/variants/${variant.id}/save/create`}
-            sets={variant.sets}
-            aria-label='Save product'
-            className='ml-auto pointer-events-auto'
-          />
-        )}
+        <div className='ml-auto flex flex-col gap-1'>
+          {product && <AddButton product={product} />}
+          {user && variant && (
+            <SaveMenu
+              ref={ref}
+              saveAPI={`/api/variants/${variant.id}/save`}
+              createAPI={`/api/variants/${variant.id}/save/create`}
+              sets={variant.sets}
+              aria-label='Save product'
+              className='pointer-events-auto'
+            />
+          )}
+        </div>
       </Carousel>
       {product && (
         <ItemContent>
@@ -164,6 +171,27 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
         </ItemContent>
       )}
     </Item>
+  )
+}
+
+function AddButton({ product }: { product: Product }) {
+  const [products, setProducts] = useProducts()
+  const selected = products.some((p) => p.id === product.id)
+  return (
+    <Button
+      size='icon'
+      variant={selected ? 'default' : 'ghost'}
+      className='pointer-events-auto'
+      onClick={() =>
+        setProducts((prev) => {
+          const idx = prev.findIndex((p) => p.id === product.id)
+          if (idx < 0) return [product, ...prev]
+          return [...prev.slice(0, idx), ...prev.slice(idx + 1)]
+        })
+      }
+    >
+      {selected ? <Minus className='w-3 h-3' /> : <Plus className='w-3 h-3' />}
+    </Button>
   )
 }
 
