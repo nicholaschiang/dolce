@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
+import 'product_list_tab.dart';
+import 'search_tab.dart';
+import 'shopping_cart_tab.dart';
+
 class CupertinoStoreApp extends StatelessWidget {
   const CupertinoStoreApp({super.key});
 
@@ -23,11 +27,43 @@ class CupertinoStoreHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text('Cupertino Store'),
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.home),
+            label: 'Products',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.shopping_cart),
+            label: 'Cart',
+          ),
+        ],
       ),
-      child: SizedBox(),
+      tabBuilder: (context, index) {
+        return switch (index) {
+          0 => CupertinoTabView(
+              builder: (context) => const CupertinoPageScaffold(
+                child: ProductListTab(),
+              ),
+            ),
+          1 => CupertinoTabView(
+              builder: (context) => const CupertinoPageScaffold(
+                child: SearchTab(),
+              ),
+            ),
+          2 => CupertinoTabView(
+              builder: (context) => const CupertinoPageScaffold(
+                child: ShoppingCartTab(),
+              ),
+            ),
+          _ => throw Exception('Invalid index $index'),
+        };
+      },
     );
   }
 }
