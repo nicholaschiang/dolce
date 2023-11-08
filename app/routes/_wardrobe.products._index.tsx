@@ -145,7 +145,7 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
     <Item to={`${product?.slug}/variants/${variant?.id}`}>
       <Carousel items={variant?.images} item={ProductImage}>
         <div className='ml-auto flex flex-col gap-1'>
-          {product && <AddButton product={product} />}
+          {user && product && <AddButton product={product} />}
           {user && variant && (
             <SaveMenu
               ref={ref}
