@@ -24,7 +24,7 @@ import { badgeVariants } from 'components/ui/badge'
 import { Button } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
-import { useUser } from 'utils/general'
+import { useUser, useOptionalUser } from 'utils/general'
 import { OWN_SET_NAME } from 'utils/set'
 import { getShowSeason } from 'utils/show'
 
@@ -53,17 +53,22 @@ const ProductsContext = createContext<ProductsContextT>([[], () => {}])
 export const useProducts = () => useContext(ProductsContext)
 
 export default function WardrobePage() {
+  const user = useOptionalUser()
   return (
     <ProductsContext.Provider value={useState<Product[]>([])}>
       <Layout className='h-auto fixed inset-0'>
         <LayoutLeft>
           <Content />
         </LayoutLeft>
-        <LayoutDivider />
-        <LayoutRight className='flex flex-col'>
-          <WardrobeHeader />
-          <Looks />
-        </LayoutRight>
+        {user && (
+          <>
+            <LayoutDivider />
+            <LayoutRight className='flex flex-col'>
+              <WardrobeHeader />
+              <Looks />
+            </LayoutRight>
+          </>
+        )}
       </Layout>
     </ProductsContext.Provider>
   )
@@ -86,6 +91,20 @@ function WardrobeHeader() {
         Add products and looks to your wardrobe
       </p>
     </header>
+  )
+}
+
+function Looks() {
+  const looks = useLoaderData<typeof loader>()
+  return (
+    <div className='flex-1 bg-gray-50 dark:bg-gray-900'>
+      <ul className='grid grid-cols-2 gap-2 p-2'>
+        <CreateItem />
+        {looks.map((look) => (
+          <LookItem key={look.id} look={look} />
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -152,20 +171,6 @@ function CreateItem() {
         </Button>
       </div>
     </fetcher.Form>
-  )
-}
-
-function Looks() {
-  const looks = useLoaderData<typeof loader>()
-  return (
-    <div className='flex-1 bg-gray-50 dark:bg-gray-900'>
-      <ul className='grid grid-cols-2 gap-2 p-2'>
-        <CreateItem />
-        {looks.map((look) => (
-          <LookItem key={look.id} look={look} />
-        ))}
-      </ul>
-    </div>
   )
 }
 
