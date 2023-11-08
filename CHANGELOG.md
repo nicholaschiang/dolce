@@ -1,5 +1,20 @@
 # Release Notes
 
+## [1.62.0](https://github.com/nicholaschiang/dolce/compare/v1.61.0...v1.62.0) (2023-11-08)
+
+
+### Features
+
+* **app:** add persistent wardrobe sidebar ([76d9e2b](https://github.com/nicholaschiang/dolce/commit/76d9e2b6ba7461c11f76ff1fe62cb9ddaae8a3bf))
+* **app:** create separate "want" and "own" pages ([c5047ff](https://github.com/nicholaschiang/dolce/commit/c5047ffc7f0031188caf770677686ee35d11d91e))
+* **prisma:** users can create looks without shows ([2f31a1a](https://github.com/nicholaschiang/dolce/commit/2f31a1ad0060788fe47839aff234a35aafb84de5))
+* **wardrobe:** add product saving buttons ([7b6dc09](https://github.com/nicholaschiang/dolce/commit/7b6dc098edd45fa4fcb0210dd86ec8976c8fe67e))
+
+
+### Bug Fixes
+
+* **scripts/save/shopify:** log errors in one line ([6329a29](https://github.com/nicholaschiang/dolce/commit/6329a293de775a5c54d4af621da381bdc8628a12))
+
 ## [1.61.0](https://github.com/nicholaschiang/dolce/compare/v1.60.0...v1.61.0) (2023-10-02)
 
 
