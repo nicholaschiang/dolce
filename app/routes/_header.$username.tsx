@@ -25,6 +25,7 @@ import {
   Bookmark,
   Folder,
   MessageCircle,
+  Grid3x3,
 } from 'lucide-react'
 import { nanoid } from 'nanoid/non-secure'
 import { type PropsWithChildren, useRef } from 'react'
@@ -141,6 +142,10 @@ export default function UserPage() {
         <Tab to='.' end>
           <Bookmark className='w-3 h-3' />
           Saved
+        </Tab>
+        <Tab to='posts'>
+          <Grid3x3 className='w-3 h-3' />
+          Posts
         </Tab>
         {want && (
           <Tab to={`sets/${want.id}`}>
