@@ -5,12 +5,7 @@ import {
   useActionData,
   useNavigation,
 } from '@remix-run/react'
-import {
-  type DataFunctionArgs,
-  type MetaFunction,
-  json,
-  redirect,
-} from '@vercel/remix'
+import { type DataFunctionArgs, type MetaFunction, json } from '@vercel/remix'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
 
@@ -40,7 +35,7 @@ import {
 
 import { prisma } from 'db.server'
 import { type Handle } from 'root'
-import { getUserId } from 'session.server'
+import { requireUserId } from 'session.server'
 
 const schema = z.object({
   name: nameSchema,
@@ -57,14 +52,12 @@ export const handle: Handle = {
 export const config = { runtime: 'nodejs' }
 
 export async function loader({ request }: DataFunctionArgs) {
-  const userId = await getUserId(request)
-  if (userId == null) return redirect('/login?redirectTo=/profile')
-  return json({})
+  const userId = await requireUserId(request, '/profile')
+  return json({ userId })
 }
 
 export async function action({ request }: DataFunctionArgs) {
-  const userId = await getUserId(request)
-  if (userId == null) return redirect('/login?redirectTo=/profile')
+  const userId = await requireUserId(request, '/profile')
 
   const formData = await request.formData()
   const submission = parse(formData, { schema })
