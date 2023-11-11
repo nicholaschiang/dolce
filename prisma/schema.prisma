@@ -53,6 +53,11 @@ model User {
   // The reviews written by the user.
   reviews Review[]
 
+  // The posts uploaded by the user (this does not mean that the post was
+  // originally authored by this user, but that it was added to our database by
+  // this user).
+  posts Post[]
+
   // The user's boards (i.e. arbitrary groupings of saved looks).
   boards Board[]
 
@@ -315,6 +320,9 @@ model Style {
   // The sizes used by the style category.
   sizes Size[]
 
+  // The items that have this style (e.g. "turtleneck").
+  items Item[]
+
   // The collections that exclusively contain products from this style.
   collections Collection[]
 
@@ -400,6 +408,9 @@ model Color {
 
   // The product variants that are available in this color.
   variants Variant[]
+
+  // The items that have this color.
+  items Item[]
 
   // @todo perhaps colors should be associated with brands? e.g. "Gucci Beige"?
 }
@@ -504,6 +515,9 @@ model Variant {
   // The user-curated boards that the product variant is a part of.
   boards Board[]
 
+  // The posts that include this product variant.
+  posts Post[]
+
   // @todo each product can only have a single variant per color and size combo.
 }
 
@@ -599,6 +613,10 @@ model Image {
   look   Look? @relation(fields: [lookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lookId Int?
 
+  // The post that the image is from.
+  post   Post? @relation(fields: [postId], references: [id])
+  postId Int?
+
   // @todo store information on the models in the image (e.g. insta, etc).
 }
 
@@ -621,6 +639,10 @@ model Video {
   // The show the video is of.
   show Show?
 
+  // The post that the video is from.
+  post   Post? @relation(fields: [postId], references: [id])
+  postId Int?
+
   // @todo store information on the models in the video (e.g. insta, etc).
 }
 
@@ -635,6 +657,30 @@ enum Level {
   COUTURE
   HANDMADE
   RTW
+}
+
+// An item is a high-level product category (e.g. "white turtleneck sweater").
+model Item {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // The item's styles (e.g. "turtleneck", "sweater").
+  styles Style[]
+
+  // The item's colors (e.g. "white").
+  colors Color[]
+
+  // Products that satisfy the item specifications (i.e. a turtleneck sweater
+  // sold by Aritzia that has a white color variant).
+  //
+  // Note that I intentionally do not associate variants with items. Instead, it
+  // will be up to the client (i.e. the front-end) to show the correct product
+  // variant that has the item's correct colors.
+  products Product[]
+
+  // The posts that include this item category in them.
+  posts Post[]
 }
 
 // A product is an item that can be bought and sold.
@@ -676,6 +722,9 @@ model Product {
   // styles (e.g. the "Agency Pant" and the "Agency Cropped Pant").
   styles Style[]
 
+  // Item specifications that the product satisfies (e.g. a turtleneck sweater).
+  items Item[]
+
   // The collections that feature the product.
   collections Collection[]
 
@@ -687,6 +736,9 @@ model Product {
 
   // The product's looks (runway outfits that it was included in).
   looks Look[]
+
+  // The posts that include this item.
+  posts Post[]
 
   // @todo perhaps we should also store the product's original source?
 
@@ -884,6 +936,8 @@ model Look {
   modelId Int?
 
   // The look's products (if known).
+  // @todo perhaps I should optionally include variants if a specific size/color
+  // of the product is shown in the look images and that information is known.
   products Product[]
 
   // The look's picture (if known).
@@ -892,9 +946,49 @@ model Look {
   // The user-curated boards that the look is a part of.
   boards Board[]
 
+  // The posts that the look is a part of.
+  posts Post[]
+
   // Each look must have a unique number in the show or by the author.
   @@unique([showId, number])
   @@unique([authorId, number])
+}
+
+// A post is an Instagram or TikTok or Threads or other social media post that
+// contains product(s) or look(s).
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // The post's original URL.
+  url String @unique
+
+  // The post's original description (i.e. the caption).
+  description String?
+
+  // The post's author (this is not necessarily the original author but the user
+  // that brought the post unto the DOLCE platform).
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId Int
+
+  // The post's images.
+  images Image[]
+
+  // The post's videos.
+  videos Video[]
+
+  // The post's items (overall type of item e.g. "white turtleneck sweater").
+  items Item[]
+
+  // The post's products (exact brand of the item if known).
+  products Product[]
+
+  // The post's variants (exact color/size of the product if known).
+  variants Variant[]
+
+  // The post's looks (exact collection of looks).
+  looks Look[]
 }
 
 // An article is exactly that: a work of writing about some fashion-related 
