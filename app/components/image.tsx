@@ -1,7 +1,5 @@
 import type { ComponentPropsWithoutRef } from 'react'
 
-import { OPTIMIZE_IMAGES } from 'utils/general'
-
 export function Image({
   optimizerUrl = '/image',
   responsive,
@@ -15,8 +13,6 @@ export function Image({
   responsive?: { maxWidth: number; size: { width: number } }[]
   preload?: boolean
 }) {
-  if (!OPTIMIZE_IMAGES) return <img alt={alt ?? ''} src={src} {...etc} />
-
   const url = `${optimizerUrl}?url=${encodeURIComponent(src)}`
   const props: ComponentPropsWithoutRef<'img'> = {
     src: `${url}&w=${etc.width ?? ''}&q=75`,
