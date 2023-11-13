@@ -21,10 +21,10 @@ export function Dialog({
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Trigger />
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className='fixed inset-0 z-40 bg-white/50 dark:bg-gray-900/50' />
+        <DialogPrimitive.Overlay className='fixed inset-0 z-40 bg-white/75 dark:bg-gray-900/75' />
         <DialogPrimitive.Content
           className={cn(
-            'center fixed z-50 overflow-auto rounded-lg border border-gray-200/50 bg-white shadow-2xl focus:outline-none dark:border-gray-800/50 dark:bg-gray-900 max-h-[calc(100vh-3rem)]',
+            'center fixed z-50 overflow-auto rounded border border-gray-200/50 bg-white shadow-2xl focus:outline-none dark:border-gray-800/50 dark:bg-gray-950 max-h-[calc(100vh-3rem)] max-w-[calc(100vw-3rem)]',
             className,
           )}
           onOpenAutoFocus={onOpenAutoFocus}

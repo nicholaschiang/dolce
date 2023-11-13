@@ -12,6 +12,7 @@ import {
 import { buttonVariants } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
+import { slug } from 'utils/general'
 
 export function Layout({ className, ...etc }: Partial<PanelGroupProps>) {
   return (
@@ -60,11 +61,12 @@ export function LayoutDivider() {
 }
 
 export function LayoutSection({
-  id,
+  id: initialId,
   header,
   children,
   className,
-}: PropsWithChildren<{ id: string; header: string; className?: string }>) {
+}: PropsWithChildren<{ id?: string; header: string; className?: string }>) {
+  const id = initialId ?? slug(header)
   return (
     <section
       className={cn(

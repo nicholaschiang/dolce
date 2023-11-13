@@ -129,6 +129,21 @@ export function caps(sentence: string): string {
 }
 
 /**
+ * Derive the brand slug based on the brand name. Ideally, I should just set it
+ * by default at the database level, but I don't know of a way to express this
+ * RegExp in the Prisma Schema format (see the migration, though).
+ */
+export function slug(name: string) {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[.,/#!$%^&*;:{}=\-_`~()\s]+/g, '-')
+    .replace(/-$/, '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f\u2019'"]/g, '')
+}
+
+/**
  * Resolve the given path to a fully qualified URL. If no path is provided, this
  * will return undefined. If the path is an empty string, this will return the
  * base URL of the site. This behavior is useful when resolving potentially
