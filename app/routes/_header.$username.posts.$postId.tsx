@@ -1,10 +1,20 @@
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useNavigate } from '@remix-run/react'
 import { type DataFunctionArgs } from '@vercel/remix'
-import { MoreHorizontal } from 'lucide-react'
-import { type PropsWithChildren } from 'react'
+import {
+  MoreHorizontal,
+  Bookmark,
+  Send,
+  Heart,
+  MessageCircle,
+} from 'lucide-react'
+import { type FC } from 'react'
 
 import { Avatar } from 'components/avatar'
+import { Dialog } from 'components/dialog'
+import { Image } from 'components/image'
 import { ImageItem } from 'components/image-item'
+import { LayoutSection } from 'components/layout'
+import { TimeAgo } from 'components/time-ago'
 import { Badge } from 'components/ui/badge'
 import { Button } from 'components/ui/button'
 
@@ -32,85 +42,135 @@ export async function loader({ params }: DataFunctionArgs) {
 
 export default function PostPage() {
   const post = useLoaderData<typeof loader>()
+  const nav = useNavigate()
   return (
-    <div className='flex'>
+    <Dialog
+      open
+      onOpenChange={() => nav('..', { preventScrollReset: true })}
+      className='flex w-max'
+    >
       <a
         href={post.url}
         target='_blank'
         rel='noopener noreferrer'
-        className='aspect-person bg-gray-100 dark:bg-gray-900'
+        aria-label='Open original post'
+        className='aspect-square bg-gray-100 dark:bg-gray-900 grow shrink min-h-[450px] max-w-[800px] max-h-[800px]'
       >
-        <img
+        <Image
           src={post.images[0]?.url}
           alt=''
           className='w-full h-full object-cover'
         />
       </a>
-      <div>
-        <header className='flex items-center gap-2 justify-between border-b border-gray-200 dark:border-gray-800'>
+      <div className='grow shrink-[2] min-w-[405px] max-w-[500px] flex flex-col'>
+        <header className='flex items-center gap-2 p-4 justify-between border-b flex-none border-gray-200 dark:border-gray-800'>
           <div className='flex items-center gap-2'>
             <Avatar src={post.author} />
-            <h1>{post.author.name}</h1>
+            <div>
+              <h1 className='text-sm font-medium'>{post.author.username}</h1>
+              <p className='text-2xs text-gray-500'>{post.author.name}</p>
+            </div>
           </div>
           <Button size='icon' variant='ghost'>
             <MoreHorizontal className='w-4 h-4' />
           </Button>
         </header>
-        <Section header='Items'>
-          <ol>
-            {post.items.map((item) => (
-              <li key={item.id}>
-                {item.colors.map((color) => (
-                  <Badge>{color.name}</Badge>
-                ))}
-                {item.styles.map((style) => (
-                  <Badge>{style.name}</Badge>
-                ))}
-              </li>
-            ))}
-          </ol>
-        </Section>
-        <Section header='Products'>
-          <ol className='grid grid-cols-2 gap-1'>
-            {post.products.map((product) => (
-              <ImageItem
-                key={product.id}
-                className='aspect-product'
-                to={`/products/${product.slug}/variants/${product.variants[0]?.id}`}
-                image={product.variants[0]?.images[0]?.url}
+        <div className='h-0 grow overflow-y-auto'>
+          <Items />
+          <LayoutSection header='Products'>
+            <ol className='grid grid-cols-2 gap-1'>
+              {post.products.map((product) => (
+                <ImageItem
+                  key={product.id}
+                  className='aspect-product'
+                  to={`/products/${product.slug}/variants/${product.variants[0]?.id}`}
+                  image={product.variants[0]?.images[0]?.url}
+                />
+              ))}
+              {post.variants.map((variant) => (
+                <ImageItem
+                  key={variant.id}
+                  className='aspect-product'
+                  to={`/products/${variant.product.slug}/${variant.id}`}
+                  image={variant.images[0]?.url}
+                />
+              ))}
+            </ol>
+          </LayoutSection>
+          <LayoutSection header='Looks'>
+            <ol className='grid grid-cols-2 gap-1'>
+              {post.looks.map((look) => (
+                <ImageItem
+                  key={look.id}
+                  className='aspect-person'
+                  to={`/shows/${look.showId}`}
+                  image={look.images[0]?.url}
+                />
+              ))}
+            </ol>
+          </LayoutSection>
+        </div>
+        <div className='flex-none p-2 border-t border-gray-200 dark:border-gray-800'>
+          <div className='flex items-center gap-2 justify-between'>
+            <div className='flex items-center'>
+              <IconButtonLink label='Like' url={post.url} icon={Heart} />
+              <IconButtonLink
+                label='Comment'
+                url={post.url}
+                icon={MessageCircle}
               />
-            ))}
-            {post.variants.map((variant) => (
-              <ImageItem
-                key={variant.id}
-                className='aspect-product'
-                to={`/products/${variant.product.slug}/${variant.id}`}
-                image={variant.images[0]?.url}
-              />
-            ))}
-          </ol>
-        </Section>
-        <Section header='Looks'>
-          <ol className='grid grid-cols-2 gap-1'>
-            {post.looks.map((look) => (
-              <ImageItem
-                key={look.id}
-                to={`/shows/${look.showId}`}
-                image={look.images[0]?.url}
-              />
-            ))}
-          </ol>
-        </Section>
+              <IconButtonLink label='Share' url={post.url} icon={Send} />
+            </div>
+            <IconButtonLink label='Save' url={post.url} icon={Bookmark} />
+          </div>
+          <TimeAgo
+            datetime={post.createdAt}
+            className='text-3xs text-gray-500 uppercase p-2'
+          />
+        </div>
       </div>
-    </div>
+    </Dialog>
   )
 }
 
-function Section({ header, children }: PropsWithChildren<{ header: string }>) {
+function Items() {
+  const post = useLoaderData<typeof loader>()
   return (
-    <section>
-      <h2>{header}</h2>
-      {children}
-    </section>
+    <LayoutSection header='Items'>
+      <ol>
+        {post.items.map((item) => (
+          <li key={item.id}>
+            {item.colors.map((color) => (
+              <Badge>{color.name}</Badge>
+            ))}
+            {item.styles.map((style) => (
+              <Badge>{style.name}</Badge>
+            ))}
+          </li>
+        ))}
+      </ol>
+    </LayoutSection>
+  )
+}
+
+function IconButtonLink({
+  url,
+  icon: Icon,
+  label,
+}: {
+  url: string
+  icon: FC<{ className?: string }>
+  label: string
+}) {
+  return (
+    <a
+      href={url}
+      aria-label={label}
+      target='_blank'
+      rel='noopener noreferrer'
+      className='hover:opacity-50 transition-colors p-2'
+    >
+      <Icon className='w-6 h-6' />
+    </a>
   )
 }

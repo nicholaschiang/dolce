@@ -2,6 +2,7 @@ import { useForm } from '@conform-to/react'
 import { parse } from '@conform-to/zod'
 import {
   Form as RemixForm,
+  Outlet,
   useLoaderData,
   useActionData,
   useNavigation,
@@ -79,27 +80,31 @@ export default function UserPostsPage() {
   const posts = useLoaderData<typeof loader>()
   const user = useOptionalUser()
   return (
-    <ol className='grid grid-cols-5 gap-1 relative'>
-      {posts.map((post) => (
-        <ImageItem
-          key={post.id}
-          className='aspect-product'
-          to={post.id.toString()}
-          image={post.images[0]?.url}
-        />
-      ))}
-      {user && (
-        <NewPostDialog>
-          <Button
-            className='absolute bottom-4 right-4 shadow-lg'
-            size='icon'
-            variant='outline'
-          >
-            <Plus className='w-4 h-4' />
-          </Button>
-        </NewPostDialog>
-      )}
-    </ol>
+    <>
+      <Outlet />
+      <ol className='grid grid-cols-5 gap-1 relative'>
+        {posts.map((post) => (
+          <ImageItem
+            key={post.id}
+            className='aspect-square'
+            to={post.id.toString()}
+            image={post.images[0]?.url}
+            preventScrollReset
+          />
+        ))}
+        {user && (
+          <NewPostDialog>
+            <Button
+              className='absolute bottom-4 right-4 shadow-lg'
+              size='icon'
+              variant='outline'
+            >
+              <Plus className='w-4 h-4' />
+            </Button>
+          </NewPostDialog>
+        )}
+      </ol>
+    </>
   )
 }
 
