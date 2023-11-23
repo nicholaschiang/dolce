@@ -1,5 +1,14 @@
 # Release Notes
 
+## [1.62.1](https://github.com/nicholaschiang/dolce/compare/v1.62.0...v1.62.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* **model/user.server:** remove `console.log` ([34f7a26](https://github.com/nicholaschiang/dolce/commit/34f7a2641158d205fab5911658493ff74951274d))
+* **products:** hide "add" button when not logged in ([32e3058](https://github.com/nicholaschiang/dolce/commit/32e305842bafd7b162b8da21b31fdbc20e365f02))
+* **wardrobe:** hide wardrobe when not logged in ([b218470](https://github.com/nicholaschiang/dolce/commit/b2184706f2cb475334fca06ed86df628927eb108))
+
 ## [1.62.0](https://github.com/nicholaschiang/dolce/compare/v1.61.0...v1.62.0) (2023-11-08)
 
 
