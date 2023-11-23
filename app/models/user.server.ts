@@ -71,7 +71,6 @@ export async function verifyLogin(
     where: { OR: [{ email: emailOrUsername }, { username: emailOrUsername }] },
     include: { password: true },
   })
-  console.log('user', userWithPassword)
   if (!userWithPassword || !userWithPassword.password) return null
   const isValid = await bcrypt.compare(password, userWithPassword.password.hash)
   if (!isValid) return null
