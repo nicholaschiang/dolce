@@ -19,10 +19,7 @@ import { prisma } from 'db.server'
 export async function loader({ params }: DataFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const sets = await prisma.set.findMany({
-    where: {
-      author: { username: params.username },
-      name: { notIn: [OWN_SET_NAME, WANT_SET_NAME] },
-    },
+    where: { author: { username: params.username } },
     orderBy: { updatedAt: 'desc' },
   })
   return sets
@@ -30,32 +27,40 @@ export async function loader({ params }: DataFunctionArgs) {
 
 export default function UserSetsPage() {
   const sets = useLoaderData<typeof loader>()
+  const want = sets.find((set) => set.name === WANT_SET_NAME)
+  const own = sets.find((set) => set.name === OWN_SET_NAME)
   return (
     <div className='flex gap-6'>
       <ol className='flex-none w-48 h-min sticky top-14'>
-        <SetLink to='../want'>
-          <ShoppingCart className='w-3 h-3' />
-          {WANT_SET_NAME}
-        </SetLink>
-        <SetLink to='../own'>
-          <Shirt className='w-3 h-3' />
-          {OWN_SET_NAME}
-        </SetLink>
-        <Separator className='m-2 w-auto' />
-        {sets.map((set) => (
-          <SetLink key={set.id} to={set.id.toString()}>
-            {({ isActive }) => (
-              <>
-                {isActive ? (
-                  <FolderOpen className='flex-none w-3 h-3' />
-                ) : (
-                  <FolderClosed className='flex-none w-3 h-3' />
-                )}
-                <span className='truncate'>{set.name}</span>
-              </>
-            )}
+        {want && (
+          <SetLink to={want.id.toString()}>
+            <ShoppingCart className='w-3 h-3' />
+            {WANT_SET_NAME}
           </SetLink>
-        ))}
+        )}
+        {own && (
+          <SetLink to={own.id.toString()}>
+            <Shirt className='w-3 h-3' />
+            {OWN_SET_NAME}
+          </SetLink>
+        )}
+        {(want != null || own != null) && <Separator className='m-2 w-auto' />}
+        {sets
+          .filter((set) => set !== want && set !== own)
+          .map((set) => (
+            <SetLink key={set.id} to={set.id.toString()}>
+              {({ isActive }) => (
+                <>
+                  {isActive ? (
+                    <FolderOpen className='flex-none w-3 h-3' />
+                  ) : (
+                    <FolderClosed className='flex-none w-3 h-3' />
+                  )}
+                  <span className='truncate'>{set.name}</span>
+                </>
+              )}
+            </SetLink>
+          ))}
       </ol>
       <div className='flex-1 h-min'>
         <Outlet />
