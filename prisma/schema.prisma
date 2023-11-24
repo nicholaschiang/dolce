@@ -53,8 +53,8 @@ model User {
   // The reviews written by the user.
   reviews Review[]
 
-  // The user's sets (i.e. arbitrary groupings of saved looks).
-  sets Set[]
+  // The user's boards (i.e. arbitrary groupings of saved looks).
+  boards Board[]
 
   // The looks this user has authored.
   looks Look[]
@@ -501,8 +501,8 @@ model Variant {
   // are different prices per size. Can be empty if the variant is sold out.
   prices Price[]
 
-  // The user-curated sets that the product variant is a part of.
-  sets Set[]
+  // The user-curated boards that the product variant is a part of.
+  boards Board[]
 
   // @todo each product can only have a single variant per color and size combo.
 }
@@ -693,49 +693,56 @@ model Product {
   // @todo products must have a unique name per brand(s).
 }
 
-// A set is an arbitrary grouping of looks created by a user to act as a sort of
-// mood board. Users can "save" looks that they like to a "set" that can then be 
-// shared with other users. Users can discover sets by other users (e.g. I see a
-// look that I like and then expore all the sets that include that look to find
+// A board is an arbitrary grouping of looks created by a user to act as a sort of
+// mood board. Users can "save" looks that they like to a "board" that can then be 
+// shared with other users. Users can discover boards by other users (e.g. I see a
+// look that I like and then expore all the boards that include that look to find
 // similar looks).
 //
-// Sets are separate from collections for simplicity. Collections are officially
-// curated by a brand while sets are simple groupings of looks and products
+// Boards are separate from collections for simplicity. Collections are officially
+// curated by a brand while boards are simple groupings of looks and products
 // created by users. I may opt to combine these two data models in the future, 
 // but for now, simply adding an additional data model was easiest.
 //
-// Users can import looks and products from anywhere to add to their sets (e.g.
+// Users can import looks and products from anywhere to add to their boards (e.g.
 // if I see an outfit I like on Instagram, I can click "share" to DOLCE and the
-// app will add it as a look to the selected set... that look will then be
+// app will add it as a look to the selected board... that look will then be
 // automatically augmented with possible products to purchase).
 //
 // The name "set" was inspired by the website "Polyvore" which allowed users to
 // add products to a shared index called a "set".
 // @see {@link https://en.wikipedia.org/wiki/Polyvore}
-model Set {
+//
+// NOTE: This model was renamed "Board" so as to not conflict with the language
+// built-in "Set" class. This was causing issues with the Python Prisma client.
+// @see {@link https://github.com/RobertCraigie/prisma-client-py/issues/842}
+model Board {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  // The set's name (e.g. "Summer Essentials").
+  // The board's name (e.g. "Summer Essentials").
   name String
 
-  // The set's description.
+  // The board's description.
   description String?
 
-  // The set's author (i.e. the user who created the set).
-  // @todo I should support multiple author(s) for a set (i.e. shared "sets") or
+  // The board's author (i.e. the user who created the board).
+  // @todo I should support multiple author(s) for a board (i.e. shared "boards") or
   // perhaps advanced access control (i.e. users who can view, can edit, etc).
   author   User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   authorId Int
 
-  // The set's looks.
+  // The board's looks.
   looks Look[]
 
-  // The set's product variants.
+  // The board's product variants.
+  // @todo perhaps we should also allow users to add products to a board without
+  // having to select a specific size and/or color (e.g. when they're adding
+  // products from the products list, they do not select a size)?
   variants Variant[]
 
-  // A user can only have one set with a given name.
+  // A user can only have one board with a given name.
   @@unique([name, authorId])
 }
 
@@ -882,8 +889,8 @@ model Look {
   // The look's picture (if known).
   images Image[]
 
-  // The user-curated sets that the look is a part of.
-  sets Set[]
+  // The user-curated boards that the look is a part of.
+  boards Board[]
 
   // Each look must have a unique number in the show or by the author.
   @@unique([showId, number])
