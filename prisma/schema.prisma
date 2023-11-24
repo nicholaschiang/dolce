@@ -4,9 +4,16 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-generator client {
+generator js {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
+}
+
+generator py {
+  provider                    = "prisma-client-py"
+  interface                   = "sync"
+  recursive_type_depth        = 5
+  enable_experimental_decimal = True
 }
 
 // A user is a person who has created an account with us.
