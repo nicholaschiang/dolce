@@ -37,7 +37,7 @@ jobs:
         run: mkdir app/styles && touch app/styles/tailwind.css
 
       - name: Generate prisma
-        run: pnpm prisma generate
+        run: pnpm prisma generate --generator js
 
       - name: Lint
         run: pnpm lint
@@ -65,7 +65,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate prisma
-        run: pnpm prisma generate
+        run: pnpm prisma generate --generator js
 
       - name: Type check
         run: pnpm typecheck
@@ -125,7 +125,7 @@ jobs:
         run: docker-compose --env-file .env up -d && sleep 3
 
       - name: Setup database
-        run: pnpm prisma migrate reset --force --skip-seed
+        run: pnpm prisma migrate reset --force --skip-seed --skip-generate
 
       - name: Build
         run: pnpm build
