@@ -77,7 +77,10 @@ export async function loader({ params }: DataFunctionArgs) {
   const [user, lookCount] = await Promise.all([
     prisma.user.findUnique({
       where: { username: params.username },
-      include: { _count: { select: { reviews: true, sets: true } } },
+      include: {
+        sets: { where: { name: { in: [WANT_SET_NAME, OWN_SET_NAME] } } },
+        _count: { select: { reviews: true, sets: true } },
+      },
     }),
     prisma.look.count({
       where: { sets: { some: { author: { username: params.username } } } },
@@ -127,6 +130,9 @@ export async function action({ request, params }: DataFunctionArgs) {
 export const useUser = () => useOutletContext<SerializeFrom<typeof loader>>()
 
 export default function UserPage() {
+  const { sets } = useLoaderData<typeof loader>()
+  const want = sets.find((set) => set.name === WANT_SET_NAME)
+  const own = sets.find((set) => set.name === OWN_SET_NAME)
   return (
     <main className='grid max-w-screen-xl mx-auto p-6'>
       <Header />
@@ -135,14 +141,18 @@ export default function UserPage() {
           <Bookmark className='w-3 h-3' />
           Saved
         </Tab>
-        <Tab to='want'>
-          <ShoppingCart className='w-3 h-3' />
-          {WANT_SET_NAME}
-        </Tab>
-        <Tab to='own'>
-          <Shirt className='w-3 h-3' />
-          {OWN_SET_NAME}
-        </Tab>
+        {want && (
+          <Tab to={`sets/${want.id}`}>
+            <ShoppingCart className='w-3 h-3' />
+            {WANT_SET_NAME}
+          </Tab>
+        )}
+        {own && (
+          <Tab to={`sets/${own.id}`}>
+            <Shirt className='w-3 h-3' />
+            {OWN_SET_NAME}
+          </Tab>
+        )}
         <Tab to='sets'>
           <Folder className='w-3 h-3' />
           Sets
