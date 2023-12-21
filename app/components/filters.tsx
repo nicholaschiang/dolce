@@ -329,7 +329,11 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Tooltip tip='Filter' hotkey='f' onHotkey={() => setOpen(true)}>
         <Popover.Trigger asChild>
-          <button type='button' className='icon-button square mb-1.5 flex'>
+          <button
+            type='button'
+            aria-label='Add filter'
+            className='icon-button square mb-1.5 flex'
+          >
             <Plus className='h-3.5 w-3.5' />
           </button>
         </Popover.Trigger>
