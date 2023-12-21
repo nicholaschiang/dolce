@@ -35,12 +35,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request)
   if (userId == null) return []
   const looks = await prisma.look.findMany({
-    where: { sets: { some: { name: OWN_SET_NAME, authorId: userId } } },
+    where: { boards: { some: { name: OWN_SET_NAME, authorId: userId } } },
     include: {
       author: true,
       images: true,
       products: { include: { variants: { include: { images: true } } } },
-      sets: { include: { author: true } },
+      boards: { include: { author: true } },
       show: { include: { season: true, brand: true } },
     },
     orderBy: { createdAt: 'desc' },
@@ -216,7 +216,7 @@ function LookItem({ look }: { look: Look }) {
           <strong className='font-medium'>{username}</strong> {description}
         </p>
         <ul className='flex flex-wrap gap-1'>
-          {look.sets.map((set) => (
+          {look.boards.map((set) => (
             <SetItem key={set.id} set={set} />
           ))}
         </ul>
@@ -225,7 +225,7 @@ function LookItem({ look }: { look: Look }) {
   )
 }
 
-type Set = SerializeFrom<typeof loader>[number]['sets'][number]
+type Set = SerializeFrom<typeof loader>[number]['boards'][number]
 
 function SetItem({ set }: { set: Set }) {
   return (

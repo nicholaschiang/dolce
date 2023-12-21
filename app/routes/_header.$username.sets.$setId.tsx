@@ -10,7 +10,7 @@ import { prisma } from 'db.server'
 export async function loader({ params }: LoaderFunctionArgs) {
   const setId = Number(params.setId)
   if (Number.isNaN(setId)) throw new Response('Not Found', { status: 404 })
-  const set = await prisma.set.findUnique({
+  const set = await prisma.board.findUnique({
     where: { id: setId },
     include: {
       variants: {

@@ -79,12 +79,12 @@ export async function loader({ params }: LoaderFunctionArgs) {
     prisma.user.findUnique({
       where: { username: params.username },
       include: {
-        sets: { where: { name: { in: [WANT_SET_NAME, OWN_SET_NAME] } } },
-        _count: { select: { reviews: true, sets: true } },
+        boards: { where: { name: { in: [WANT_SET_NAME, OWN_SET_NAME] } } },
+        _count: { select: { reviews: true, boards: true } },
       },
     }),
     prisma.look.count({
-      where: { sets: { some: { author: { username: params.username } } } },
+      where: { boards: { some: { author: { username: params.username } } } },
     }),
   ])
   if (user == null) throw new Response('Not Found', { status: 404 })
@@ -131,7 +131,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export const useUser = () => useOutletContext<SerializeFrom<typeof loader>>()
 
 export default function UserPage() {
-  const { sets } = useLoaderData<typeof loader>()
+  const { boards: sets } = useLoaderData<typeof loader>()
   const want = sets.find((set) => set.name === WANT_SET_NAME)
   const own = sets.find((set) => set.name === OWN_SET_NAME)
   return (
@@ -240,7 +240,7 @@ function Header() {
         </div>
         <div className='flex items-center gap-10 font-semibold text-sm'>
           <Link to='.'>{user.lookCount} saved</Link>
-          <Link to='sets'>{user._count.sets} sets</Link>
+          <Link to='sets'>{user._count.boards} sets</Link>
           <Link to='reviews'>{user._count.reviews} reviews</Link>
         </div>
         <article className='text-sm max-w-xl'>

@@ -18,7 +18,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     where: { id: variantId },
     include: {
       images: { orderBy: { position: 'asc' } },
-      sets: userId ? { where: { authorId: userId } } : false,
+      boards: userId ? { where: { authorId: userId } } : false,
     },
   })
   if (variant === null) throw new Response('Not Found', { status: 404 })
@@ -62,7 +62,7 @@ function VariantImage({ image, index }: { image: ImageT; index: number }) {
           <SaveMenu
             saveAPI={`/api/variants/${variant.id}/save`}
             createAPI={`/api/variants/${variant.id}/save/create`}
-            sets={variant.sets}
+            sets={variant.boards}
             ref={ref}
             aria-label='Save product'
             className='absolute top-2 right-2'

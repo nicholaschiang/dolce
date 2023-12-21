@@ -1,4 +1,4 @@
-import { type Set } from '@prisma/client'
+import { type Board } from '@prisma/client'
 import { useFetchers, useFetcher } from '@remix-run/react'
 import { Check, Bookmark, Plus } from 'lucide-react'
 import { useCallback, forwardRef } from 'react'
@@ -18,7 +18,7 @@ import { cn } from 'utils/cn'
 import { type Serialize } from 'utils/general'
 
 type SaveMenuProps = {
-  sets?: Serialize<Set>[]
+  sets?: Serialize<Board>[]
   saveAPI: string
   createAPI: string
 } & Omit<ButtonProps, 'children' | 'ref'>
@@ -43,7 +43,7 @@ const SaveMenu = forwardRef<HTMLButtonElement, SaveMenuProps>(
     const isSaved = current.size > 0 || creating.length > 0
 
     const item = useCallback(
-      ({ item: set }: ComboboxItemProps<Serialize<Set>>) => (
+      ({ item: set }: ComboboxItemProps<Serialize<Board>>) => (
         <SelectItem key={set.id} set={set} sets={sets ?? []} action={action} />
       ),
       [sets, action],
@@ -102,8 +102,8 @@ function SelectItem({
   sets,
   action,
 }: {
-  set: Serialize<Set>
-  sets: Serialize<Set>[]
+  set: Serialize<Board>
+  sets: Serialize<Board>[]
   action: string
 }) {
   const fetcher = useFetcher<typeof saveAPI>()

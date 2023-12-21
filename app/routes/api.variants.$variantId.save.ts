@@ -21,7 +21,7 @@ export async function action({ request, params }: LoaderFunctionArgs) {
   const setId = Number((await request.formData()).get('setId'))
   if (Number.isNaN(setId)) throw new Response('Bad Request', { status: 400 })
 
-  const set = await prisma.set.findUnique({ where: { id: setId } })
+  const set = await prisma.board.findUnique({ where: { id: setId } })
   if (set == null) throw new Response('Not Found', { status: 404 })
   if (set.authorId !== userId) throw new Response('Forbidden', { status: 403 })
 
@@ -29,14 +29,14 @@ export async function action({ request, params }: LoaderFunctionArgs) {
     case 'POST': {
       await prisma.variant.update({
         where: { id: variantId },
-        data: { sets: { connect: { id: setId } } },
+        data: { boards: { connect: { id: setId } } },
       })
       break
     }
     case 'DELETE': {
       await prisma.variant.update({
         where: { id: variantId },
-        data: { sets: { disconnect: { id: setId } } },
+        data: { boards: { disconnect: { id: setId } } },
       })
       break
     }

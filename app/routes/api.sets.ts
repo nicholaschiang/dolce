@@ -9,7 +9,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request)
   if (userId == null) return []
   const search = new URL(request.url).searchParams.get('search') ?? ''
-  const sets = await prisma.set.findMany({
+  const sets = await prisma.board.findMany({
     where: { authorId: userId, name: { contains: search.trim() } },
     orderBy: [{ updatedAt: 'desc' }],
     take: 100,

@@ -32,7 +32,7 @@ const SaveButton = forwardRef<HTMLElement, { look: Look }>(({ look }, ref) => {
     <SaveMenu
       saveAPI={`/api/looks/${look.id}/save`}
       createAPI={`/api/looks/${look.id}/save/create`}
-      sets={look.sets}
+      sets={look.boards}
       ref={ref as RefObject<HTMLButtonElement>}
       aria-label='Save look'
     />
