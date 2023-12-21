@@ -5,7 +5,7 @@ import {
   useLoaderData,
   useNavigation,
 } from '@remix-run/react'
-import { type DataFunctionArgs } from '@vercel/remix'
+import { type LoaderFunctionArgs } from '@vercel/remix'
 import { Shirt, ShoppingCart, FolderClosed, FolderOpen } from 'lucide-react'
 
 import { buttonVariants } from 'components/ui/button'
@@ -16,7 +16,7 @@ import { OWN_SET_NAME, WANT_SET_NAME } from 'utils/set'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: DataFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const sets = await prisma.set.findMany({
     where: { author: { username: params.username } },

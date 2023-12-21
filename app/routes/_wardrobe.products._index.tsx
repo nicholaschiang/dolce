@@ -1,7 +1,7 @@
 import { useLoaderData, useLocation, useNavigate } from '@remix-run/react'
 import {
   type SerializeFrom,
-  type DataFunctionArgs,
+  type LoaderFunctionArgs,
   type MetaFunction,
 } from '@vercel/remix'
 import { Plus, Minus } from 'lucide-react'
@@ -42,7 +42,7 @@ export const handle: Handle = {
   breadcrumb: () => ({ to: '/products', children: 'Products' }),
 }
 
-export async function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const { where, string } = getWhere(request)
   log.debug('getting products... %s', string)
   const userId = await getUserId(request)

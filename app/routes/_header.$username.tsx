@@ -13,7 +13,8 @@ import {
   useSubmit,
 } from '@remix-run/react'
 import {
-  type DataFunctionArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   type SerializeFrom,
   type MetaFunction,
   json,
@@ -72,7 +73,7 @@ export const sitemap: SitemapFunction = async () => {
   }))
 }
 
-export async function loader({ params }: DataFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const [user, lookCount] = await Promise.all([
     prisma.user.findUnique({
@@ -90,7 +91,7 @@ export async function loader({ params }: DataFunctionArgs) {
   return { ...user, lookCount }
 }
 
-export async function action({ request, params }: DataFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
   log.info('Updating avatar for @%s...', params.username)
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const userId = await getUserId(request)

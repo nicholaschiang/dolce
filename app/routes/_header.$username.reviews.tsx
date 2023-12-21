@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import { type DataFunctionArgs } from '@vercel/remix'
+import { type LoaderFunctionArgs } from '@vercel/remix'
 
 import { useUser } from 'routes/_header.$username'
 
@@ -7,7 +7,7 @@ import { ConsumerReview } from 'components/consumer-review'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: DataFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const looks = await prisma.review.findMany({
     where: { author: { username: params.username } },

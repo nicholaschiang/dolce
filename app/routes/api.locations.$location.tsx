@@ -1,9 +1,9 @@
 import { Location } from '@prisma/client'
-import { type DataFunctionArgs } from '@vercel/remix'
+import { type LoaderFunctionArgs } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: DataFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.location) throw new Response('Not Found', { status: 404 })
   const shows = await prisma.show.findMany({
     where: {

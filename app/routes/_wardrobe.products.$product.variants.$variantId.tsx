@@ -1,5 +1,5 @@
 import { useLoaderData } from '@remix-run/react'
-import { type DataFunctionArgs, type SerializeFrom } from '@vercel/remix'
+import { type LoaderFunctionArgs, type SerializeFrom } from '@vercel/remix'
 import { useRef } from 'react'
 
 import { Image } from 'components/image'
@@ -10,7 +10,7 @@ import { PRODUCT_ASPECT_RATIO, useOptionalUser } from 'utils/general'
 import { prisma } from 'db.server'
 import { getUserId } from 'session.server'
 
-export async function loader({ request, params }: DataFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const variantId = Number(params.variantId)
   if (Number.isNaN(variantId)) throw new Response('Not Found', { status: 404 })
   const userId = await getUserId(request)

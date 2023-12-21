@@ -1,10 +1,10 @@
-import { type DataFunctionArgs, json } from '@vercel/remix'
+import { type ActionFunctionArgs, json } from '@vercel/remix'
 
 import { prisma, supabase } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
 
-export async function action({ request, params }: DataFunctionArgs) {
+export async function action({ request, params }: ActionFunctionArgs) {
   const showId = Number(params.showId)
   if (Number.isNaN(showId)) throw new Response('Not Found', { status: 404 })
   const userId = await getUserId(request)

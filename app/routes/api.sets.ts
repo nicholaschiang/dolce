@@ -1,10 +1,10 @@
-import { type DataFunctionArgs } from '@vercel/remix'
+import { type LoaderFunctionArgs } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 import { log } from 'log.server'
 import { getUserId } from 'session.server'
 
-export async function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   log.debug('getting sets...')
   const userId = await getUserId(request)
   if (userId == null) return []

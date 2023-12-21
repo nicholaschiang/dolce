@@ -1,6 +1,6 @@
 import { Outlet } from '@remix-run/react'
 import {
-  type DataFunctionArgs,
+  type LoaderFunctionArgs,
   type SerializeFrom,
   type MetaFunction,
 } from '@vercel/remix'
@@ -54,7 +54,7 @@ export const handle: Handle = {
   },
 }
 
-export async function loader({ params }: DataFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   invariant(params.product, 'product is required')
   const product = await prisma.product.findUnique({
     where: { slug: params.product },
