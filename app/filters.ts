@@ -82,8 +82,8 @@ export type FilterCondition<N extends FilterName = FilterName> =
   N extends ProductFilterName
     ? ProductFilterCondition<N>
     : N extends ShowFilterName
-    ? ShowFilterCondition<N>
-    : never
+      ? ShowFilterCondition<N>
+      : never
 
 type ProductFilterValue<
   N extends ProductFilterName,
@@ -107,8 +107,8 @@ export type FilterValue<
 > = N extends ProductFilterName
   ? MaybeProductFilterValue<N, C>
   : N extends ShowFilterName
-  ? MaybeShowFilterValue<N, C>
-  : never
+    ? MaybeShowFilterValue<N, C>
+    : never
 
 export type Filter<
   N extends FilterName = FilterName,
