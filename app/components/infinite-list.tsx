@@ -103,6 +103,7 @@ function InfiniteListContent<T>({
     lanes: itemsPerRow,
     overscan: 10,
     count: itemCount,
+    initialRect: { width: 0, height: 1000 },
   })
   useLayoutEffect(() => virtualizer.measure(), [itemHeight, virtualizer])
 
