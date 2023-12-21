@@ -29,12 +29,12 @@ Get a nice visualization of the brands you can afford.
 You can share this visualization to social media.
 This could make for a fun TikTok trend (b/c almost nobody can afford Loro Piana).
 
-Ex: I make $130k. I save nothing. I can shop at KITH and Aime Leon Dore. I am in the top 5%.
-Ex: I make $50k. I want to save 50% of my income. I can only thrift or SHEIN. I am in the top 80%.
+- Ex: I make $130k. I save nothing. I can shop at KITH and Aime Leon Dore. I am in the top 5%.
+- Ex: I make $50k. I want to save 50% of my income. I can only thrift or SHEIN. I am in the top 80%.
 
 Get some knobs you can adjust to see how you can get to the top 1% brands.
 
-Ex: If I ate only rice and saved nothing, I could buy Loro Piana.
+- Ex: If I ate only rice and saved nothing, I could buy Loro Piana.
 
 ## 3
 
@@ -76,3 +76,18 @@ I suspect becoming a "fashion influencer" could be one way to do that.
 @databutmakeitfashion for menswear.
 Or, for actually affordable fashion (e.g. what is SHEIN releasing).
 Or, for resale and market data (e.g. what brands have the best resale value).
+
+## 7
+
+A fit-pic app.
+Instead of uploading my fit pics to Instagram, I upload them here.
+I add a description with the fit details.
+I can track what I've worn over the past days.
+I can make my decision of what to wear today based on what I've worn in the past (i.e. I don't want to repeat outfits).
+I can get a yearly "wrapped" on what I've worn.
+I can optionally sync Instagram and upload the fit pics as a post.
+
+## 8
+
+An app that does the style "what are my colors?" thing.
+There was a TikTok I saw earlier of a model who traveled to Korea to get a style consultation (i.e. what her colors are, what the best makeup is for her, etc).
