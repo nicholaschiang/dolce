@@ -1,4 +1,8 @@
-import * as FullStory from '@fullstory/browser'
+import {
+  FullStory,
+  init as initFullStory,
+  isInitialized as isFullStoryInitialized,
+} from '@fullstory/browser'
 import { Prisma } from '@prisma/client'
 import {
   Link,
@@ -258,21 +262,27 @@ function App({ data, children }: { data?: LoaderData; children: ReactNode }) {
 
   const devMode = data?.env.FULLSTORY_DEV_MODE === 'true'
   useEffect(() => {
-    if (!FullStory.isInitialized() && data?.env.FULLSTORY_ORG_ID)
-      FullStory.init({ orgId: data.env.FULLSTORY_ORG_ID, devMode })
+    if (!isFullStoryInitialized() && data?.env.FULLSTORY_ORG_ID)
+      initFullStory({ orgId: data.env.FULLSTORY_ORG_ID, devMode })
   }, [devMode, data?.env])
   useEffect(() => {
-    if (devMode || !FullStory.isInitialized()) return
-    if (data?.user?.id) FullStory.identify(data.user.id.toString())
-    else FullStory.anonymize()
+    if (devMode || !isFullStoryInitialized()) return
+    if (data?.user?.id) {
+      FullStory('setIdentity', { uid: data.user.id.toString() })
+    } else {
+      FullStory('setIdentity', { anonymous: true })
+    }
   }, [devMode, data?.user?.id])
   useEffect(() => {
-    if (devMode || !FullStory.isInitialized()) return
+    if (devMode || !isFullStoryInitialized()) return
     if (data?.user)
-      FullStory.setUserVars({
-        ...data.user,
-        displayName: data.user.name,
-        email: data.user.email ?? undefined,
+      FullStory('setProperties', {
+        type: 'user',
+        properties: {
+          ...data.user,
+          displayName: data.user.name,
+          email: data.user.email ?? undefined,
+        },
       })
   }, [devMode, data?.user])
 
