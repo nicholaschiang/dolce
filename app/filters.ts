@@ -47,6 +47,8 @@ type PrismaProductFilter =
   | Prisma.BrandListRelationFilter
   | Prisma.UserListRelationFilter
   | Prisma.LookListRelationFilter
+  | Prisma.ItemListRelationFilter
+  | Prisma.PostListRelationFilter
 type PrismaShowFilter =
   | Prisma.IntFilter<'Show'>
   | Prisma.IntNullableFilter<'Show'>

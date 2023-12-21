@@ -80,7 +80,7 @@ const minResultsPerRow = 1
 const maxResultsPerRow = 20
 
 // Don't allow users to filter on back-end only fields.
-const hiddenFields: ProductFilterName[] = ['looks']
+const hiddenFields: ProductFilterName[] = ['looks', 'posts', 'items']
 
 export default function ProductsPage() {
   const { products, filteredCount, totalCount } = useLoaderData<typeof loader>()
