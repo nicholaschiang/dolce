@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.62.2](https://github.com/nicholaschiang/dolce/compare/v1.62.1...v1.62.2) (2023-12-21)
+
+
+### Bug Fixes
+
+* **app/profile:** own/want nav items go to sets ([1d8ddb0](https://github.com/nicholaschiang/dolce/commit/1d8ddb0d75d4a6b10197c7fba051c6feda573978))
+* **image:** always proxy images through API route ([ca027a1](https://github.com/nicholaschiang/dolce/commit/ca027a164b3141954524152a0f7df7f0961ffc44))
+
 ## [1.62.1](https://github.com/nicholaschiang/dolce/compare/v1.62.0...v1.62.1) (2023-11-23)
 
 
