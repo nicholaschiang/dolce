@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.63.0](https://github.com/nicholaschiang/dolce/compare/v1.62.4...v1.63.0) (2023-12-21)
+
+
+### Features
+
+* add jupyter notebooks for experimentation ([6ac4aa1](https://github.com/nicholaschiang/dolce/commit/6ac4aa1aad8f8bc570564a456036346845ce733d))
+* **prisma:** rename "set" model to "board" ([94273fb](https://github.com/nicholaschiang/dolce/commit/94273fbb8f8f824567c404f2b677aa8c13ab56c5))
+
+
+### Bug Fixes
+
+* **app:** replace `Set` data model with `Board` ([88ddb27](https://github.com/nicholaschiang/dolce/commit/88ddb27cedd4461a9a607015d71c46909a44570b))
+
 ## [1.62.4](https://github.com/nicholaschiang/dolce/compare/v1.62.3...v1.62.4) (2023-12-21)
 
 
