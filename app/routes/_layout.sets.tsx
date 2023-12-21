@@ -7,7 +7,7 @@ import { log } from 'log.server'
 
 export async function loader() {
   log.debug('getting sets...')
-  const sets = await prisma.set.findMany({
+  const sets = await prisma.board.findMany({
     include: { author: true },
     orderBy: [{ updatedAt: 'desc' }],
     take: 100,

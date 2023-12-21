@@ -25,7 +25,7 @@ export async function action({ request, params }: LoaderFunctionArgs) {
 
   await prisma.variant.update({
     where: { id: variantId },
-    data: { sets: { create: { name, authorId: userId } } },
+    data: { boards: { create: { name, authorId: userId } } },
   })
 
   return new Response(null, { status: 204 })

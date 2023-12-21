@@ -145,7 +145,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         include: {
           images: { orderBy: { createdAt: 'desc' }, take: 1 },
           model: true,
-          sets: userId ? { where: { authorId: userId } } : false,
+          boards: userId ? { where: { authorId: userId } } : false,
         },
         orderBy: { number: 'asc' },
       },

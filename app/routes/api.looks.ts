@@ -18,7 +18,7 @@ export async function action({ request }: ActionFunctionArgs) {
       authorId: userId,
       number: number ? number.number + 1 : 1,
       products: { connect: productIds.map((id) => ({ id })) },
-      sets: {
+      boards: {
         connectOrCreate: {
           where: { name_authorId: { name: OWN_SET_NAME, authorId: userId } },
           create: { name: OWN_SET_NAME, authorId: userId },

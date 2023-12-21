@@ -57,7 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
           include: {
             images: { orderBy: { position: 'asc' } },
             prices: { orderBy: { value: 'asc' }, take: 1 },
-            sets: userId ? { where: { authorId: userId } } : false,
+            boards: userId ? { where: { authorId: userId } } : false,
           },
           orderBy: { createdAt: 'asc' },
           take: 1,
@@ -151,7 +151,7 @@ function ProductItem({ item: product }: InfiniteListItemProps<Product>) {
               ref={ref}
               saveAPI={`/api/variants/${variant.id}/save`}
               createAPI={`/api/variants/${variant.id}/save/create`}
-              sets={variant.sets}
+              sets={variant.boards}
               aria-label='Save product'
               className='pointer-events-auto'
             />

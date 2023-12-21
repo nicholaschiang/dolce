@@ -19,7 +19,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   await prisma.look.update({
     where: { id: lookId },
-    data: { sets: { create: { name, authorId: userId } } },
+    data: { boards: { create: { name, authorId: userId } } },
   })
 
   return new Response(null, { status: 204 })

@@ -18,7 +18,7 @@ import { prisma } from 'db.server'
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
-  const sets = await prisma.set.findMany({
+  const sets = await prisma.board.findMany({
     where: { author: { username: params.username } },
     orderBy: { updatedAt: 'desc' },
   })
