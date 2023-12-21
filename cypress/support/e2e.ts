@@ -102,7 +102,7 @@ function deleteUserByEmail(email: string) {
 }
 
 function resetDatabase() {
-  cy.exec('pnpm prisma migrate reset --force')
+  cy.exec('pnpm prisma migrate reset --force --skip-generate')
 }
 
 function api(method: string, route: string) {
