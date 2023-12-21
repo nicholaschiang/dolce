@@ -1,11 +1,11 @@
-import { type DataFunctionArgs } from '@vercel/remix'
+import { type ActionFunctionArgs } from '@vercel/remix'
 
 import { OWN_SET_NAME } from 'utils/set'
 
 import { prisma } from 'db.server'
 import { requireUserId } from 'session.server'
 
-export async function action({ request }: DataFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const userId = await requireUserId(request)
   const data = await request.formData()
   const productIds = data.getAll('productId').map((id) => Number(id))

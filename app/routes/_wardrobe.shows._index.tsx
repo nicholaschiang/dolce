@@ -1,7 +1,7 @@
 import { useLoaderData } from '@remix-run/react'
 import {
   type SerializeFrom,
-  type DataFunctionArgs,
+  type LoaderFunctionArgs,
   type MetaFunction,
 } from '@vercel/remix'
 import { useState } from 'react'
@@ -46,7 +46,7 @@ export const meta: MetaFunction = () => [
   },
 ]
 
-export async function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const { where, string } = getWhere(request)
   log.debug('getting shows... %s', string)
   const [shows, filteredCount, totalCount] = await Promise.all([

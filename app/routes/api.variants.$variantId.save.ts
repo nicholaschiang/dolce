@@ -1,9 +1,9 @@
-import { type DataFunctionArgs } from '@vercel/remix'
+import { type LoaderFunctionArgs } from '@vercel/remix'
 
 import { prisma } from 'db.server'
 import { requireUserId } from 'session.server'
 
-export async function action({ request, params }: DataFunctionArgs) {
+export async function action({ request, params }: LoaderFunctionArgs) {
   const variantId = Number(params.variantId)
   if (Number.isNaN(variantId)) throw new Response('Not Found', { status: 404 })
 

@@ -8,7 +8,8 @@ import {
   useNavigation,
 } from '@remix-run/react'
 import {
-  type DataFunctionArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   type MetaFunction,
   json,
   redirect,
@@ -50,7 +51,7 @@ export const handle: Handle = {
 
 export const config = { runtime: 'nodejs' }
 
-export async function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
   const redirectTo = safeRedirect(url.searchParams.get('redirectTo'), '/')
   const userId = await getUserId(request)
@@ -58,7 +59,7 @@ export async function loader({ request }: DataFunctionArgs) {
   return json({})
 }
 
-export async function action({ request }: DataFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
   const remember = formData.get('remember')

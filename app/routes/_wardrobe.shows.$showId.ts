@@ -1,10 +1,10 @@
-import { type DataFunctionArgs, redirect } from '@vercel/remix'
+import { type LoaderFunctionArgs, redirect } from '@vercel/remix'
 
 import { getShowPath } from 'utils/show'
 
 import { prisma } from 'db.server'
 
-export async function loader({ request, params }: DataFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const showId = Number(params.showId)
   if (Number.isNaN(showId)) throw new Response('Not Found', { status: 404 })
   const show = await prisma.show.findUnique({

@@ -5,7 +5,12 @@ import {
   useActionData,
   useNavigation,
 } from '@remix-run/react'
-import { type DataFunctionArgs, type MetaFunction, json } from '@vercel/remix'
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  json,
+} from '@vercel/remix'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
 
@@ -51,12 +56,12 @@ export const handle: Handle = {
 
 export const config = { runtime: 'nodejs' }
 
-export async function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request, '/profile')
   return json({ userId })
 }
 
-export async function action({ request }: DataFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const userId = await requireUserId(request, '/profile')
 
   const formData = await request.formData()

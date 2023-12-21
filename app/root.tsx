@@ -25,7 +25,7 @@ import { Analytics } from '@vercel/analytics/react'
 import {
   type SerializeFrom,
   type LinksFunction,
-  type DataFunctionArgs,
+  type LoaderFunctionArgs,
   type MetaFunction,
   json,
 } from '@vercel/remix'
@@ -168,7 +168,7 @@ declare global {
   }
 }
 
-export async function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getSession(request)
   const theme = session.get('theme') as Theme | null
   const headers = { 'Set-Cookie': await sessionStorage.commitSession(session) }

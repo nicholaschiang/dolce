@@ -1,5 +1,5 @@
 import {
-  type DataFunctionArgs,
+  type LoaderFunctionArgs,
   type SerializeFrom,
   type MetaFunction,
 } from '@vercel/remix'
@@ -95,7 +95,7 @@ export const handle: Handle = {
   },
 }
 
-export async function loader({ request, params }: DataFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
   log.info('getting show... %o', params)
   const miss = new Response(null, { status: 404, statusText: 'Not Found' })
   if (!params.season || !params.sex || !params.level || !params.brand)

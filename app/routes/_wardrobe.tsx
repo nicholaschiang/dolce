@@ -1,5 +1,5 @@
 import { Outlet, Link, useLoaderData, useFetcher } from '@remix-run/react'
-import { type DataFunctionArgs, type SerializeFrom } from '@vercel/remix'
+import { type LoaderFunctionArgs, type SerializeFrom } from '@vercel/remix'
 import { Minus } from 'lucide-react'
 import {
   type Dispatch,
@@ -31,7 +31,7 @@ import { getShowSeason } from 'utils/show'
 import { prisma } from 'db.server'
 import { getUserId } from 'session.server'
 
-export async function loader({ request }: DataFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request)
   if (userId == null) return []
   const looks = await prisma.look.findMany({

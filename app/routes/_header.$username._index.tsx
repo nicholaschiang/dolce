@@ -1,5 +1,5 @@
 import { useLoaderData } from '@remix-run/react'
-import { type DataFunctionArgs } from '@vercel/remix'
+import { type LoaderFunctionArgs } from '@vercel/remix'
 
 import { SetItem } from 'components/set-item'
 
@@ -7,7 +7,7 @@ import { getItems } from 'utils/set'
 
 import { prisma } from 'db.server'
 
-export async function loader({ params }: DataFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const sets = await prisma.set.findMany({
     where: { author: { username: params.username } },
