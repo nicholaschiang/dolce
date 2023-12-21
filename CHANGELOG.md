@@ -1,5 +1,13 @@
 # Release Notes
 
+## [1.62.3](https://github.com/nicholaschiang/dolce/compare/v1.62.2...v1.62.3) (2023-12-21)
+
+
+### Bug Fixes
+
+* **app/filters:** add text label to "+" button ([c3c49be](https://github.com/nicholaschiang/dolce/commit/c3c49be905fe285edea2968c34ef84f9696ecb04))
+* **app/root:** update `FullStory` API usage ([d3ffd94](https://github.com/nicholaschiang/dolce/commit/d3ffd94ca9e9e191bac5121f5fcbd3bf809455ec)), closes [fullstory/browser#migrating-to-version-2](https://github.com/fullstory/browser/issues/migrating-to-version-2)
+
 ## [1.62.2](https://github.com/nicholaschiang/dolce/compare/v1.62.1...v1.62.2) (2023-12-21)
 
 
