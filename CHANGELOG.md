@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.62.4](https://github.com/nicholaschiang/dolce/compare/v1.62.3...v1.62.4) (2023-12-21)
+
+
+### Bug Fixes
+
+* **app/infinite-list:** add `initialRect` for SSR ([3e5d96c](https://github.com/nicholaschiang/dolce/commit/3e5d96c031fb6aaec66fa360ca1d16d523ed3230))
+
 ## [1.62.3](https://github.com/nicholaschiang/dolce/compare/v1.62.2...v1.62.3) (2023-12-21)
 
 
