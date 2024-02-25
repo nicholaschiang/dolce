@@ -25,8 +25,9 @@ import {
 import { useHotkeys } from 'react-hotkeys-hook'
 import invariant from 'tiny-invariant'
 
+import type { loader as colors } from 'routes/_layout.colors'
 import type { loader as seasons } from 'routes/_layout.seasons'
-import type { loader as variants } from 'routes/_layout.variants'
+import type { loader as tags } from 'routes/_layout.tags'
 
 import { Dialog } from 'components/dialog'
 import { LoadingLine } from 'components/loading-line'
@@ -34,7 +35,16 @@ import * as Menu from 'components/menu'
 import { Tooltip } from 'components/tooltip'
 
 import { uniq, useData, useLoadFetcher } from 'utils/general'
-import { getColorFilter, getColorName } from 'utils/variant'
+import {
+  type VariantColorFilter,
+  type VariantTagFilter,
+  getColorFilter,
+  getColorName,
+  isVariantColorFilter,
+  getTagFilter,
+  getTagName,
+  isVariantTagFilter,
+} from 'utils/variant'
 
 import type { Filter, FilterName, FilterValue } from 'filters'
 import { filterToStrings } from 'filters'
@@ -52,14 +62,17 @@ const MODEL_TO_ROUTE: Record<string, string> = {
   Country: '/countries',
   Style: '/styles',
   Size: '/sizes',
-  Color: '/colors',
-  Variant: '/variants',
   Price: '/prices',
   Collection: '/collections',
   Season: '/seasons',
   Show: '/shows',
   User: '/designers',
   Video: '/videos',
+
+  // Filters for nested variant relations (each variant has a color and tags are
+  // associated with variants instead of products).
+  Color: '/colors',
+  Tag: '/tags',
 }
 
 //////////////////////////////////////////////////////////////////
@@ -230,48 +243,39 @@ function SeasonItem({ filter }: ItemProps) {
   )
 }
 
-function isColorsArray(
-  array: unknown[],
-): array is { colors: { some: { name: string } } }[] {
-  return array.every(
-    (object) =>
-      typeof object === 'object' &&
-      object !== null &&
-      'colors' in object &&
-      typeof object.colors === 'object' &&
-      object.colors !== null &&
-      'some' in object.colors &&
-      typeof object.colors.some === 'object' &&
-      object.colors.some !== null &&
-      'name' in object.colors.some &&
-      typeof object.colors.some.name === 'string',
-  )
-}
-
 function VariantItem({ filter }: ItemProps) {
-  const { removeFilter } = useContext(FiltersContext)
-  const { name, condition } = filterToStrings(filter)
-  if (
-    typeof filter.value === 'object' &&
-    filter.value !== null &&
-    'AND' in filter.value &&
-    typeof filter.value.AND === 'object' &&
-    filter.value.AND !== null &&
-    filter.value.AND instanceof Array &&
-    isColorsArray(filter.value.AND)
-  )
-    return (
-      <GenericItem
-        name={name}
-        condition={condition}
-        value={filter.value.AND.map((c) => c.colors.some.name).join(' / ')}
-        onClick={() => removeFilter(filter)}
-      />
-    )
+  if (isVariantColorFilter(filter)) return <VariantColorItem filter={filter} />
+  if (isVariantTagFilter(filter)) return <VariantTagItem filter={filter} />
   throw new Error(
     `<VariantItem> expected a variant filter value but got: ${JSON.stringify(
       filter.value,
     )}.`,
+  )
+}
+
+function VariantColorItem({ filter }: { filter: VariantColorFilter }) {
+  const { removeFilter } = useContext(FiltersContext)
+  const { condition } = filterToStrings(filter)
+  return (
+    <GenericItem
+      name='colors'
+      condition={condition}
+      value={filter.value.AND.map((c) => c.colors.some.name).join(' / ')}
+      onClick={() => removeFilter(filter)}
+    />
+  )
+}
+
+function VariantTagItem({ filter }: { filter: VariantTagFilter }) {
+  const { removeFilter } = useContext(FiltersContext)
+  const { condition } = filterToStrings(filter)
+  return (
+    <GenericItem
+      name='tags'
+      condition={condition}
+      value={filter.value.tags.some.name}
+      onClick={() => removeFilter(filter)}
+    />
   )
 }
 
@@ -513,22 +517,84 @@ function SeasonItems({ nested }: Pick<Props, 'nested'>) {
   return <>{items}</>
 }
 
+enum VariantAttribute {
+  COLORS = 'colors',
+  TAGS = 'tags',
+}
+
 function VariantItems({ nested }: Pick<Props, 'nested'>) {
-  const fetcher = useSearchFetcher<typeof variants>(MODEL_TO_ROUTE.Variant)
+  const [attribute, setAttribute] = useState<VariantAttribute>()
+  if (nested)
+    return (
+      <>
+        <VariantColorItems nested={nested} />
+        <VariantTagItems nested={nested} />
+      </>
+    )
+  return attribute === VariantAttribute.COLORS ? (
+    <VariantColorItems nested={nested} />
+  ) : attribute === VariantAttribute.TAGS ? (
+    <VariantTagItems nested={nested} />
+  ) : (
+    <>
+      <Menu.Item
+        value={VariantAttribute.COLORS}
+        onSelect={() => setAttribute(VariantAttribute.COLORS)}
+      >
+        <Menu.ItemLabel group='variants'>
+          {VariantAttribute.COLORS}
+        </Menu.ItemLabel>
+      </Menu.Item>
+      <Menu.Item
+        value={VariantAttribute.TAGS}
+        onSelect={() => setAttribute(VariantAttribute.TAGS)}
+      >
+        <Menu.ItemLabel group='variants'>
+          {VariantAttribute.TAGS}
+        </Menu.ItemLabel>
+      </Menu.Item>
+    </>
+  )
+}
+
+function VariantColorItems({ nested }: Pick<Props, 'nested'>) {
+  const fetcher = useSearchFetcher<typeof colors>(MODEL_TO_ROUTE.Color)
   const { addOrUpdateFilter } = useContext(FiltersContext)
   const setOpen = useContext(MenuContext)
   if (useCommandState((state) => state.search).length < 2 && nested) return null
   const items = uniq(fetcher.data ?? [], getColorName).map((variant) => (
     <Menu.Item
       key={variant.id}
-      value={`variant-${getColorName(variant)}`}
+      value={`color-${getColorName(variant)}`}
       onSelect={() => {
         addOrUpdateFilter(getColorFilter(variant))
         setOpen(false)
       }}
     >
-      <Menu.ItemLabel group={nested ? 'variants' : undefined}>
+      <Menu.ItemLabel group={nested ? 'colors' : undefined}>
         {getColorName(variant)}
+      </Menu.ItemLabel>
+    </Menu.Item>
+  ))
+  return <>{items}</>
+}
+
+function VariantTagItems({ nested }: Pick<Props, 'nested'>) {
+  const fetcher = useSearchFetcher<typeof tags>(MODEL_TO_ROUTE.Tag)
+  const { addOrUpdateFilter } = useContext(FiltersContext)
+  const setOpen = useContext(MenuContext)
+  if (useCommandState((state) => state.search).length < 2 && nested) return null
+  const items = uniq(fetcher.data ?? [], getTagName).map((tag) => (
+    <Menu.Item
+      key={tag.id}
+      value={`tag-${getTagName(tag)}`}
+      onSelect={() => {
+        addOrUpdateFilter(getTagFilter(tag))
+        setOpen(false)
+      }}
+    >
+      <Menu.ItemLabel group={nested ? 'tags' : undefined}>
+        {getTagName(tag)}
       </Menu.ItemLabel>
     </Menu.Item>
   ))
