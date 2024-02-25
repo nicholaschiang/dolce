@@ -91,3 +91,8 @@ I can optionally sync Instagram and upload the fit pics as a post.
 
 An app that does the style "what are my colors?" thing.
 There was a TikTok I saw earlier of a model who traveled to Korea to get a style consultation (i.e. what her colors are, what the best makeup is for her, etc).
+
+## 9
+
+An app to organize mood boards.
+You can import posts from Instagram and TikTok.
