@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.65.1](https://github.com/nicholaschiang/dolce/compare/v1.65.0...v1.65.1) (2024-02-25)
+
+
+### Bug Fixes
+
+* **app/routes/brands:** link to brand products ([3eabca7](https://github.com/nicholaschiang/dolce/commit/3eabca728354bd56173f42d461c5a3a567abd943))
+
 ## [1.65.0](https://github.com/nicholaschiang/dolce/compare/v1.64.0...v1.65.0) (2024-02-25)
 
 
