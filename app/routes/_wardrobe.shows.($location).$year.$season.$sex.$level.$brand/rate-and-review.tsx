@@ -1,5 +1,5 @@
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import { Link, useFetcher, useLoaderData } from '@remix-run/react'
 import { useId } from 'react'
 import { z } from 'zod'
@@ -55,9 +55,9 @@ export function RateAndReview() {
   const user = useOptionalUser()
   const fetcher = useFetcher<typeof reviewAPI>()
   const [form, { score, content }] = useForm({
-    lastSubmission: fetcher.data,
+    lastResult: fetcher.data,
     onValidate({ formData }) {
-      return parse(formData, { schema })
+      return parseWithZod(formData, { schema })
     },
   })
   const show = useLoaderData<typeof loader>()
@@ -70,7 +70,7 @@ export function RateAndReview() {
           method={show.review ? 'put' : 'post'}
           action={`/api/shows/${show.id}/review`}
           className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded p-4 relative'
-          {...form.props}
+          {...getFormProps(form)}
         >
           {user == null && (
             <Link
@@ -82,7 +82,7 @@ export function RateAndReview() {
           <FormField name={score.name}>
             <FormLabelWrapper>
               <FormLabel id={labelId}>Review score</FormLabel>
-              {score.error && <FormMessage>{score.error}</FormMessage>}
+              {score.errors && <FormMessage>{score.errors}</FormMessage>}
             </FormLabelWrapper>
             <FormControl asChild>
               <ScoreInput
@@ -97,7 +97,7 @@ export function RateAndReview() {
           <FormField name={content.name}>
             <FormLabelWrapper>
               <FormLabel>What did you think of the runway?</FormLabel>
-              {content.error && <FormMessage>{content.error}</FormMessage>}
+              {content.errors && <FormMessage>{content.errors}</FormMessage>}
             </FormLabelWrapper>
             <FormControl asChild>
               <Textarea required defaultValue={show.review?.content} />

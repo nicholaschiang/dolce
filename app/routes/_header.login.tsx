@@ -1,5 +1,5 @@
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import {
   Link,
   Form as RemixForm,
@@ -63,20 +63,24 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
   const remember = formData.get('remember')
-  const submission = parse(formData, { schema })
+  const submission = parseWithZod(formData, { schema })
 
-  if (!submission.value || submission.intent !== 'submit')
-    return json(submission, { status: 400 })
+  if (submission.status !== 'success')
+    return json(submission.reply(), { status: 400 })
 
   const user = await verifyLogin(
     submission.value.emailOrUsername,
     submission.value.password,
   )
 
-  if (!user) {
-    submission.error.emailOrUsername = ['Incorrect email or password']
-    return json(submission, { status: 400 })
-  }
+  if (!user)
+    return json(
+      submission.reply({
+        fieldErrors: { emailOrUsername: ['Incorrect email or password'] },
+        hideFields: ['password'],
+      }),
+      { status: 400 },
+    )
 
   return createUserSession({
     request,
@@ -91,17 +95,17 @@ export const meta: MetaFunction = () => [{ title: 'Login' }]
 export default function LoginPage() {
   const [searchParams] = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') ?? undefined
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
   const [form, { emailOrUsername, password }] = useForm({
-    lastSubmission,
+    lastResult,
     onValidate({ formData }) {
-      return parse(formData, { schema })
+      return parseWithZod(formData, { schema })
     },
   })
   const navigation = useNavigation()
   return (
     <Form asChild className='max-w-sm w-full mx-auto mt-6 p-6'>
-      <RemixForm method='post' {...form.props}>
+      <RemixForm method='post' {...getFormProps(form)}>
         <header className='mb-2'>
           <h1 className='text-2xl font-medium'>Log in</h1>
           <p className='text-sm text-gray-500 dark:text-gray-400'>
@@ -119,8 +123,8 @@ export default function LoginPage() {
         <FormField name={emailOrUsername.name}>
           <FormLabelWrapper>
             <FormLabel>Email or username</FormLabel>
-            {emailOrUsername.error && (
-              <FormMessage>{emailOrUsername.error}</FormMessage>
+            {emailOrUsername.errors && (
+              <FormMessage>{emailOrUsername.errors}</FormMessage>
             )}
           </FormLabelWrapper>
           <FormControl asChild>
@@ -130,7 +134,7 @@ export default function LoginPage() {
         <FormField name={password.name}>
           <FormLabelWrapper>
             <FormLabel>Password</FormLabel>
-            {password.error && <FormMessage>{password.error}</FormMessage>}
+            {password.errors && <FormMessage>{password.errors}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
             <Input type='password' placeholder='••••••••' required />

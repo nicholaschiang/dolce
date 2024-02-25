@@ -1,4 +1,4 @@
-import { parse } from '@conform-to/zod'
+import { parseWithZod } from '@conform-to/zod'
 import { type ActionFunctionArgs, json, redirect } from '@vercel/remix'
 
 import {
@@ -17,9 +17,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (userId == null)
     return redirect(`/login?redirectTo=/shows/${showId}%23${id}`)
   const formData = await request.formData()
-  const submission = parse(formData, { schema })
-  if (!submission.value || submission.intent !== 'submit')
-    return json(submission, { status: 400 })
+  const submission = parseWithZod(formData, { schema })
+  if (submission.status !== 'success')
+    return json(submission.reply(), { status: 400 })
   log.info('creating review... %o', submission.value)
   const review = await prisma.review.upsert({
     where: { authorId_showId: { showId, authorId: userId } },
@@ -35,5 +35,5 @@ export async function action({ request, params }: ActionFunctionArgs) {
     },
   })
   log.info('created review: %o', review)
-  return json(submission, { status: 200 })
+  return json(submission.reply(), { status: 200 })
 }

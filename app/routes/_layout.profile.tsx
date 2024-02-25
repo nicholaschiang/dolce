@@ -1,5 +1,5 @@
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import {
   Form as RemixForm,
   useActionData,
@@ -65,34 +65,43 @@ export async function action({ request }: ActionFunctionArgs) {
   const userId = await requireUserId(request, '/profile')
 
   const formData = await request.formData()
-  const submission = parse(formData, { schema })
+  const submission = parseWithZod(formData, { schema })
 
-  if (!submission.value || submission.intent !== 'submit')
-    return json(submission, { status: 400 })
+  if (submission.status !== 'success')
+    return json(submission.reply(), { status: 400 })
 
   let existingUser = await prisma.user.findFirst({
     where: { name: submission.value.name, id: { not: userId } },
   })
-  if (existingUser) {
-    submission.error.name = ['A user already exists with this name']
-    return json(submission, { status: 400 })
-  }
+  if (existingUser)
+    return json(
+      submission.reply({
+        fieldErrors: { name: ['A user already exists with this name'] },
+      }),
+      { status: 400 },
+    )
 
   existingUser = await prisma.user.findFirst({
     where: { username: submission.value.username, id: { not: userId } },
   })
-  if (existingUser) {
-    submission.error.username = ['A user already exists with this username']
-    return json(submission, { status: 400 })
-  }
+  if (existingUser)
+    return json(
+      submission.reply({
+        fieldErrors: { username: ['A user already exists with this username'] },
+      }),
+      { status: 400 },
+    )
 
   existingUser = await prisma.user.findFirst({
     where: { email: submission.value.email, id: { not: userId } },
   })
-  if (existingUser) {
-    submission.error.email = ['A user already exists with this email']
-    return json(submission, { status: 400 })
-  }
+  if (existingUser)
+    return json(
+      submission.reply({
+        fieldErrors: { email: ['A user already exists with this email'] },
+      }),
+      { status: 400 },
+    )
 
   await updateUser(
     userId,
@@ -111,11 +120,11 @@ export const meta: MetaFunction = () => [{ title: `Edit Profile | ${NAME}` }]
 export default function ProfilePage() {
   const user = useUser()
   const navigation = useNavigation()
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
   const [form, { name, username, description, email, password }] = useForm({
-    lastSubmission,
+    lastResult,
     onValidate({ formData }) {
-      return parse(formData, { schema })
+      return parseWithZod(formData, { schema })
     },
   })
   const [state, setState] = useState(user)
@@ -133,11 +142,11 @@ export default function ProfilePage() {
       </header>
       <div className='max-h-full flex-1 overflow-auto py-12 px-6'>
         <Form asChild className='max-w-sm w-full mr-auto'>
-          <RemixForm method='patch' {...form.props}>
+          <RemixForm method='patch' {...getFormProps(form)}>
             <FormField name={name.name}>
               <FormLabelWrapper>
                 <FormLabel>Name</FormLabel>
-                {name.error && <FormMessage>{name.error}</FormMessage>}
+                {name.errors && <FormMessage>{name.errors}</FormMessage>}
               </FormLabelWrapper>
               <FormControl asChild>
                 <Input
@@ -154,7 +163,9 @@ export default function ProfilePage() {
             <FormField name={username.name}>
               <FormLabelWrapper>
                 <FormLabel>Username</FormLabel>
-                {username.error && <FormMessage>{username.error}</FormMessage>}
+                {username.errors && (
+                  <FormMessage>{username.errors}</FormMessage>
+                )}
               </FormLabelWrapper>
               <FormControl asChild>
                 <Input
@@ -172,8 +183,8 @@ export default function ProfilePage() {
             <FormField name={description.name}>
               <FormLabelWrapper>
                 <FormLabel>Bio</FormLabel>
-                {description.error && (
-                  <FormMessage>{description.error}</FormMessage>
+                {description.errors && (
+                  <FormMessage>{description.errors}</FormMessage>
                 )}
               </FormLabelWrapper>
               <FormControl asChild>
@@ -190,7 +201,7 @@ export default function ProfilePage() {
             <FormField name={email.name}>
               <FormLabelWrapper>
                 <FormLabel>Email</FormLabel>
-                {email.error && <FormMessage>{email.error}</FormMessage>}
+                {email.errors && <FormMessage>{email.errors}</FormMessage>}
               </FormLabelWrapper>
               <FormControl asChild>
                 <Input
@@ -208,7 +219,9 @@ export default function ProfilePage() {
             <FormField name={password.name}>
               <FormLabelWrapper>
                 <FormLabel>Edit password</FormLabel>
-                {password.error && <FormMessage>{password.error}</FormMessage>}
+                {password.errors && (
+                  <FormMessage>{password.errors}</FormMessage>
+                )}
               </FormLabelWrapper>
               <FormControl asChild>
                 <Input
