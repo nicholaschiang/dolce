@@ -98,6 +98,8 @@ jobs:
   cypress:
     name: Cypress
     runs-on: ubuntu-latest
+    env:
+      PORT: '8811'
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
@@ -114,8 +116,17 @@ jobs:
           node-version-file: package.json
           cache: pnpm
 
+      - name: Cache cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Download deps
         run: pnpm install --frozen-lockfile
+
+      - name: Download cypress binary
+        run: pnpm cypress install
 
       - name: Copy test env vars
         run: cp .env.example .env
@@ -130,21 +141,23 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v5
-        with:
-          start: pnpm start:mocks
-          wait-on: 'http://localhost:8811'
-          record: true
-          tag: ${{ github.event_name }}
-          # right now, we can't easily reset state between tests and thus we're
-          # only going to run a single smoke test (hitting k8s back-end) in CI.
-          spec: cypress/e2e/smoke.cy.ts
+      - name: Start frontend
+        id: startfrontend
+        run: |
+          pnpm start:mocks > frontend.log 2>&1 &
+          echo $! > frontend_pid.txt
         env:
-          PORT: '8811'
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+      - name: Wait for frontend
+        run: pnpm wait-on --timeout 60000 http://localhost:${{ env.PORT }}
+
+      - name: Run cypress tests
+        run: pnpm cypress run --record --tag ${{ github.event_name }} --spec cypress/e2e/smoke.cy.ts
+        env:
+          # testing keys (e.g. cypress) and other environment variables.
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # override the github commit message for better Cypress Cloud mesages.
@@ -153,6 +166,18 @@ jobs:
           # re-enable the Cypress GitHub PR comment bot
           # @see https://docs.cypress.io/guides/continuous-integration/github-actions#Pull-requests-commit-message-is-merge-SHA-into-SHA
           COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
+
+      - name: Kill frontend
+        if: ${{ always() && steps.startfrontend.outcome == 'success' }}
+        run: |
+          frontend_pid=$(cat frontend_pid.txt)
+          kill $frontend_pid
+
+      - name: Display frontend logs
+        if: always()
+        run: |
+          cat frontend.log
+
 
   build:
     name: Build
