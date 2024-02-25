@@ -80,7 +80,7 @@ export function HeaderLink({ className, ...etc }: LinkProps) {
   )
 }
 
-export function HeaderActions() {
+export function HeaderActions({ children }: PropsWithChildren) {
   const matches = useMatches()
   const user = useOptionalUser()
   const isLoginPage = matches.some(
@@ -109,6 +109,7 @@ export function HeaderActions() {
         </Link>
       )}
       <ThemeSwitcher />
+      {children}
     </div>
   )
 }
