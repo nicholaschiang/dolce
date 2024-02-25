@@ -1,5 +1,5 @@
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import {
   Outlet,
   Link,
@@ -104,10 +104,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (user.id !== userId) throw new Response('Forbidden', { status: 403 })
 
   const formData = await request.formData()
-  const submission = parse(formData, { schema })
+  const submission = parseWithZod(formData, { schema })
 
-  if (!submission.value || submission.intent !== 'submit')
-    return json(submission, { status: 400 })
+  if (submission.status !== 'success')
+    return json(submission.reply(), { status: 400 })
 
   const { data, error } = await supabase.storage
     .from('avatars')
@@ -115,8 +115,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (error) {
     log.error('Error updating avatar for @%s: %s', params.username, error.stack)
-    submission.error.avatar = ['Failed to upload avatar; try again later']
-    return json(submission, { status: 500 })
+    return json(
+      submission.reply({
+        fieldErrors: { avatar: ['Failed to upload avatar; try again later'] },
+      }),
+      { status: 500 },
+    )
   }
 
   const avatar = supabase.storage.from('avatars').getPublicUrl(data.path)
@@ -258,11 +262,11 @@ function Header() {
 }
 
 function AvatarForm() {
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
   const [form, { avatar }] = useForm({
-    lastSubmission,
+    lastResult,
     onValidate({ formData }) {
-      return parse(formData, { schema })
+      return parseWithZod(formData, { schema })
     },
   })
   const user = useLoaderData<typeof loader>()
@@ -274,7 +278,7 @@ function AvatarForm() {
       method='post'
       encType='multipart/form-data'
       onChange={(event) => submit(event.currentTarget)}
-      {...form.props}
+      {...getFormProps(form)}
     >
       <AvatarRoot className='w-36 h-36'>
         {navigation.state !== 'idle' && navigation.formData ? (
@@ -282,17 +286,17 @@ function AvatarForm() {
             <AvatarImage />
             <AvatarFallback className='animate-pulse' />
           </>
-        ) : avatar.error ? (
+        ) : avatar.errors ? (
           <>
             <AvatarImage />
             <AvatarFallback className='text-center p-4 text-2xs'>
-              {avatar.error}
+              {avatar.errors}
             </AvatarFallback>
           </>
         ) : (
           <>
             <AvatarImage src={user?.avatar ?? undefined} alt={user?.name} />
-            {lastSubmission ? (
+            {lastResult ? (
               <AvatarFallback className='animate-pulse' />
             ) : (
               <AvatarFallback className='text-3xl'>

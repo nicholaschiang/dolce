@@ -1,5 +1,5 @@
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import { type Video as VideoT } from '@prisma/client'
 import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useRef, useEffect, useState } from 'react'
@@ -87,14 +87,16 @@ function VideoForm() {
 
   const [form, { video }] = useForm({
     onValidate({ formData }) {
-      return parse(formData, { schema })
+      return parseWithZod(formData, { schema })
     },
     onSubmit(event, { formData }) {
       event.preventDefault()
-      const submission = parse(formData, { schema })
-      const videoFile = submission.value?.video
-      setFile(videoFile)
-      if (videoFile) fetcher.submit({}, { action, method: 'POST' })
+      const submission = parseWithZod(formData, { schema })
+      if (submission.status === 'success') {
+        const videoFile = submission.value.video
+        setFile(videoFile)
+        fetcher.submit({}, { action, method: 'POST' })
+      }
     },
   })
   const inputRef = useRef<HTMLInputElement>(null)
@@ -106,7 +108,7 @@ function VideoForm() {
         loading && 'animate-pulse',
       )}
       onChange={(event) => event.currentTarget.requestSubmit()}
-      {...form.props}
+      {...getFormProps(form)}
     >
       <button
         type='button'
@@ -116,7 +118,7 @@ function VideoForm() {
       >
         {loading
           ? 'Uploading video...'
-          : video.error ?? 'Click to upload show video'}
+          : video.errors ?? 'Click to upload show video'}
       </button>
       <input
         ref={inputRef}

@@ -1,5 +1,5 @@
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import {
   Form as RemixForm,
   Outlet,
@@ -60,10 +60,10 @@ export async function action({ request, params }: DataFunctionArgs) {
   if (user.username !== params.username)
     throw new Response('Forbidden', { status: 403 })
 
-  const submission = parse(await request.formData(), { schema })
+  const submission = parseWithZod(await request.formData(), { schema })
 
-  if (!submission.value || submission.intent !== 'submit')
-    return json(submission, { status: 400 })
+  if (submission.status !== 'success')
+    return json(submission.reply(), { status: 400 })
 
   const post = await prisma.post.create({
     data: {
@@ -110,11 +110,11 @@ export default function UserPostsPage() {
 
 function NewPostDialog({ children }: PropsWithChildren) {
   const navigation = useNavigation()
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
   const [form, { url, description }] = useForm({
-    lastSubmission,
+    lastResult,
     onValidate({ formData }) {
-      return parse(formData, { schema })
+      return parseWithZod(formData, { schema })
     },
   })
   return (
@@ -128,11 +128,11 @@ function NewPostDialog({ children }: PropsWithChildren) {
           </DialogDescription>
         </DialogHeader>
         <Form asChild>
-          <RemixForm method='patch' {...form.props}>
+          <RemixForm method='patch' {...getFormProps(form)}>
             <FormField name={url.name}>
               <FormLabelWrapper>
                 <FormLabel>URL</FormLabel>
-                {url.error && <FormMessage>{url.error}</FormMessage>}
+                {url.errors && <FormMessage>{url.errors}</FormMessage>}
               </FormLabelWrapper>
               <FormControl asChild>
                 <Input
@@ -144,8 +144,8 @@ function NewPostDialog({ children }: PropsWithChildren) {
             <FormField name={description.name}>
               <FormLabelWrapper>
                 <FormLabel>Description</FormLabel>
-                {description.error && (
-                  <FormMessage>{description.error}</FormMessage>
+                {description.errors && (
+                  <FormMessage>{description.errors}</FormMessage>
                 )}
               </FormLabelWrapper>
               <FormControl asChild>

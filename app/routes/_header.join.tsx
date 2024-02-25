@@ -1,5 +1,5 @@
-import { useForm } from '@conform-to/react'
-import { parse } from '@conform-to/zod'
+import { useForm, getFormProps } from '@conform-to/react'
+import { parseWithZod } from '@conform-to/zod'
 import {
   Form as RemixForm,
   Link,
@@ -70,28 +70,37 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
-  const submission = parse(formData, { schema })
+  const submission = parseWithZod(formData, { schema })
 
-  if (!submission.value || submission.intent !== 'submit')
-    return json(submission, { status: 400 })
+  if (submission.status !== 'success')
+    return json(submission.reply(), { status: 400 })
 
   let existingUser = await getUserByName(submission.value.name)
-  if (existingUser) {
-    submission.error.name = ['A user already exists with this name']
-    return json(submission, { status: 400 })
-  }
+  if (existingUser)
+    return json(
+      submission.reply({
+        fieldErrors: { name: ['A user already exists with this name'] },
+      }),
+      { status: 400 },
+    )
 
   existingUser = await getUserByUsername(submission.value.username)
-  if (existingUser) {
-    submission.error.username = ['A user already exists with this username']
-    return json(submission, { status: 400 })
-  }
+  if (existingUser)
+    return json(
+      submission.reply({
+        fieldErrors: { username: ['A user already exists with this username'] },
+      }),
+      { status: 400 },
+    )
 
   existingUser = await getUserByEmail(submission.value.email)
-  if (existingUser) {
-    submission.error.email = ['A user already exists with this email']
-    return json(submission, { status: 400 })
-  }
+  if (existingUser)
+    return json(
+      submission.reply({
+        fieldErrors: { email: ['A user already exists with this email'] },
+      }),
+      { status: 400 },
+    )
 
   const user = await createUser(
     submission.value.name,
@@ -113,17 +122,17 @@ export const meta: MetaFunction = () => [{ title: 'Register' }]
 export default function Join() {
   const [searchParams] = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') ?? undefined
-  const lastSubmission = useActionData<typeof action>()
+  const lastResult = useActionData<typeof action>()
   const [form, { name, username, email, password }] = useForm({
-    lastSubmission,
+    lastResult,
     onValidate({ formData }) {
-      return parse(formData, { schema })
+      return parseWithZod(formData, { schema })
     },
   })
   const navigation = useNavigation()
   return (
     <Form asChild className='max-w-sm w-full mx-auto mt-6 p-6'>
-      <RemixForm method='post' {...form.props}>
+      <RemixForm method='post' {...getFormProps(form)}>
         <header className='mb-2'>
           <h1 className='text-2xl font-medium'>Sign up</h1>
           <p className='text-sm text-gray-500 dark:text-gray-400'>
@@ -141,7 +150,7 @@ export default function Join() {
         <FormField name={name.name}>
           <FormLabelWrapper>
             <FormLabel>Name</FormLabel>
-            {name.error && <FormMessage>{name.error}</FormMessage>}
+            {name.errors && <FormMessage>{name.errors}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
             <Input placeholder='Anna Wintour' required />
@@ -150,7 +159,7 @@ export default function Join() {
         <FormField name={username.name}>
           <FormLabelWrapper>
             <FormLabel>Username</FormLabel>
-            {username.error && <FormMessage>{username.error}</FormMessage>}
+            {username.errors && <FormMessage>{username.errors}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
             <Input placeholder='anna.wintour' required />
@@ -159,7 +168,7 @@ export default function Join() {
         <FormField name={email.name}>
           <FormLabelWrapper>
             <FormLabel>Email</FormLabel>
-            {email.error && <FormMessage>{email.error}</FormMessage>}
+            {email.errors && <FormMessage>{email.errors}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
             <Input type='email' placeholder='anna@vogue.com' required />
@@ -168,7 +177,7 @@ export default function Join() {
         <FormField name={password.name}>
           <FormLabelWrapper>
             <FormLabel>Password</FormLabel>
-            {password.error && <FormMessage>{password.error}</FormMessage>}
+            {password.errors && <FormMessage>{password.errors}</FormMessage>}
           </FormLabelWrapper>
           <FormControl asChild>
             <Input type='password' placeholder='••••••••' required />
