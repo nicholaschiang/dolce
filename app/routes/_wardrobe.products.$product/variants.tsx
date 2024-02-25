@@ -42,7 +42,7 @@ function Colors() {
               key={color}
               label={color}
               prices={variantsWithColor.flatMap((v) => v.prices)}
-              variant={active}
+              variant={active ?? variantsWithColor[0]}
             />
           )
         })}
