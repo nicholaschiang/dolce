@@ -1,5 +1,23 @@
 # Release Notes
 
+## [1.64.0](https://github.com/nicholaschiang/dolce/compare/v1.63.0...v1.64.0) (2024-02-25)
+
+
+### Features
+
+* **app/posts:** style posts UI after Instagram ([6d1f896](https://github.com/nicholaschiang/dolce/commit/6d1f896670500c4b19d6a1ba9d78a8fa47a342e6))
+* **app:** add new user-scoped posts UI ([c9ed403](https://github.com/nicholaschiang/dolce/commit/c9ed403854da7b8187cf1cd43806e85e5c722719))
+* **prisma/schema:** add posts and items data model ([e2a0aaf](https://github.com/nicholaschiang/dolce/commit/e2a0aafb7cd7ec068a2ab6e611e0800dd326f34c))
+* **scripts/node:** import posts from Instagram ([a7b065e](https://github.com/nicholaschiang/dolce/commit/a7b065e4fdaffacfebe90e8be11bf5dd8c6d6f64))
+
+
+### Bug Fixes
+
+* **app/filters:** add new relation filter types ([e684b83](https://github.com/nicholaschiang/dolce/commit/e684b83ba550c08a1172c525f0687ec88bb6b40f))
+* **app/product:** users can always change colors ([b95f8f3](https://github.com/nicholaschiang/dolce/commit/b95f8f313e6fd26181605b505f42062ae4d2b333))
+* **app/root:** do not use edge runtime for now ([3eb4627](https://github.com/nicholaschiang/dolce/commit/3eb462751d59005c3de8eb57830ef121d25defc1))
+* **app:** update `[@conform-to](https://github.com/conform-to)` package usage ([6ed4be2](https://github.com/nicholaschiang/dolce/commit/6ed4be262e8538b1e80efcaa346bdbf2a63a5f85))
+
 ## [1.63.0](https://github.com/nicholaschiang/dolce/compare/v1.62.4...v1.63.0) (2023-12-21)
 
 
