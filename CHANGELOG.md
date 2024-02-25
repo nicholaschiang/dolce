@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.65.0](https://github.com/nicholaschiang/dolce/compare/v1.64.0...v1.65.0) (2024-02-25)
+
+
+### Features
+
+* **app:** add wardrobe panel open/close button ([8f6f567](https://github.com/nicholaschiang/dolce/commit/8f6f5673b8a41de6b981d2bea70279d3258309ea))
+
 ## [1.64.0](https://github.com/nicholaschiang/dolce/compare/v1.63.0...v1.64.0) (2024-02-25)
 
 
