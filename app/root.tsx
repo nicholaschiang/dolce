@@ -60,8 +60,6 @@ export const handle: Handle = {
   breadcrumb: () => ({ to: '/', children: 'DOLCE' }),
 }
 
-export const config = { runtime: 'edge' }
-
 export const links: LinksFunction = () => [
   {
     rel: 'preload',
