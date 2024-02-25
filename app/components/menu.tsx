@@ -12,7 +12,7 @@ export type RootProps = {
 
 export function Root({ children }: RootProps) {
   return (
-    <Command className='frosted fixed mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-800'>
+    <Command className='frosted fixed mt-0.5 flex min-w-min max-w-xl origin-top-left flex-col overflow-hidden rounded-lg border border-gray-200 text-xs shadow-xl will-change-transform dark:border-gray-800 max-h-[calc(100vh_-_84px)]'>
       {children}
     </Command>
   )
@@ -56,7 +56,9 @@ export type ListProps = { children?: ReactNode }
 export function List({ children }: ListProps) {
   const count = useCommandState((state) => state.filtered.count)
   return (
-    <Command.List className={cn(count > 0 && 'py-1')}>{children}</Command.List>
+    <Command.List className={cn('overflow-auto', count > 0 && 'py-1')}>
+      {children}
+    </Command.List>
   )
 }
 
