@@ -17,9 +17,6 @@ class ShopifySpider(scrapy.Spider):
             yield scrapy.Request(url, callback=self.parse)
 
     def parse(self, response):
-        print("------- START RESPONSE TEXT -------")
-        print(response.text)
-        print("-------- END RESPONSE TEXT --------")
         data = json.loads(response.text)
         yield from data["products"]
         if len(data["products"]) > 0:
