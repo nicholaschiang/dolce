@@ -24,10 +24,10 @@ export default function BrandsPage() {
   return (
     <ListLayout title='brands'>
       {brands.map((brand) => {
-        const param = filterToSearchParam<'brand', 'is'>({
+        const param = filterToSearchParam<'brands', 'some'>({
           id: nanoid(5),
-          name: 'brand',
-          condition: 'is',
+          name: 'brands',
+          condition: 'some',
           value: { id: brand.id, name: brand.name },
         })
         return (
@@ -35,7 +35,7 @@ export default function BrandsPage() {
             <Link
               prefetch='intent'
               className='link underline'
-              to={`/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`}
+              to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
               {brand.name}
             </Link>
