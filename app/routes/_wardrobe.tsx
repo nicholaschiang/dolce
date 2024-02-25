@@ -1,6 +1,6 @@
 import { Outlet, Link, useLoaderData, useFetcher } from '@remix-run/react'
 import { type LoaderFunctionArgs, type SerializeFrom } from '@vercel/remix'
-import { Minus } from 'lucide-react'
+import { Minus, PanelRightClose, PanelRightOpen } from 'lucide-react'
 import {
   type Dispatch,
   type SetStateAction,
@@ -13,7 +13,11 @@ import { type Product } from 'routes/_wardrobe.products._index'
 
 import { Avatar } from 'components/avatar'
 import { Empty } from 'components/empty'
-import { Header } from 'components/header'
+import {
+  HeaderWrapper,
+  HeaderActions,
+  HeaderBreadcrumbs,
+} from 'components/header'
 import {
   Layout,
   LayoutLeft,
@@ -52,34 +56,72 @@ type ProductsContextT = [Product[], Dispatch<SetStateAction<Product[]>>]
 const ProductsContext = createContext<ProductsContextT>([[], () => {}])
 export const useProducts = () => useContext(ProductsContext)
 
+type SidebarOpenContextT = [boolean, Dispatch<SetStateAction<boolean>>]
+const SidebarOpenContext = createContext<SidebarOpenContextT>([false, () => {}])
+const useSidebarOpen = () => useContext(SidebarOpenContext)
+
+// Wardrobe sidebar UI to allow users to save pieces to looks and curate their
+// library of saved shows, products, and looks (their "wardrobe" per se).
+//
+// Right now, this is very rudimentary, but I'm keeping the code paths around as
+// they'll probably be a useful starting point for when I spend time to actually
+// make this "wardrobe" feature set useful.
+//
+// Users can always collapse this panel. It will remain collapsed by default and
+// the open state will be persisted in localStorage.
 export default function WardrobePage() {
   const user = useOptionalUser()
+  const sidebarOpenState = useState(false)
   return (
-    <ProductsContext.Provider value={useState<Product[]>([])}>
-      <Layout className='h-auto fixed inset-0'>
-        <LayoutLeft>
-          <Content />
-        </LayoutLeft>
-        {user && (
-          <>
-            <LayoutDivider />
-            <LayoutRight className='flex flex-col'>
-              <WardrobeHeader />
-              <Looks />
-            </LayoutRight>
-          </>
-        )}
-      </Layout>
-    </ProductsContext.Provider>
+    <SidebarOpenContext.Provider value={sidebarOpenState}>
+      <ProductsContext.Provider value={useState<Product[]>([])}>
+        <Layout className='h-auto fixed inset-0'>
+          <LayoutLeft>
+            <Content />
+          </LayoutLeft>
+          {sidebarOpenState[0] === true && user != null && (
+            <>
+              <LayoutDivider />
+              <LayoutRight className='flex flex-col'>
+                <WardrobeHeader />
+                <Looks />
+              </LayoutRight>
+            </>
+          )}
+        </Layout>
+      </ProductsContext.Provider>
+    </SidebarOpenContext.Provider>
   )
 }
 
 function Content() {
+  const user = useOptionalUser()
   return (
     <main className='h-full flex flex-col overflow-hidden'>
-      <Header className='flex-none' />
+      <HeaderWrapper className='flex-none'>
+        <HeaderBreadcrumbs />
+        <HeaderActions>{user != null && <SidebarToggleButton />}</HeaderActions>
+      </HeaderWrapper>
       <Outlet />
     </main>
+  )
+}
+
+function SidebarToggleButton() {
+  const [sidebarOpen, setSidebarOpen] = useSidebarOpen()
+  return (
+    <Button
+      size='icon'
+      variant='ghost'
+      aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+      onClick={() => setSidebarOpen((open) => !open)}
+    >
+      {sidebarOpen ? (
+        <PanelRightClose className='w-3 h-3' />
+      ) : (
+        <PanelRightOpen className='w-3 h-3' />
+      )}
+    </Button>
   )
 }
 
