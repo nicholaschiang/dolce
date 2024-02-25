@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.66.0](https://github.com/nicholaschiang/dolce/compare/v1.65.1...v1.66.0) (2024-02-25)
+
+
+### Features
+
+* **app/filters:** allow filter on variant tags ([0ef6db8](https://github.com/nicholaschiang/dolce/commit/0ef6db8d23a8c78935b762ad6e68fcbe745afbcb))
+
+
+### Bug Fixes
+
+* **app/components/menu:** scroll through long list ([3e2752a](https://github.com/nicholaschiang/dolce/commit/3e2752a903a16ca4c7cc01b6182b3c28a95cd131))
+
 ## [1.65.1](https://github.com/nicholaschiang/dolce/compare/v1.65.0...v1.65.1) (2024-02-25)
 
 
