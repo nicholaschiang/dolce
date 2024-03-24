@@ -1,5 +1,17 @@
 # Release Notes
 
+## [1.67.0](https://github.com/nicholaschiang/dolce/compare/v1.66.0...v1.67.0) (2024-03-24)
+
+
+### Features
+
+* **prisma:** replace shows with collections ([2ca2c60](https://github.com/nicholaschiang/dolce/commit/2ca2c601ee5770a90889db20d0f1bc6cc2006df9))
+
+
+### Bug Fixes
+
+* **app:** replace shows with collection pages ([c4ec886](https://github.com/nicholaschiang/dolce/commit/c4ec886c40b5ab5d69142b5f8c64663dcd668a88))
+
 ## [1.66.0](https://github.com/nicholaschiang/dolce/compare/v1.65.1...v1.66.0) (2024-02-25)
 
 
