@@ -239,9 +239,6 @@ model Brand {
   // The products designed or otherwise produced by the brand.
   products Product[]
 
-  // The runway shows presented by the brand.
-  shows Show[]
-
   // The sizes used by the brand.
   sizes Size[]
 
@@ -798,57 +795,6 @@ model Board {
   @@unique([name, authorId])
 }
 
-// A collection is an arbitrary grouping of products, typically done by a brand
-// or a designer. Often, collections are created entirely by a single designer.
-// Collections are separate from shows as every show has a collection but not
-// every collection has a show (e.g. Mission Workshop "Merino Core" collection
-// has no show v.s. Saint Laurent Fall-Winter 2023 has a show). Each show can
-// also have multiple collections shown (e.g. Fashion East often showcases
-// three collections from three different designers on the same runway).
-model Collection {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  // The collection's name (e.g. "Hermès Spring-Summer 2023 Menswear").
-  name String @unique
-
-  // The collection's style category (if limited to a single category).
-  style   Style? @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  styleId Int?
-
-  // The collection's season. Typically, collection have seasons. While unusual,
-  // collections can be released outside of a season (e.g. mw acre series).
-  season   Season? @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  seasonId Int?
-
-  // The show that the collection was debuted at.
-  show   Show? @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  showId Int?
-
-  // The collection's webpage (from the designer, brand, or retailer site).
-  links Link[]
-
-  // The products that belong to the collection.
-  products Product[]
-
-  // The designers that created the collection. Often, this is one person.
-  // @todo products are already associated with designers; do we need this?
-  designers User[]
-
-  // The brands that created the collection. Generally, we will only have one 
-  // brand, but—according to ChatGPT—there have been runway collections that 
-  // have been operated by multiple brands and showcased pieces from both of the 
-  // brands. One example is the "Fashion East" show in London, which provides a 
-  // platform for emerging designers to showcase their collections. The show 
-  // often features a combination of individual designers and collaborative 
-  // collections. Another example is the "Designer Collaborations" show at New 
-  // York Fashion Week, which features collaborations between established 
-  // designers and brands.
-  // @todo products are already associated with brands; do we need this?
-  brands Brand[]
-}
-
 // A link is exactly that. A link to an external website. Currently, this model
 // is just used for collections, but will likely be used more in the future.
 model Link {
@@ -901,9 +847,6 @@ model Season {
   // The year the season takes place in.
   year Int
 
-  // The runway shows that took place during the season.
-  shows Show[]
-
   // The collections that were released during the season.
   collections Collection[]
 
@@ -911,7 +854,7 @@ model Season {
   @@unique([name, year])
 }
 
-// A look is an outfit that a model wore during a runway show.
+// A look is an outfit that a model wore in a collection.
 model Look {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -920,9 +863,9 @@ model Look {
   // The look's number. Typically, looks are numbered sequentially.
   number Int
 
-  // The look's show.
-  show   Show? @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  showId Int?
+  // The look's collection.
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId Int?
 
   // The look's author (if not part of a show, this was created by a user).
   author   User? @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -949,8 +892,8 @@ model Look {
   // The posts that the look is a part of.
   posts Post[]
 
-  // Each look must have a unique number in the show or by the author.
-  @@unique([showId, number])
+  // Each look must have a unique number in the collection or by the author.
+  @@unique([collectionId, number])
   @@unique([authorId, number])
 }
 
@@ -1047,9 +990,9 @@ model Article {
   user   User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId Int?
 
-  // The show that the review is about (if this is a critic review).
-  show   Show? @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  showId Int?
+  // The collection that the review is about (if this is a critic review).
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId Int?
 
   // The publication that the article was posted to (Vogue, WWD, Wikipedia).
   publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -1066,12 +1009,12 @@ model Article {
   // the most recent. If a single journalist publishes two reviews in two
   // different publications for the same show, I should only count one of them
   // towards the aggregate critic score.
-  @@unique([authorId, showId])
+  @@unique([authorId, collectionId])
   // Each publication can only have one canonical article with a given title.
   @@unique([publicationId, title])
 }
 
-// A review is a review for a show from a consumer.
+// A review is a review for a collection from a consumer.
 model Review {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -1092,12 +1035,12 @@ model Review {
   author   User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   authorId Int
 
-  // The show that the review is about.
-  show   Show @relation(fields: [showId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  showId Int
+  // The collection that the review is about.
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  collectionId Int
 
-  // Each user can only submit one review per show.
-  @@unique([authorId, showId])
+  // Each user can only submit one review per collection.
+  @@unique([authorId, collectionId])
 }
 
 // A publication is a resource that publishes fashion reviews (e.g. Vogue).
@@ -1152,29 +1095,45 @@ enum Location {
   BRIDAL
 }
 
-// A show is a fashion runway show.
-model Show {
+// A collection is an arbitrary grouping of products, typically done by a brand
+// or a designer. Often, collections are created entirely by a single designer.
+// Collections are separate from shows as every show has a collection but not
+// every collection has a show (e.g. Mission Workshop "Merino Core" collection
+// has no show v.s. Saint Laurent Fall-Winter 2023 has a show). Each show can
+// also have multiple collections shown (e.g. Fashion East often showcases
+// three collections from three different designers on the same runway).
+model Collection {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  // The name of the show, as designated by the show's organizer.
-  // @todo often this will be the same as the collection name; do we need this?
-  // @todo often this is just a function of the brand + season names...
+  // The collection's name (e.g. "Hermès Spring-Summer 2023 Menswear").
   name String @unique
 
-  // The link to the show on the brand website (where the description is from).
+  // The link to the collection on the brand website (where the description is from).
   url String @unique
 
-  // The show's sex (i.e. "womenswear", "menswear", or both).
+  // The collection's webpage (from the designer, brand, or retailer site).
+  links Link[]
+
+  // The collection's sex (i.e. "womenswear", "menswear", or both).
   // @todo remove this once we have full show > collection > product data, as
   // the product object already has the sex field attached to it.
   sex Sex
 
-  // The show's level (i.e. "ready-to-wear", "couture", etc).
+  // The collection's level (i.e. "ready-to-wear", "couture", etc).
   // @todo remove this once we have full show > collection > product data, as
   // the product object already has the level field attached to it.
   level Level
+
+  // The location of the collection. Sometimes, brands will debut different
+  // collections for different locations in the same season.
+  // https://www.vogue.com/fashion-shows/bridal-spring-2019/zuhair-murad
+  // https://www.vogue.com/fashion-shows/spring-2019-ready-to-wear/zuhair-murad
+  location Location?
+
+  // The date when the collection was released (if known).
+  date DateTime?
 
   // A description of the collection, typically provided by the brand.
   description String?
@@ -1191,26 +1150,41 @@ model Show {
   // Consumer reviews of the show.
   reviews Review[]
 
-  // Video of the show (typically just a single shot of runway models walking).
-  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  videoId Int?   @unique
+  // The collection's style category (if limited to a single category).
+  style   Style? @relation(fields: [styleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  styleId Int?
 
-  // The fashion season in which the show was presented. e.g. Spring 2021
-  // @todo collections are already associated with seasons; do we need this?
+  // The collection's season. If a collection spans multiple seasons, the last
+  // season is used (e.g. if the "MW Acre Series" was last updated in SS23, the 
+  // collection's season becomes SS23).
   season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   seasonId Int
 
-  // The date when the show started (if known).
-  date DateTime?
+  // The show(s) that the collection was debuted at.
+  shows Show[]
 
-  // The runway show's location.
-  location Location?
-
-  // The collections that were presented at the show. Often, there is only one.
-  collections Collection[]
-
-  // The looks that were presented at the show.
+  // The looks that were presented at the collection.
   looks Look[]
+
+  // The products that belong to the collection.
+  products Product[]
+
+  // The designers that created the collection. Often, this is one person.
+  // @todo products are already associated with designers; do we need this?
+  designers User[]
+
+  // The brands that created the collection. Generally, we will only have one 
+  // brand, but—according to ChatGPT—there have been runway collections that 
+  // have been operated by multiple brands and showcased pieces from both of the 
+  // brands. One example is the "Fashion East" show in London, which provides a 
+  // platform for emerging designers to showcase their collections. The show 
+  // often features a combination of individual designers and collaborative 
+  // collections. Another example is the "Designer Collaborations" show at New 
+  // York Fashion Week, which features collaborations between established 
+  // designers and brands.
+  // @todo products are already associated with brands; do we need this?
+  // @todo allow a collection to have more than one brand.
+  // brands Brand[]
 
   // The brand that hosted the show. This is different than the collection(s)
   // brand(s) that were presented at the show. Often, they will be the same.
@@ -1230,4 +1204,29 @@ model Show {
   // may need adjustment in the future if there is ever a brand that presents 
   // twice during a single season (but that probably means I need more seasons).
   @@unique([brandId, seasonId, sex, level, location])
+}
+
+// A show is a fashion runway show.
+model Show {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // The name of the show, as designated by the show's organizer.
+  // @todo often this will be the same as the collection name; do we need this?
+  // @todo often this is just a function of the brand + season names...
+  name String @unique
+
+  // The link to the show on the brand website (where the description is from).
+  url String @unique
+
+  // Video of the show (typically just a single shot of runway models walking).
+  video   Video? @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId Int?   @unique
+
+  // The date when the show started (if known).
+  date DateTime?
+
+  // The collections that were presented at the show. Often, there is only one.
+  collections Collection[]
 }
