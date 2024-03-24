@@ -52,7 +52,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       include: {
         brands: true,
         // TODO order the variants by whichever has the cheapest price. Right
-        // now, we just show the cheapest price of an arbitrary variant.
+        // now, we just collection the cheapest price of an arbitrary variant.
         variants: {
           include: {
             images: { orderBy: { position: 'asc' } },

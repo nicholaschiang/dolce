@@ -33,7 +33,7 @@ export const looks = Array(NUM_LOOKS)
     const image: Prisma.ImageCreateWithoutLookInput = {
       url: getLookImage(number),
     }
-    const look: Prisma.LookCreateWithoutShowInput = {
+    const look: Prisma.LookCreateWithoutCollectionInput = {
       number,
       images: { connectOrCreate: { where: { url: image.url }, create: image } },
     }
@@ -115,7 +115,7 @@ export const fashionotography: Prisma.PublicationCreateInput = {
 // in its compliments, it should be assigned a 1/5 or 2/5. If a review seems
 // energetically positive, assign a 3/5. Only if a review is resoundingly
 // enthusiastically positive should you assign a 4/5. Never assign a 5/5.
-export const reviews: Prisma.ArticleCreateWithoutShowInput[] = [
+export const reviews: Prisma.ArticleCreateWithoutCollectionInput[] = [
   {
     author: {
       connectOrCreate: {
@@ -590,20 +590,13 @@ export const link: Prisma.LinkCreateInput = {
   url: 'https://www.hermes.com/us/en/category/men/ready-wear/spring-summer-collection/#|',
   brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }
-export const collection: Prisma.CollectionCreateInput = {
+export const show: Prisma.ShowCreateWithoutCollectionsInput = {
   name: 'Hermès Spring-Summer 2023 Menswear',
-  season: {
-    connectOrCreate: {
-      where: { name_year: { name: season.name, year: season.year } },
-      create: season,
-    },
-  },
-  designers: {
-    connectOrCreate: { where: { name: designer.name }, create: designer },
-  },
-  links: { connectOrCreate: { where: { url: link.url }, create: link } },
+  url: 'https://www.hermes.com/us/en/story/302944-men-summer-2023-runway-show/',
+  date: new Date('June 25, 2022'),
+  video: { connectOrCreate: { where: { url: video.url }, create: video } },
 }
-export const show: Prisma.ShowCreateInput = {
+export const collection: Prisma.CollectionCreateInput = {
   name: 'Hermès Spring-Summer 2023 Menswear',
   level: Level.RTW,
   sex: Sex.MAN,
@@ -621,17 +614,20 @@ export const show: Prisma.ShowCreateInput = {
   reviewsConsensus: null,
   date: new Date('June 25, 2022'),
   location: Location.PARIS,
-  video: { connectOrCreate: { where: { url: video.url }, create: video } },
   season: {
     connectOrCreate: {
       where: { name_year: { name: season.name, year: season.year } },
       create: season,
     },
   },
+  designers: {
+    connectOrCreate: { where: { name: designer.name }, create: designer },
+  },
+  links: { connectOrCreate: { where: { url: link.url }, create: link } },
   looks: { create: looks },
   articles: { create: reviews },
-  collections: {
-    connectOrCreate: { where: { name: collection.name }, create: collection },
+  shows: {
+    connectOrCreate: { where: { name: show.name }, create: show },
   },
   brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }

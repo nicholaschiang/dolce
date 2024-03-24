@@ -11,7 +11,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (params.username == null) throw new Response('Not Found', { status: 404 })
   const looks = await prisma.review.findMany({
     where: { author: { username: params.username } },
-    include: { show: true },
+    include: { collection: true },
     orderBy: { updatedAt: 'desc' },
   })
   return looks
@@ -25,11 +25,11 @@ export default function UserReviewsPage() {
       {reviews.map((review) => (
         <li key={review.id}>
           <Link
-            to={`/shows/${review.show.id}`}
+            to={`/collections/${review.collection.id}`}
             prefetch='intent'
             className='text-xs font-medium underline mb-2 block'
           >
-            {review.show.name}
+            {review.collection.name}
           </Link>
           <ConsumerReview
             author={user}

@@ -34,7 +34,7 @@ export function getItems({
     })),
     ...looks.map((l) => ({
       id: l.id,
-      url: `/shows/${l.showId}`,
+      url: `/collections/${l.collectionId}`,
       images: l.images,
       updatedAt: new Date(l.updatedAt),
     })),

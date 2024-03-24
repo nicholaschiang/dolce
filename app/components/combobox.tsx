@@ -31,7 +31,7 @@ const unique = (item: { id: string | number }) => item.id
  * A combobox component that fetches items from an API endpoint.
  * @param endpoint The API endpoint to fetch items from. Should accept a
  * `search` query parameter that filters items by their name.
- * @param initialItems The initial items to show until the API has loaded.
+ * @param initialItems The initial items to collection until the API has loaded.
  * @param item The function that renders an item.
  * @param empty The function that renders an empty component for when there are
  * no results. Useful for creating "Create new label with X" UX patterns.
@@ -69,7 +69,7 @@ export function Combobox<T extends { id: string | number; name: string }>({
     )
   }, [fetcher.data])
 
-  // I cannot rely on the CMD-K filtering and sorting as I want to show a
+  // I cannot rely on the CMD-K filtering and sorting as I want to collection a
   // "create new set" item when there are no results.
   const results = items
     .map((set) => ({ ...set, score: commandScore(set.name, search) }))

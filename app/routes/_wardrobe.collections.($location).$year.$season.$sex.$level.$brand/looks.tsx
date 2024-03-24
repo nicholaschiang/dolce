@@ -13,10 +13,10 @@ import { useOptionalUser, useRedirectTo } from 'utils/general'
 import { type loader } from './route'
 
 export function Looks({ className }: { className?: string }) {
-  const show = useLoaderData<typeof loader>()
+  const collection = useLoaderData<typeof loader>()
   return (
     <ol className={cn('flex whitespace-nowrap', className)}>
-      {show.looks.map((look) => (
+      {collection.looks.map((look) => (
         <LookItem key={look.id} look={look} />
       ))}
     </ol>

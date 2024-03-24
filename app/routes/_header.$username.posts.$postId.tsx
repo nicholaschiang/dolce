@@ -103,7 +103,7 @@ export default function PostPage() {
                 <ImageItem
                   key={look.id}
                   className='aspect-person'
-                  to={`/shows/${look.showId}`}
+                  to={`/collections/${look.collectionId}`}
                   image={look.images[0]?.url}
                 />
               ))}

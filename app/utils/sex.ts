@@ -1,8 +1,8 @@
 import { Sex } from '@prisma/client'
 
 /**
- * Get the show sex header (i.e. "Menswear" or "") based on the collections sex.
- * If every collection in the show has a sex of "MAN", then "Menswear" will be
+ * Get the collection sex header (i.e. "Menswear" or "") based on the collections sex.
+ * If every collection in the collection has a sex of "MAN", then "Menswear" will be
  * appended to the header. Otherwise, nothing will be appended.
  */
 export function getSexName(sex: Sex) {

@@ -63,11 +63,9 @@ const MODEL_TO_ROUTE: Record<string, string> = {
   Style: '/styles',
   Size: '/sizes',
   Price: '/prices',
-  Collection: '/collections',
   Season: '/seasons',
   Show: '/shows',
   User: '/designers',
-  Video: '/videos',
 
   // Filters for nested variant relations (each variant has a color and tags are
   // associated with variants instead of products).
@@ -408,7 +406,7 @@ function AddFilterButton({ model, hiddenFields }: AddFilterButtonProps) {
 
 type Props = { field: Prisma.DMMF.Field; nested?: boolean }
 
-// if the field is an enum, we show a dropdown of all the possible enum values
+// if the field is an enum, we collection a dropdown of all the possible enum values
 // Ex: <LevelOption />, <TierOption />, <SeasonOption />
 function EnumItems({ field, nested }: Props) {
   const { addOrUpdateFilter } = useContext(FiltersContext)
@@ -456,9 +454,9 @@ function useSearchFetcher<T>(route: string) {
 // TODO allow users to select multiple objects and then toggle between "AND" and
 // "OR" using the filter item (e.g. the "is any of" v.s. "is not" in Linear).
 // if the field is an object (i.e. a nested model), we query that model's table
-// to show a list of all the available options (e.g. we'll query the sizes table
-// to show a list of all the possible sizes)
-// Ex: <SizeOption />, <BrandOption />, <CountryOption />, <ShowOption />
+// to collection a list of all the available options (e.g. we'll query the sizes table
+// to collection a list of all the possible sizes)
+// Ex: <SizeOption />, <BrandOption />, <CountryOption />, <CollectionOption />
 function ObjectItems({ field, nested }: Props) {
   const route = MODEL_TO_ROUTE[field.type]
   if (route === undefined)
@@ -601,13 +599,13 @@ function VariantTagItems({ nested }: Pick<Props, 'nested'>) {
   return <>{items}</>
 }
 
-// if the field is scalar, we show an input letting the user type in what value
+// if the field is scalar, we collection an input letting the user type in what value
 // they want (e.g. "price is greater than ___")
 // Ex: <IntInput />, <DecimalInput />, <StringInput />
 //
 // if the field is scalar but the dropdown option was specified, we query the
 // database to get all the available options (e.g. we'll query the products
-// table to get a list of all the possible prices and show those as options)
+// table to get a list of all the possible prices and collection those as options)
 // Ex: <IntOption />, <StringOption />, <DecimalOption />
 function ScalarDialog({ field, nested }: Props) {
   const [open, setOpen] = useState(true)

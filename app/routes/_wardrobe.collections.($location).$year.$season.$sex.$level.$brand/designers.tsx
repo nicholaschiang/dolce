@@ -21,23 +21,22 @@ import { useOptionalUser } from 'utils/general'
 import { type loader } from './route'
 
 export function Designers() {
-  const show = useLoaderData<typeof loader>()
-  const designers = show.collections.flatMap((c) => c.designers)
+  const collection = useLoaderData<typeof loader>()
   const user = useOptionalUser()
-  if (designers.length === 0 && !user?.curator) return null
+  if (collection.designers.length === 0 && !user?.curator) return null
   return (
     <LayoutSection
-      header={designers.length === 1 ? 'Designer' : 'Designers'}
+      header={collection.designers.length === 1 ? 'Designer' : 'Designers'}
       id='designers'
     >
-      {designers.length > 0 && (
+      {collection.designers.length > 0 && (
         <ul className='mt-2 grid gap-2'>
-          {designers.map((designer) => (
+          {collection.designers.map((designer) => (
             <DesignerListItem key={designer.id} designer={designer} />
           ))}
         </ul>
       )}
-      {designers.length === 0 && <DesignerSelect />}
+      {collection.designers.length === 0 && <DesignerSelect />}
     </LayoutSection>
   )
 }
@@ -63,8 +62,8 @@ type SearchResult = SerializeFrom<typeof searchAPI>[number]
 
 function DesignerItem({ item: designer }: ComboboxItemProps<SearchResult>) {
   const fetcher = useFetcher<typeof updateAPI>()
-  const show = useLoaderData<typeof loader>()
-  const action = `/api/collections/${show.collections[0].id}/designers`
+  const collection = useLoaderData<typeof loader>()
+  const action = `/api/collections/${collection.id}/designers`
   const fetchers = useFetchers().filter((f) => f.formAction === action)
   return (
     <CommandItem
@@ -84,9 +83,7 @@ function EmptyItem() {
   return <CommandEmpty>No results</CommandEmpty>
 }
 
-type Designer = SerializeFrom<
-  typeof loader
->['collections'][number]['designers'][number]
+type Designer = SerializeFrom<typeof loader>['designers'][number]
 
 function DesignerListItem({ designer }: { designer: SerializeFrom<Designer> }) {
   const [expanded, setExpanded] = useState(false)
@@ -122,13 +119,13 @@ function DesignerListItem({ designer }: { designer: SerializeFrom<Designer> }) {
               type='button'
               onClick={() => setExpanded(!expanded)}
             >
-              {expanded ? 'Show less' : 'Show more'}
+              {expanded ? 'Collection less' : 'Collection more'}
             </button>
           </div>
         )}
         {designer.articles.length === 0 && (
           <Empty className='py-2 mt-2'>
-            No designer articles to show yet. Please check back later.
+            No designer articles to collection yet. Please check back later.
           </Empty>
         )}
       </div>

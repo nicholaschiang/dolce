@@ -2,22 +2,24 @@ import { useLoaderData } from '@remix-run/react'
 import { useMemo } from 'react'
 
 import { cn } from 'utils/cn'
+import { getCollectionSeason } from 'utils/collection'
 import { type Score, getScorePercentage } from 'utils/scores'
-import { getShowSeason } from 'utils/show'
 
 import { type loader } from './route'
 
 export function Header() {
-  const show = useLoaderData<typeof loader>()
+  const collection = useLoaderData<typeof loader>()
   return (
     <header className='bg-gray-100 dark:bg-gray-900 text-center px-6 flex flex-col border-b border-gray-200 dark:border-gray-800'>
       <h1 className='font-serif font-bold text-2xl md:text-3xl lg:text-5xl mb-1 mt-8'>
-        {show.brand.name}
+        {collection.brand.name}
       </h1>
-      <h2 className='uppercase mb-6 text-sm'>{getShowSeason(show)}</h2>
+      <h2 className='uppercase mb-6 text-sm'>
+        {getCollectionSeason(collection)}
+      </h2>
       <ul className='grid grid-cols-2 gap-2 mt-auto'>
-        <ScoreItem score={show.scores.critic} name='Critic Score' />
-        <ScoreItem score={show.scores.consumer} name='Consumer Score' />
+        <ScoreItem score={collection.scores.critic} name='Critic Score' />
+        <ScoreItem score={collection.scores.consumer} name='Consumer Score' />
       </ul>
     </header>
   )

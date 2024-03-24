@@ -175,7 +175,7 @@ function Dots({
   // The entire dot width is the dot size + dot margin.
   const dotWidth = dotSize + dotMargin * 2
 
-  // Show a dot for every slide. Each slide has X items and scrolls by one item
+  // Collection a dot for every slide. Each slide has X items and scrolls by one item
   // at a time. Thus, users can scroll items.length - X + 1 times.
   const numOfDots = numOfItems - itemsPerSlide + 1
 

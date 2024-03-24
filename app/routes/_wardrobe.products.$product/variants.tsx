@@ -62,15 +62,15 @@ function Sizes() {
           const variantsWithSize = product.variants.filter(
             (v) => v.size.name === size,
           )
-          // Instead of showing information for all variants with the size,
-          // we only show information for variants with the selected color
+          // Instead of collectioning information for all variants with the size,
+          // we only collection information for variants with the selected color
           // _and_ the size. Users select color first and then size.
           const activeVariants = variantsWithSize.filter(
             (v) => variant == null || getColorName(v) === getColorName(variant),
           )
           // Link to the first variant with a price. This will do nothing
           // when a color has already been selected. But when a color has
-          // not yet been selected, we show the price range of all variants
+          // not yet been selected, we collection the price range of all variants
           // with the given size. Then, when the user clicks on one, we want
           // to redirect to a variant with a price.
           const active =

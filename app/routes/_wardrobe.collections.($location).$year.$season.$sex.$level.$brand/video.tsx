@@ -15,11 +15,11 @@ import { supabase } from 'db.client'
 import { type loader } from './route'
 
 export function Video({ className }: { className?: string }) {
-  const show = useLoaderData<typeof loader>()
+  const collection = useLoaderData<typeof loader>()
   const user = useOptionalUser()
-  return show.video ? (
+  return collection.shows[0]?.video ? (
     <div className={className}>
-      <VideoPlayer video={show.video} />
+      <VideoPlayer video={collection.shows[0]?.video} />
     </div>
   ) : user?.curator ? (
     <div className={className}>
@@ -56,8 +56,9 @@ const schema = z.object({
 })
 
 function VideoForm() {
-  const show = useLoaderData<typeof loader>()
-  const action = `/api/shows/${show.id}/video`
+  const collection = useLoaderData<typeof loader>()
+  const showId = collection.shows[0]?.id
+  const action = `/api/shows/${showId}/video`
   const fetcher = useFetcher<typeof videoAPI>()
   const [file, setFile] = useState<File>()
   const [uploading, setUploading] = useState(false)
@@ -73,7 +74,7 @@ function VideoForm() {
         uploaded.current = file
         const { data } = await supabase.storage
           .from('videos')
-          .uploadToSignedUrl(`shows/${show.id}`, fetcher.data?.token, file)
+          .uploadToSignedUrl(`shows/${showId}`, fetcher.data?.token, file)
         if (data)
           fetcher.submit(
             { path: data.path, mimeType: file.type },
@@ -83,7 +84,7 @@ function VideoForm() {
       }
     }
     void upload()
-  }, [file, show.id, action, fetcher])
+  }, [file, showId, action, fetcher])
 
   const [form, { video }] = useForm({
     onValidate({ formData }) {
@@ -118,7 +119,7 @@ function VideoForm() {
       >
         {loading
           ? 'Uploading video...'
-          : video.errors ?? 'Click to upload show video'}
+          : video.errors ?? 'Click to upload collection video'}
       </button>
       <input
         ref={inputRef}

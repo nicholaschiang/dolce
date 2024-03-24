@@ -13,7 +13,7 @@ function sanityCheck(score: Score, name: string): void {
   }
 }
 
-export async function getScores(showId: number): Promise<Scores> {
+export async function getScores(collectionId: number): Promise<Scores> {
   const [
     consumerTotal,
     consumerPositive,
@@ -25,35 +25,35 @@ export async function getScores(showId: number): Promise<Scores> {
     criticNegative,
   ] = await Promise.all([
     prisma.review.count({
-      where: { showId },
+      where: { collectionId },
       select: { _all: true },
     }),
     prisma.review.count({
-      where: { showId, score: { gt: 0.5 } },
+      where: { collectionId, score: { gt: 0.5 } },
       select: { _all: true },
     }),
     prisma.review.count({
-      where: { showId, score: { equals: 0.5 } },
+      where: { collectionId, score: { equals: 0.5 } },
       select: { _all: true },
     }),
     prisma.review.count({
-      where: { showId, score: { lt: 0.5 } },
+      where: { collectionId, score: { lt: 0.5 } },
       select: { _all: true },
     }),
     prisma.article.count({
-      where: { showId, score: { not: null } },
+      where: { collectionId, score: { not: null } },
       select: { _all: true },
     }),
     prisma.article.count({
-      where: { showId, score: { gt: 0.5 } },
+      where: { collectionId, score: { gt: 0.5 } },
       select: { _all: true },
     }),
     prisma.article.count({
-      where: { showId, score: { equals: 0.5 } },
+      where: { collectionId, score: { equals: 0.5 } },
       select: { _all: true },
     }),
     prisma.article.count({
-      where: { showId, score: { lt: 0.5 } },
+      where: { collectionId, score: { lt: 0.5 } },
       select: { _all: true },
     }),
   ])

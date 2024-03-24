@@ -21,36 +21,36 @@ import {
   ItemDescription,
 } from 'components/item'
 
+import { getCollectionSeason, getCollectionPath } from 'utils/collection'
 import { NAME, PERSON_ASPECT_RATIO } from 'utils/general'
 import { LOCATION_TO_NAME } from 'utils/location'
-import { getShowSeason, getShowPath } from 'utils/show'
 
 import { prisma } from 'db.server'
-import { type ShowFilterName } from 'filters'
+import { type CollectionFilterName } from 'filters'
 import { log } from 'log.server'
 import { type Handle } from 'root'
 
 export const handle: Handle = {
-  breadcrumb: () => ({ to: '/shows', children: 'shows' }),
+  breadcrumb: () => ({ to: '/collections', children: 'collections' }),
 }
 
 export const meta: MetaFunction = () => [
   {
-    title: `Fashion Shows: Fashion Week, Runway, Designer Collections | ${NAME}`,
+    title: `Fashion Collections: Fashion Week, Runway, Designer Collections | ${NAME}`,
   },
   {
     name: 'description',
     content:
-      'Get up-to-the-minute fashion show coverage at New York, London, ' +
+      'Get up-to-the-minute fashion collection coverage at New York, London, ' +
       'Milan, and Paris Fashion Weeks. See photos, videos, reviews, and more.',
   },
 ]
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { where, string } = getWhere(request)
-  log.debug('getting shows... %s', string)
-  const [shows, filteredCount, totalCount] = await Promise.all([
-    prisma.show.findMany({
+  log.debug('getting collections... %s', string)
+  const [collections, filteredCount, totalCount] = await Promise.all([
+    prisma.collection.findMany({
       ...getPagination(new URL(request.url).searchParams),
       include: {
         season: true,
@@ -69,34 +69,39 @@ export async function loader({ request }: LoaderFunctionArgs) {
       ],
       where,
     }),
-    prisma.show.count({ where }),
-    prisma.show.count(),
+    prisma.collection.count({ where }),
+    prisma.collection.count(),
   ])
-  log.debug('got %d shows of %d/%d', shows.length, filteredCount, totalCount)
-  return { shows, filteredCount, totalCount }
+  log.debug(
+    'got %d collections of %d/%d',
+    collections.length,
+    filteredCount,
+    totalCount,
+  )
+  return { collections, filteredCount, totalCount }
 }
 
-// The number of rows to display when at max width.
+// The numberof rows to display when at max width.
 const itemsPerRowDefault = 5
 
 // Don't allow users to filter on back-end only fields.
-const hiddenFields: ShowFilterName[] = [
-  'collections',
+const hiddenFields: CollectionFilterName[] = [
   'articles',
   'looks',
+  'links',
   'reviews',
-  'videoId',
   'brandId',
   'seasonId',
 ]
 
-export default function ShowsPage() {
+export default function CollectionsPage() {
   const [itemsPerRow, setItemsPerRow] = useState(itemsPerRowDefault)
-  const { shows, filteredCount, totalCount } = useLoaderData<typeof loader>()
+  const { collections, filteredCount, totalCount } =
+    useLoaderData<typeof loader>()
   return (
     <>
       <FiltersBar
-        modelName='Show'
+        modelName='Collection'
         hiddenFields={hiddenFields}
         zoom={itemsPerRow}
         setZoom={setItemsPerRow}
@@ -106,36 +111,40 @@ export default function ShowsPage() {
         totalCount={totalCount}
       />
       <InfiniteList
-        items={shows}
-        item={ShowItem}
+        items={collections}
+        item={CollectionItem}
         itemAspectRatio={PERSON_ASPECT_RATIO}
         itemCount={filteredCount}
         itemsPerRow={itemsPerRow}
         setItemsPerRow={setItemsPerRow}
-        sessionStorageKey='shows'
-        emptyMessage='There are no fashion shows that match your filters.'
+        sessionStorageKey='collections'
+        emptyMessage='There are no fashion collections that match your filters.'
         className='h-0 grow'
       />
     </>
   )
 }
 
-type Show = SerializeFrom<typeof loader>['shows'][number]
+type Collection = SerializeFrom<typeof loader>['collections'][number]
 
-function ShowItem({ item: show }: InfiniteListItemProps<Show>) {
+function CollectionItem({
+  item: collection,
+}: InfiniteListItemProps<Collection>) {
   return (
-    <Item to={show ? getShowPath(show) : ''}>
+    <Item to={collection ? getCollectionPath(collection) : ''}>
       <Carousel
-        loading={show == null}
-        items={show?.looks}
-        item={ShowLookItem}
+        loading={collection == null}
+        items={collection?.looks}
+        item={CollectionLookItem}
       />
-      {show && (
+      {collection && (
         <ItemContent>
-          <ItemTitle>{show.brand.name}</ItemTitle>
-          <ItemSubtitle>{getShowSeason(show)}</ItemSubtitle>
-          {show?.location && (
-            <ItemDescription>{LOCATION_TO_NAME[show.location]}</ItemDescription>
+          <ItemTitle>{collection.brand.name}</ItemTitle>
+          <ItemSubtitle>{getCollectionSeason(collection)}</ItemSubtitle>
+          {collection?.location && (
+            <ItemDescription>
+              {LOCATION_TO_NAME[collection.location]}
+            </ItemDescription>
           )}
         </ItemContent>
       )}
@@ -143,9 +152,9 @@ function ShowItem({ item: show }: InfiniteListItemProps<Show>) {
   )
 }
 
-type Look = Show['looks'][number]
+type Look = Collection['looks'][number]
 
-function ShowLookItem({ item: look, index }: CarouselItemProps<Look>) {
+function CollectionLookItem({ item: look, index }: CarouselItemProps<Look>) {
   return (
     <div className='w-full aspect-person'>
       {look && (

@@ -13,18 +13,18 @@ import {
   LayoutDivider,
 } from 'components/layout'
 
+import {
+  getCollectionKeywords,
+  getCollectionPath,
+  getCollectionSchema,
+  getCollectionSeason,
+} from 'utils/collection'
 import { NAME, invert } from 'utils/general'
 import { LEVEL_TO_SLUG } from 'utils/level'
 import { LOCATION_TO_SLUG } from 'utils/location'
 import { getScores } from 'utils/scores.server'
 import { SEASON_NAME_TO_SLUG } from 'utils/season'
 import { SEX_TO_SLUG } from 'utils/sex'
-import {
-  getShowKeywords,
-  getShowPath,
-  getShowSchema,
-  getShowSeason,
-} from 'utils/show'
 
 import { prisma } from 'db.server'
 import { type Filter, FILTER_PARAM, filterToSearchParam } from 'filters'
@@ -45,28 +45,30 @@ import { WhereToBuy } from './where-to-buy'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (data == null) return [{ title: `404 | ${NAME}` }]
-  const keywords = getShowKeywords(data).join(', ')
+  const keywords = getCollectionKeywords(data).join(', ')
   return [
-    { title: `${data.brand.name} ${getShowSeason(data)} Collection | ${NAME}` },
+    {
+      title: `${data.brand.name} ${getCollectionSeason(data)} Collection | ${NAME}`,
+    },
     {
       name: 'description',
       content: `${data.name} collection, runway looks, beauty, models, and reviews.`,
     },
     { name: 'keywords', content: keywords },
     { name: 'news_keywords', content: keywords },
-    { name: 'content-type', content: 'fashionshow' },
-    { 'script:ld+json': getShowSchema(data) },
+    { name: 'content-type', content: 'fashioncollection' },
+    { 'script:ld+json': getCollectionSchema(data) },
   ]
 }
 
 export const sitemap: SitemapFunction = async () => {
-  const shows = await prisma.show.findMany({
+  const collections = await prisma.collection.findMany({
     include: { season: true, brand: true },
     orderBy: { name: 'asc' },
   })
-  return shows.map((show) => ({
-    loc: getShowPath(show),
-    lastmod: show.updatedAt.toISOString(),
+  return collections.map((collection) => ({
+    loc: getCollectionPath(collection),
+    lastmod: collection.updatedAt.toISOString(),
   }))
 }
 
@@ -82,21 +84,21 @@ export const handle: Handle = {
     }
     const param = filterToSearchParam<'brand', 'is'>(filter)
     return [
-      { to: '/shows', children: 'Shows' },
+      { to: '/collections', children: 'Collections' },
       {
-        to: `/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`,
+        to: `/collections?${FILTER_PARAM}=${encodeURIComponent(param)}`,
         children: data.brand.name,
       },
       {
-        to: getShowPath(data),
-        children: getShowSeason(data),
+        to: getCollectionPath(data),
+        children: getCollectionSeason(data),
       },
     ]
   },
 }
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  log.info('getting show... %o', params)
+  log.info('getting collection... %o', params)
   const miss = new Response(null, { status: 404, statusText: 'Not Found' })
   if (!params.season || !params.sex || !params.level || !params.brand)
     throw miss
@@ -116,7 +118,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   )
     throw miss
   const userId = await getUserId(request)
-  const show = await prisma.show.findFirst({
+  const collection = await prisma.collection.findFirst({
     where: {
       brand: { slug: params.brand },
       season: { year: seasonYear, name: seasonName },
@@ -125,16 +127,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       sex,
     },
     include: {
-      video: true,
       season: true,
       brand: true,
-      collections: {
-        include: {
-          links: { include: { brand: true, retailer: true } },
-          designers: {
-            include: { articles: { orderBy: { writtenAt: 'desc' }, take: 1 } },
-          },
-        },
+      shows: { include: { video: true } },
+      links: { include: { brand: true, retailer: true } },
+      designers: {
+        include: { articles: { orderBy: { writtenAt: 'desc' }, take: 1 } },
       },
       reviews: { include: { author: true }, orderBy: { updatedAt: 'desc' } },
       articles: {
@@ -151,16 +149,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       },
     },
   })
-  if (show == null) throw miss
-  log.debug('got show %o', show)
+  if (collection == null) throw miss
+  log.debug('got collection %o', collection)
   const [scores, review] = await Promise.all([
-    getScores(show.id),
-    getReview(show.id, request),
+    getScores(collection.id),
+    getReview(collection.id, request),
   ])
-  return { ...show, scores, review }
+  return { ...collection, scores, review }
 }
 
-export default function ShowPage() {
+export default function CollectionPage() {
   return (
     <Layout>
       <LayoutLeft>
