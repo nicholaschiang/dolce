@@ -33,7 +33,7 @@ const looks = Array(NUM_LOOKS)
     const image: Prisma.ImageCreateWithoutLookInput = {
       url: getLookImage(number),
     }
-    const look: Prisma.LookCreateWithoutShowInput = {
+    const look: Prisma.LookCreateWithoutCollectionInput = {
       number,
       images: { connectOrCreate: { where: { url: image.url }, create: image } },
     }
@@ -71,7 +71,7 @@ const savoir: Prisma.PublicationCreateInput = {
   avatar:
     'https://www.kindpng.com/picc/m/266-2665896_file-ntsw4mb-savoir-flair-arabia-logo-hd-png.png',
 }
-const reviews: Prisma.ArticleCreateWithoutShowInput[] = [
+const reviews: Prisma.ArticleCreateWithoutCollectionInput[] = [
   {
     author: {
       connectOrCreate: {
@@ -228,19 +228,13 @@ const brand: Prisma.BrandCreateInput = {
     },
   },
 }
-const collection: Prisma.CollectionCreateInput = {
+const show: Prisma.ShowCreateWithoutCollectionsInput = {
   name: 'Isabel Marant Fall-Winter 2023',
-  season: {
-    connectOrCreate: {
-      where: { name_year: { name: season.name, year: season.year } },
-      create: season,
-    },
-  },
-  designers: {
-    connectOrCreate: { where: { name: designer.name }, create: designer },
-  },
+  url: 'https://www.isabelmarant.com/us/lookbooks/isabel-marant/isabel-marant-fall-winter-2023/',
+  date: new Date('March 2, 2023'),
+  video: { connectOrCreate: { where: { url: video.url }, create: video } },
 }
-export const show: Prisma.ShowCreateInput = {
+export const collection: Prisma.CollectionCreateInput = {
   name: 'Isabel Marant Fall-Winter 2023',
   level: Level.RTW,
   sex: Sex.WOMAN,
@@ -258,17 +252,19 @@ Inside the venue, the show’s soundtrack performed live by DJ Gabber Eleganza a
   reviewsConsensus: null,
   date: new Date('March 2, 2023'),
   location: Location.PARIS,
-  video: { connectOrCreate: { where: { url: video.url }, create: video } },
   season: {
     connectOrCreate: {
       where: { name_year: { name: season.name, year: season.year } },
       create: season,
     },
   },
+  designers: {
+    connectOrCreate: { where: { name: designer.name }, create: designer },
+  },
   looks: { create: looks },
   articles: { create: reviews },
-  collections: {
-    connectOrCreate: { where: { name: collection.name }, create: collection },
+  shows: {
+    connectOrCreate: { where: { name: show.name }, create: show },
   },
   brand: { connectOrCreate: { where: { name: brand.name }, create: brand } },
 }

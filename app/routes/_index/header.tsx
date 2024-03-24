@@ -7,7 +7,7 @@ import { HeaderWrapper, HeaderActions, HeaderLink } from 'components/header'
 
 import { FILTER_PARAM, filterToSearchParam } from 'filters'
 
-// Link to the latest season of shows automatically (like Vogue's homepage).
+// Link to the latest season of collections automatically (like Vogue's homepage).
 const param = filterToSearchParam<'season', 'is'>({
   id: nanoid(5),
   name: 'season',
@@ -16,7 +16,10 @@ const param = filterToSearchParam<'season', 'is'>({
 })
 
 const links = [
-  { to: `/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`, label: 'Shows' },
+  {
+    to: `/collections?${FILTER_PARAM}=${encodeURIComponent(param)}`,
+    label: 'Collections',
+  },
   { to: '/products', label: 'Products' },
   { to: '/brands', label: 'Brands' },
   { to: '/styles', label: 'Styles' },

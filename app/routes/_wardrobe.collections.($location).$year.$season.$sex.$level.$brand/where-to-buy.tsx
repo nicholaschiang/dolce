@@ -10,23 +10,22 @@ import { cn } from 'utils/cn'
 import { type loader } from './route'
 
 export function WhereToBuy() {
-  const show = useLoaderData<typeof loader>()
-  const links = show.collections.flatMap((collection) => collection.links)
-  if (links.length === 0) return null
+  const collection = useLoaderData<typeof loader>()
+  if (collection.links.length === 0) return null
   return (
     <LayoutSection header='Where to buy' id='where-to-buy'>
-      {links.length === 0 && (
+      {collection.links.length === 0 && (
         <Empty className='mt-2'>
           <p>
             There are no direct links to this collection on retailer or brand
             websites.
           </p>
-          {show.brand.url != null && (
+          {collection.brand.url != null && (
             <p>
               You can try browsing the{' '}
               <span>
-                <ExternalLink href={show.brand.url}>
-                  {show.brand.name}
+                <ExternalLink href={collection.brand.url}>
+                  {collection.brand.name}
                 </ExternalLink>
               </span>{' '}
               website to find these items.
@@ -34,13 +33,13 @@ export function WhereToBuy() {
           )}
         </Empty>
       )}
-      {links.length > 0 && (
+      {collection.links.length > 0 && (
         <ul className='mt-2 flex gap-2'>
-          {links.map((link) => (
+          {collection.links.map((link) => (
             <li key={link.id}>
               <BuyLink
                 avatar={(link.brand ?? link.retailer)?.avatar}
-                alt={(link.brand ?? link.retailer ?? show)?.name}
+                alt={(link.brand ?? link.retailer ?? collection)?.name}
                 url={link.url}
               />
             </li>

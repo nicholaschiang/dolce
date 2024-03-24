@@ -82,7 +82,7 @@ export async function save() {
   for await (const show of final) {
     try {
       if (!DRY_RUN)
-        await prisma.show.upsert({
+        await prisma.collection.upsert({
           where: { name: show.name },
           create: show,
           update: show,
@@ -122,60 +122,66 @@ function parseSeason(season: string, header: string): ParsedSeason {
   const name = season.includes('Resort')
     ? SeasonName.RESORT
     : season.includes('Spring')
-    ? SeasonName.SPRING
-    : season.includes('Pre-Fall')
-    ? SeasonName.PRE_FALL
-    : season.includes('Fall')
-    ? SeasonName.FALL
-    : undefined
+      ? SeasonName.SPRING
+      : season.includes('Pre-Fall')
+        ? SeasonName.PRE_FALL
+        : season.includes('Fall')
+          ? SeasonName.FALL
+          : undefined
   if (name == null) throw new Error(`Could not find season name: ${season}`)
   const year = Number(/(\d{4})/.exec(season)?.[1])
   if (Number.isNaN(year)) throw new Error(`Could not find year: ${season}`)
   const location = season.toUpperCase().includes('NEW YORK')
     ? Location.NEW_YORK
     : season.toUpperCase().includes('LONDON')
-    ? Location.LONDON
-    : season.toUpperCase().includes('MILAN')
-    ? Location.MILAN
-    : season.toUpperCase().includes('PARIS')
-    ? Location.PARIS
-    : season.toUpperCase().includes('TOKYO')
-    ? Location.TOKYO
-    : season.toUpperCase().includes('BERLIN')
-    ? Location.BERLIN
-    : season.toUpperCase().includes('FLORENCE')
-    ? Location.FLORENCE
-    : season.toUpperCase().includes('LOS ANGELES')
-    ? Location.LOS_ANGELES
-    : season.toUpperCase().includes('MADRID')
-    ? Location.MADRID
-    : season.toUpperCase().includes('COPENHAGEN')
-    ? Location.COPENHAGEN
-    : season.toUpperCase().includes('SHANGHAI')
-    ? Location.SHANGHAI
-    : season.toUpperCase().includes('AUSTRALIA')
-    ? Location.AUSTRALIA
-    : season.toUpperCase().includes('STOCKHOLM')
-    ? Location.STOCKHOLM
-    : season.toUpperCase().includes('MEXICO')
-    ? Location.MEXICO
-    : season.toUpperCase().includes('MEXICO CITY')
-    ? Location.MEXICO_CITY
-    : season.toUpperCase().includes('KIEV')
-    ? Location.KIEV
-    : season.toUpperCase().includes('TBILISI')
-    ? Location.TBILISI
-    : season.toUpperCase().includes('SEOUL')
-    ? Location.SEOUL
-    : season.toUpperCase().includes('RUSSIA')
-    ? Location.RUSSIA
-    : season.toUpperCase().includes('UKRAINE')
-    ? Location.UKRAINE
-    : season.toUpperCase().includes('SÃO PAULO')
-    ? Location.SAO_PAOLO
-    : season.toUpperCase().includes('BRIDAL')
-    ? Location.BRIDAL
-    : undefined
+      ? Location.LONDON
+      : season.toUpperCase().includes('MILAN')
+        ? Location.MILAN
+        : season.toUpperCase().includes('PARIS')
+          ? Location.PARIS
+          : season.toUpperCase().includes('TOKYO')
+            ? Location.TOKYO
+            : season.toUpperCase().includes('BERLIN')
+              ? Location.BERLIN
+              : season.toUpperCase().includes('FLORENCE')
+                ? Location.FLORENCE
+                : season.toUpperCase().includes('LOS ANGELES')
+                  ? Location.LOS_ANGELES
+                  : season.toUpperCase().includes('MADRID')
+                    ? Location.MADRID
+                    : season.toUpperCase().includes('COPENHAGEN')
+                      ? Location.COPENHAGEN
+                      : season.toUpperCase().includes('SHANGHAI')
+                        ? Location.SHANGHAI
+                        : season.toUpperCase().includes('AUSTRALIA')
+                          ? Location.AUSTRALIA
+                          : season.toUpperCase().includes('STOCKHOLM')
+                            ? Location.STOCKHOLM
+                            : season.toUpperCase().includes('MEXICO')
+                              ? Location.MEXICO
+                              : season.toUpperCase().includes('MEXICO CITY')
+                                ? Location.MEXICO_CITY
+                                : season.toUpperCase().includes('KIEV')
+                                  ? Location.KIEV
+                                  : season.toUpperCase().includes('TBILISI')
+                                    ? Location.TBILISI
+                                    : season.toUpperCase().includes('SEOUL')
+                                      ? Location.SEOUL
+                                      : season.toUpperCase().includes('RUSSIA')
+                                        ? Location.RUSSIA
+                                        : season
+                                              .toUpperCase()
+                                              .includes('UKRAINE')
+                                          ? Location.UKRAINE
+                                          : season
+                                                .toUpperCase()
+                                                .includes('SÃO PAULO')
+                                            ? Location.SAO_PAOLO
+                                            : season
+                                                  .toUpperCase()
+                                                  .includes('BRIDAL')
+                                              ? Location.BRIDAL
+                                              : undefined
   if (location == null && seasonsWithParseWarnings.has(season) === false) {
     console.warn(`Could not find location: ${season}`)
     seasonsWithParseWarnings.add(season)
@@ -194,7 +200,7 @@ function getData(show: Show & { looks: Look[] }) {
       show.season,
       show.header,
     )
-    let review: Prisma.ArticleCreateWithoutShowInput | undefined
+    let review: Prisma.ArticleCreateWithoutCollectionInput | undefined
     const date = show.date
       ? DateTime.fromFormat(strip(show.date), 'LLLL d, yyyy, h:mma').toString()
       : null
@@ -268,16 +274,7 @@ function getData(show: Show & { looks: Look[] }) {
     // again without "Menswear") if that collection is unisex. I can fix this by
     // looking for collections that have the same review content and other data,
     // and then merge those collections under the same unisex name.
-    const collection: Prisma.CollectionCreateInput = {
-      name,
-      season: {
-        connectOrCreate: {
-          where: { name_year: { name: season.name, year: season.year } },
-          create: season,
-        },
-      },
-    }
-    const looks: Prisma.LookCreateWithoutShowInput[] = show.looks.map(
+    const looks: Prisma.LookCreateWithoutCollectionInput[] = show.looks.map(
       (look) => {
         const image: Prisma.ImageCreateWithoutLookInput = {
           url: look.src.replace(/\?w=\d+$/, ''),
@@ -290,7 +287,13 @@ function getData(show: Show & { looks: Look[] }) {
         }
       },
     )
-    const data: Prisma.ShowCreateInput = {
+    const showData: Prisma.ShowCreateWithoutCollectionsInput = {
+      ...etc,
+      name,
+      date,
+      url: show.url,
+    }
+    const data: Prisma.CollectionCreateInput = {
       ...etc,
       name,
       sex,
@@ -308,7 +311,7 @@ function getData(show: Show & { looks: Look[] }) {
           create: season,
         },
       },
-      collections: { connectOrCreate: { where: { name }, create: collection } },
+      shows: { connectOrCreate: { where: { name }, create: showData } },
       looks: { create: looks },
       brand: {
         connectOrCreate: { where: { slug: brand.slug }, create: brand },

@@ -8,7 +8,7 @@ const prisma = new PrismaClient({
 
 export async function save() {
   const create = reviews.filter((review) => !review.url?.includes('vogue.com'))
-  await prisma.show.update({
+  await prisma.collection.update({
     where: { id: 775 },
     data: { articles: { create } },
   })

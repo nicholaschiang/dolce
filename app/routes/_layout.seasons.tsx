@@ -35,7 +35,7 @@ export default function SeasonsPage() {
             <Link
               prefetch='intent'
               className='link underline'
-              to={`/shows?${FILTER_PARAM}=${encodeURIComponent(param)}`}
+              to={`/collections?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
               {getSeasonName(season)}
             </Link>

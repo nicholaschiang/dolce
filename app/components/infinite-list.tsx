@@ -19,10 +19,10 @@ import { Empty } from 'components/empty'
 import { cn } from 'utils/cn'
 import { useLayoutEffect } from 'utils/general'
 
-// Load shows in pages of 100 (each page has 100 shows).
+// Load collections in pages of 100 (each page has 100 collections).
 const defaultTake = 100
 
-// Pre-load the next page of shows on scroll.
+// Pre-load the next page of collections on scroll.
 const overscan = 10
 
 // Get the Prisma skip and take from the URL search params.
@@ -47,7 +47,7 @@ export type InfiniteListProps<T> = {
 // The min width of a single item.
 const minItemWidth = 240
 
-// The margin between each show item.
+// The margin between each collection item.
 const itemMarginX = 8
 const itemMarginY = 36
 
@@ -96,7 +96,7 @@ function InfiniteListContent<T>({
   // Derive the item height from width (9:16 image + 50px text + 36px margin).
   const itemHeight = itemWidth / itemAspectRatio + 50 + itemMarginY
 
-  // Infinite scroll the shows grid list.
+  // Infinite scroll the collections grid list.
   const virtualizer = useVirtualizer({
     getScrollElement: () => outerRef.current,
     estimateSize: () => itemHeight,
@@ -131,7 +131,7 @@ function InfiniteListContent<T>({
       outerRef.current.scrollTo({ top: Number(infiniteScrollTop) })
   }, [sessionStorageKey, outerRef, totalWidth])
 
-  // Load the results necessary to show the current window of data.
+  // Load the results necessary to collection the current window of data.
   const lowerBoundary = skip + overscan
   const upperBoundary = skip + take - overscan
   const middleCount = Math.ceil(take / 2)

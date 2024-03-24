@@ -49,67 +49,72 @@ type PrismaProductFilter =
   | Prisma.LookListRelationFilter
   | Prisma.ItemListRelationFilter
   | Prisma.PostListRelationFilter
-type PrismaShowFilter =
-  | Prisma.IntFilter<'Show'>
-  | Prisma.IntNullableFilter<'Show'>
-  | Prisma.StringFilter<'Show'>
-  | Prisma.StringNullableFilter<'Show'>
-  | Prisma.EnumLevelFilter<'Show'>
-  | Prisma.EnumSexFilter<'Show'>
-  | Prisma.DateTimeFilter<'Show'>
-  | Prisma.DateTimeNullableFilter<'Show'>
-  | Prisma.EnumLocationNullableFilter<'Show'>
+type PrismaCollectionFilter =
+  | Prisma.IntFilter<'Collection'>
+  | Prisma.DateTimeFilter<'Collection'>
+  | Prisma.StringFilter<'Collection'>
+  | Prisma.EnumSexFilter<'Collection'>
+  | Prisma.EnumLevelFilter<'Collection'>
+  | Prisma.EnumLocationNullableFilter<'Collection'>
+  | Prisma.StringNullableFilter<'Collection'>
+  | Prisma.IntNullableFilter<'Collection'>
+  | Prisma.LinkListRelationFilter
   | Prisma.ArticleListRelationFilter
   | Prisma.ReviewListRelationFilter
-  | Prisma.VideoNullableRelationFilter
+  | Prisma.StyleNullableRelationFilter
   | Prisma.SeasonRelationFilter
-  | Prisma.CollectionListRelationFilter
+  | Prisma.ShowListRelationFilter
   | Prisma.LookListRelationFilter
+  | Prisma.ProductListRelationFilter
+  | Prisma.UserListRelationFilter
   | Prisma.BrandRelationFilter
 
 type Ignore = 'AND' | 'OR' | 'NOT'
 export type ProductFilterName = keyof Omit<Prisma.ProductWhereInput, Ignore>
-export type ShowFilterName = keyof Omit<Prisma.ShowWhereInput, Ignore>
-export type FilterName = ProductFilterName | ShowFilterName
+export type CollectionFilterName = keyof Omit<
+  Prisma.CollectionWhereInput,
+  Ignore
+>
+export type FilterName = ProductFilterName | CollectionFilterName
 
 type ProductFilterCondition<N extends ProductFilterName> = keyof Extract<
   PrismaProductFilter,
   Prisma.ProductWhereInput[N]
 >
-type ShowFilterCondition<N extends ShowFilterName> = keyof Extract<
-  PrismaShowFilter,
-  Prisma.ShowWhereInput[N]
+type CollectionFilterCondition<N extends CollectionFilterName> = keyof Extract<
+  PrismaCollectionFilter,
+  Prisma.CollectionWhereInput[N]
 >
 export type FilterCondition<N extends FilterName = FilterName> =
   N extends ProductFilterName
     ? ProductFilterCondition<N>
-    : N extends ShowFilterName
-      ? ShowFilterCondition<N>
+    : N extends CollectionFilterName
+      ? CollectionFilterCondition<N>
       : never
 
 type ProductFilterValue<
   N extends ProductFilterName,
   C extends ProductFilterCondition<N>,
 > = Extract<PrismaProductFilter, Prisma.ProductWhereInput[N]>[C]
-type ShowFilterValue<
-  N extends ShowFilterName,
-  C extends ShowFilterCondition<N>,
-> = Extract<PrismaShowFilter, Prisma.ShowWhereInput[N]>[C]
+type CollectionFilterValue<
+  N extends CollectionFilterName,
+  C extends CollectionFilterCondition<N>,
+> = Extract<PrismaCollectionFilter, Prisma.CollectionWhereInput[N]>[C]
 type MaybeProductFilterValue<
   N extends ProductFilterName,
   C extends FilterCondition<N>,
 > = C extends ProductFilterCondition<N> ? ProductFilterValue<N, C> : never
-type MaybeShowFilterValue<
-  N extends ShowFilterName,
+type MaybeCollectionFilterValue<
+  N extends CollectionFilterName,
   C extends FilterCondition<N>,
-> = C extends ShowFilterCondition<N> ? ShowFilterValue<N, C> : never
+> = C extends CollectionFilterCondition<N> ? CollectionFilterValue<N, C> : never
 export type FilterValue<
   N extends FilterName = FilterName,
   C extends FilterCondition<N> = FilterCondition<N>,
 > = N extends ProductFilterName
   ? MaybeProductFilterValue<N, C>
-  : N extends ShowFilterName
-    ? MaybeShowFilterValue<N, C>
+  : N extends CollectionFilterName
+    ? MaybeCollectionFilterValue<N, C>
     : never
 
 export type Filter<
@@ -151,7 +156,7 @@ export function searchParamToFilter(searchParam: string): Filter {
 
 export function filterToPrismaWhere(
   filter: Filter,
-): Prisma.XOR<Prisma.ProductWhereInput, Prisma.ShowWhereInput> {
+): Prisma.XOR<Prisma.ProductWhereInput, Prisma.CollectionWhereInput> {
   return { [filter.name]: { [filter.condition]: filter.value } }
 }
 

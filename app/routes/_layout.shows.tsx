@@ -9,35 +9,35 @@ import { FILTER_PARAM, filterToSearchParam, getSearch } from 'filters'
 import { log } from 'log.server'
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  log.debug('getting collections...')
+  log.debug('getting shows...')
   const search = getSearch(request)
-  const collections = await prisma.collection.findMany({
+  const shows = await prisma.show.findMany({
     orderBy: { _relevance: { search, fields: 'name', sort: 'desc' } },
     take: 100,
   })
-  log.debug('got %d collections', collections.length)
-  return collections
+  log.debug('got %d shows', shows.length)
+  return shows
 }
 
-export default function CollectionsPage() {
-  const collections = useLoaderData<typeof loader>()
+export default function ShowsPage() {
+  const shows = useLoaderData<typeof loader>()
   return (
-    <ListLayout title='collections'>
-      {collections.map((collection) => {
-        const param = filterToSearchParam<'collections', 'some'>({
+    <ListLayout title='shows'>
+      {shows.map((show) => {
+        const param = filterToSearchParam<'shows', 'some'>({
           id: nanoid(5),
-          name: 'collections',
+          name: 'shows',
           condition: 'some',
-          value: { id: collection.id, name: collection.name },
+          value: { id: show.id, name: show.name },
         })
         return (
-          <li key={collection.id}>
+          <li key={show.id}>
             <Link
               prefetch='intent'
               className='link underline'
               to={`/products?${FILTER_PARAM}=${encodeURIComponent(param)}`}
             >
-              {collection.name}
+              {show.name}
             </Link>
           </li>
         )

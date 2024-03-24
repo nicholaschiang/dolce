@@ -28,9 +28,9 @@ import { badgeVariants } from 'components/ui/badge'
 import { Button } from 'components/ui/button'
 
 import { cn } from 'utils/cn'
+import { getCollectionSeason } from 'utils/collection'
 import { useUser, useOptionalUser } from 'utils/general'
 import { OWN_SET_NAME } from 'utils/set'
-import { getShowSeason } from 'utils/show'
 
 import { prisma } from 'db.server'
 import { getUserId } from 'session.server'
@@ -45,7 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       images: true,
       products: { include: { variants: { include: { images: true } } } },
       boards: { include: { author: true } },
-      show: { include: { season: true, brand: true } },
+      collection: { include: { season: true, brand: true } },
     },
     orderBy: { createdAt: 'desc' },
   })
@@ -61,7 +61,7 @@ const SidebarOpenContext = createContext<SidebarOpenContextT>([false, () => {}])
 const useSidebarOpen = () => useContext(SidebarOpenContext)
 
 // Wardrobe sidebar UI to allow users to save pieces to looks and curate their
-// library of saved shows, products, and looks (their "wardrobe" per se).
+// library of saved collections, products, and looks (their "wardrobe" per se).
 //
 // Right now, this is very rudimentary, but I'm keeping the code paths around as
 // they'll probably be a useful starting point for when I spend time to actually
@@ -219,16 +219,16 @@ function CreateItem() {
 type Look = SerializeFrom<typeof loader>[number]
 
 function LookItem({ look }: { look: Look }) {
-  const username = look.author?.username ?? look.show?.brand?.slug
-  const description = look.show
-    ? `${getShowSeason(look.show)} Look ${look.number}`
+  const username = look.author?.username ?? look.collection?.brand?.slug
+  const description = look.collection
+    ? `${getCollectionSeason(look.collection)} Look ${look.number}`
     : `Look ${look.number}`
   return (
     <li className='rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-xs'>
       <div className='p-2 flex items-center gap-1'>
         <Avatar
           className='h-6 w-6 text-3xs'
-          src={look.author ?? look.show?.brand}
+          src={look.author ?? look.collection?.brand}
         />
         <strong className='font-medium'>{username}</strong>
       </div>

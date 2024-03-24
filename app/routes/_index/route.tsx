@@ -40,7 +40,7 @@ import { Header } from './header'
 
 type Count = {
   location: Location | null
-  showsCount: number
+  collectionsCount: number
   brandsCount: number
 }
 
@@ -51,21 +51,21 @@ export const meta: MetaFunction = () => [
 export async function loader() {
   // TODO I am currently doing these aggregations in-memory as Prisma does not
   // support the COUNT(DISTINCT()) functionality natively. This will get slower
-  // as the number of brands with shows increases.
+  // as the number of brands with collections increases.
   // @see {@link https://github.com/prisma/prisma/issues/20629}
-  const shows = await prisma.show.groupBy({
+  const collections = await prisma.collection.groupBy({
     by: ['location', 'brandId'],
     _count: true,
   })
-  const counts = shows.reduce((acc, show) => {
-    const count = acc.find((c) => c.location === show.location)
+  const counts = collections.reduce((acc, collection) => {
+    const count = acc.find((c) => c.location === collection.location)
     if (count) {
-      count.showsCount += show._count
+      count.collectionsCount += collection._count
       count.brandsCount += 1
     } else {
       acc.push({
-        location: show.location,
-        showsCount: show._count,
+        location: collection.location,
+        collectionsCount: collection._count,
         brandsCount: 1,
       })
     }
@@ -79,14 +79,14 @@ export default function HomePage() {
     <>
       <Header />
       <Banner>
-        Explore the world of fashion. Watch shows, peruse runway looks, read
-        critic reviews, save your favorite looks to custom sets, and compare
-        purchase options for the products in those looks—we help you find the
-        best price across retailers and secondary markets. Products are
-        aggregated from across the web and show prices direct from the brand
-        (e.g. Ralph Lauren, Gucci), from third-party retailers (e.g. Nordstrom,
-        Neiman Marcus, SSENSE), and from secondary markets (e.g. StockX, GOAT,
-        Ebay).
+        Explore the world of fashion. Watch collections, peruse runway looks,
+        read critic reviews, save your favorite looks to custom sets, and
+        compare purchase options for the products in those looks—we help you
+        find the best price across retailers and secondary markets. Products are
+        aggregated from across the web and collection prices direct from the
+        brand (e.g. Ralph Lauren, Gucci), from third-party retailers (e.g.
+        Nordstrom, Neiman Marcus, SSENSE), and from secondary markets (e.g.
+        StockX, GOAT, Ebay).
       </Banner>
       <section className='p-6 mt-6 mx-auto max-w-screen-xl w-full'>
         <header className='flex items-center justify-center gap-1.5 sm:gap-2 text-xl sm:text-2xl tracking-tighter'>
@@ -106,7 +106,7 @@ function hasLocation(stats: Stats): stats is Stats & { location: Location } {
   return stats.location != null
 }
 
-// The statistic to show in the map icon sizes.
+// The statistic to collection in the map icon sizes.
 const stat = 'brandsCount' satisfies keyof Stats
 
 function Map({ className }: { className?: string }) {
@@ -172,10 +172,10 @@ function Map({ className }: { className?: string }) {
   )
 }
 
-// The width of the show image(s) in the location popover (px).
+// The width of the collection image(s) in the location popover (px).
 const itemWidth = 120
 
-// The number of shows to show per slide in the location popover.
+// The number of collections to collection per slide in the location popover.
 const itemsPerSlide = 4
 
 function LocationMarker({
@@ -199,7 +199,9 @@ function LocationMarker({
           <circle className='opacity-50' r={radius} />
           <circle r={2} />
           {(fetcher.data ?? [])
-            .flatMap((show) => show.looks.flatMap((look) => look.images))
+            .flatMap((collection) =>
+              collection.looks.flatMap((look) => look.images),
+            )
             .map((image) => (
               <link key={image.id} rel='preload' as='image' href={image.url} />
             ))}
@@ -237,12 +239,12 @@ function LocationMarker({
               value: stats.location,
             },
           ]}
-          to='/shows'
+          to='/collections'
           className='block py-2 px-3'
         >
           <h2 className='font-semibold'>{LOCATION_TO_NAME[stats.location]}</h2>
           <p className='text-gray-400 dark:text-gray-600'>
-            {stats.showsCount} shows
+            {stats.collectionsCount} collections
             <span aria-hidden> · </span>
             {stats.brandsCount} brands
           </p>
@@ -252,19 +254,22 @@ function LocationMarker({
   )
 }
 
-type Show = SerializeFrom<typeof locationAPI>[number]
+type Collection = SerializeFrom<typeof locationAPI>[number]
 
-function CarouselItem({ item: show, index }: CarouselItemProps<Show>) {
+function CarouselItem({
+  item: collection,
+  index,
+}: CarouselItemProps<Collection>) {
   return (
     <div className='w-full aspect-person'>
-      {show && (
+      {collection && (
         <Link
-          to={`/shows/${show.id}`}
+          to={`/collections/${collection.id}`}
           prefetch='intent'
           className='block w-full h-full'
         >
           <img
-            src={show.looks[0].images[0].url}
+            src={collection.looks[0].images[0].url}
             alt=''
             loading={index < itemsPerSlide ? 'eager' : 'lazy'}
             decoding={index < itemsPerSlide ? 'sync' : 'async'}

@@ -6,14 +6,17 @@ import { LayoutSection } from 'components/layout'
 import { type loader } from './route'
 
 export function WhatToKnow() {
-  const show = useLoaderData<typeof loader>()
-  if (show.articlesConsensus == null && show.reviewsConsensus == null)
+  const collection = useLoaderData<typeof loader>()
+  if (
+    collection.articlesConsensus == null &&
+    collection.reviewsConsensus == null
+  )
     return null
   return (
     <LayoutSection header='What to know' id='what-to-know'>
       <Subheader>Critics Consensus</Subheader>
-      {show.articlesConsensus ? (
-        <p className='mb-2'>{show.articlesConsensus}</p>
+      {collection.articlesConsensus ? (
+        <p className='mb-2'>{collection.articlesConsensus}</p>
       ) : (
         <Empty className='mb-2'>
           There is no Critics Consensus because there are not enough reviews
@@ -21,8 +24,8 @@ export function WhatToKnow() {
         </Empty>
       )}
       <Subheader>Consumers Say</Subheader>
-      {show.reviewsConsensus ? (
-        <p>{show.reviewsConsensus}</p>
+      {collection.reviewsConsensus ? (
+        <p>{collection.reviewsConsensus}</p>
       ) : (
         <Empty>
           There is no Consumer Summary because there are not enough reviews yet.

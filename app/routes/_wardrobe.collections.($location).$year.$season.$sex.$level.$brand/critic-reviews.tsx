@@ -9,7 +9,7 @@ import { Prose } from 'components/prose'
 import { type loader } from './route'
 
 export function CriticReviews() {
-  const show = useLoaderData<typeof loader>()
+  const collection = useLoaderData<typeof loader>()
   return (
     <>
       <LayoutSection
@@ -17,12 +17,12 @@ export function CriticReviews() {
         id='critic-reviews'
         className='pb-0 border-0'
       />
-      {show.articles.length === 0 && (
+      {collection.articles.length === 0 && (
         <Empty className='mx-6 mb-6'>
-          No critic reviews to show yet. Try checking back later.
+          No critic reviews to collection yet. Try checking back later.
         </Empty>
       )}
-      {show.articles.map((review) => (
+      {collection.articles.map((review) => (
         <Review
           key={review.id}
           author={review.author}

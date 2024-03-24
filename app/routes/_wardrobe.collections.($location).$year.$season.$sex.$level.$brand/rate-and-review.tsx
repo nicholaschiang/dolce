@@ -4,7 +4,7 @@ import { Link, useFetcher, useLoaderData } from '@remix-run/react'
 import { useId } from 'react'
 import { z } from 'zod'
 
-import { type action as reviewAPI } from 'routes/api.shows.$showId.review'
+import { type action as reviewAPI } from 'routes/api.collections.$collectionId.review'
 
 import {
   Form,
@@ -42,11 +42,11 @@ export const schema = z.object({
   content: z.string().trim().min(1, 'Required').min(10, 'Too short'),
 })
 
-export async function getReview(showId: number, request: Request) {
+export async function getReview(collectionId: number, request: Request) {
   const userId = await getUserId(request)
   return userId
     ? prisma.review.findUnique({
-        where: { authorId_showId: { showId, authorId: userId } },
+        where: { authorId_collectionId: { collectionId, authorId: userId } },
       })
     : undefined
 }
@@ -60,15 +60,15 @@ export function RateAndReview() {
       return parseWithZod(formData, { schema })
     },
   })
-  const show = useLoaderData<typeof loader>()
+  const collection = useLoaderData<typeof loader>()
   const redirectTo = useRedirectTo({ hash: `#${id}` })
   const labelId = useId()
   return (
     <LayoutSection header='Your Review' id={id}>
       <Form asChild>
         <fetcher.Form
-          method={show.review ? 'put' : 'post'}
-          action={`/api/shows/${show.id}/review`}
+          method={collection.review ? 'put' : 'post'}
+          action={`/api/collections/${collection.id}/review`}
           className='max-w-sm mt-2 shadow-sm border border-gray-200 dark:border-gray-800 rounded p-4 relative'
           {...getFormProps(form)}
         >
@@ -89,7 +89,9 @@ export function RateAndReview() {
                 aria-labelledby={labelId}
                 required
                 defaultValue={
-                  show.review ? `${Number(show.review.score) * 5}` : undefined
+                  collection.review
+                    ? `${Number(collection.review.score) * 5}`
+                    : undefined
                 }
               />
             </FormControl>
@@ -100,12 +102,12 @@ export function RateAndReview() {
               {content.errors && <FormMessage>{content.errors}</FormMessage>}
             </FormLabelWrapper>
             <FormControl asChild>
-              <Textarea required defaultValue={show.review?.content} />
+              <Textarea required defaultValue={collection.review?.content} />
             </FormControl>
           </FormField>
           <FormSubmit asChild>
             <Button disabled={fetcher.state !== 'idle'}>
-              {show.review ? 'Edit review' : 'Submit review'}
+              {collection.review ? 'Edit review' : 'Submit review'}
             </Button>
           </FormSubmit>
         </fetcher.Form>

@@ -10,36 +10,38 @@ import { LOCATION_TO_NAME } from 'utils/location'
 import { type loader } from './route'
 
 export function Properties() {
-  const show = useLoaderData<typeof loader>()
+  const collection = useLoaderData<typeof loader>()
   return (
     <LayoutSection header='Properties' id='properties'>
-      {show.description != null && <Prose content={show.description} />}
+      {collection.description != null && (
+        <Prose content={collection.description} />
+      )}
       <Info>
-        {show.date != null && (
+        {collection.date != null && (
           <InfoItem label='Date'>
-            {new Date(show.date).toLocaleDateString(undefined, {
+            {new Date(collection.date).toLocaleDateString(undefined, {
               dateStyle: 'long',
             })}
           </InfoItem>
         )}
-        {show.location != null && (
+        {collection.location != null && (
           <InfoItem label='Location'>
-            {LOCATION_TO_NAME[show.location]}
+            {LOCATION_TO_NAME[collection.location]}
           </InfoItem>
         )}
-        <InfoItem label='Looks'>{show.looks.length}</InfoItem>
+        <InfoItem label='Looks'>{collection.looks.length}</InfoItem>
         <InfoItem label='Brand' className='inline-flex gap-1'>
-          {show.brand.url ? (
-            <ExternalLink key={show.brand.id} href={show.brand.url}>
-              {show.brand.name}
+          {collection.brand.url ? (
+            <ExternalLink key={collection.brand.id} href={collection.brand.url}>
+              {collection.brand.name}
             </ExternalLink>
           ) : (
-            <span key={show.brand.id}>{show.brand.name}</span>
+            <span key={collection.brand.id}>{collection.brand.name}</span>
           )}
         </InfoItem>
         <InfoItem label='URL'>
-          <ExternalLink href={show.url}>
-            {new URL(show.url).hostname}
+          <ExternalLink href={collection.url}>
+            {new URL(collection.url).hostname}
           </ExternalLink>
         </InfoItem>
       </Info>

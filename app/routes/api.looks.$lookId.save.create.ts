@@ -10,7 +10,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const look = await prisma.look.findUnique({ where: { id: lookId } })
   if (look == null) throw new Response('Not Found', { status: 404 })
 
-  const userId = await requireUserId(request, `/shows/${look.showId}`)
+  const userId = await requireUserId(
+    request,
+    `/collections/${look.collectionId}`,
+  )
 
   const formData = await request.formData()
   const name = formData.get('name') || 'DEFAULT'

@@ -1,11 +1,11 @@
 import {
-  type Show,
   type Brand,
-  type Collection,
+  type Show,
   type Season,
   type Look,
   type Image,
   type User,
+  type Collection,
   Level,
 } from '@prisma/client'
 import { type Event, type Person, type WithContext } from 'schema-dts'
@@ -36,55 +36,62 @@ export function getLevelName(level: Level): string {
 }
 
 /**
- * Get the show season header (i.e. "SPRING 2021 MENSWEAR" or "RESORT 2024").
+ * Get the collection season header (i.e. "SPRING 2021 MENSWEAR" or "RESORT 2024").
  * This is more convoluted than normal due to the weirdness with "Menswear".
  */
-export function getShowSeason(show: Serialize<Show & { season: Season }>) {
+export function getCollectionSeason(
+  collection: Serialize<Collection & { season: Season }>,
+) {
   return [
-    getSeasonName(show.season),
-    getLevelName(show.level),
-    getSexName(show.sex),
+    getSeasonName(collection.season),
+    getLevelName(collection.level),
+    getSexName(collection.sex),
   ]
     .filter((s) => s)
     .join(' ')
 }
 
 /**
- * Get the show path URL (e.g. /shows/2023/spring/man/hermes). This was placed
+ * Get the collection path URL (e.g. /collections/2023/spring/man/hermes). This was placed
  * as a utility function so that it can be easily reused throughout the app.
  */
-export function getShowPath(
-  show: Serialize<Show & { season: Season; brand: Brand }>,
+export function getCollectionPath(
+  collection: Serialize<Collection & { season: Season; brand: Brand }>,
 ) {
   const path = [
-    show.location ? LOCATION_TO_SLUG[show.location] : undefined,
-    show.season.year,
-    SEASON_NAME_TO_SLUG[show.season.name],
-    SEX_TO_SLUG[show.sex],
-    LEVEL_TO_SLUG[show.level],
-    show.brand.slug,
+    collection.location ? LOCATION_TO_SLUG[collection.location] : undefined,
+    collection.season.year,
+    SEASON_NAME_TO_SLUG[collection.season.name],
+    SEX_TO_SLUG[collection.sex],
+    LEVEL_TO_SLUG[collection.level],
+    collection.brand.slug,
   ]
-  return `/shows/${path.filter((p) => p).join('/')}`
+  return `/collections/${path.filter((p) => p).join('/')}`
 }
 
 /**
- * Get the show's keywords (both used for the keywords meta tag and the keywords
+ * Get the collection's keywords (both used for the keywords meta tag and the keywords
  * field in the `Event` Schema.org `application/ld+json` compatible type).
  *
  * The values in this array are inspired by the ones used by Vogue Runway.
- * @see {@link https://www.vogue.com/fashion-shows/resort-2024/erdem}
+ * @see {@link https://www.vogue.com/fashion-collections/resort-2024/erdem}
  *
  * @see {@link https://www.wordstream.com/meta-keyword}
  * @see {@link https://schema.org/Event}
  */
-export function getShowKeywords(
-  show: Serialize<Show & { brand: Brand; season: Season }>,
+export function getCollectionKeywords(
+  collection: Serialize<Collection & { brand: Brand; season: Season }>,
 ) {
-  return [show.brand.name, getShowSeason(show), 'runway_review', 'runway']
+  return [
+    collection.brand.name,
+    getCollectionSeason(collection),
+    'runway_review',
+    'runway',
+  ]
 }
 
 /**
- * Get the show Schema.org `application/ld+json` compatible representation. This
+ * Get the collection Schema.org `application/ld+json` compatible representation. This
  * is used primarily to provide search engines like Google with the structured
  * data required to render rich search results (e.g. like Rotten Tomatoes).
  * @see {@link https://linear.app/nicholaschiang/issue/NC-667}
@@ -92,11 +99,12 @@ export function getShowKeywords(
  * @see {@link https://developers.google.com/search/docs/appearance/structured-data/review-snippet}
  * @see {@link https://developers.google.com/search/docs/appearance/structured-data}
  */
-export function getShowSchema(
-  show: Serialize<
-    Show & {
+export function getCollectionSchema(
+  collection: Serialize<
+    Collection & {
+      designers: User[]
       looks: (Look & { images: Image[]; model: User | null })[]
-      collections: (Collection & { designers: User[] })[]
+      shows: Show[]
       season: Season
       brand: Brand
       scores: Scores
@@ -106,21 +114,21 @@ export function getShowSchema(
   return {
     '@context': 'https://schema.org',
     '@type': 'ExhibitionEvent',
-    '@id': show.id.toString(),
-    'name': show.name,
-    'image': url(show.looks[0]?.images[0]?.url),
-    'startDate': show.date?.toString() ?? undefined,
-    'location': show.location ?? undefined,
-    'description': show.description ?? undefined,
-    'url': url(getShowPath(show)),
-    'sameAs': url(show.url),
-    'composer': show.collections.flatMap((c) => c.designers.map(getUserSchema)),
-    'performer': show.looks
+    '@id': collection.id.toString(),
+    'name': collection.name,
+    'image': url(collection.looks[0]?.images[0]?.url),
+    'startDate': collection.shows[0]?.date?.toString() ?? undefined,
+    'location': collection.location ?? undefined,
+    'description': collection.description ?? undefined,
+    'url': url(getCollectionPath(collection)),
+    'sameAs': url(collection.shows[0]?.url),
+    'composer': collection.designers.map(getUserSchema),
+    'performer': collection.looks
       .map((look) => (look.model ? getUserSchema(look.model) : null))
       .filter((look) => look != null) as Person[],
-    'workFeatured': show.looks.map(getLookSchema),
-    'organizer': getBrandSchema(show.brand),
-    'aggregateRating': getScoresSchema(show.scores),
-    'keywords': getShowKeywords(show),
+    'workFeatured': collection.looks.map(getLookSchema),
+    'organizer': getBrandSchema(collection.brand),
+    'aggregateRating': getScoresSchema(collection.scores),
+    'keywords': getCollectionKeywords(collection),
   }
 }

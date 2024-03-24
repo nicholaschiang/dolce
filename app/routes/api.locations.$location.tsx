@@ -5,7 +5,7 @@ import { prisma } from 'db.server'
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.location) throw new Response('Not Found', { status: 404 })
-  const shows = await prisma.show.findMany({
+  const collections = await prisma.collection.findMany({
     where: {
       location: params.location as Location,
       looks: { some: { images: { some: {} } } },
@@ -14,5 +14,5 @@ export async function loader({ params }: LoaderFunctionArgs) {
     orderBy: { date: 'desc' },
     take: 12,
   })
-  return shows
+  return collections
 }
