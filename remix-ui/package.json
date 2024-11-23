@@ -127,7 +127,7 @@
     "@types/express-prometheus-middleware": "^1.2.3",
     "@types/luxon": "^3.4.2",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^20.11.20",
+    "@types/node": "^22.9.3",
     "@types/nprogress": "^0.2.3",
     "@types/progress": "^2.0.7",
     "@types/react": "^18.2.58",
@@ -194,7 +194,7 @@
     "wait-on": "^7.2.0"
   },
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "prisma": {
     "seed": "ts-node --require tsconfig-paths/register prisma/seed.ts"

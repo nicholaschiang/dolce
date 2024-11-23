@@ -1,5 +1,5 @@
 # base node image
-FROM node:18-bullseye-slim as base
+FROM node:22-bullseye-slim as base
 RUN corepack enable
 WORKDIR /site
 
