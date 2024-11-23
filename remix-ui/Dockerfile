@@ -17,7 +17,7 @@ ADD pnpm-lock.yaml .
 RUN pnpm fetch
 
 ADD package.json .
-RUN pnpm install --frozen-lockfile --offline
+RUN pnpm install
 
 # build the app
 ADD . .
