@@ -1,5 +1,19 @@
 # Release Notes
 
+## [1.68.0](https://github.com/nicholaschiang/dolce/compare/v1.67.0...v1.68.0) (2024-11-23)
+
+
+### Features
+
+* log raw SQL queries when in debug mode ([f825bba](https://github.com/nicholaschiang/dolce/commit/f825bbaffe4cfd30c7bb4c0662cbe96d0967f820))
+
+
+### Bug Fixes
+
+* correct "show yet" empty messages ([0b52f15](https://github.com/nicholaschiang/dolce/commit/0b52f151f33c1b5d2efaa5a6e7782a4fa71f2f85))
+* hide products field from filter menu ([733e245](https://github.com/nicholaschiang/dolce/commit/733e2457b6d3d0fc638a7d2f72a56b95e4992965))
+* hide shows from collections filter menu ([c918de4](https://github.com/nicholaschiang/dolce/commit/c918de4e27a8b521a2c33b111e6287c518b7cfb9))
+
 ## [1.67.0](https://github.com/nicholaschiang/dolce/compare/v1.66.0...v1.67.0) (2024-03-24)
 
 
