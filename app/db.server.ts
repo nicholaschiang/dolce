@@ -37,12 +37,23 @@ function getClient() {
   // re-run per request like everything else is. So if you need to change
   // something in this file, you'll need to manually restart the server.
   const client = new PrismaClient({
+    log: [
+      {
+        emit: 'event',
+        level: 'query',
+      },
+    ],
     datasources: {
       db: {
         url: databaseUrl.toString(),
       },
     },
   })
+
+  client.$on('query', (event) => {
+    log.debug(`${event.query} ${event.params}`)
+  })
+
   // connect eagerly
   void client.$connect()
 
