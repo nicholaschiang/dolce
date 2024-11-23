@@ -5,7 +5,7 @@ import {
   Level,
   Tier,
   SeasonName,
-} from '@prisma/client'
+} from '../../../../../remix-ui/node_modules/@prisma/client'
 
 import { slug } from '../utils'
 
