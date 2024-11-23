@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.68.4](https://github.com/nicholaschiang/dolce/compare/v1.68.3...v1.68.4) (2024-11-23)
+
+
+### Bug Fixes
+
+* run semantic release from repository root ([057d3d9](https://github.com/nicholaschiang/dolce/commit/057d3d985d5290c198155c61a9e99165ab6e8f44))
+
 ## [1.68.0](https://github.com/nicholaschiang/dolce/compare/v1.67.0...v1.68.0) (2024-11-23)
 
 
