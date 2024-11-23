@@ -2,6 +2,24 @@
 
 The landing page for fashion—shows, products, designers, and more.
 
+#### `remix-ui`
+
+...contains the Remix UI for the project.
+Built with Remix, React, Tailwind, Postgres (with Prisma ORM deployed on Supabase), and deployed on Vercel.
+
+#### `svelte-ui`
+
+...contains the SvelteKit UI for the project.
+This is still under construction.
+I aim to use an in-browser database (either [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) or a [SQLite database](https://developer.chrome.com/blog/sqlite-wasm-in-the-browser-backed-by-the-origin-private-file-system/) in [OPFS](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system)) to store data.
+This will be a completely static deployment (likely on Vercel for convenience) which will save money on servers (as there will be none).
+Everything will run on the client's device and thus should feel instantaneous.
+
+#### `data-collection`
+
+...contains the data collection scripts used to scrape fashion data from the web.
+Built with Python (Scrapy) and some JS scripts (mostly due to my familiarity with JS) that are run with Node.js.
+
 ## Rotten Tomatoes for Fashion
 
 The `/shows` feature of this project is Rotten Tomatoes for fashion.
