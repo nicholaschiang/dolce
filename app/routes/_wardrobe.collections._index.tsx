@@ -93,6 +93,7 @@ const hiddenFields: CollectionFilterName[] = [
   'brandId',
   'seasonId',
   'products',
+  'shows',
 ]
 
 export default function CollectionsPage() {
