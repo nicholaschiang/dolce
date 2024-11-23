@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
-import { show } from '../scripts/node/save/shows/hermes'
+import { show } from '../../data-collection/scripts/node/save/shows/hermes'
 
 const prisma = new PrismaClient()
 
