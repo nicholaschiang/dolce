@@ -13,6 +13,10 @@ on:
       - main
       - '*.x'
 
+defaults:
+  run:
+    working-directory: ./remix-ui
+
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}
   cancel-in-progress: true
@@ -34,13 +38,20 @@ jobs:
         with:
           fetch-depth: 0
       
+      - name: Get package manager version
+        id: get-pnpm-version
+        run: echo "version=$(cat package.json | jq -r .packageManager | sed s/pnpm@//)" >> $GITHUB_OUTPUT
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.get-pnpm-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version-file: remix-ui/package.json
+          cache-dependency-path: remix-ui/pnpm-lock.yaml
           cache: pnpm
 
       - name: Download deps
@@ -74,13 +85,20 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
       
+      - name: Get package manager version
+        id: get-pnpm-version
+        run: echo "version=$(cat package.json | jq -r .packageManager | sed s/pnpm@//)" >> $GITHUB_OUTPUT
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.get-pnpm-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version-file: remix-ui/package.json
+          cache-dependency-path: remix-ui/pnpm-lock.yaml
           cache: pnpm
 
       - name: Download deps

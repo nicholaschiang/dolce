@@ -7,6 +7,10 @@ on:
   pull_request:
   merge_group:
 
+defaults:
+  run:
+    working-directory: ./remix-ui
+
 jobs:
   lint:
     name: ESLint
@@ -17,14 +21,21 @@ jobs:
 
       - name: Checkout repo
         uses: actions/checkout@v3
-      
+     
+      - name: Get package manager version
+        id: get-pnpm-version
+        run: echo "version=$(cat package.json | jq -r .packageManager | sed s/pnpm@//)" >> $GITHUB_OUTPUT
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.get-pnpm-version.outputs.version }}
       
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version-file: remix-ui/package.json
+          cache-dependency-path: remix-ui/pnpm-lock.yaml
           cache: pnpm
 
       - name: Download deps
@@ -52,13 +63,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       
+      - name: Get package manager version
+        id: get-pnpm-version
+        run: echo "version=$(cat package.json | jq -r .packageManager | sed s/pnpm@//)" >> $GITHUB_OUTPUT
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.get-pnpm-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version-file: remix-ui/package.json
+          cache-dependency-path: remix-ui/pnpm-lock.yaml
           cache: pnpm
 
       - name: Download deps
@@ -80,13 +98,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       
+      - name: Get package manager version
+        id: get-pnpm-version
+        run: echo "version=$(cat package.json | jq -r .packageManager | sed s/pnpm@//)" >> $GITHUB_OUTPUT
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.get-pnpm-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version-file: remix-ui/package.json
+          cache-dependency-path: remix-ui/pnpm-lock.yaml
           cache: pnpm
 
       - name: Download deps
@@ -100,6 +125,19 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PORT: '8811'
+    services:
+      localhost:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
@@ -107,20 +145,27 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       
+      - name: Get package manager version
+        id: get-pnpm-version
+        run: echo "version=$(cat package.json | jq -r .packageManager | sed s/pnpm@//)" >> $GITHUB_OUTPUT
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ steps.get-pnpm-version.outputs.version }}
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version-file: package.json
+          node-version-file: remix-ui/package.json
+          cache-dependency-path: remix-ui/pnpm-lock.yaml
           cache: pnpm
 
       - name: Cache cypress binary
         uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('remix-ui/pnpm-lock.yaml') }}
 
       - name: Download deps
         run: pnpm install --frozen-lockfile
@@ -130,10 +175,6 @@ jobs:
 
       - name: Copy test env vars
         run: cp .env.example .env
-
-      - name: Docker compose
-        # the sleep is just there to give time for postgres to get started
-        run: docker-compose --env-file .env up -d && sleep 3
 
       - name: Setup database
         run: pnpm prisma migrate reset --force --skip-seed --skip-generate
@@ -218,7 +259,7 @@ jobs:
       - name: Docker build
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./remix-ui
           platforms: linux/amd64
           # only upload main branch (on pushes) to GHCR. otherwise, just check 
           # to ensure that the docker build completes without error.
