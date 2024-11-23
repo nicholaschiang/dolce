@@ -15,12 +15,12 @@
       {
         "replacements": [
           {
-            "files": ["package.json"],
+            "files": ["remix-ui/package.json"],
             "from": "\"version\": \".*\"",
             "to": "\"version\": \"${nextRelease.version}\"",
             "results": [
               {
-                "file": "package.json",
+                "file": "remix-ui/package.json",
                 "hasChanged": true,
                 "numMatches": 1,
                 "numReplacements": 1
@@ -29,12 +29,12 @@
             "countMatches": true
           },
           {
-            "files": ["../data-collection/pyproject.toml"],
+            "files": ["data-collection/pyproject.toml"],
             "from": "^version = \".*\"",
             "to": "version = \"${nextRelease.version}\"",
             "results": [
               {
-                "file": "../data-collection/pyproject.toml",
+                "file": "data-collection/pyproject.toml",
                 "hasChanged": true,
                 "numMatches": 1,
                 "numReplacements": 1
@@ -49,7 +49,7 @@
     [
       "@semantic-release/git",
       {
-        "assets": ["package.json", "../data-collection/pyproject.toml", "../CHANGELOG.md"],
+        "assets": ["remix-ui/package.json", "data-collection/pyproject.toml", "CHANGELOG.md"],
         "message": "chore(release): ${nextRelease.version}"
       }
     ]
