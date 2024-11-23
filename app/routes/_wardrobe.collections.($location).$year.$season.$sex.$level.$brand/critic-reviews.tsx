@@ -19,7 +19,7 @@ export function CriticReviews() {
       />
       {collection.articles.length === 0 && (
         <Empty className='mx-6 mb-6'>
-          No critic reviews to collection yet. Try checking back later.
+          No critic reviews to show yet. Try checking back later.
         </Empty>
       )}
       {collection.articles.map((review) => (

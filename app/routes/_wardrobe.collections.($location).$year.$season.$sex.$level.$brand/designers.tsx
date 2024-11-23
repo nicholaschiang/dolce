@@ -125,7 +125,7 @@ function DesignerListItem({ designer }: { designer: SerializeFrom<Designer> }) {
         )}
         {designer.articles.length === 0 && (
           <Empty className='py-2 mt-2'>
-            No designer articles to collection yet. Please check back later.
+            No designer articles to show yet. Please check back later.
           </Empty>
         )}
       </div>
