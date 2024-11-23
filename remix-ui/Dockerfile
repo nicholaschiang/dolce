@@ -1,6 +1,8 @@
 # base node image
 FROM node:22-bullseye-slim as base
-RUN corepack enable
+
+RUN corepack enable pnpm && corepack install -g pnpm@8.10.5
+
 WORKDIR /site
 
 # set for base and all layer that inherit from it
@@ -17,7 +19,7 @@ ADD pnpm-lock.yaml .
 RUN pnpm fetch
 
 ADD package.json .
-RUN pnpm install
+RUN pnpm install --frozen-lockfile --offline
 
 # build the app
 ADD . .
