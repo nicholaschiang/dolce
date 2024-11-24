@@ -122,12 +122,8 @@
           "tableFrom": "Password",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -300,12 +296,8 @@
           "tableFrom": "User",
           "tableTo": "Country",
           "schemaTo": "public",
-          "columnsFrom": [
-            "countryId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["countryId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -380,12 +372,8 @@
           "tableFrom": "_BrandToProduct",
           "tableTo": "Brand",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -394,12 +382,8 @@
           "tableFrom": "_BrandToProduct",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -474,12 +458,8 @@
           "tableFrom": "_BrandToRetailer",
           "tableTo": "Brand",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -488,12 +468,8 @@
           "tableFrom": "_BrandToRetailer",
           "tableTo": "Retailer",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -568,12 +544,8 @@
           "tableFrom": "_CountryToRetailer",
           "tableTo": "Country",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -582,12 +554,8 @@
           "tableFrom": "_CountryToRetailer",
           "tableTo": "Retailer",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -662,12 +630,8 @@
           "tableFrom": "_SizeEquivalents",
           "tableTo": "Size",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -676,12 +640,8 @@
           "tableFrom": "_SizeEquivalents",
           "tableTo": "Size",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -803,12 +763,8 @@
           "tableFrom": "Company",
           "tableTo": "Country",
           "schemaTo": "public",
-          "columnsFrom": [
-            "countryId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["countryId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -965,12 +921,8 @@
           "tableFrom": "Brand",
           "tableTo": "Company",
           "schemaTo": "public",
-          "columnsFrom": [
-            "companyId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["companyId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -979,12 +931,8 @@
           "tableFrom": "Brand",
           "tableTo": "Country",
           "schemaTo": "public",
-          "columnsFrom": [
-            "countryId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["countryId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1226,12 +1174,8 @@
           "tableFrom": "Show",
           "tableTo": "Video",
           "schemaTo": "public",
-          "columnsFrom": [
-            "videoId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["videoId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1535,12 +1479,8 @@
           "tableFrom": "Collection",
           "tableTo": "Style",
           "schemaTo": "public",
-          "columnsFrom": [
-            "styleId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["styleId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1549,12 +1489,8 @@
           "tableFrom": "Collection",
           "tableTo": "Season",
           "schemaTo": "public",
-          "columnsFrom": [
-            "seasonId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["seasonId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1563,12 +1499,8 @@
           "tableFrom": "Collection",
           "tableTo": "Brand",
           "schemaTo": "public",
-          "columnsFrom": [
-            "brandId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["brandId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1686,12 +1618,8 @@
           "tableFrom": "Price",
           "tableTo": "Retailer",
           "schemaTo": "public",
-          "columnsFrom": [
-            "retailerId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["retailerId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1700,12 +1628,8 @@
           "tableFrom": "Price",
           "tableTo": "Brand",
           "schemaTo": "public",
-          "columnsFrom": [
-            "brandId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["brandId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1714,12 +1638,8 @@
           "tableFrom": "Price",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "variantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["variantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1841,12 +1761,8 @@
           "tableFrom": "Retailer",
           "tableTo": "Company",
           "schemaTo": "public",
-          "columnsFrom": [
-            "companyId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["companyId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1921,12 +1837,8 @@
           "tableFrom": "_ProductToStyle",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1935,12 +1847,8 @@
           "tableFrom": "_ProductToStyle",
           "tableTo": "Style",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2015,12 +1923,8 @@
           "tableFrom": "_CollectionToProduct",
           "tableTo": "Collection",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2029,12 +1933,8 @@
           "tableFrom": "_CollectionToProduct",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2130,12 +2030,8 @@
           "tableFrom": "Image",
           "tableTo": "Look",
           "schemaTo": "public",
-          "columnsFrom": [
-            "lookId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["lookId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2144,12 +2040,8 @@
           "tableFrom": "Image",
           "tableTo": "Post",
           "schemaTo": "public",
-          "columnsFrom": [
-            "postId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["postId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -2227,12 +2119,8 @@
           "tableFrom": "Video",
           "tableTo": "Post",
           "schemaTo": "public",
-          "columnsFrom": [
-            "postId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["postId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -2366,12 +2254,8 @@
           "tableFrom": "Style",
           "tableTo": "StyleGroup",
           "schemaTo": "public",
-          "columnsFrom": [
-            "styleGroupId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["styleGroupId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2380,12 +2264,8 @@
           "tableFrom": "Style",
           "tableTo": "Style",
           "schemaTo": "public",
-          "columnsFrom": [
-            "parentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parentId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -2460,12 +2340,8 @@
           "tableFrom": "_ColorToVariant",
           "tableTo": "Color",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2474,12 +2350,8 @@
           "tableFrom": "_ColorToVariant",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2557,12 +2429,8 @@
           "tableFrom": "Variant",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "productId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["productId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2571,12 +2439,8 @@
           "tableFrom": "Variant",
           "tableTo": "Size",
           "schemaTo": "public",
-          "columnsFrom": [
-            "sizeId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sizeId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2651,12 +2515,8 @@
           "tableFrom": "_MaterialToVariant",
           "tableTo": "Material",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2665,12 +2525,8 @@
           "tableFrom": "_MaterialToVariant",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2755,12 +2611,8 @@
           "tableFrom": "Material",
           "tableTo": "Material",
           "schemaTo": "public",
-          "columnsFrom": [
-            "parentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parentId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -2891,12 +2743,8 @@
           "tableFrom": "_ProductToUser",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2905,12 +2753,8 @@
           "tableFrom": "_ProductToUser",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2985,12 +2829,8 @@
           "tableFrom": "_CollectionToUser",
           "tableTo": "Collection",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2999,12 +2839,8 @@
           "tableFrom": "_CollectionToUser",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3079,12 +2915,8 @@
           "tableFrom": "_LookToProduct",
           "tableTo": "Look",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3093,12 +2925,8 @@
           "tableFrom": "_LookToProduct",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3251,12 +3079,8 @@
           "tableFrom": "Link",
           "tableTo": "Collection",
           "schemaTo": "public",
-          "columnsFrom": [
-            "collectionId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collectionId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3265,12 +3089,8 @@
           "tableFrom": "Link",
           "tableTo": "Brand",
           "schemaTo": "public",
-          "columnsFrom": [
-            "brandId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["brandId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3279,12 +3099,8 @@
           "tableFrom": "Link",
           "tableTo": "Retailer",
           "schemaTo": "public",
-          "columnsFrom": [
-            "retailerId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["retailerId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3476,12 +3292,8 @@
           "tableFrom": "Look",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "modelId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["modelId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3490,12 +3302,8 @@
           "tableFrom": "Look",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "authorId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["authorId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3504,12 +3312,8 @@
           "tableFrom": "Look",
           "tableTo": "Collection",
           "schemaTo": "public",
-          "columnsFrom": [
-            "collectionId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collectionId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3600,12 +3404,8 @@
           "tableFrom": "Review",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "authorId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["authorId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3614,12 +3414,8 @@
           "tableFrom": "Review",
           "tableTo": "Collection",
           "schemaTo": "public",
-          "columnsFrom": [
-            "collectionId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collectionId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3727,12 +3523,8 @@
           "tableFrom": "Board",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "authorId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["authorId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3904,12 +3696,8 @@
           "tableFrom": "Article",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "authorId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["authorId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3918,12 +3706,8 @@
           "tableFrom": "Article",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3932,12 +3716,8 @@
           "tableFrom": "Article",
           "tableTo": "Publication",
           "schemaTo": "public",
-          "columnsFrom": [
-            "publicationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["publicationId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3946,12 +3726,8 @@
           "tableFrom": "Article",
           "tableTo": "Collection",
           "schemaTo": "public",
-          "columnsFrom": [
-            "collectionId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collectionId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4116,12 +3892,8 @@
           "tableFrom": "Size",
           "tableTo": "Brand",
           "schemaTo": "public",
-          "columnsFrom": [
-            "brandId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["brandId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4130,12 +3902,8 @@
           "tableFrom": "Size",
           "tableTo": "Country",
           "schemaTo": "public",
-          "columnsFrom": [
-            "countryId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["countryId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4144,12 +3912,8 @@
           "tableFrom": "Size",
           "tableTo": "Style",
           "schemaTo": "public",
-          "columnsFrom": [
-            "styleId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["styleId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4224,12 +3988,8 @@
           "tableFrom": "_VariantToVideo",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4238,12 +3998,8 @@
           "tableFrom": "_VariantToVideo",
           "tableTo": "Video",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4318,12 +4074,8 @@
           "tableFrom": "_BoardToLook",
           "tableTo": "Board",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4332,12 +4084,8 @@
           "tableFrom": "_BoardToLook",
           "tableTo": "Look",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4412,12 +4160,8 @@
           "tableFrom": "_ImageToVariant",
           "tableTo": "Image",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4426,12 +4170,8 @@
           "tableFrom": "_ImageToVariant",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4562,12 +4302,8 @@
           "tableFrom": "_TagToVariant",
           "tableTo": "Tag",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4576,12 +4312,8 @@
           "tableFrom": "_TagToVariant",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4695,12 +4427,8 @@
           "tableFrom": "_BoardToVariant",
           "tableTo": "Board",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4709,12 +4437,8 @@
           "tableFrom": "_BoardToVariant",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4792,12 +4516,8 @@
           "tableFrom": "Post",
           "tableTo": "User",
           "schemaTo": "public",
-          "columnsFrom": [
-            "authorId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["authorId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4872,12 +4592,8 @@
           "tableFrom": "_ColorToItem",
           "tableTo": "Color",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4886,12 +4602,8 @@
           "tableFrom": "_ColorToItem",
           "tableTo": "Item",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4999,12 +4711,8 @@
           "tableFrom": "_ItemToStyle",
           "tableTo": "Item",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5013,12 +4721,8 @@
           "tableFrom": "_ItemToStyle",
           "tableTo": "Style",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5093,12 +4797,8 @@
           "tableFrom": "_ItemToProduct",
           "tableTo": "Item",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5107,12 +4807,8 @@
           "tableFrom": "_ItemToProduct",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5187,12 +4883,8 @@
           "tableFrom": "_ItemToPost",
           "tableTo": "Item",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5201,12 +4893,8 @@
           "tableFrom": "_ItemToPost",
           "tableTo": "Post",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5281,12 +4969,8 @@
           "tableFrom": "_LookToPost",
           "tableTo": "Look",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5295,12 +4979,8 @@
           "tableFrom": "_LookToPost",
           "tableTo": "Post",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5375,12 +5055,8 @@
           "tableFrom": "_PostToProduct",
           "tableTo": "Post",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5389,12 +5065,8 @@
           "tableFrom": "_PostToProduct",
           "tableTo": "Product",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5469,12 +5141,8 @@
           "tableFrom": "_PostToVariant",
           "tableTo": "Post",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5483,12 +5151,8 @@
           "tableFrom": "_PostToVariant",
           "tableTo": "Variant",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5563,12 +5227,8 @@
           "tableFrom": "_CollectionToShow",
           "tableTo": "Collection",
           "schemaTo": "public",
-          "columnsFrom": [
-            "A"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["A"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5577,12 +5237,8 @@
           "tableFrom": "_CollectionToShow",
           "tableTo": "Show",
           "schemaTo": "public",
-          "columnsFrom": [
-            "B"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["B"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5597,12 +5253,7 @@
   "enums": {
     "public.Level": {
       "name": "Level",
-      "values": [
-        "BESPOKE",
-        "COUTURE",
-        "HANDMADE",
-        "RTW"
-      ],
+      "values": ["BESPOKE", "COUTURE", "HANDMADE", "RTW"],
       "schema": "public"
     },
     "public.Location": {
@@ -5635,29 +5286,17 @@
     },
     "public.Market": {
       "name": "Market",
-      "values": [
-        "PRIMARY",
-        "SECONDARY"
-      ],
+      "values": ["PRIMARY", "SECONDARY"],
       "schema": "public"
     },
     "public.SeasonName": {
       "name": "SeasonName",
-      "values": [
-        "RESORT",
-        "SPRING",
-        "PRE_FALL",
-        "FALL"
-      ],
+      "values": ["RESORT", "SPRING", "PRE_FALL", "FALL"],
       "schema": "public"
     },
     "public.Sex": {
       "name": "Sex",
-      "values": [
-        "MAN",
-        "WOMAN",
-        "UNISEX"
-      ],
+      "values": ["MAN", "WOMAN", "UNISEX"],
       "schema": "public"
     },
     "public.Sustainability": {
