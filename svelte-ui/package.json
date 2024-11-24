@@ -47,8 +47,7 @@
     "@supabase/sql-formatter": "^4.0.3",
     "@tailwindcss/forms": "^0.5.9",
     "drizzle-orm": "^0.36.4",
-    "highlight.js": "^11.10.0",
-    "pg": "^8.13.1",
-    "svelte-highlight": "^7.7.0"
+    "lucide-svelte": "^0.460.1",
+    "pg": "^8.13.1"
   }
 }
