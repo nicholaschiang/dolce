@@ -5,15 +5,24 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@supabase/sql-formatter':
+    specifier: ^4.0.3
+    version: 4.0.3
   '@tailwindcss/forms':
     specifier: ^0.5.9
     version: 0.5.9(tailwindcss@3.4.15)
   drizzle-orm:
     specifier: ^0.36.4
     version: 0.36.4(@types/pg@8.11.10)(pg@8.13.1)
+  highlight.js:
+    specifier: ^11.10.0
+    version: 11.10.0
   pg:
     specifier: ^8.13.1
     version: 8.13.1
+  svelte-highlight:
+    specifier: ^7.7.0
+    version: 7.7.0
 
 devDependencies:
   '@playwright/test':
@@ -1038,6 +1047,13 @@ packages:
     dev: true
     optional: true
 
+  /@supabase/sql-formatter@4.0.3:
+    resolution: {integrity: sha512-+iQWP6lfh/eiSI4q8SloiVbOB05dugAhva5VMon4iRvf9QY+4YiiQJEQPc3xtHHKrfdOQCk9hAju3YicMmKdlA==}
+    hasBin: true
+    dependencies:
+      argparse: 2.0.1
+    dev: false
+
   /@sveltejs/adapter-auto@3.3.1(@sveltejs/kit@2.8.2):
     resolution: {integrity: sha512-5Sc7WAxYdL6q9j/+D0jJKjGREGlfIevDyHSQ2eNETHcB1TKlQWHcAo8AS8H1QdjNvSXpvOwNjykDUHPEAyGgdQ==}
     peerDependencies:
@@ -1398,7 +1414,6 @@ packages:
 
   /argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
-    dev: true
 
   /aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
@@ -2191,6 +2206,11 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       function-bind: 1.1.2
+
+  /highlight.js@11.10.0:
+    resolution: {integrity: sha512-SYVnVFswQER+zu1laSya563s+F8VDGt7o35d4utbamowvUNLLMovFqwCLSocpZTz3MgaSRA1IbqRWZv97dtErQ==}
+    engines: {node: '>=12.0.0'}
+    dev: false
 
   /ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -3066,6 +3086,12 @@ packages:
       postcss-scss: 4.0.9(postcss@8.4.49)
       svelte: 5.2.7
     dev: true
+
+  /svelte-highlight@7.7.0:
+    resolution: {integrity: sha512-umBiTz3fLbbNCA+wGlRhJOb54iC6ap8S/dxjauQ+g6a8oFGTOGQeOP2rJVoh/K1ssF7IjP4P0T3Yuiu+vtaG5Q==}
+    dependencies:
+      highlight.js: 11.10.0
+    dev: false
 
   /svelte@5.2.7:
     resolution: {integrity: sha512-cEhPGuLHiH2+Z8B1FwQgiZJgA39uUmJR4516TKrM5zrp0/cuwJkfhUfcTxhAkznanAF5fXUKzvYR4o+Ksx3ZCQ==}
