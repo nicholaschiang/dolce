@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.70.0](https://github.com/nicholaschiang/dolce/compare/v1.69.0...v1.70.0) (2024-11-25)
+
+
+### Features
+
+* use neon for managed postgres in production ([a6357ba](https://github.com/nicholaschiang/dolce/commit/a6357ba94cd0d38a1bb675ccb9610d012d8d8c77))
+
 ## [1.69.0](https://github.com/nicholaschiang/dolce/compare/v1.68.4...v1.69.0) (2024-11-25)
 
 
