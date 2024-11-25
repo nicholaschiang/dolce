@@ -46,6 +46,7 @@
   "dependencies": {
     "@supabase/sql-formatter": "^4.0.3",
     "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
     "drizzle-orm": "^0.36.4",
     "lucide-svelte": "^0.460.1",
     "pg": "^8.13.1"

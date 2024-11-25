@@ -1,10 +1,18 @@
 <script lang="ts">
   import { Search } from "lucide-svelte"
+  import { formatDate } from "$lib/formatDate"
+  import { formatLocation } from "$lib/formatLocation"
+
+  import Header from "$lib/components/Header.svelte"
+  import Subtitle from "$lib/components/Subtitle.svelte"
 
   let { data } = $props()
   let form: HTMLFormElement
+  let value = $state("")
 
-  const { format } = new Intl.DateTimeFormat(undefined, { dateStyle: "long" })
+  $effect(() => {
+    value = new URLSearchParams(location.search).get("q") ?? ""
+  })
 
   type Collection = Awaited<typeof data.collections>[number]
   const sort = (a: Collection, b: Collection) =>
@@ -12,11 +20,9 @@
     new Date(a.collectionDate ?? new Date()).valueOf()
 </script>
 
-<header
-  class="flex h-10 items-center gap-6 border-b border-gray-200 px-6 dark:border-gray-800"
->
-  <h1 class="text-lg">collections</h1>
-</header>
+<Header>
+  <a href="/">Collections</a>
+</Header>
 <div class="flex flex-col gap-6 p-6">
   <form
     data-sveltekit-replacestate
@@ -31,6 +37,7 @@
       class="w-0 grow border-0 bg-transparent px-0 focus:ring-0"
       placeholder="Search..."
       oninput={() => form.requestSubmit()}
+      bind:value
     />
   </form>
   <div class="flex flex-col gap-2">
@@ -42,12 +49,15 @@
       <p>Error: {error.message}</p>
     {/await}
   </div>
-  <ul
+  <div
     class="grid gap-x-2 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6"
   >
     {#await data.collections then collections}
       {#each collections.sort(sort) as collection (collection.collectionId)}
-        <li class="flex flex-col gap-2 text-xs">
+        <a
+          href="/collections/{collection.collectionId}"
+          class="flex flex-col gap-2 text-xs"
+        >
           <div
             class="flex aspect-person w-full items-center justify-center bg-gray-100 dark:bg-gray-800"
           >
@@ -68,18 +78,18 @@
           <div>
             <h2>{collection.collectionName}</h2>
             {#if collection.collectionDate}
-              <p class="text-gray-400 dark:text-gray-500">
-                {format(new Date(collection.collectionDate))}
-              </p>
+              <Subtitle>
+                {formatDate(new Date(collection.collectionDate))}
+              </Subtitle>
             {/if}
             {#if collection.collectionLocation}
-              <p class="text-gray-400 dark:text-gray-500">
-                {collection.collectionLocation}
-              </p>
+              <Subtitle>
+                {formatLocation(collection.collectionLocation)}
+              </Subtitle>
             {/if}
           </div>
-        </li>
+        </a>
       {/each}
     {/await}
-  </ul>
+  </div>
 </div>
