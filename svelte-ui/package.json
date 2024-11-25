@@ -44,6 +44,7 @@
     "vitest": "^2.0.4"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.3",
     "@supabase/sql-formatter": "^4.0.3",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",

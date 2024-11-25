@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@neondatabase/serverless':
+    specifier: ^0.10.3
+    version: 0.10.3
   '@supabase/sql-formatter':
     specifier: ^4.0.3
     version: 4.0.3
@@ -16,7 +19,7 @@ dependencies:
     version: 0.5.15(tailwindcss@3.4.15)
   drizzle-orm:
     specifier: ^0.36.4
-    version: 0.36.4(@types/pg@8.11.10)(pg@8.13.1)
+    version: 0.36.4(@neondatabase/serverless@0.10.3)(@types/pg@8.11.10)(pg@8.13.1)
   lucide-svelte:
     specifier: ^0.460.1
     version: 0.460.1(svelte@5.2.7)
@@ -866,6 +869,12 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  /@neondatabase/serverless@0.10.3:
+    resolution: {integrity: sha512-F4kqSj++GUwLnO3OzPb95Y/xn3qVLkjJA/36YTqT7c3MRgA/IBOIs/Is1+HBZkGfEwfMG3A9tFkxiEg5eBjxDw==}
+    dependencies:
+      '@types/pg': 8.11.6
+    dev: false
+
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1167,6 +1176,14 @@ packages:
       '@types/node': 22.9.3
       pg-protocol: 1.7.0
       pg-types: 4.0.2
+
+  /@types/pg@8.11.6:
+    resolution: {integrity: sha512-/2WmmBXHLsfRqzfHW7BNZ8SbYzE8OSk7i3WjFYvfgRHj7S1xj+16Je5fUKv3lVdVzk/zn9TXOqf+avFCFIE0yQ==}
+    dependencies:
+      '@types/node': 22.9.3
+      pg-protocol: 1.7.0
+      pg-types: 4.0.2
+    dev: false
 
   /@typescript-eslint/eslint-plugin@8.15.0(@typescript-eslint/parser@8.15.0)(eslint@9.15.0)(typescript@5.7.2):
     resolution: {integrity: sha512-+zkm9AR1Ds9uLWN3fkoeXgFppaQ+uEVtfOV62dDmsy9QCNqlRHWNEck4yarvRNrvRcHQLGfqBNui3cimoz8XAg==}
@@ -1643,7 +1660,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.36.4(@types/pg@8.11.10)(pg@8.13.1):
+  /drizzle-orm@0.36.4(@neondatabase/serverless@0.10.3)(@types/pg@8.11.10)(pg@8.13.1):
     resolution: {integrity: sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -1735,6 +1752,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
+      '@neondatabase/serverless': 0.10.3
       '@types/pg': 8.11.10
       pg: 8.13.1
     dev: false
