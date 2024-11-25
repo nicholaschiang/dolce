@@ -4,10 +4,14 @@ The landing page for fashion—shows, products, designers, and more.
 
 #### `remix-ui`
 
+[https://clothes.nicholaschiang.com](https://clothes.nicholaschiang.com)
+
 ...contains the Remix UI for the project.
 Built with Remix, React, Tailwind, Postgres (with Prisma ORM deployed on Supabase), and deployed on Vercel.
 
 #### `svelte-ui`
+
+[https://collections.nicholaschiang.com](https://collections.nicholaschiang.com)
 
 ...contains the SvelteKit UI for the project.
 This is still under construction.
