@@ -1,5 +1,21 @@
 # Release Notes
 
+## [1.69.0](https://github.com/nicholaschiang/dolce/compare/v1.68.4...v1.69.0) (2024-11-25)
+
+
+### Features
+
+* **svelte-ui:** add `drizzle` ORM for db access ([de25465](https://github.com/nicholaschiang/dolce/commit/de25465eeea6f8021147827fa63b6d9f6f8dfc79))
+* **svelte-ui:** add basic collections grid ([b651465](https://github.com/nicholaschiang/dolce/commit/b6514652ffe1be110ebf9e741efa9b5e85d0d0e0))
+* **svelte-ui:** add basic collections list page ([af52777](https://github.com/nicholaschiang/dolce/commit/af527775980e901f1d67bab6edbc6ed68f3df7f7)), closes [/orm.drizzle.team/docs/get-started/postgresql-existing#step-4](https://github.com/nicholaschiang//orm.drizzle.team/docs/get-started/postgresql-existing/issues/step-4)
+* **svelte-ui:** add collection specific page ([9abd0fc](https://github.com/nicholaschiang/dolce/commit/9abd0fcf04de56c1c7438bf20b39d10db2181f11))
+* **svelte-ui:** initialize empty SvelteKit project ([e50c08f](https://github.com/nicholaschiang/dolce/commit/e50c08f214eb8ab89c84799e4e7c8add0b36d1ef))
+
+
+### Performance Improvements
+
+* **svelte-ui:** use drizzle select API ([2e94f53](https://github.com/nicholaschiang/dolce/commit/2e94f53841ebab32bb34e62b47fb2a7d74203749))
+
 ## [1.68.4](https://github.com/nicholaschiang/dolce/compare/v1.68.3...v1.68.4) (2024-11-23)
 
 
