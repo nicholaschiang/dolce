@@ -4,6 +4,7 @@
   import { formatSeasonName } from "$lib/formatSeasonName"
   import { formatLevelName } from "$lib/formatLevelName"
   import { formatLocation } from "$lib/formatLocation"
+  import { formatTiming } from "$lib/formatTiming"
 
   import Header from "$lib/components/Header.svelte"
   import Subtitle from "$lib/components/Subtitle.svelte"
@@ -38,7 +39,7 @@
           >)</span
         >
       {/if}
-      <span>({data.time.toFixed(2)}ms)</span>
+      <span>({formatTiming(data.time)})</span>
     </div>
   {/await}
 </Header>

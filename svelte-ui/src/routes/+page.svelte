@@ -2,6 +2,7 @@
   import { Search } from "lucide-svelte"
   import { formatDate } from "$lib/formatDate"
   import { formatLocation } from "$lib/formatLocation"
+  import { formatTiming } from "$lib/formatTiming"
   import { PARAM, DEFAULT_SEARCH } from "$lib/constants"
 
   import Header from "$lib/components/Header.svelte"
@@ -12,7 +13,8 @@
   let value = $state("")
 
   $effect(() => {
-    value = new URLSearchParams(window.location.search).get(PARAM) ?? DEFAULT_SEARCH
+    value =
+      new URLSearchParams(window.location.search).get(PARAM) ?? DEFAULT_SEARCH
   })
 
   type Collection = Awaited<typeof data.data>["collections"][number]
@@ -35,20 +37,20 @@
     <input
       name={PARAM}
       type="search"
-      class="w-0 grow border-0 bg-transparent px-0 focus:ring-0"
+      class="w-0 grow border-0 text-base bg-transparent px-0 tracking-tighter focus:ring-0"
       placeholder="Search..."
       oninput={() => form.requestSubmit()}
       bind:value
     />
   </form>
-  <div class="flex flex-col gap-2">
+  <div class="text-base tracking-tighter">
     {#await data.data}
       <p>Loading...</p>
     {:then data}
       <p>
-        Found {data.collections.length} results
+        Found {data.collections.length.toLocaleString()} results
         <span class="text-gray-400 dark:text-gray-500"
-          >({data.time.toFixed(2)}ms)</span
+          >({formatTiming(data.time)})</span
         >
       </p>
     {:catch error}
