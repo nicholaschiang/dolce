@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.73.0](https://github.com/nicholaschiang/dolce/compare/v1.72.0...v1.73.0) (2024-11-29)
+
+
+### Features
+
+* **svelte-ui:** copy font files from `remix-ui` ([b66d88e](https://github.com/nicholaschiang/dolce/commit/b66d88e35f0bd1971a7104d5872b962852f3d464))
+
 ## [1.72.0](https://github.com/nicholaschiang/dolce/compare/v1.71.0...v1.72.0) (2024-11-29)
 
 
