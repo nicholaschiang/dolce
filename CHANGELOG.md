@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.71.0](https://github.com/nicholaschiang/dolce/compare/v1.70.1...v1.71.0) (2024-11-29)
+
+
+### Features
+
+* **svelte-ui:** search for latest season by default ([47bfe19](https://github.com/nicholaschiang/dolce/commit/47bfe19b540181f04d9327ba0a2770ba25967c67))
+
 ## [1.70.1](https://github.com/nicholaschiang/dolce/compare/v1.70.0...v1.70.1) (2024-11-29)
 
 
