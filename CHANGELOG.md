@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.72.0](https://github.com/nicholaschiang/dolce/compare/v1.71.0...v1.72.0) (2024-11-29)
+
+
+### Features
+
+* **svelte-ui:** add link to collection location ([4581ce7](https://github.com/nicholaschiang/dolce/commit/4581ce77e25f0bcd17df32e3ffebacb0f207ca92))
+
 ## [1.71.0](https://github.com/nicholaschiang/dolce/compare/v1.70.1...v1.71.0) (2024-11-29)
 
 
