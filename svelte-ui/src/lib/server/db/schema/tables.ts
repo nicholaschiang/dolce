@@ -531,6 +531,7 @@ export const collection = pgTable(
   },
   (table) => {
     return {
+      nameIndex: index("idx_gin").using("gin", table.name),
       brandIdSeasonIdSexLevelLocationKey: uniqueIndex(
         "Collection_brandId_seasonId_sex_level_location_key",
       ).using(
@@ -749,6 +750,7 @@ export const image = pgTable(
   },
   (table) => {
     return {
+      imageLookIndex: index("idx_image_look").using("hash", table.lookId),
       urlKey: uniqueIndex("Image_url_key").using(
         "btree",
         table.url.asc().nullsLast().op("text_ops"),

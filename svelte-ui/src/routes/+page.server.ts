@@ -12,19 +12,29 @@ const query = db
     lookImageUrl: tables.image.url,
   })
   .from(tables.collection)
-  .leftJoin(
-    tables.look,
-    and(
-      eq(tables.look.collectionId, tables.collection.id),
-      eq(tables.look.number, 1),
-    ),
-  )
+  .leftJoin(tables.look, eq(tables.look.collectionId, tables.collection.id))
   .leftJoin(tables.image, eq(tables.image.lookId, tables.look.id))
   .orderBy(desc(tables.collection.name))
-  .where(ilike(tables.collection.name, sql.placeholder("search")))
+  .where(
+    and(
+      eq(tables.look.number, 1),
+      ilike(tables.collection.name, sql.placeholder("search")),
+    ),
+  )
   .prepare("collections")
+
+async function getCollections(search: string) {
+  console.time(`collections-${search}`)
+  const start = performance.now() 
+  const collections = await query.execute({ search: `%${search}%` })
+  const end = performance.now()
+  console.timeEnd(`collections-${search}`)
+  const time = end - start
+  console.log(`collections-${search}: ${time}ms`)
+  return { collections, time }
+}
 
 export async function load({ url }) {
   const search = url.searchParams.get("q") ?? ""
-  return { collections: query.execute({ search: `%${search}%` }) }
+  return { data: getCollections(search) }
 }

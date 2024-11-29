@@ -14,38 +14,37 @@
 <Header>
   <a href="/">Collections</a>
   <ChevronRight class="h-4 w-4 text-gray-200 dark:text-gray-800" />
-  {#await data.collection then collection}
-    <a href="/?q={encodeURIComponent(collection.brand.name)}"
-      >{collection.brand.name}</a
+  {#await data.data then data}
+    <a href="/?q={encodeURIComponent(data.collection.brand.name)}"
+      >{data.collection.brand.name}</a
     >
     <ChevronRight class="h-4 w-4 text-gray-200 dark:text-gray-800" />
-    <a href="/?q={encodeURIComponent(formatSeasonName(collection.season))}"
-      >{formatSeasonName(collection.season)}
-      {formatLevelName(collection.level)}</a
+    <a href="/?q={encodeURIComponent(formatSeasonName(data.collection.season))}"
+      >{formatSeasonName(data.collection.season)}
+      {formatLevelName(data.collection.level)}</a
     >
-    <div class="flex items-center gap-1">
-      {#if collection.date}
-        <span class="text-sm text-gray-400 dark:text-gray-500"
-          >({formatDate(new Date(collection.date))})</span
-        >
+    <div
+      class="flex items-center gap-1 text-sm text-gray-400 dark:text-gray-500"
+    >
+      {#if data.collection.date}
+        <span>({formatDate(new Date(data.collection.date))})</span>
       {/if}
-      {#if collection.location}
-        <span class="text-sm text-gray-400 dark:text-gray-500"
-          >({formatLocation(collection.location)})</span
-        >
+      {#if data.collection.location}
+        <span>({formatLocation(data.collection.location)})</span>
       {/if}
+      <span>({data.time.toFixed(2)}ms)</span>
     </div>
   {/await}
 </Header>
 <div class="flex h-full flex-col xl:flex-row">
   <div class="flex flex-col gap-6 p-6 xl:w-0 xl:grow">
-    {#await data.collection}
+    {#await data.data}
       <p>Loading...</p>
-    {:then collection}
+    {:then data}
       <div
         class="grid gap-x-2 gap-y-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3"
       >
-        {#each collection.looks as look (look.id)}
+        {#each data.collection.looks as look (look.id)}
           <a
             href={look.images[0].url}
             target="_blank"
@@ -60,7 +59,7 @@
                   loading="lazy"
                   decoding="async"
                   src={look.images[0].url}
-                  alt="Look {look.number} of {collection.name}"
+                  alt="Look {look.number} of {data.collection.name}"
                   class="flex h-full w-full items-center justify-center object-cover"
                 />
               {:else}
@@ -75,10 +74,10 @@
       </div>
     {/await}
   </div>
-  {#await data.collection then collection}
-    {#if collection.articles.length}
+  {#await data.data then data}
+    {#if data.collection.articles.length}
       <div class="flex flex-col gap-12 p-6 xl:pr-12">
-        {#each collection.articles as article (article.id)}
+        {#each data.collection.articles as article (article.id)}
           <div class="flex flex-col gap-4 text-sm">
             <div>
               <h2 class="flex items-center gap-2">

@@ -14,7 +14,7 @@
     value = new URLSearchParams(location.search).get("q") ?? ""
   })
 
-  type Collection = Awaited<typeof data.collections>[number]
+  type Collection = Awaited<typeof data.data>["collections"][number]
   const sort = (a: Collection, b: Collection) =>
     new Date(b.collectionDate ?? new Date()).valueOf() -
     new Date(a.collectionDate ?? new Date()).valueOf()
@@ -41,10 +41,15 @@
     />
   </form>
   <div class="flex flex-col gap-2">
-    {#await data.collections}
+    {#await data.data}
       <p>Loading...</p>
-    {:then collections}
-      <p>Found {collections.length} results</p>
+    {:then data}
+      <p>
+        Found {data.collections.length} results
+        <span class="text-gray-400 dark:text-gray-500"
+          >({data.time.toFixed(2)}ms)</span
+        >
+      </p>
     {:catch error}
       <p>Error: {error.message}</p>
     {/await}
@@ -52,8 +57,10 @@
   <div
     class="grid gap-x-2 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6"
   >
-    {#await data.collections then collections}
-      {#each collections.sort(sort) as collection (collection.collectionId)}
+    {#await data.data then data}
+      {#each data.collections
+        .slice(0, 100)
+        .sort(sort) as collection (collection.collectionId)}
         <a
           href="/collections/{collection.collectionId}"
           class="flex flex-col gap-2 text-xs"
