@@ -2,6 +2,7 @@
   import { Search } from "lucide-svelte"
   import { formatDate } from "$lib/formatDate"
   import { formatLocation } from "$lib/formatLocation"
+  import { PARAM, DEFAULT_SEARCH } from "$lib/constants"
 
   import Header from "$lib/components/Header.svelte"
   import Subtitle from "$lib/components/Subtitle.svelte"
@@ -11,7 +12,7 @@
   let value = $state("")
 
   $effect(() => {
-    value = new URLSearchParams(location.search).get("q") ?? ""
+    value = new URLSearchParams(window.location.search).get(PARAM) ?? DEFAULT_SEARCH
   })
 
   type Collection = Awaited<typeof data.data>["collections"][number]
@@ -32,7 +33,7 @@
   >
     <Search class="h-4 w-4" />
     <input
-      name="q"
+      name={PARAM}
       type="search"
       class="w-0 grow border-0 bg-transparent px-0 focus:ring-0"
       placeholder="Search..."
