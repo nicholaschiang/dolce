@@ -30,7 +30,13 @@
         <span>({formatDate(new Date(data.collection.date))})</span>
       {/if}
       {#if data.collection.location}
-        <span>({formatLocation(data.collection.location)})</span>
+        <span
+          >(<a
+            href="/?q={encodeURIComponent(
+              formatLocation(data.collection.location).split(',')[0] ?? "",
+            )}">{formatLocation(data.collection.location)}</a
+          >)</span
+        >
       {/if}
       <span>({data.time.toFixed(2)}ms)</span>
     </div>
