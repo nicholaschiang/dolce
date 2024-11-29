@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.70.1](https://github.com/nicholaschiang/dolce/compare/v1.70.0...v1.70.1) (2024-11-29)
+
+
+### Performance Improvements
+
+* **svelte-ui:** create image look index ([29f7187](https://github.com/nicholaschiang/dolce/commit/29f7187405c93630782dff76bf7094053c42b861))
+
 ## [1.70.0](https://github.com/nicholaschiang/dolce/compare/v1.69.0...v1.70.0) (2024-11-25)
 
 
