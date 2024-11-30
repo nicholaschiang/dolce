@@ -13,7 +13,7 @@
 </script>
 
 <Header>
-  <a href="/">Collections</a>
+  <a href="/collections">Collections</a>
   <ChevronRight class="h-4 w-4 text-gray-200 dark:text-gray-800" />
   {#await data.data then data}
     <a href="/?q={encodeURIComponent(data.collection.brand.name)}"
