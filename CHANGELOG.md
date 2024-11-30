@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.74.1](https://github.com/nicholaschiang/dolce/compare/v1.74.0...v1.74.1) (2024-11-30)
+
+
+### Bug Fixes
+
+* **svelte-ui:** update collection navigation links ([f991b4c](https://github.com/nicholaschiang/dolce/commit/f991b4c1b02aa9050b5c6f8cfba1e618434b799e))
+
 ## [1.74.0](https://github.com/nicholaschiang/dolce/compare/v1.73.0...v1.74.0) (2024-11-30)
 
 
