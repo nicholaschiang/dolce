@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.74.2](https://github.com/nicholaschiang/dolce/compare/v1.74.1...v1.74.2) (2024-11-30)
+
+
+### Bug Fixes
+
+* **svelte-ui:** tweak styling on home page links ([924eed4](https://github.com/nicholaschiang/dolce/commit/924eed454d647ba51e852a0a1495d86c9d25f9c6))
+
 ## [1.74.1](https://github.com/nicholaschiang/dolce/compare/v1.74.0...v1.74.1) (2024-11-30)
 
 
