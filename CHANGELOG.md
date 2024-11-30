@@ -1,5 +1,18 @@
 # Release Notes
 
+## [1.74.0](https://github.com/nicholaschiang/dolce/compare/v1.73.0...v1.74.0) (2024-11-30)
+
+
+### Features
+
+* **svelte-ui:** add basic `/products` page ([aec247d](https://github.com/nicholaschiang/dolce/commit/aec247d49b676d0083e37a045a0b3a0f24b8c60e))
+* **svelte-ui:** add basic landing page with links ([420d0d2](https://github.com/nicholaschiang/dolce/commit/420d0d27b1d6c06b1d581604559f05d2431c6048))
+
+
+### Bug Fixes
+
+* **svelte-ui:** remove unused font preload links ([d6cca60](https://github.com/nicholaschiang/dolce/commit/d6cca60f0805107c96d8d3177ec94422e1f0d3f6))
+
 ## [1.73.0](https://github.com/nicholaschiang/dolce/compare/v1.72.0...v1.73.0) (2024-11-29)
 
 
