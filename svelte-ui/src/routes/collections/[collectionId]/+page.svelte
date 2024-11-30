@@ -16,11 +16,11 @@
   <a href="/collections">Collections</a>
   <ChevronRight class="h-4 w-4 text-gray-200 dark:text-gray-800" />
   {#await data.data then data}
-    <a href="/?q={encodeURIComponent(data.collection.brand.name)}"
+    <a href="/collections?q={encodeURIComponent(data.collection.brand.name)}"
       >{data.collection.brand.name}</a
     >
     <ChevronRight class="h-4 w-4 text-gray-200 dark:text-gray-800" />
-    <a href="/?q={encodeURIComponent(formatSeasonName(data.collection.season))}"
+    <a href="/collections?q={encodeURIComponent(formatSeasonName(data.collection.season))}"
       >{formatSeasonName(data.collection.season)}
       {formatLevelName(data.collection.level)}</a
     >
@@ -33,7 +33,7 @@
       {#if data.collection.location}
         <span
           >(<a
-            href="/?q={encodeURIComponent(
+            href="/collections?q={encodeURIComponent(
               formatLocation(data.collection.location).split(',')[0] ?? "",
             )}">{formatLocation(data.collection.location)}</a
           >)</span
