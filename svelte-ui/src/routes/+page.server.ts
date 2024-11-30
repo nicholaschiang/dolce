@@ -1,7 +1,7 @@
 import { desc, ilike, and, eq, sql } from "drizzle-orm"
 import * as tables from "$lib/server/db/schema/tables"
 import { db } from "$lib/server/db"
-import { PARAM, DEFAULT_SEARCH } from "$lib/constants"
+import { PARAM, DEFAULT_COLLECTIONS_SEARCH } from "$lib/constants"
 
 const query = db
   .selectDistinctOn([tables.collection.name], {
@@ -36,6 +36,6 @@ async function getCollections(search: string) {
 }
 
 export async function load({ url }) {
-  const search = url.searchParams.get(PARAM) ?? DEFAULT_SEARCH
+  const search = url.searchParams.get(PARAM) ?? DEFAULT_COLLECTIONS_SEARCH
   return { data: getCollections(search) }
 }
